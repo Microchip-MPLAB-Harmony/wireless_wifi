@@ -46,9 +46,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *****************************************************************************/
 void WDRV_WINC_GPIOResetAssert(void)
 {
-    SYS_PORT_PinClear(PORT_PIN_PB06);
-    //ramya
-    //SYS_PORTS_PinClear(PORTS_ID_0, WDRV_WINC_RESETN_PORT, WDRV_WINC_RESETN_PIN);
+    WDRV_WINC_RESETN_Clear();
 }
 
 /****************************************************************************
@@ -57,9 +55,7 @@ void WDRV_WINC_GPIOResetAssert(void)
  *****************************************************************************/
 void WDRV_WINC_GPIOResetDeassert(void)
 {
-    SYS_PORT_PinSet(PORT_PIN_PB06);
-    //ramya
-    //SYS_PORTS_PinSet(PORTS_ID_0, WDRV_WINC_RESETN_PORT, WDRV_WINC_RESETN_PIN);
+    WDRV_WINC_RESETN_Set();
 }
 
 /****************************************************************************
@@ -68,9 +64,7 @@ void WDRV_WINC_GPIOResetDeassert(void)
  *****************************************************************************/
 void WDRV_WINC_GPIOChipEnableAssert(void)
 {
-    SYS_PORT_PinSet(PORT_PIN_PB05);
-    //ramya
-    //SYS_PORTS_PinSet(PORTS_ID_0, WDRV_WINC_CHIP_EN_PORT, WDRV_WINC_CHIP_EN_PIN);
+    WDRV_WINC_CHIP_EN_Set();
 }
 
 /****************************************************************************
@@ -79,9 +73,7 @@ void WDRV_WINC_GPIOChipEnableAssert(void)
  *****************************************************************************/
 void WDRV_WINC_GPIOChipEnableDeassert(void)
 {
-    SYS_PORT_PinClear(PORT_PIN_PB05);
-    //ramya
-    //SYS_PORTS_PinClear(PORTS_ID_0, WDRV_WINC_CHIP_EN_PORT, WDRV_WINC_CHIP_EN_PIN);
+    WDRV_WINC_CHIP_EN_Clear();
 }
 
 //DOM-IGNORE-END

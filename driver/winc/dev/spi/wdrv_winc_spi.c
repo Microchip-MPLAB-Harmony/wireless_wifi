@@ -47,11 +47,11 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define WDRV_DCACHE_CLEAN(addr, size) do { } while (0)
 #endif /* defined(__PIC32MZ__) */
 
-#if (DRV_SPI_DMA != 0)
+#ifdef DRV_SPI_DMA_MODE
 #define SPI_DMA_DCACHE_CLEAN(addr, size) WDRV_DCACHE_CLEAN(addr, size)
-#define SPI_DMA_MAX_TX_SIZE DRV_SPI_DMA_TXFER_SIZE
-#define SPI_DMA_MAX_RX_SIZE DRV_SPI_DMA_DUMMY_BUFFER_SIZE
-#else /* (DRV_SPI_DMA != 0) */
+#define SPI_DMA_MAX_TX_SIZE 1024
+#define SPI_DMA_MAX_RX_SIZE 1024
+#else /* (DRV_SPI_DMA_MODE != 0) */
 #define SPI_DMA_DCACHE_CLEAN(addr, size) do { } while (0)
 #endif /* (DRV_SPI_DMA != 0) */
 
@@ -73,20 +73,8 @@ static void _DataCacheClean(unsigned char *address, uint32_t size)
 }
 #endif /* defined(__PIC32MZ__) */
 static DRV_SPI_TRANSFER_HANDLE transferTxHandle;
-static DRV_SPI_TRANSFER_HANDLE transferRxHandle; //aa
+static DRV_SPI_TRANSFER_HANDLE transferRxHandle;
 
-/* ramya 
-static void _SPI_TxComplete(DRV_SPI_BUFFER_EVENT event, DRV_SPI_BUFFER_HANDLE bufferHandle, void *context )
-{
-    OSAL_SEM_PostISR(&txSyncSem);
-}
- */
-/** ramya 
-static void _SPI_RxComplete(DRV_SPI_BUFFER_EVENT event, DRV_SPI_BUFFER_HANDLE bufferHandle, void *context )
-{
-    OSAL_SEM_PostISR(&rxSyncSem);
-}
-*/
 static bool _SPI_Tx(unsigned char *buf, uint32_t size)
 {
     SPI_DMA_DCACHE_CLEAN(buf, size);
@@ -94,55 +82,67 @@ static bool _SPI_Tx(unsigned char *buf, uint32_t size)
 
     if(transferTxHandle == DRV_SPI_TRANSFER_HANDLE_INVALID)
     {
-        //printf("sagar:_SPI_Tx Error handling");
         // Error handling here
-    }
-    
-    while (OSAL_RESULT_FALSE == OSAL_SEM_Pend(&txSyncSem, OSAL_WAIT_FOREVER))
-    {
-        
-    }
-    
-#if 0
-    SPI_DMA_DCACHE_CLEAN(buf, size);
-    if (DRV_SPI_BUFFER_HANDLE_INVALID == DRV_SPI_BufferAddWrite(spiHandle, buf, size, _SPI_TxComplete, 0))
-    {
         return false;
     }
 
     while (OSAL_RESULT_FALSE == OSAL_SEM_Pend(&txSyncSem, OSAL_WAIT_FOREVER))
     {
+
     }
-#endif
+
     return true;
 }
 
 static bool _SPI_Rx(unsigned char *const buf, uint32_t size)
 {
+    static uint8_t dummy = 0;
+
     SPI_DMA_DCACHE_CLEAN(buf, size);
-    
-    DRV_SPI_ReadTransferAdd(spiHandle, buf, size, &transferRxHandle);
-        
+
+    DRV_SPI_WriteReadTransferAdd(spiHandle, &dummy, 1, buf, size, &transferRxHandle);
+
     if(transferRxHandle == DRV_SPI_TRANSFER_HANDLE_INVALID)
     {
-        //printf("sagar:_SPI_Rx Error handling");
-        // Error handling here  
-    }
-    while (OSAL_RESULT_FALSE == OSAL_SEM_Pend(&rxSyncSem, OSAL_WAIT_FOREVER))
-    {
-    }
-
-#if 0 // sagar : commecnted
-    if (DRV_SPI_BUFFER_HANDLE_INVALID == DRV_SPI_BufferAddRead(spiHandle, buf, size, _SPI_RxComplete, 0))
-    {
+        // Error handling here
         return false;
     }
-
     while (OSAL_RESULT_FALSE == OSAL_SEM_Pend(&rxSyncSem, OSAL_WAIT_FOREVER))
     {
     }
-#endif
+
     return true;
+}
+
+static void _WDRV_WINC_SPITransferEventHandler(DRV_SPI_TRANSFER_EVENT event,
+        DRV_SPI_TRANSFER_HANDLE handle, uintptr_t context)
+{
+    // The context handle was set to an application specific
+    // object. It is now retrievable easily in the event handler.
+   // MY_APP_OBJ myAppObj = (MY_APP_OBJ *) context;
+
+    switch(event)
+    {
+        case DRV_SPI_TRANSFER_EVENT_COMPLETE:
+            // This means the data was transferred.
+            if (transferTxHandle == handle)
+            {
+                OSAL_SEM_PostISR(&txSyncSem);
+            }
+            else if (transferRxHandle == handle)
+            {
+                OSAL_SEM_PostISR(&rxSyncSem);
+            }
+
+            break;
+
+        case DRV_SPI_TRANSFER_EVENT_ERROR:
+            // Error handling here.
+            break;
+
+        default:
+            break;
+    }
 }
 
 /****************************************************************************
@@ -156,10 +156,8 @@ bool WDRV_WINC_SPISend(unsigned char *const buf, uint32_t size)
 
     pData = buf;
     SYS_PORT_PinClear(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
-    //ramya
-    //SYS_PORTS_PinClear(PORTS_ID_0, WDRV_WINC_SPI_SSN_PORT, WDRV_WINC_SPI_SSN_PIN);
 
-#if (DRV_SPI_DMA != 0)
+#ifdef DRV_SPI_DMA_MODE
     while ((true == ret) && (size > SPI_DMA_MAX_TX_SIZE))
     {
         ret = _SPI_Tx(pData, SPI_DMA_MAX_TX_SIZE);
@@ -173,9 +171,6 @@ bool WDRV_WINC_SPISend(unsigned char *const buf, uint32_t size)
         ret = _SPI_Tx(pData, size);
     }
     SYS_PORT_PinSet(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
-    //ramya
-    //SYS_PORTS_PinSet(PORTS_ID_0, WDRV_WINC_SPI_SSN_PORT, WDRV_WINC_SPI_SSN_PIN);
-
     return ret;
 }
 
@@ -190,10 +185,8 @@ bool WDRV_WINC_SPIReceive(unsigned char *const buf, uint32_t size)
 
     pData = buf;
     SYS_PORT_PinClear(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
-    //ramya
-    //SYS_PORTS_PinClear(PORTS_ID_0, WDRV_WINC_SPI_SSN_PORT, WDRV_WINC_SPI_SSN_PIN);
 
-#if (DRV_SPI_DMA != 0)
+#ifdef DRV_SPI_DMA_MODE
     while ((true == ret) && (size > SPI_DMA_MAX_RX_SIZE))
     {
         ret = _SPI_Rx(pData, SPI_DMA_MAX_RX_SIZE);
@@ -207,39 +200,9 @@ bool WDRV_WINC_SPIReceive(unsigned char *const buf, uint32_t size)
         ret = _SPI_Rx(pData, size);
     }
     SYS_PORT_PinSet(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
-    //ramya
-    //SYS_PORTS_PinSet(PORTS_ID_0, WDRV_WINC_SPI_SSN_PORT, WDRV_WINC_SPI_SSN_PIN);
-
     return ret;
 }
 
-
-void APP_SPITransferEventHandler(DRV_SPI_TRANSFER_EVENT event,
-        DRV_SPI_TRANSFER_HANDLE handle, uintptr_t context)
-{
-    // The context handle was set to an application specific
-    // object. It is now retrievable easily in the event handler.
-    // sagar : commented bcz of error
-   // MY_APP_OBJ myAppObj = (MY_APP_OBJ *) context;
-
-    switch(event)
-    {
-        case DRV_SPI_TRANSFER_EVENT_COMPLETE:
-            // This means the data was transferred.
-            if(transferTxHandle == handle)
-             OSAL_SEM_PostISR(&txSyncSem);
-            else if(transferRxHandle == handle)
-             OSAL_SEM_PostISR(&rxSyncSem);
-            break;
-
-        case DRV_SPI_TRANSFER_EVENT_ERROR:
-            // Error handling here.
-            break;
-
-        default:
-            break;
-    }
-}
 /****************************************************************************
  * Function:        WDRV_WINC_SPIInitialize
  * Summary: Initializes the SPI object for the WiFi driver.
@@ -259,14 +222,29 @@ void WDRV_WINC_SPIInitialize(void)
     if (DRV_HANDLE_INVALID == spiHandle)
     {
         spiHandle = DRV_SPI_Open(WDRV_WINC_SPI_INDEX, DRV_IO_INTENT_READWRITE | DRV_IO_INTENT_BLOCKING);
+
         if (DRV_HANDLE_INVALID == spiHandle)
         {
             WDRV_DBG_ERROR_PRINT("SPI init failed\r\n");
         }
     }
-    DRV_SPI_TransferEventHandlerSet( spiHandle, APP_SPITransferEventHandler,
-                                 0 );
 
+    DRV_SPI_TransferEventHandlerSet( spiHandle, _WDRV_WINC_SPITransferEventHandler, 0);
+}
+
+/****************************************************************************
+ * Function:        WDRV_WINC_SPIDenitialize
+ * Summary: Deinitializes the SPI object for the WiFi driver.
+ *****************************************************************************/
+void WDRV_WINC_SPIDeinitialize(void)
+{
+    OSAL_SEM_Post(&txSyncSem);
+    OSAL_SEM_Delete(&txSyncSem);
+
+    OSAL_SEM_Post(&rxSyncSem);
+    OSAL_SEM_Delete(&rxSyncSem);
+
+    DRV_SPI_Close(spiHandle);
 }
 
 //DOM-IGNORE-END
