@@ -1545,9 +1545,99 @@
             </Boolean>
           </Attributes>
         </File>
-        <Combo dnOrder="1" id="WIFI_EXTERNAL_INTERRUPT_USE">
+        <Boolean dnOrder="1" id="WIFI_DRIVER_EIC_SRC_0">
           <Values dnOrder="0">
-            <User dnOrder="0" value="External_Interrupt"/>
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="2" id="WIFI_DRIVER_EIC_SRC_1">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="3" id="WIFI_DRIVER_EIC_SRC_10">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="4" id="WIFI_DRIVER_EIC_SRC_11">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="5" id="WIFI_DRIVER_EIC_SRC_12">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="6" id="WIFI_DRIVER_EIC_SRC_13">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="7" id="WIFI_DRIVER_EIC_SRC_14">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="8" id="WIFI_DRIVER_EIC_SRC_15">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="9" id="WIFI_DRIVER_EIC_SRC_2">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="10" id="WIFI_DRIVER_EIC_SRC_3">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="11" id="WIFI_DRIVER_EIC_SRC_4">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="visible">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+          <Values dnOrder="1">
+            <User dnOrder="0" value="true"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="12" id="WIFI_DRIVER_EIC_SRC_5">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="13" id="WIFI_DRIVER_EIC_SRC_6">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="14" id="WIFI_DRIVER_EIC_SRC_7">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="15" id="WIFI_DRIVER_EIC_SRC_8">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="16" id="WIFI_DRIVER_EIC_SRC_9">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+          </Values>
+        </Boolean>
+        <Integer dnOrder="17" id="WIFI_DRIVER_EIC_SRC_SELECT">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="4"/>
+          </Values>
+        </Integer>
+        <Combo dnOrder="18" id="WIFI_EXTERNAL_INTERRUPT_USE">
+          <Values dnOrder="0">
+            <User dnOrder="0" value="EIC"/>
           </Values>
         </Combo>
       </Symbols>
@@ -2167,7 +2257,8 @@
     </UniqueComponent>
   </Components>
   <UserData>
-    <ComponentGraph dnOrder="0" id="__ROOTVIEW">
+    <GraphSettings canvasHeight="400" canvasWidth="400" dnOrder="0"/>
+    <ComponentGraph dnOrder="1" id="__ROOTVIEW">
       <ElementPositions dnOrder="0">
         <ElementPosition dnOrder="0" id="HarmonyCore" x="640" y="20"/>
         <ElementPosition dnOrder="1" id="cmsis" x="500" y="20"/>
@@ -2184,6 +2275,5 @@
         <ElementPosition dnOrder="12" id="tc3" x="0" y="184"/>
       </ElementPositions>
     </ComponentGraph>
-    <GraphSettings canvasHeight="400" canvasWidth="400" dnOrder="1"/>
   </UserData>
 </Configuration>

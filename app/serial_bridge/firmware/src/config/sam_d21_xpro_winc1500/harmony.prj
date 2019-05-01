@@ -371,8 +371,8 @@
           <Name dnOrder="1">wdrv_winc_eint.c</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/dev/gpio/</LogicalPath>
           <PhysicalPath dnOrder="3">/driver/winc/dev/gpio/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">3093DDD5A7B008626C5CC2C7413CD035</GeneratedChecksum>
-          <UserChecksum dnOrder="5">3093DDD5A7B008626C5CC2C7413CD035</UserChecksum>
+          <GeneratedChecksum dnOrder="4">5A418246665BB8C497694792B31F75AB</GeneratedChecksum>
+          <UserChecksum dnOrder="5">5A418246665BB8C497694792B31F75AB</UserChecksum>
         </File>
         <File dnOrder="46">
           <Type dnOrder="0">SOURCE</Type>
@@ -579,8 +579,8 @@
           <Name dnOrder="1">configuration.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/</LogicalPath>
           <PhysicalPath dnOrder="3">/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">3EB0A844E5B1C2C3020CA2E6D4E36830</GeneratedChecksum>
-          <UserChecksum dnOrder="5">3EB0A844E5B1C2C3020CA2E6D4E36830</UserChecksum>
+          <GeneratedChecksum dnOrder="4">E5C84F3DD02B0E04733B496B3F203222</GeneratedChecksum>
+          <UserChecksum dnOrder="5">E5C84F3DD02B0E04733B496B3F203222</UserChecksum>
         </File>
         <File dnOrder="72">
           <Type dnOrder="0">HEADER</Type>

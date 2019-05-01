@@ -46,6 +46,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #else
 #define WDRV_INT_SOURCE INT_SOURCE_CHANGE_NOTICE
 #endif
+#elif defined(WDRV_WINC_EIC_SOURCE)
 #else
 #define WDRV_INT_SOURCE WDRV_WINC_INT_SOURCE
 #endif
@@ -56,14 +57,19 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *****************************************************************************/
 void WDRV_WINC_INTInitialize(void)
 {
+#ifdef WDRV_WINC_EIC_SOURCE
+    EIC_CallbackRegister(WDRV_WINC_EIC_SOURCE, (EIC_CALLBACK)WDRV_WINC_ISR, 0);
+    EIC_InterruptEnable(WDRV_WINC_EIC_SOURCE);
+#else
     /* disable the external interrupt */
     SYS_INT_SourceDisable(WDRV_INT_SOURCE);
 
     /* clear and enable the interrupt */
-    SYS_INT_SourceStatusClear(WDRV_INT_SOURCE); // clear status
+    SYS_INT_SourceStatusClear(WDRV_INT_SOURCE);
 
     /* enable the external interrupt */
     SYS_INT_SourceEnable(WDRV_INT_SOURCE);
+#endif
 }
 
 /****************************************************************************
@@ -72,7 +78,11 @@ void WDRV_WINC_INTInitialize(void)
  *****************************************************************************/
 void WDRV_WINC_INTDeinitialize(void)
 {
+#ifdef WDRV_WINC_EIC_SOURCE
+    EIC_InterruptEnable(WDRV_WINC_EIC_SOURCE);
+#else
     SYS_INT_SourceDisable(WDRV_INT_SOURCE);
+#endif
 }
 
 //DOM-IGNORE-END

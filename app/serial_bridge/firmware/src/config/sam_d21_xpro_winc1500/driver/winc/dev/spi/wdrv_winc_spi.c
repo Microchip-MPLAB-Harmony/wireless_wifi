@@ -97,7 +97,7 @@ static bool _SPI_Tx(unsigned char *buf, uint32_t size)
 static bool _SPI_Rx(unsigned char *const buf, uint32_t size)
 {
     static uint8_t dummy = 0;
-    
+
     SPI_DMA_DCACHE_CLEAN(buf, size);
 
     DRV_SPI_WriteReadTransferAdd(spiHandle, &dummy, 1, buf, size, &transferRxHandle);
@@ -243,7 +243,7 @@ void WDRV_WINC_SPIDeinitialize(void)
 
     OSAL_SEM_Post(&rxSyncSem);
     OSAL_SEM_Delete(&rxSyncSem);
-    
+
     DRV_SPI_Close(spiHandle);
 }
 

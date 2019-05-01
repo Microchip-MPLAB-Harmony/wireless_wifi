@@ -96,8 +96,8 @@ extern "C" {
 // *****************************************************************************
 // *****************************************************************************
 /*** Wi-Fi Driver Configuration ***/
-#define WDRV_WINC_INT_SOURCE 	EIC_IRQn
-#define WDRV_WINC_SPI_INDEX 	0
+#define WDRV_WINC_EIC_SOURCE        EIC_PIN_4
+#define WDRV_WINC_SPI_INDEX     0
 #define WDRV_WINC_NETWORK_MODE_SOCKET
 #define WDRV_WINC_DEVICE_WINC1500
 #define WDRV_WINC_DEVICE_SPLIT_INIT
