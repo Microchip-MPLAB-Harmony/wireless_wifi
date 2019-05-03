@@ -1459,7 +1459,17 @@
             </Boolean>
           </Symbols>
           <Attachments dnOrder="1">
-            <DirectDependency dnOrder="0" id="drv_spi_SPI_dependency">
+            <DirectCapability dnOrder="0" id="drv_spi">
+              <Attributes dnOrder="0">
+                <String dnOrder="0" id="targetComponentID">
+                  <Value dnOrder="0">drvWifiWinc</Value>
+                </String>
+                <String dnOrder="1" id="targetAttachmentID">
+                  <Value dnOrder="0">SPI</Value>
+                </String>
+              </Attributes>
+            </DirectCapability>
+            <DirectDependency dnOrder="1" id="drv_spi_SPI_dependency">
               <Attributes dnOrder="0">
                 <String dnOrder="0" id="targetComponentID">
                   <Value dnOrder="0">sercom0</Value>
@@ -1545,57 +1555,62 @@
             </Boolean>
           </Attributes>
         </File>
-        <Boolean dnOrder="1" id="WIFI_DRIVER_EIC_SRC_0">
+        <Combo dnOrder="1" id="DRV_WIFI_WINC_DRIVER_MODE">
+          <Values dnOrder="0">
+            <User dnOrder="0" value="Socket Mode"/>
+          </Values>
+        </Combo>
+        <Boolean dnOrder="2" id="DRV_WIFI_WINC_EIC_SRC_0">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="2" id="WIFI_DRIVER_EIC_SRC_1">
+        <Boolean dnOrder="3" id="DRV_WIFI_WINC_EIC_SRC_1">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="3" id="WIFI_DRIVER_EIC_SRC_10">
+        <Boolean dnOrder="4" id="DRV_WIFI_WINC_EIC_SRC_10">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="4" id="WIFI_DRIVER_EIC_SRC_11">
+        <Boolean dnOrder="5" id="DRV_WIFI_WINC_EIC_SRC_11">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="5" id="WIFI_DRIVER_EIC_SRC_12">
+        <Boolean dnOrder="6" id="DRV_WIFI_WINC_EIC_SRC_12">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="6" id="WIFI_DRIVER_EIC_SRC_13">
+        <Boolean dnOrder="7" id="DRV_WIFI_WINC_EIC_SRC_13">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="7" id="WIFI_DRIVER_EIC_SRC_14">
+        <Boolean dnOrder="8" id="DRV_WIFI_WINC_EIC_SRC_14">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="8" id="WIFI_DRIVER_EIC_SRC_15">
+        <Boolean dnOrder="9" id="DRV_WIFI_WINC_EIC_SRC_15">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="9" id="WIFI_DRIVER_EIC_SRC_2">
+        <Boolean dnOrder="10" id="DRV_WIFI_WINC_EIC_SRC_2">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="10" id="WIFI_DRIVER_EIC_SRC_3">
+        <Boolean dnOrder="11" id="DRV_WIFI_WINC_EIC_SRC_3">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="11" id="WIFI_DRIVER_EIC_SRC_4">
+        <Boolean dnOrder="12" id="DRV_WIFI_WINC_EIC_SRC_4">
           <Attributes dnOrder="0">
             <Boolean dnOrder="0" id="visible">
               <Value dnOrder="0">true</Value>
@@ -1605,42 +1620,283 @@
             <User dnOrder="0" value="true"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="12" id="WIFI_DRIVER_EIC_SRC_5">
+        <Boolean dnOrder="13" id="DRV_WIFI_WINC_EIC_SRC_5">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="13" id="WIFI_DRIVER_EIC_SRC_6">
+        <Boolean dnOrder="14" id="DRV_WIFI_WINC_EIC_SRC_6">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="14" id="WIFI_DRIVER_EIC_SRC_7">
+        <Boolean dnOrder="15" id="DRV_WIFI_WINC_EIC_SRC_7">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="15" id="WIFI_DRIVER_EIC_SRC_8">
+        <Boolean dnOrder="16" id="DRV_WIFI_WINC_EIC_SRC_8">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Boolean dnOrder="16" id="WIFI_DRIVER_EIC_SRC_9">
+        <Boolean dnOrder="17" id="DRV_WIFI_WINC_EIC_SRC_9">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
           </Values>
         </Boolean>
-        <Integer dnOrder="17" id="WIFI_DRIVER_EIC_SRC_SELECT">
+        <Integer dnOrder="18" id="DRV_WIFI_WINC_EIC_SRC_SELECT">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="drvWifiWinc" value="4"/>
           </Values>
         </Integer>
-        <Combo dnOrder="18" id="WIFI_EXTERNAL_INTERRUPT_USE">
+        <String dnOrder="19" id="DRV_WIFI_WINC_SPI_INST">
           <Values dnOrder="0">
-            <User dnOrder="0" value="EIC"/>
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="drv_spi_0"/>
           </Values>
-        </Combo>
+        </String>
+        <Integer dnOrder="20" id="DRV_WIFI_WINC_SPI_INST_IDX">
+          <Values dnOrder="0">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="0"/>
+          </Values>
+        </Integer>
+        <Boolean dnOrder="21" id="DRV_WIFI_WINC_USE_IWPRIV_INTF">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="visible">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+          <Values dnOrder="1">
+            <User dnOrder="0" value="false"/>
+          </Values>
+        </Boolean>
+        <Boolean dnOrder="22" id="DRV_WIFI_WINC_USE_TCPIP_STACK">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="visible">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+          <Values dnOrder="1">
+            <Dynamic dnOrder="0" id="drvWifiWinc" value="false"/>
+            <User dnOrder="1" value="false"/>
+          </Values>
+        </Boolean>
+        <File dnOrder="23" id="WDRV_WINC_ETHERNET_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="24" id="WDRV_WINC_ETHERNET_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="25" id="WDRV_WINC_HOST_FILE_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="26" id="WDRV_WINC_HOST_FILE_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="27" id="WDRV_WINC_HTTPPROVCTX_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="28" id="WDRV_WINC_HTTPPROVCTX_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="29" id="WDRV_WINC_ITF_PROXY_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="30" id="WDRV_WINC_PKTPOOL_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="31" id="WDRV_WINC_PKTPOOL_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="32" id="WDRV_WINC_SOCKET_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="33" id="WDRV_WINC_SOCKET_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="34" id="WDRV_WINC_SSL_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="35" id="WDRV_WINC_SSL_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="36" id="WDRV_WINC_STACK_DRV_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="37" id="WDRV_WINC_STACK_DRV_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="38" id="WDRV_WINC_STACK_ITF_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="39" id="WIFI_WINC1500_19_6_1_ECC_TYPES_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="40" id="WIFI_WINC1500_19_6_1_INET_ADDR_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="41" id="WIFI_WINC1500_19_6_1_INET_NTOP_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="42" id="WIFI_WINC1500_19_6_1_M2M_OTA_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="43" id="WIFI_WINC1500_19_6_1_M2M_OTA_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="44" id="WIFI_WINC1500_19_6_1_M2M_SOCKET_HOST_IF_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="45" id="WIFI_WINC1500_19_6_1_M2M_SSL_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="46" id="WIFI_WINC1500_19_6_1_M2M_SSL_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="47" id="WIFI_WINC1500_19_6_1_NETINET_IN_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="48" id="WIFI_WINC1500_19_6_1_SOCKET_C">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <File dnOrder="49" id="WIFI_WINC1500_19_6_1_SOCKET_H">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </File>
+        <Setting dnOrder="50" id="WINC_INC_PATH_DRV_SOCKET">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">true</Value>
+            </Boolean>
+          </Attributes>
+        </Setting>
+        <Setting dnOrder="51" id="WINC_INC_PATH_STACK_DRIVER">
+          <Attributes dnOrder="0">
+            <Boolean dnOrder="0" id="enabled">
+              <Value dnOrder="0">false</Value>
+            </Boolean>
+          </Attributes>
+        </Setting>
       </Symbols>
+      <Attachments dnOrder="1">
+        <DirectDependency dnOrder="0" id="SPI">
+          <Attributes dnOrder="0">
+            <String dnOrder="0" id="targetComponentID">
+              <Value dnOrder="0">drv_spi_0</Value>
+            </String>
+            <String dnOrder="1" id="targetAttachmentID">
+              <Value dnOrder="0">drv_spi</Value>
+            </String>
+          </Attributes>
+        </DirectDependency>
+      </Attachments>
     </UniqueComponent>
     <UniqueComponent dnOrder="6" id="eic">
       <Symbols dnOrder="0">
@@ -2257,14 +2513,26 @@
     </UniqueComponent>
   </Components>
   <UserData>
-    <GraphSettings canvasHeight="400" canvasWidth="400" dnOrder="0"/>
-    <ComponentGraph dnOrder="1" id="__ROOTVIEW">
+    <ComponentGraph dnOrder="0" id="TCP/IP STACK">
+      <ElementPositions dnOrder="0">
+        <ElementPosition dnOrder="0" id="APPLICATION LAYER" x="700" y="20"/>
+        <ElementPosition dnOrder="1" id="BASIC CONFIGURATION" x="180" y="20"/>
+        <ElementPosition dnOrder="2" id="DRIVER LAYER" x="560" y="20"/>
+        <ElementPosition dnOrder="3" id="NETWORK LAYER" x="20" y="20"/>
+        <ElementPosition dnOrder="4" id="TRANSPORT LAYER" x="380" y="20"/>
+      </ElementPositions>
+    </ComponentGraph>
+    <ComponentGraph dnOrder="1" id="TRANSPORT LAYER"/>
+    <ComponentGraph dnOrder="2" id="NETWORK LAYER"/>
+    <ComponentGraph dnOrder="3" id="BASIC CONFIGURATION"/>
+    <GraphSettings canvasHeight="400" canvasWidth="400" dnOrder="4"/>
+    <ComponentGraph dnOrder="5" id="__ROOTVIEW">
       <ElementPositions dnOrder="0">
         <ElementPosition dnOrder="0" id="HarmonyCore" x="640" y="20"/>
         <ElementPosition dnOrder="1" id="cmsis" x="500" y="20"/>
         <ElementPosition dnOrder="2" id="core" x="400" y="20"/>
         <ElementPosition dnOrder="3" id="dfp" x="180" y="20"/>
-        <ElementPosition dnOrder="4" id="drvWifiWinc" x="184" y="64"/>
+        <ElementPosition dnOrder="4" id="drvWifiWinc" x="644" y="118"/>
         <ElementPosition dnOrder="5" id="drv_spi" x="449" y="55"/>
         <ElementPosition dnOrder="6" id="drv_usart" x="635" y="181"/>
         <ElementPosition dnOrder="7" id="eic" x="315" y="228"/>
@@ -2275,5 +2543,7 @@
         <ElementPosition dnOrder="12" id="tc3" x="0" y="184"/>
       </ElementPositions>
     </ComponentGraph>
+    <ComponentGraph dnOrder="6" id="APPLICATION LAYER"/>
+    <ComponentGraph dnOrder="7" id="DRIVER LAYER"/>
   </UserData>
 </Configuration>

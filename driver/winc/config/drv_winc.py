@@ -2,154 +2,252 @@
 ########################## WincDriver Configurations ############################
 ###############################################################################
 
-comboValWiFiDriverMode = ["Ethernet Mode", "Socket Mode"]
-comboValWiFiIntSource = ["EIC"]
+def importIncFile(component, configName, incFileEntry, firmwarePath = None):
+    incFilePath  = incFileEntry[0]
+    isEnabled    = incFileEntry[1][0]
+    callback     = incFileEntry[1][1]
+    dependencies = incFileEntry[1][2]
+
+    incFilePathTup = incFilePath.split('/')
+
+    if len(incFilePathTup) == 1:
+        secName = ''
+        incFile = incFilePathTup[0]
+    else:
+        secName = incFilePathTup[0]
+        incFile = incFilePathTup[1]
+
+    if firmwarePath:
+        symName  = 'WIFI_' + firmwarePath.replace('.', '_').upper() + '_' + incFile.replace('.', '_').upper()
+        secSName = firmwarePath + '/' + secName + '/'
+        secDName = 'drv/' + secName + '/'
+    else:
+        symName = incFile.replace('.', '_').upper()
+        secSName = secName + '/'
+        secDName = secSName
+
+    incFileSym = component.createFileSymbol(symName, None)
+    incFileSym.setSourcePath('driver/winc/' + secSName + 'include/' + incFile)
+    incFileSym.setOutputName(incFile)
+    incFileSym.setDestPath('driver/winc/include/' + secDName)
+    incFileSym.setProjectPath('config/' + configName + '/driver/winc/include/' + secDName)
+    incFileSym.setType('HEADER')
+    incFileSym.setOverwrite(True)
+    incFileSym.setEnabled(isEnabled)
+
+    if callback and dependencies:
+        incFileSym.setDependencies(callback, dependencies)
+
+def importSrcFile(component, configName, srcFileEntry, firmwarePath = None):
+    srcFilePath  = srcFileEntry[0]
+    isEnabled    = srcFileEntry[1][0]
+    callback     = srcFileEntry[1][1]
+    dependencies = srcFileEntry[1][2]
+
+    srcFilePathTup = srcFilePath.rsplit('/', 1)
+
+    if len(srcFilePathTup) == 1:
+        secName = ""
+        srcFile = srcFilePathTup[0]
+    else:
+        secName = srcFilePathTup[0]
+        srcFile = srcFilePathTup[1]
+
+    if firmwarePath:
+        symName  = 'WIFI_' + firmwarePath.replace('.', '_').upper() + '_' + srcFile.replace('.', '_').upper()
+        secSName = firmwarePath + '/' + secName + '/'
+        secDName = 'drv/' + secName + '/'
+        srcFile  = 'source/' + srcFile
+    else:
+        srcFilePrefix   = ''
+        symName = srcFile.replace('.', '_').upper()
+        secSName = secName + '/'
+        secDName = secSName
+
+    srcFileSym = component.createFileSymbol(symName, None)
+    srcFileSym.setSourcePath('driver/winc/' + secSName + srcFile)
+    srcFileSym.setOutputName(srcFile.rsplit('/', 1)[-1])
+    srcFileSym.setDestPath('driver/winc/' + secDName)
+    srcFileSym.setProjectPath('config/' + configName + '/driver/winc/' + secDName)
+    srcFileSym.setType('SOURCE')
+    srcFileSym.setEnabled(isEnabled)
+
+    if callback and dependencies:
+        srcFileSym.setDependencies(callback, dependencies)
+
+def setIncPath(component, configName, incPathEntry):
+    incPath      = incPathEntry[0]
+    isEnabled    = incPathEntry[1][0]
+    callback     = incPathEntry[1][1]
+    dependencies = incPathEntry[1][2]
+
+    incPathSym = component.createSettingSymbol('WINC_INC_PATH' + incPath.replace('.', '_').replace('/', '_').upper(), None)
+    incPathSym.setValue('../src/config/' + configName + '/driver/winc/include' + incPath + ';')
+    incPathSym.setCategory("C32")
+    incPathSym.setKey("extra-include-directories")
+    incPathSym.setAppend(True, ";")
+    incPathSym.setEnabled(isEnabled)
+    incPathSym.setDependencies(callback, dependencies)
+
+def onAttachmentConnected(source, target):
+    drvSPIIndex = target["component"].getSymbolValue("INDEX")
+
+    wifiDrvSPIInst = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST")
+    wifiDrvSPIInstInx = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST_IDX")
+
+    wifiDrvSPIInst.setValue("drv_spi_" + str(drvSPIIndex))
+    wifiDrvSPIInst.setVisible(True)
+
+    wifiDrvSPIInstInx.setValue(drvSPIIndex)
+
+def onAttachmentDisconnected(source, target):
+    wifiDrvSPIInst = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST")
+    wifiDrvSPIInstInx = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST_IDX")
+
+    wifiDrvSPIInst.setValue("")
+    wifiDrvSPIInst.setVisible(False)
+
+    wifiDrvSPIInstInx.setValue(-1)
 
 def instantiateComponent(drvWincComponent):
     print("WINC Driver Component")
     configName = Variables.get("__CONFIGURATION_NAME")
 
-    # Use Wi-Fi Driver?
-    drvUseWifi = drvWincComponent.createBooleanSymbol("DRV_WIFI_USE_DRIVER", None)
-    drvUseWifi.setLabel("Use WiFi Driver?")
-    drvUseWifi.setVisible(False)
-    drvUseWifi.setDescription("Use WiFi Driver?")
-    drvUseWifi.setDefaultValue(True)
+    eicNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
 
-    # WiFi Device
-    wifiDeviceUse = drvWincComponent.createKeyValueSetSymbol("WIFI_DEVICE_SELECT", None)
-    wifiDeviceUse.setLabel("Wi-Fi Device")
-    wifiDeviceUse.setVisible(True)
-    wifiDeviceUse.addKey("WINC1500", "0", "WINC1500")
-    wifiDeviceUse.addKey("WINC3400", "1", "WINC3400")
-    wifiDeviceUse.setDisplayMode("Description")
-    wifiDeviceUse.setOutputMode("Key")
-    wifiDeviceUse.setDefaultValue(0)
+    drvWincComponent.addDependency("SPI", "DRV_SPI", False, True);
+
+    # WINC Device
+    wincDevice = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_DEVICE", None, ["WINC1500", "WINC3400"])
+    wincDevice.setLabel("WiFi Device")
+    wincDevice.setVisible(True)
 
     # Log Level
-    wifiDriverDebugLogLevel = drvWincComponent.createKeyValueSetSymbol("WIFI_DRIVER_LOG_LEVEL", None)
-    wifiDriverDebugLogLevel.setLabel("Driver Log Level")
-    wifiDriverDebugLogLevel.setVisible(True)
-    wifiDriverDebugLogLevel.addKey("None", "0", "None")
-    wifiDriverDebugLogLevel.addKey("Error", "1", "Error")
-    wifiDriverDebugLogLevel.addKey("Inform", "2", "Inform")
-    wifiDriverDebugLogLevel.addKey("Trace", "3", "Mode")
-    wifiDriverDebugLogLevel.addKey("Verbose", "4", "Verbose")
-    wifiDriverDebugLogLevel.setDisplayMode("Description")
-    wifiDriverDebugLogLevel.setOutputMode("Key")
-    wifiDriverDebugLogLevel.setDefaultValue(0)
-
-    # Interrupt Source
-    wifiInterruptSource = drvWincComponent.createComboSymbol("WIFI_EXTERNAL_INTERRUPT_USE", None, comboValWiFiIntSource)
-    wifiInterruptSource.setLabel("Interrupt Source")
-    wifiInterruptSource.setVisible(True)
-    #wifiInterruptSource.setDisplayMode("Description")
-    #wifiInterruptSource.setOutputMode("Key")
-    wifiInterruptSource.setDefaultValue("EIC")
+    wincLogLevel = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_LOG_LEVEL", None, ["None", "Error", "Inform", "Mode", "Verbose"])
+    wincLogLevel.setLabel("Driver Log Level")
+    wincLogLevel.setVisible(True)
 
     # SPI Instance Index
-    wifiSpiInstanceIndex = drvWincComponent.createIntegerSymbol("WIFI_DRIVER_SPI_INSTANCE_INX", None)
-    wifiSpiInstanceIndex.setLabel("Driver SPI Instance Index")
-    wifiSpiInstanceIndex.setVisible(True)
+    wincSpiInst = drvWincComponent.createStringSymbol("DRV_WIFI_WINC_SPI_INST", None)
+    wincSpiInst.setLabel("SPI Driver")
+    wincSpiInst.setReadOnly(True)
+    wincSpiInst.setDefaultValue("")
+
+    wincSpiInstIdx = drvWincComponent.createIntegerSymbol("DRV_WIFI_WINC_SPI_INST_IDX", None)
+    wincSpiInstIdx.setVisible(False)
+    wincSpiInstIdx.setDefaultValue(-1)
+
+    # Interrupt Source
+    wincIntSrcList = []
+
+    if eicNode:
+        wincIntSrcList.append("EIC")
+
+    if len(wincIntSrcList):
+        wincIntSrc = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_INT_SRC", None, wincIntSrcList)
+        wincIntSrc.setLabel("Interrupt Source")
+        wincIntSrc.setVisible(True)
 
     # External Interrupt Selection
-    extIntNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
-    extIntCount = int(extIntNode.getAttribute("value"))
+    if eicNode:
+        extIntCount = int(eicNode.getAttribute("value"))
 
-    eicSrcSelDepList = []
+        eicSrcSelDepList = []
 
-    for x in range(extIntCount):
-        wifiEICSrcX = drvWincComponent.createBooleanSymbol("WIFI_DRIVER_EIC_SRC_" + str(x), wifiInterruptSource)
-        wifiEICSrcX.setLabel("EIC Channel " + str(x))
-        wifiEICSrcX.setVisible(False)
-        wifiEICSrcX.setDependencies(eicSourceVisibility, ["WIFI_EXTERNAL_INTERRUPT_USE", "core:EIC_INTERRUPT_ENABLE_UPDATE"])
-        eicSrcSelDepList.append("WIFI_DRIVER_EIC_SRC_" + str(x))
+        for x in range(extIntCount):
+            wincEicSrcX = drvWincComponent.createBooleanSymbol("DRV_WIFI_WINC_EIC_SRC_" + str(x), wincIntSrc)
+            wincEicSrcX.setLabel("EIC Channel " + str(x))
+            wincEicSrcX.setVisible(False)
+            wincEicSrcX.setDependencies(setVisibilityEicSource, ["DRV_WIFI_WINC_INT_SRC", "core:EIC_INTERRUPT_ENABLE_UPDATE"])
 
-    wifiEICSrcSec = drvWincComponent.createIntegerSymbol("WIFI_DRIVER_EIC_SRC_SELECT", None)
-    wifiEICSrcSec.setVisible(False)
-    wifiEICSrcSec.setDependencies(eicSourceSelectChange, eicSrcSelDepList)
-    wifiEICSrcSec.setDefaultValue(-1)
-    wifiEICSrcSec.setMin(-1)
-    wifiEICSrcSec.setMax(extIntCount-1)
+            eicSrcSelDepList.append("DRV_WIFI_WINC_EIC_SRC_" + str(x))
 
-    # WINC Firmware Version
-    wifiFirmwareVersion = drvWincComponent.createKeyValueSetSymbol("WIFI_DRV_VERSION",None)
-    wifiFirmwareVersion.setLabel("Firmware Version")
-    wifiFirmwareVersion.setVisible(True)
-    wifiFirmwareVersion.addKey("19.6.1", "0", "WINC1500-19.6.1")
-    wifiFirmwareVersion.addKey("19.5.4", "1", "WINC1500-19.5.4")
-    wifiFirmwareVersion.setDisplayMode("Description")
-    wifiFirmwareVersion.setOutputMode("Key")
-    wifiFirmwareVersion.setDefaultValue(0)
+        wincEicSrcSel = drvWincComponent.createIntegerSymbol("DRV_WIFI_WINC_EIC_SRC_SELECT", None)
+        wincEicSrcSel.setVisible(False)
+        wincEicSrcSel.setDependencies(setValueEicSource, eicSrcSelDepList)
+        wincEicSrcSel.setDefaultValue(-1)
+        wincEicSrcSel.setMin(-1)
+        wincEicSrcSel.setMax(extIntCount-1)
 
-    # WINC WiFi Driver Mode
-    wifiDriverMode = drvWincComponent.createComboSymbol("WIFI_DRIVER_MODE_CHOICE",None,comboValWiFiDriverMode)
-    wifiDriverMode.setLabel("Driver Mode")
-    wifiDriverMode.setDefaultValue("Socket Mode")
+    # WINC1500 Version
+    winc1500Version = drvWincComponent.createComboSymbol("DRV_WIFI_WINC1500_VERSION", None, ["19.6.1", "19.5.4"])
+    winc1500Version.setLabel("Firmware Version")
+    winc1500Version.setVisible(True)
+    winc1500Version.setDefaultValue("19.6.1")
+    winc1500Version.setDependencies(setVisibilityWincVersion, ["DRV_WIFI_WINC_DEVICE"])
 
-    # WINC WiFi TCP/IP Mode
-    wifiDriverTcpipMode = drvWincComponent.createBooleanSymbol("WIFI_DRIVER_TCPIP_MODE", wifiDriverMode)
-    wifiDriverTcpipMode.setLabel("Use TCP/IP Stack?")
-    wifiDriverTcpipMode.setVisible(False)
-    wifiDriverTcpipMode.setDependencies(SocketModeVisibility, ["WIFI_DRIVER_MODE_CHOICE"])
+    # WINC3400 Version
+    winc3400Version = drvWincComponent.createComboSymbol("DRV_WIFI_WINC3400_VERSION", None, ["1.2.2", "1.3.0"])
+    winc3400Version.setLabel("Firmware Version")
+    winc3400Version.setVisible(False)
+    winc3400Version.setDefaultValue("1.3.0")
+    winc3400Version.setDependencies(setVisibilityWincVersion, ["DRV_WIFI_WINC_DEVICE"])
 
-    # WINC WiFi Use Simple IWPRIV Control Interface? Mode Iwpriv
-    wifiDriverIwprivMode = drvWincComponent.createBooleanSymbol("WIFI_DRIVER_IWPRIV_MODE", wifiDriverTcpipMode)
-    wifiDriverIwprivMode.setLabel("Use Simple IWPRIV Control Interface?")
-    wifiDriverIwprivMode.setVisible(False)
-    wifiDriverIwprivMode.setDependencies(IwprivModeVisibility, ["WIFI_DRIVER_TCPIP_MODE"])
-    wifiDriverIwprivMode.setDefaultValue(True)
+    # WINC Driver Mode
+    wincDriverMode = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_DRIVER_MODE", None, ["Ethernet Mode", "Socket Mode"])
+    wincDriverMode.setLabel("Driver Mode")
+    wincDriverMode.setDefaultValue("Socket Mode")
+
+    # WINC Use TCP/IP Stack
+    wincUseTcpipStack = drvWincComponent.createBooleanSymbol("DRV_WIFI_WINC_USE_TCPIP_STACK", wincDriverMode)
+    wincUseTcpipStack.setLabel("Use Harmony TCP/IP Stack?")
+    wincUseTcpipStack.setVisible(False)
+    wincUseTcpipStack.setValue(False)
+    wincUseTcpipStack.setDependencies(setVisibilityUseTcpipStack, ["DRV_WIFI_WINC_DRIVER_MODE"])
+
+    # WINC Use Simple IWPRIV Control Interface
+    wincUseIwprivIntf = drvWincComponent.createBooleanSymbol("DRV_WIFI_WINC_USE_IWPRIV_INTF", wincUseTcpipStack)
+    wincUseIwprivIntf.setLabel("Use Simple IWPRIV Control Interface?")
+    wincUseIwprivIntf.setVisible(False)
+    wincUseIwprivIntf.setDependencies(setVisibilityUseIwprivIntf, ["DRV_WIFI_WINC_USE_TCPIP_STACK"])
+    wincUseIwprivIntf.setDefaultValue(True)
 
     # RTOS Configuration
-    drvWincRtosMenu = drvWincComponent.createMenuSymbol("DRV_WINC_RTOS_MENU", None)
-    drvWincRtosMenu.setLabel("RTOS Configuration")
-    drvWincRtosMenu.setDescription("RTOS Configuration")
-    drvWincRtosMenu.setVisible(False)
-    drvWincRtosMenu.setVisible((Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != "BareMetal") and (Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != None))
-    drvWincRtosMenu.setDependencies(drvWincshowRTOSMenu, ["HarmonyCore.SELECT_RTOS"])
+    wincRtosMenu = drvWincComponent.createMenuSymbol("DRV_WIFI_WINC_RTOS_MENU", None)
+    wincRtosMenu.setLabel("RTOS Configuration")
+    wincRtosMenu.setDescription("RTOS Configuration")
+    wincRtosMenu.setVisible(False)
+    wincRtosMenu.setVisible((Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != "BareMetal") and (Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != None))
+    wincRtosMenu.setDependencies(setVisibilityRTOSMenu, ["HarmonyCore.SELECT_RTOS"])
 
-    # WiFi Driver Execution mode
-    drvWifiInstnExecMode = drvWincComponent.createComboSymbol("DRV_WIFI_RTOS", drvWincRtosMenu, ["Standalone"])
-    drvWifiInstnExecMode.setLabel("Run this driver instance as")
-    drvWifiInstnExecMode.setVisible(False)
-    drvWifiInstnExecMode.setDescription("WiFi Driver Execution mode")
-    drvWifiInstnExecMode.setDefaultValue("Standalone")
-    #drvWifiInstnExecMode.setDependencies(drvWifiMenuVisibleSingle, ["DRV_WIFI_USE_DRIVER"])
+    # RTOS Execution Mode
+    wincInstnExecMode = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_RTOS", wincRtosMenu, ["Standalone"])
+    wincInstnExecMode.setLabel("Run Driver Tasks as")
+    wincInstnExecMode.setVisible(False)
+    wincInstnExecMode.setDescription("WiFi WINC Driver RTOS Execution Mode")
+    wincInstnExecMode.setDefaultValue("Standalone")
 
     # WiFi Driver Task Stack Size
-    drvWifiDrvTaskSize = drvWincComponent.createIntegerSymbol("DRV_WIFI_RTOS_STACK_SIZE", drvWincRtosMenu)
-    drvWifiDrvTaskSize.setLabel("Task Size")
-    drvWifiDrvTaskSize.setVisible(True)
-    drvWifiDrvTaskSize.setDescription("WiFi Driver Task Stack Size")
-    drvWifiDrvTaskSize.setDefaultValue(1024)
-    drvWifiDrvTaskSize.setDependencies(drvWifiRTOSStandaloneMenu, ["DRV_WIFI_RTOS"])
-
+    wincTaskSize = drvWincComponent.createIntegerSymbol("DRV_WIFI_WINC_RTOS_STACK_SIZE", wincRtosMenu)
+    wincTaskSize.setLabel("Task Size")
+    wincTaskSize.setVisible(True)
+    wincTaskSize.setDescription("WiFi WINC Driver RTOS Task Stack Size")
+    wincTaskSize.setDefaultValue(1024)
+    wincTaskSize.setDependencies(setVisibilityRTOSTaskConfig, ["DRV_WIFI_WINC_RTOS"])
 
     # WiFi Driver Task Priority
-    drvWifiDrvTaskPriority = drvWincComponent.createIntegerSymbol("DRV_WIFI_RTOS_TASK_PRIORITY", drvWincRtosMenu)
-    drvWifiDrvTaskPriority.setLabel("Task Priority")
-    drvWifiDrvTaskPriority.setVisible(True)
-    drvWifiDrvTaskPriority.setDescription("WiFi Driver Task Priority")
-    drvWifiDrvTaskPriority.setDefaultValue(1)
-    drvWifiDrvTaskPriority.setDependencies(drvWifiRTOSStandaloneMenu, ["DRV_WIFI_RTOS"])
-
+    wincTaskPriority = drvWincComponent.createIntegerSymbol("DRV_WIFI_WINC_RTOS_TASK_PRIORITY", wincRtosMenu)
+    wincTaskPriority.setLabel("Task Priority")
+    wincTaskPriority.setVisible(True)
+    wincTaskPriority.setDescription("WiFi WINC Driver RTOS Task Priority")
+    wincTaskPriority.setDefaultValue(1)
+    wincTaskPriority.setDependencies(setVisibilityRTOSTaskConfig, ["DRV_WIFI_WINC_RTOS"])
 
     # WiFi Use Task Delay?
-    drvWifiUseTaskDelay = drvWincComponent.createBooleanSymbol("DRV_WIFI_RTOS_USE_DELAY", drvWincRtosMenu)
-    drvWifiUseTaskDelay.setLabel("Use Task Delay?")
-    drvWifiUseTaskDelay.setVisible(True)
-    drvWifiUseTaskDelay.setDescription("WiFi Use Task Delay?")
-    drvWifiUseTaskDelay.setDefaultValue(True)
-    drvWifiUseTaskDelay.setDependencies(drvWifiRTOSStandaloneMenu, ["DRV_WIFI_RTOS"])
-
+    wincUseTaskDelay = drvWincComponent.createBooleanSymbol("DRV_WIFI_WINC_RTOS_USE_DELAY", wincRtosMenu)
+    wincUseTaskDelay.setLabel("Use Task Delay?")
+    wincUseTaskDelay.setVisible(True)
+    wincUseTaskDelay.setDescription("WiFi WINC Driver Task Uses Delay?")
+    wincUseTaskDelay.setDefaultValue(True)
+    wincUseTaskDelay.setDependencies(setVisibilityRTOSTaskConfig, ["DRV_WIFI_WINC_RTOS"])
 
     # WiFi Driver Task Delay
-    drvWifiDrvTaskDelay = drvWincComponent.createIntegerSymbol("DRV_WIFI_RTOS_DELAY", drvWincRtosMenu)
-    drvWifiDrvTaskDelay.setLabel("Task Delay")
-    drvWifiDrvTaskDelay.setVisible(False)
-    drvWifiDrvTaskDelay.setDescription("WiFi Driver Task Delay")
-    drvWifiDrvTaskDelay.setDefaultValue(1)
-    drvWifiDrvTaskDelay.setDependencies(drvWifiRTOSTaskDelayMenu, ["DRV_WIFI_RTOS", "DRV_WIFI_RTOS_USE_DELAY"])
+    wincDrvTaskDelay = drvWincComponent.createIntegerSymbol("DRV_WIFI_WINC_RTOS_DELAY", wincRtosMenu)
+    wincDrvTaskDelay.setLabel("Task Delay")
+    wincDrvTaskDelay.setVisible(True)
+    wincDrvTaskDelay.setDescription("WiFi Driver Task Delay")
+    wincDrvTaskDelay.setDefaultValue(1)
+    wincDrvTaskDelay.setDependencies(setVisibilityRTOSTaskDelay, ["DRV_WIFI_WINC_RTOS", "DRV_WIFI_WINC_RTOS_USE_DELAY"])
 
     ############################################################################
     #### Code Generation ####
@@ -176,932 +274,156 @@ def instantiateComponent(drvWincComponent):
     # drvWincSysTaskSourceFtl.setSourcePath("driver/winc/config/drv_winc_tasks.c.ftl")
     # drvWincSysTaskSourceFtl.setMarkup(True)
 
-    # Add wdrv_winc.h file to project
-    #file WDRV_WINC_H "$HARMONY_VERSION_PATH/framework/driver/winc/include/wdrv_winc.h" to "$PROJECT_HEADER_FILES/framework/driver/winc/include/wdrv_winc.h"
-    drvWincHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_H", None)
-    drvWincHeaderFile.setSourcePath("driver/winc/include/wdrv_winc.h")
-    drvWincHeaderFile.setOutputName("wdrv_winc.h")
-    drvWincHeaderFile.setDestPath("driver/winc/include/")
-    drvWincHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincHeaderFile.setType("HEADER")
-    drvWincHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_api.h file to project
-    drvWincApiHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_API_H", None)
-    drvWincApiHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_api.h")
-    drvWincApiHeaderFile.setOutputName("wdrv_winc_api.h")
-    drvWincApiHeaderFile.setDestPath("driver/winc/include/")
-    drvWincApiHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincApiHeaderFile.setType("HEADER")
-    drvWincApiHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_assoc.h file to project
-    drvWincAssocHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_ASSOC_H", None)
-    drvWincAssocHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_assoc.h")
-    drvWincAssocHeaderFile.setOutputName("wdrv_winc_assoc.h")
-    drvWincAssocHeaderFile.setDestPath("driver/winc/include/")
-    drvWincAssocHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincAssocHeaderFile.setType("HEADER")
-    drvWincAssocHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_authctx.h file to project
-    drvWincAuthenticationHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_AUTH_H", None)
-    drvWincAuthenticationHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_authctx.h")
-    drvWincAuthenticationHeaderFile.setOutputName("wdrv_winc_authctx.h")
-    drvWincAuthenticationHeaderFile.setDestPath("driver/winc/include/")
-    drvWincAuthenticationHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincAuthenticationHeaderFile.setType("HEADER")
-    drvWincAuthenticationHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_ble.h file to project
-    #drvWincBleHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_BLE_H", None)
-    #drvWincBleHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_ble.h")
-    #drvWincBleHeaderFile.setOutputName("wdrv_winc_ble.h")
-    #drvWincBleHeaderFile.setDestPath("driver/winc/include/")
-    #drvWincBleHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    #drvWincBleHeaderFile.setType("HEADER")
-    #drvWincBleHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_bssctx.h file to project
-    drvWincBSScontextHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_BSS_CONTEXT_H", None)
-    drvWincBSScontextHeaderFile.setSourcePath("driver/Winc/include/wdrv_winc_bssctx.h")
-    drvWincBSScontextHeaderFile.setOutputName("wdrv_winc_bssctx.h")
-    drvWincBSScontextHeaderFile.setDestPath("driver/winc/include/")
-    drvWincBSScontextHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincBSScontextHeaderFile.setType("HEADER")
-    drvWincBSScontextHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_bssfind.h file to project
-    drvWincBSSfindHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_BSS_FIND_H", None)
-    drvWincBSSfindHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_bssfind.h")
-    drvWincBSSfindHeaderFile.setOutputName("wdrv_winc_bssfind.h")
-    drvWincBSSfindHeaderFile.setDestPath("driver/winc/include/")
-    drvWincBSSfindHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincBSSfindHeaderFile.setType("HEADER")
-    drvWincBSSfindHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_client_api.h file to project
-    drvWincClientApiHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_CLIENT_API_H", None)
-    drvWincClientApiHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_client_api.h")
-    drvWincClientApiHeaderFile.setOutputName("wdrv_winc_client_api.h")
-    drvWincClientApiHeaderFile.setDestPath("driver/winc/include/")
-    drvWincClientApiHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincClientApiHeaderFile.setType("HEADER")
-    drvWincClientApiHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_common.h file to project
-    drvWincCommonHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_COMMON_H", None)
-    drvWincCommonHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_common.h")
-    drvWincCommonHeaderFile.setOutputName("wdrv_winc_common.h")
-    drvWincCommonHeaderFile.setDestPath("driver/winc/include/")
-    drvWincCommonHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincCommonHeaderFile.setType("HEADER")
-    drvWincCommonHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_custie.h file to project
-    drvWincCustomIEHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_CUSTOM_IE_H", None)
-    drvWincCustomIEHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_custie.h")
-    drvWincCustomIEHeaderFile.setOutputName("wdrv_winc_custie.h")
-    drvWincCustomIEHeaderFile.setDestPath("driver/winc/include/")
-    drvWincCustomIEHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincCustomIEHeaderFile.setType("HEADER")
-    drvWincCustomIEHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_debug.h file to project
-    drvWincDebugHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_DEBUG_H", None)
-    drvWincDebugHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_debug.h")
-    drvWincDebugHeaderFile.setOutputName("wdrv_winc_debug.h")
-    drvWincDebugHeaderFile.setDestPath("driver/winc/include/")
-    drvWincDebugHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincDebugHeaderFile.setType("HEADER")
-    drvWincDebugHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_ethernet.h file to project
-    drvWincEthernetHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_ETHERNET_H", None)
-    drvWincEthernetHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_ethernet.h")
-    drvWincEthernetHeaderFile.setOutputName("wdrv_winc_ethernet.h")
-    drvWincEthernetHeaderFile.setDestPath("driver/winc/include/")
-    drvWincEthernetHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincEthernetHeaderFile.setType("HEADER")
-    drvWincEthernetHeaderFile.setOverwrite(True)
-    drvWincEthernetHeaderFile.setEnabled((wifiDriverMode.getValue() == "Ethernet Mode"))
-    drvWincEthernetHeaderFile.setDependencies(ethernetModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_host_file.h file to project
-    drvWincHostFileHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_HOST_H", None)
-    drvWincHostFileHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_host_file.h")
-    drvWincHostFileHeaderFile.setOutputName("wdrv_winc_host_file.h")
-    drvWincHostFileHeaderFile.setDestPath("driver/winc/include/")
-    drvWincHostFileHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincHostFileHeaderFile.setType("HEADER")
-    drvWincHostFileHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_nvm.h file to project
-    drvWincNVMHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NVM_H", None)
-    drvWincNVMHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_nvm.h")
-    drvWincNVMHeaderFile.setOutputName("wdrv_winc_nvm.h")
-    drvWincNVMHeaderFile.setDestPath("driver/winc/include/")
-    drvWincNVMHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincNVMHeaderFile.setType("HEADER")
-    drvWincNVMHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_powersave.h file to project
-    drvWincPowerSaveHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_POWER_SAVE_H", None)
-    drvWincPowerSaveHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_powersave.h")
-    drvWincPowerSaveHeaderFile.setOutputName("wdrv_winc_powersave.h")
-    drvWincPowerSaveHeaderFile.setDestPath("driver/winc/include/")
-    drvWincPowerSaveHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincPowerSaveHeaderFile.setType("HEADER")
-    drvWincPowerSaveHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_softap.h file to project
-    drvWincSoftapHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SOFT_AP_H", None)
-    drvWincSoftapHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_softap.h")
-    drvWincSoftapHeaderFile.setOutputName("wdrv_winc_softap.h")
-    drvWincSoftapHeaderFile.setDestPath("driver/winc/include/")
-    drvWincSoftapHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincSoftapHeaderFile.setType("HEADER")
-    drvWincSoftapHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_ssl.h file to project
-    drvWincSSLHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SSL_H", None)
-    drvWincSSLHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_ssl.h")
-    drvWincSSLHeaderFile.setOutputName("wdrv_winc_ssl.h")
-    drvWincSSLHeaderFile.setDestPath("driver/winc/include/")
-    drvWincSSLHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincSSLHeaderFile.setType("HEADER")
-    drvWincSSLHeaderFile.setOverwrite(True)
-    #drvWincSSLHeaderFile.setEnabled((wifiDriverMode.getValue() == "Socket Mode"))
-    drvWincSSLHeaderFile.setDependencies(socketModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_socket.h file to project
-    drvWincSocketHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SOCKET_H", None)
-    drvWincSocketHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_socket.h")
-    drvWincSocketHeaderFile.setOutputName("wdrv_winc_socket.h")
-    drvWincSocketHeaderFile.setDestPath("driver/winc/include/")
-    drvWincSocketHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincSocketHeaderFile.setType("HEADER")
-    drvWincSocketHeaderFile.setOverwrite(True)
-    #drvWincSocketHeaderFile.setEnabled((wifiDriverMode.getValue() == "Socket Mode"))
-    drvWincSocketHeaderFile.setDependencies(socketModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_httpprovctx.h file to project
-    drvWincHttpProvisionContextHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_HTTP_PROVISION_H", None)
-    drvWincHttpProvisionContextHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_httpprovctx.h")
-    drvWincHttpProvisionContextHeaderFile.setOutputName("wdrv_winc_httpprovctx.h")
-    drvWincHttpProvisionContextHeaderFile.setDestPath("driver/winc/include/")
-    drvWincHttpProvisionContextHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincHttpProvisionContextHeaderFile.setType("HEADER")
-    drvWincHttpProvisionContextHeaderFile.setOverwrite(True)
-    #drvWincHttpProvisionContextHeaderFile.setEnabled((wifiDriverMode.getValue() == "Socket Mode"))
-    drvWincHttpProvisionContextHeaderFile.setDependencies(socketModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_sta.h file to project
-    drvWincStaHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_STA_H", None)
-    drvWincStaHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_sta.h")
-    drvWincStaHeaderFile.setOutputName("wdrv_winc_sta.h")
-    drvWincStaHeaderFile.setDestPath("driver/winc/include/")
-    drvWincStaHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincStaHeaderFile.setType("HEADER")
-    drvWincStaHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_systime.h file to project
-    drvWincSystemTimeHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SYATEM_TIME_H", None)
-    drvWincSystemTimeHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_systime.h")
-    drvWincSystemTimeHeaderFile.setOutputName("wdrv_winc_systime.h")
-    drvWincSystemTimeHeaderFile.setDestPath("driver/winc/include/")
-    drvWincSystemTimeHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincSystemTimeHeaderFile.setType("HEADER")
-    drvWincSystemTimeHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_wps.h file to project
-    drvWincWpsHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_WPS_H", None)
-    drvWincWpsHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_wps.h")
-    drvWincWpsHeaderFile.setOutputName("wdrv_winc_wps.h")
-    drvWincWpsHeaderFile.setDestPath("driver/winc/include/")
-    drvWincWpsHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincWpsHeaderFile.setType("HEADER")
-    drvWincWpsHeaderFile.setOverwrite(True)
-
-    # Add wdrv_winc_gpio.h file
-    drvWincGpioHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_GPIO_H", None)
-    drvWincGpioHeaderFile.setSourcePath("driver/winc/dev/include/wdrv_winc_gpio.h")
-    drvWincGpioHeaderFile.setOutputName("wdrv_winc_gpio.h")
-    drvWincGpioHeaderFile.setOverwrite(True)
-    drvWincGpioHeaderFile.setDestPath("driver/winc/include/dev/")
-    drvWincGpioHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/dev/")
-    drvWincGpioHeaderFile.setType("HEADER")
-    drvWincGpioHeaderFile.setEnabled(True)
-
-    # Add wdrv_winc_spi.h file
-    drvWincSpiHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SPI_H", None)
-    drvWincSpiHeaderFile.setSourcePath("driver/winc/dev/include/wdrv_winc_spi.h")
-    drvWincSpiHeaderFile.setOutputName("wdrv_winc_spi.h")
-    drvWincSpiHeaderFile.setOverwrite(True)
-    drvWincSpiHeaderFile.setDestPath("driver/winc/include/dev/")
-    drvWincSpiHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/dev/")
-    drvWincSpiHeaderFile.setType("HEADER")
-    drvWincSpiHeaderFile.setEnabled(True)
-
-    # Add wdrv_winc_stack_drv.h file
-    drvWincStackDrvHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_STACK_DRV_H", None)
-    drvWincStackDrvHeaderFile.setSourcePath("driver/winc/stack_driver/include/wdrv_winc_stack_drv.h")
-    drvWincStackDrvHeaderFile.setOutputName("wdrv_winc_stack_drv.h")
-    drvWincStackDrvHeaderFile.setOverwrite(True)
-    drvWincStackDrvHeaderFile.setDestPath("driver/winc/include/dev/")
-    drvWincStackDrvHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincStackDrvHeaderFile.setType("HEADER")
-    #drvWincStackDrvHeaderFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincStackDrvHeaderFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    # Add wdrv_winc_pktpool.h file
-    drvWincPktpoolHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_PKT_POOL_H", None)
-    drvWincPktpoolHeaderFile.setSourcePath("driver/winc/stack_driver/include/wdrv_winc_pktpool.h")
-    drvWincPktpoolHeaderFile.setOutputName("wdrv_winc_pktpool.h")
-    drvWincPktpoolHeaderFile.setOverwrite(True)
-    drvWincPktpoolHeaderFile.setDestPath("driver/winc/include/")
-    drvWincPktpoolHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincPktpoolHeaderFile.setType("HEADER")
-    #drvWincPktpoolHeaderFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincPktpoolHeaderFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    #Add wdrv_winc_iwpriv.h file
-    drvWincIwprivlHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_IWPRIVL_H", None)
-    drvWincIwprivlHeaderFile.setSourcePath("driver/winc/stack_driver/include/wdrv_winc_iwpriv.h")
-    drvWincIwprivlHeaderFile.setOutputName("wdrv_winc_iwpriv.h")
-    drvWincIwprivlHeaderFile.setOverwrite(True)
-    drvWincIwprivlHeaderFile.setDestPath("driver/winc/include/")
-    drvWincIwprivlHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincIwprivlHeaderFile.setType("HEADER")
-    #drvWincIwprivlHeaderFile.setEnabled((wifiDriverIwprivMode.getValue() == "True"))
-    drvWincIwprivlHeaderFile.setDependencies(iwprivModeFileGen, ["WIFI_DRIVER_IWPRIV_MODE"])
-
-    #Add nm_bsp.h file
-    drvWincNmBspHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NM_BSP_H", None)
-    drvWincNmBspHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/bsp/include/nm_bsp.h")
-    drvWincNmBspHeaderFile.setOutputName("nm_bsp.h")
-    drvWincNmBspHeaderFile.setOverwrite(True)
-    drvWincNmBspHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/bsp/include/")
-    drvWincNmBspHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/bsp/")
-    drvWincNmBspHeaderFile.setType("HEADER")
-    drvWincNmBspHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nm_common.h file
-    drvWincNmCommonHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NM_COMMON_H", None)
-    drvWincNmCommonHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/common/include/nm_common.h")
-    drvWincNmCommonHeaderFile.setOutputName("nm_common.h")
-    drvWincNmCommonHeaderFile.setOverwrite(True)
-    drvWincNmCommonHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/common/")
-    drvWincNmCommonHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/common/")
-    drvWincNmCommonHeaderFile.setType("HEADER")
-    drvWincNmCommonHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nm_debug.h file
-    drvWincNmDebugHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NM_DEBUG_H", None)
-    drvWincNmDebugHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/common/include/nm_debug.h")
-    drvWincNmDebugHeaderFile.setOutputName("nm_debug.h")
-    drvWincNmDebugHeaderFile.setOverwrite(True)
-    drvWincNmDebugHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/common/")
-    drvWincNmDebugHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/common/")
-    drvWincNmDebugHeaderFile.setType("HEADER")
-    drvWincNmDebugHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_hif.h file
-    drvWincM2mHifHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_HIF_H", None)
-    drvWincM2mHifHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/m2m_hif.h")
-    drvWincM2mHifHeaderFile.setOutputName("m2m_hif.h")
-    drvWincM2mHifHeaderFile.setOverwrite(True)
-    drvWincM2mHifHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mHifHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mHifHeaderFile.setType("HEADER")
-    drvWincM2mHifHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_periphl.h file
-    drvWincM2mPeripheralHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_PERIPHERAL_H", None)
-    drvWincM2mPeripheralHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/m2m_periph.h")
-    drvWincM2mPeripheralHeaderFile.setOutputName("m2m_periph.h")
-    drvWincM2mPeripheralHeaderFile.setOverwrite(True)
-    drvWincM2mPeripheralHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mPeripheralHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mPeripheralHeaderFile.setType("HEADER")
-    drvWincM2mPeripheralHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_types.h file
-    drvWincM2mTypesHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_TYPES_H", None)
-    drvWincM2mTypesHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/m2m_types.h")
-    drvWincM2mTypesHeaderFile.setOutputName("m2m_types.h")
-    drvWincM2mTypesHeaderFile.setOverwrite(True)
-    drvWincM2mTypesHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mTypesHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mTypesHeaderFile.setType("HEADER")
-    drvWincM2mTypesHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_wifi.h file
-    drvWincM2mWifiHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_WIFI_H", None)
-    drvWincM2mWifiHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/m2m_wifi.h")
-    drvWincM2mWifiHeaderFile.setOutputName("m2m_wifi.h")
-    drvWincM2mWifiHeaderFile.setOverwrite(True)
-    drvWincM2mWifiHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mWifiHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mWifiHeaderFile.setType("HEADER")
-    drvWincM2mWifiHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmasic.h file
-    drvWincNmAsicHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMASIC_H", None)
-    drvWincNmAsicHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/nmasic.h")
-    drvWincNmAsicHeaderFile.setOutputName("nmasic.h")
-    drvWincNmAsicHeaderFile.setOverwrite(True)
-    drvWincNmAsicHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmAsicHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmAsicHeaderFile.setType("HEADER")
-    drvWincNmAsicHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmbus.h file
-    drvWincNmBusHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMBUS_H", None)
-    drvWincNmBusHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/nmbus.h")
-    drvWincNmBusHeaderFile.setOutputName("nmbus.h")
-    drvWincNmBusHeaderFile.setOverwrite(True)
-    drvWincNmBusHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmBusHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmBusHeaderFile.setType("HEADER")
-    drvWincNmBusHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmdrv.h file
-    drvWincNmDrvHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMDRV_H", None)
-    drvWincNmDrvHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/nmdrv.h")
-    drvWincNmDrvHeaderFile.setOutputName("nmdrv.h")
-    drvWincNmDrvHeaderFile.setOverwrite(True)
-    drvWincNmDrvHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmDrvHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmDrvHeaderFile.setType("HEADER")
-    drvWincNmDrvHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmspi.h file
-    drvWincNmSpiHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMSPI_H", None)
-    drvWincNmSpiHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/nmspi.h")
-    drvWincNmSpiHeaderFile.setOutputName("nmspi.h")
-    drvWincNmSpiHeaderFile.setOverwrite(True)
-    drvWincNmSpiHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmSpiHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincNmSpiHeaderFile.setType("HEADER")
-    drvWincNmSpiHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add spi_flash.h file
-    drvWincSpiFlashHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SPI_FLASH_H", None)
-    drvWincSpiFlashHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/spi_flash/include/spi_flash.h")
-    drvWincSpiFlashHeaderFile.setOutputName("spi_flash.h")
-    drvWincSpiFlashHeaderFile.setOverwrite(True)
-    drvWincSpiFlashHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/spi_flash/")
-    drvWincSpiFlashHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/spi_flash/")
-    drvWincSpiFlashHeaderFile.setType("HEADER")
-    drvWincSpiFlashHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add flexible_flash.h file
-    drvWincFlexibleFlashHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_FLEXIBLE_FLASH_H", None)
-    drvWincFlexibleFlashHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/spi_flash/include/flexible_flash.h")
-    drvWincFlexibleFlashHeaderFile.setOutputName("flexible_flash.h")
-    drvWincFlexibleFlashHeaderFile.setOverwrite(True)
-    drvWincFlexibleFlashHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/spi_flash/")
-    drvWincFlexibleFlashHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/spi_flash/")
-    drvWincFlexibleFlashHeaderFile.setType("HEADER")
-    drvWincFlexibleFlashHeaderFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_socket_host_if.h file
-    drvWincM2mSocketHostHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_SOCKET_HOST_H", None)
-    drvWincM2mSocketHostHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/socket/include/m2m_socket_host_if.h")
-    drvWincM2mSocketHostHeaderFile.setOutputName("m2m_socket_host_if.h")
-    drvWincM2mSocketHostHeaderFile.setOverwrite(True)
-    drvWincM2mSocketHostHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/socket/")
-    drvWincM2mSocketHostHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/socket/")
-    drvWincM2mSocketHostHeaderFile.setType("HEADER")
-    drvWincM2mSocketHostHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add wdrv_winc_host_file.h file
-    drvWincHostHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_HOST_FILE_H", None)
-    drvWincHostHeaderFile.setSourcePath("driver/winc/include/wdrv_winc_host_file.h")
-    drvWincHostHeaderFile.setOutputName("wdrv_winc_host_file.h")
-    drvWincHostHeaderFile.setOverwrite(True)
-    drvWincHostHeaderFile.setDestPath("driver/winc/include/")
-    drvWincHostHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/")
-    drvWincHostHeaderFile.setType("HEADER")
-    drvWincHostHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_ota.h file
-    drvWincM2mOtaHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_OTA_H", None)
-    drvWincM2mOtaHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/m2m_ota.h")
-    drvWincM2mOtaHeaderFile.setOutputName("m2m_ota.h")
-    drvWincM2mOtaHeaderFile.setOverwrite(True)
-    drvWincM2mOtaHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mOtaHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mOtaHeaderFile.setType("HEADER")
-    drvWincM2mOtaHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_ssl.h file
-    drvWincM2mSslHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_SSL_H", None)
-    drvWincM2mSslHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/m2m_ssl.h")
-    drvWincM2mSslHeaderFile.setOutputName("m2m_ssl.h")
-    drvWincM2mSslHeaderFile.setOverwrite(True)
-    drvWincM2mSslHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mSslHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincM2mSslHeaderFile.setType("HEADER")
-    drvWincM2mSslHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add ecc_types.h file
-    drvWincEccTypesHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_ECC_TYPES_H", None)
-    drvWincEccTypesHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/include/ecc_types.h")
-    drvWincEccTypesHeaderFile.setOutputName("ecc_types.h")
-    drvWincEccTypesHeaderFile.setOverwrite(True)
-    drvWincEccTypesHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincEccTypesHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver/")
-    drvWincEccTypesHeaderFile.setType("HEADER")
-    drvWincEccTypesHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add socket.h file
-    drvwinc1500_19_SocketHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_SOCKET_VER19_H", None)
-    drvwinc1500_19_SocketHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/socket/include/socket.h")
-    drvwinc1500_19_SocketHeaderFile.setOutputName("socket.h")
-    drvwinc1500_19_SocketHeaderFile.setOverwrite(True)
-    drvwinc1500_19_SocketHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/socket/")
-    drvwinc1500_19_SocketHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/socket/")
-    drvwinc1500_19_SocketHeaderFile.setType("HEADER")
-    drvwinc1500_19_SocketHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add netinet_in.h file
-    drvwincNetInetHeaderFile = drvWincComponent.createFileSymbol("WIFI_WINC_NETINET_H", None)
-    drvwincNetInetHeaderFile.setSourcePath("driver/winc/winc1500_19_6_1/socket/include/netinet_in.h")
-    drvwincNetInetHeaderFile.setOutputName("netinet_in.h")
-    drvwincNetInetHeaderFile.setOverwrite(True)
-    drvwincNetInetHeaderFile.setDestPath("driver/winc/include/winc1500_19_6_1/socket/")
-    drvwincNetInetHeaderFile.setProjectPath("config/" + configName + "/driver/winc/include/winc1500_19_6_1/socket/")
-    drvwincNetInetHeaderFile.setType("HEADER")
-    drvwincNetInetHeaderFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    # file WDRV_WINC_C "$HARMONY_VERSION_PATH/framework/driver/winc/src/wdrv_winc.c" to         "$PROJECT_SOURCE_FILES/framework/driver/winc/wdrv_winc.c"
-    # Add wdrv_winc.c file
-    drvWincSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_C", None)
-    drvWincSourceFile.setSourcePath("driver/winc/wdrv_winc.c")
-    drvWincSourceFile.setOutputName("wdrv_winc.c")
-    drvWincSourceFile.setOverwrite(True)
-    drvWincSourceFile.setDestPath("driver/winc/src/")
-    drvWincSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincSourceFile.setType("SOURCE")
-    drvWincSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_assoc.c file
-    drvWincAssocSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_ASSOC_C", None)
-    drvWincAssocSourceFile.setSourcePath("driver/winc/wdrv_winc_assoc.c")
-    drvWincAssocSourceFile.setOutputName("wdrv_winc_assoc.c")
-    drvWincAssocSourceFile.setOverwrite(True)
-    drvWincAssocSourceFile.setDestPath("driver/winc/src/")
-    drvWincAssocSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincAssocSourceFile.setType("SOURCE")
-    drvWincAssocSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_authctx.c file
-    drvWincAuthSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_AUTH_C", None)
-    drvWincAuthSourceFile.setSourcePath("driver/winc/wdrv_winc_authctx.c")
-    drvWincAuthSourceFile.setOutputName("wdrv_winc_authctx.c")
-    drvWincAuthSourceFile.setOverwrite(True)
-    drvWincAuthSourceFile.setDestPath("driver/winc/src/")
-    drvWincAuthSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincAuthSourceFile.setType("SOURCE")
-    drvWincAuthSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_ble.c file
-    #drvWincBleSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_BLE_C", None)
-    #drvWincBleSourceFile.setSourcePath("driver/winc/wdrv_winc_ble.c")
-    #drvWincBleSourceFile.setOutputName("wdrv_winc_ble.c")
-    #drvWincBleSourceFile.setOverwrite(True)
-    #drvWincBleSourceFile.setDestPath("driver/winc/src/")
-    #drvWincBleSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    #drvWincBleSourceFile.setType("SOURCE")
-    #drvWincBleSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_bssctx.c file
-    drvWincBssSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_BSS_C", None)
-    drvWincBssSourceFile.setSourcePath("driver/winc/wdrv_winc_bssctx.c")
-    drvWincBssSourceFile.setOutputName("wdrv_winc_bssctx.c")
-    drvWincBssSourceFile.setOverwrite(True)
-    drvWincBssSourceFile.setDestPath("driver/winc/src/")
-    drvWincBssSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincBssSourceFile.setType("SOURCE")
-    drvWincBssSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_bssfind.c file
-    drvWincBssFindSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_BSS_FIND_C", None)
-    drvWincBssFindSourceFile.setSourcePath("driver/winc/wdrv_winc_bssfind.c")
-    drvWincBssFindSourceFile.setOutputName("wdrv_winc_bssfind.c")
-    drvWincBssFindSourceFile.setOverwrite(True)
-    drvWincBssFindSourceFile.setDestPath("driver/winc/src/")
-    drvWincBssFindSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincBssFindSourceFile.setType("SOURCE")
-    drvWincBssFindSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_custie.c file
-    drvWincCustSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_CUST_IE_C", None)
-    drvWincCustSourceFile.setSourcePath("driver/winc/wdrv_winc_custie.c")
-    drvWincCustSourceFile.setOutputName("wdrv_winc_custie.c")
-    drvWincCustSourceFile.setOverwrite(True)
-    drvWincCustSourceFile.setDestPath("driver/winc/src/")
-    drvWincCustSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincCustSourceFile.setType("SOURCE")
-    drvWincCustSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_ethernet.c file
-    drvWincEthernetSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_ETHERNET_C", None)
-    drvWincEthernetSourceFile.setSourcePath("driver/winc/wdrv_winc_ethernet.c")
-    drvWincEthernetSourceFile.setOutputName("wdrv_winc_ethernet.c")
-    drvWincEthernetSourceFile.setOverwrite(True)
-    drvWincEthernetSourceFile.setDestPath("driver/winc/src/")
-    drvWincEthernetSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincEthernetSourceFile.setType("SOURCE")
-    drvWincEthernetSourceFile.setEnabled((wifiDriverMode.getValue() == "Ethernet Mode"))
-    drvWincEthernetSourceFile.setDependencies(ethernetModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_host_file.c file
-    drvWincHostSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_HOST_C", None)
-    drvWincHostSourceFile.setSourcePath("driver/winc/wdrv_winc_host_file.c")
-    drvWincHostSourceFile.setOutputName("wdrv_winc_host_file.c")
-    drvWincHostSourceFile.setOverwrite(True)
-    drvWincHostSourceFile.setDestPath("driver/winc/src/")
-    drvWincHostSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincHostSourceFile.setType("SOURCE")
-    drvWincHostSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_nvm.c file
-    drvWincNvmSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NVM_C", None)
-    drvWincNvmSourceFile.setSourcePath("driver/winc/wdrv_winc_nvm.c")
-    drvWincNvmSourceFile.setOutputName("wdrv_winc_nvm.c")
-    drvWincNvmSourceFile.setOverwrite(True)
-    drvWincNvmSourceFile.setDestPath("driver/winc/src/")
-    drvWincNvmSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincNvmSourceFile.setType("SOURCE")
-    drvWincNvmSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_powersave.c file
-    drvWincPowerSaveSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_POWER_SAVE_C", None)
-    drvWincPowerSaveSourceFile.setSourcePath("driver/winc/wdrv_winc_powersave.c")
-    drvWincPowerSaveSourceFile.setOutputName("wdrv_winc_powersave.c")
-    drvWincPowerSaveSourceFile.setOverwrite(True)
-    drvWincPowerSaveSourceFile.setDestPath("driver/winc/src/")
-    drvWincPowerSaveSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincPowerSaveSourceFile.setType("SOURCE")
-    drvWincPowerSaveSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_httpprovctx.c file
-    drvWincHttpProvisionSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_HTTP_PROVISION_C", None)
-    drvWincHttpProvisionSourceFile.setSourcePath("driver/winc/wdrv_winc_httpprovctx.c")
-    drvWincHttpProvisionSourceFile.setOutputName("wdrv_winc_httpprovctx.c")
-    drvWincHttpProvisionSourceFile.setOverwrite(True)
-    drvWincHttpProvisionSourceFile.setDestPath("driver/winc/src/")
-    drvWincHttpProvisionSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincHttpProvisionSourceFile.setType("SOURCE")
-    drvWincHttpProvisionSourceFile.setEnabled((wifiDriverMode.getValue() == "Socket Mode"))
-    drvWincHttpProvisionSourceFile.setDependencies(socketModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_socket.c file
-    drvWincSocketSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SOCKET_C", None)
-    drvWincSocketSourceFile.setSourcePath("driver/winc/wdrv_winc_socket.c")
-    drvWincSocketSourceFile.setOutputName("wdrv_winc_socket.c")
-    drvWincSocketSourceFile.setOverwrite(True)
-    drvWincSocketSourceFile.setDestPath("driver/winc/src/")
-    drvWincSocketSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincSocketSourceFile.setType("SOURCE")
-    drvWincSocketSourceFile.setEnabled((wifiDriverMode.getValue() == "Socket Mode"))
-    drvWincSocketSourceFile.setDependencies(socketModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_ssl.c file
-    drvWincSslSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SSL_C", None)
-    drvWincSslSourceFile.setSourcePath("driver/winc/wdrv_winc_ssl.c")
-    drvWincSslSourceFile.setOutputName("wdrv_winc_ssl.c")
-    drvWincSslSourceFile.setOverwrite(True)
-    drvWincSslSourceFile.setDestPath("driver/winc/src/")
-    drvWincSslSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincSslSourceFile.setType("SOURCE")
-    drvWincSslSourceFile.setEnabled((wifiDriverMode.getValue() == "Socket Mode"))
-    drvWincSslSourceFile.setDependencies(socketModeFileGen, ["WIFI_DRIVER_MODE_CHOICE"])
-
-    # Add wdrv_winc_softap.c file
-    drvWincSoftapSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SOFT_AP_C", None)
-    drvWincSoftapSourceFile.setSourcePath("driver/winc/wdrv_winc_softap.c")
-    drvWincSoftapSourceFile.setOutputName("wdrv_winc_softap.c")
-    drvWincSoftapSourceFile.setOverwrite(True)
-    drvWincSoftapSourceFile.setDestPath("driver/winc/src/")
-    drvWincSoftapSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincSoftapSourceFile.setType("SOURCE")
-    drvWincSoftapSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_sta.c file
-    drvWincStaSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_STA_C", None)
-    drvWincStaSourceFile.setSourcePath("driver/winc/wdrv_winc_sta.c")
-    drvWincStaSourceFile.setOutputName("wdrv_winc_sta.c")
-    drvWincStaSourceFile.setOverwrite(True)
-    drvWincStaSourceFile.setDestPath("driver/winc/src/")
-    drvWincStaSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincStaSourceFile.setType("SOURCE")
-    drvWincStaSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_systime.c file
-    drvWincSystimeSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SYSTEM_TIME_C", None)
-    drvWincSystimeSourceFile.setSourcePath("driver/winc/wdrv_winc_systime.c")
-    drvWincSystimeSourceFile.setOutputName("wdrv_winc_systime.c")
-    drvWincSystimeSourceFile.setOverwrite(True)
-    drvWincSystimeSourceFile.setDestPath("driver/winc/src/")
-    drvWincSystimeSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincSystimeSourceFile.setType("SOURCE")
-    drvWincSystimeSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_wps.c file
-    drvWincWpsSourceFile = drvWincComponent.createFileSymbol("WIFI_WPS_C", None)
-    drvWincWpsSourceFile.setSourcePath("driver/winc/wdrv_winc_wps.c")
-    drvWincWpsSourceFile.setOutputName("wdrv_winc_wps.c")
-    drvWincWpsSourceFile.setOverwrite(True)
-    drvWincWpsSourceFile.setDestPath("driver/winc/src/")
-    drvWincWpsSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWincWpsSourceFile.setType("SOURCE")
-    drvWincWpsSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_eint.c file
-    drvWincEintSourceFile = drvWincComponent.createFileSymbol("WIFI_EINT_C", None)
-    drvWincEintSourceFile.setSourcePath("driver/winc/dev/gpio/wdrv_winc_eint.c")
-    drvWincEintSourceFile.setOutputName("wdrv_winc_eint.c")
-    drvWincEintSourceFile.setOverwrite(True)
-    drvWincEintSourceFile.setDestPath("driver/winc/dev/gpio/")
-    drvWincEintSourceFile.setProjectPath("config/" + configName + "/driver/winc/dev/gpio/")
-    drvWincEintSourceFile.setType("SOURCE")
-    drvWincEintSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_gpio.c file
-    drvWincGpioSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_GPIO_C", None)
-    drvWincGpioSourceFile.setSourcePath("driver/winc/dev/gpio/wdrv_winc_gpio.c")
-    drvWincGpioSourceFile.setOutputName("wdrv_winc_gpio.c")
-    drvWincGpioSourceFile.setOverwrite(True)
-    drvWincGpioSourceFile.setDestPath("driver/winc/dev/gpio")
-    drvWincGpioSourceFile.setProjectPath("config/" + configName + "/driver/winc/dev/gpio/")
-    drvWincGpioSourceFile.setType("SOURCE")
-    drvWincGpioSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_spi.c file
-    drvWincSpiSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SPI_C", None)
-    drvWincSpiSourceFile.setSourcePath("driver/winc/dev/spi/wdrv_winc_spi.c")
-    drvWincSpiSourceFile.setOutputName("wdrv_winc_spi.c")
-    drvWincSpiSourceFile.setOverwrite(True)
-    drvWincSpiSourceFile.setDestPath("driver/winc/dev/spi")
-    drvWincSpiSourceFile.setProjectPath("config/" + configName + "/driver/winc/dev/spi/")
-    drvWincSpiSourceFile.setType("SOURCE")
-    drvWincSpiSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_osal.c file
-    drvWincOsalSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_OSAL_C", None)
-    drvWincOsalSourceFile.setSourcePath("driver/winc/osal/wdrv_winc_osal.c")
-    drvWincOsalSourceFile.setOutputName("wdrv_winc_osal.c")
-    drvWincOsalSourceFile.setOverwrite(True)
-    drvWincOsalSourceFile.setDestPath("driver/winc/osal/")
-    drvWincOsalSourceFile.setProjectPath("config/" + configName + "/driver/winc/osal/")
-    drvWincOsalSourceFile.setType("SOURCE")
-    drvWincOsalSourceFile.setEnabled(True)
-
-    # Add wdrv_winc_stack_drv.c file
-    drvWincStackDrvSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_STACK_DRV_C", None)
-    drvWincStackDrvSourceFile.setSourcePath("driver/winc/stack_driver/wdrv_winc_stack_drv.c")
-    drvWincStackDrvSourceFile.setOutputName("wdrv_winc_stack_drv.c")
-    drvWincStackDrvSourceFile.setOverwrite(True)
-    drvWincStackDrvSourceFile.setDestPath("driver/winc/src/stack_driver/")
-    drvWincStackDrvSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/stack_driver/")
-    drvWincStackDrvSourceFile.setType("SOURCE")
-    drvWincStackDrvSourceFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincStackDrvSourceFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    #Add wdrv_winc_pktpool.c file
-    drvWincPktpoolSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_PKT_POOL_C", None)
-    drvWincPktpoolSourceFile.setSourcePath("driver/winc/stack_driver/wdrv_winc_pktpool.c")
-    drvWincPktpoolSourceFile.setOutputName("wdrv_winc_pktpool.c")
-    drvWincPktpoolSourceFile.setOverwrite(True)
-    drvWincPktpoolSourceFile.setDestPath("driver/winc/src/stack_driver/")
-    drvWincPktpoolSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/stack_driver/")
-    drvWincPktpoolSourceFile.setType("SOURCE")
-    drvWincPktpoolSourceFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincPktpoolSourceFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    #Add wdrv_winc_stack_itf.c file
-    drvWincStackItfSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_STACK_ITF_C", None)
-    drvWincStackItfSourceFile.setSourcePath("driver/winc/stack_driver/wdrv_winc_stack_itf.c")
-    drvWincStackItfSourceFile.setOutputName("wdrv_winc_stack_itf.c")
-    drvWincStackItfSourceFile.setOverwrite(True)
-    drvWincStackItfSourceFile.setDestPath("driver/winc/src/stack_driver/")
-    drvWincStackItfSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/stack_driver/")
-    drvWincStackItfSourceFile.setType("SOURCE")
-    drvWincStackItfSourceFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincStackItfSourceFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    #Add wdrv_winc_ctrl_itf.c file
-    drvWincCtrlItfSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_CTRL_ITF_C", None)
-    drvWincCtrlItfSourceFile.setSourcePath("driver/winc/stack_driver/wdrv_winc_ctrl_itf.c")
-    drvWincCtrlItfSourceFile.setOutputName("wdrv_winc_ctrl_itf.c")
-    drvWincCtrlItfSourceFile.setOverwrite(True)
-    drvWincCtrlItfSourceFile.setDestPath("driver/winc/src/stack_driver/")
-    drvWincCtrlItfSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/stack_driver/")
-    drvWincCtrlItfSourceFile.setType("SOURCE")
-    drvWincCtrlItfSourceFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincCtrlItfSourceFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    #Add wdrv_winc_itf_proxy.c file
-    drvWincItfProxySourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_ITF_PROXY_C", None)
-    drvWincItfProxySourceFile.setSourcePath("driver/winc/stack_driver/wdrv_winc_itf_proxy.c")
-    drvWincItfProxySourceFile.setOutputName("wdrv_winc_itf_proxy.c")
-    drvWincItfProxySourceFile.setOverwrite(True)
-    drvWincItfProxySourceFile.setDestPath("driver/winc/src/stack_driver/")
-    drvWincItfProxySourceFile.setProjectPath("config/" + configName + "/driver/winc/src/stack_driver/")
-    drvWincItfProxySourceFile.setType("SOURCE")
-    drvWincItfProxySourceFile.setEnabled((wifiDriverTcpipMode.getValue() == "True"))
-    drvWincItfProxySourceFile.setDependencies(tcpipModeFileGen, ["WIFI_DRIVER_TCPIP_MODE"])
-
-    # Add wdrv_winc_iwpriv.c file
-    drvWinIwprivSourceFile  = drvWincComponent.createFileSymbol("WIFI_WINC_IWPRIV_C", None)
-    drvWinIwprivSourceFile .setSourcePath("driver/winc/stack_driver/wdrv_winc_iwpriv.c")
-    drvWinIwprivSourceFile .setOutputName("wdrv_winc_iwpriv.c")
-    drvWinIwprivSourceFile .setOverwrite(True)
-    drvWinIwprivSourceFile .setDestPath("driver/winc/src/stack_driver/")
-    drvWinIwprivSourceFile .setProjectPath("config/" + configName + "/driver/winc/src/stack_driver/")
-    drvWinIwprivSourceFile .setType("SOURCE")
-    drvWinIwprivSourceFile .setEnabled((wifiDriverIwprivMode.getValue() == "True"))
-    drvWinIwprivSourceFile .setDependencies(iwprivModeFileGen, ["WIFI_DRIVER_IWPRIV_MODE"])
-
-    #Add nm_common.c file
-    drvWincNmCommonSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NM_COMMON_C", None)
-    drvWincNmCommonSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/common/source/nm_common.c")
-    drvWincNmCommonSourceFile.setOutputName("nm_common.c")
-    drvWincNmCommonSourceFile.setOverwrite(True)
-    drvWincNmCommonSourceFile.setDestPath("driver/winc/winc1500_19_6_1/common/")
-    drvWincNmCommonSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/common/")
-    drvWincNmCommonSourceFile.setType("SOURCE")
-    drvWincNmCommonSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-
-    #Add m2m_hif.c file
-    drvWincM2mHifSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_HIF_C", None)
-    drvWincM2mHifSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/m2m_hif.c")
-    drvWincM2mHifSourceFile.setOutputName("m2m_hif.c")
-    drvWincM2mHifSourceFile.setOverwrite(True)
-    drvWincM2mHifSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mHifSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mHifSourceFile.setType("SOURCE")
-    drvWincM2mHifSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_periphl.c file
-    drvWincM2mPeripheralSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_PERIPHERAL_C", None)
-    drvWincM2mPeripheralSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/m2m_periph.c")
-    drvWincM2mPeripheralSourceFile.setOutputName("m2m_periph.c")
-    drvWincM2mPeripheralSourceFile.setOverwrite(True)
-    drvWincM2mPeripheralSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mPeripheralSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mPeripheralSourceFile.setType("SOURCE")
-    drvWincM2mPeripheralSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-
-    #Add m2m_wifi.c file
-    drvWincM2mWifiSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_WIFI_C", None)
-    drvWincM2mWifiSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/m2m_wifi.c")
-    drvWincM2mWifiSourceFile.setOutputName("m2m_wifi.c")
-    drvWincM2mWifiSourceFile.setOverwrite(True)
-    drvWincM2mWifiSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mWifiSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mWifiSourceFile.setType("SOURCE")
-    drvWincM2mWifiSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmasic.c file
-    drvWincNmAsicSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMASIC_C", None)
-    drvWincNmAsicSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/nmasic.c")
-    drvWincNmAsicSourceFile.setOutputName("nmasic.c")
-    drvWincNmAsicSourceFile.setOverwrite(True)
-    drvWincNmAsicSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmAsicSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmAsicSourceFile.setType("SOURCE")
-    drvWincNmAsicSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmbus.c file
-    drvWincNmBusSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMBUS_C", None)
-    drvWincNmBusSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/nmbus.c")
-    drvWincNmBusSourceFile.setOutputName("nmbus.c")
-    drvWincNmBusSourceFile.setOverwrite(True)
-    drvWincNmBusSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmBusSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmBusSourceFile.setType("SOURCE")
-    drvWincNmBusSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmdrv.c file
-    drvWincNmDrvSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMDRV_C", None)
-    drvWincNmDrvSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/nmdrv.c")
-    drvWincNmDrvSourceFile.setOutputName("nmdrv.c")
-    drvWincNmDrvSourceFile.setOverwrite(True)
-    drvWincNmDrvSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmDrvSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmDrvSourceFile.setType("SOURCE")
-    drvWincNmDrvSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add nmspi.c file
-    drvWincNmSpiSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NMSPI_C", None)
-    drvWincNmSpiSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/nmspi.c")
-    drvWincNmSpiSourceFile.setOutputName("nmspi.c")
-    drvWincNmSpiSourceFile.setOverwrite(True)
-    drvWincNmSpiSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmSpiSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincNmSpiSourceFile.setType("SOURCE")
-    drvWincNmSpiSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add spi_flash.c file
-    drvWincSpiFlashSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SPI_FLASH_C", None)
-    drvWincSpiFlashSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/spi_flash/source/spi_flash.c")
-    drvWincSpiFlashSourceFile.setOutputName("spi_flash.c")
-    drvWincSpiFlashSourceFile.setOverwrite(True)
-    drvWincSpiFlashSourceFile.setDestPath("driver/winc/winc1500_19_6_1/spi_flash/")
-    drvWincSpiFlashSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/spi_flash/")
-    drvWincSpiFlashSourceFile.setType("SOURCE")
-    drvWincSpiFlashSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add flexible_flash.c file
-    drvWincFlexibleFlashSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_FLEXIBLE_FLASH_C", None)
-    drvWincFlexibleFlashSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/spi_flash/source/flexible_flash.c")
-    drvWincFlexibleFlashSourceFile.setOutputName("flexible_flash.c")
-    drvWincFlexibleFlashSourceFile.setOverwrite(True)
-    drvWincFlexibleFlashSourceFile.setDestPath("driver/winc/winc1500_19_6_1/spi_flash/")
-    drvWincFlexibleFlashSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/spi_flash/")
-    drvWincFlexibleFlashSourceFile.setType("SOURCE")
-    drvWincFlexibleFlashSourceFile.setDependencies(win1500FileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add wdrv_winc_host_file.c file
-    drvWinc1500_19_HostSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_HOST_FILE_C", None)
-    drvWinc1500_19_HostSourceFile.setSourcePath("driver/winc/wdrv_winc_host_file.c")
-    drvWinc1500_19_HostSourceFile.setOutputName("wdrv_winc_host_file.c")
-    drvWinc1500_19_HostSourceFile.setOverwrite(True)
-    drvWinc1500_19_HostSourceFile.setDestPath("driver/winc/src/")
-    drvWinc1500_19_HostSourceFile.setProjectPath("config/" + configName + "/driver/winc/src/")
-    drvWinc1500_19_HostSourceFile.setType("SOURCE")
-    drvWinc1500_19_HostSourceFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_ota.c file
-    drvWincM2mOtaSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_OTA_C", None)
-    drvWincM2mOtaSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/m2m_ota.c")
-    drvWincM2mOtaSourceFile.setOutputName("m2m_ota.c")
-    drvWincM2mOtaSourceFile.setOverwrite(True)
-    drvWincM2mOtaSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mOtaSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mOtaSourceFile.setType("SOURCE")
-    drvWincM2mOtaSourceFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add m2m_ssl.c file
-    drvWincM2mSslSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_M2M_SSL_C", None)
-    drvWincM2mSslSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/driver/source/m2m_ssl.c")
-    drvWincM2mSslSourceFile.setOutputName("m2m_ssl.c")
-    drvWincM2mSslSourceFile.setOverwrite(True)
-    drvWincM2mSslSourceFile.setDestPath("driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mSslSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/driver/")
-    drvWincM2mSslSourceFile.setType("SOURCE")
-    drvWincM2mSslSourceFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add socket.c file
-    drvwinc1500_19_SocketSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_SOCKET_VER19_C", None)
-    drvwinc1500_19_SocketSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/socket/source/socket.c")
-    drvwinc1500_19_SocketSourceFile.setOutputName("socket.c")
-    drvwinc1500_19_SocketSourceFile.setOverwrite(True)
-    drvwinc1500_19_SocketSourceFile.setDestPath("driver/winc/winc1500_19_6_1/socket/")
-    drvwinc1500_19_SocketSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/socket/")
-    drvwinc1500_19_SocketSourceFile.setType("SOURCE")
-    drvwinc1500_19_SocketSourceFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add inet_addr.c file
-    drvwincInetAddrSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_NETINET_C", None)
-    drvwincInetAddrSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/socket/source/inet_addr.c")
-    drvwincInetAddrSourceFile.setOutputName("inet_addr.c")
-    drvwincInetAddrSourceFile.setOverwrite(True)
-    drvwincInetAddrSourceFile.setDestPath("driver/winc/winc1500_19_6_1/socket/")
-    drvwincInetAddrSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/socket/")
-    drvwincInetAddrSourceFile.setType("SOURCE")
-    drvwincInetAddrSourceFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #Add inet_ntop.c file
-    drvwincInetNtopSourceFile = drvWincComponent.createFileSymbol("WIFI_WINC_INET_NTOP_C", None)
-    drvwincInetNtopSourceFile.setSourcePath("driver/winc/winc1500_19_6_1/socket/source/inet_ntop.c")
-    drvwincInetNtopSourceFile.setOutputName("inet_ntop.c")
-    drvwincInetNtopSourceFile.setOverwrite(True)
-    drvwincInetNtopSourceFile.setDestPath("driver/winc/winc1500_19_6_1/socket/")
-    drvwincInetNtopSourceFile.setProjectPath("config/" + configName + "/driver/winc/winc1500_19_6_1/socket/")
-    drvwincInetNtopSourceFile.setType("SOURCE")
-    drvwincInetNtopSourceFile.setDependencies(win1500SocketModeFileGen, ["WIFI_DEVICE_SELECT","WIFI_DRV_VERSION","WIFI_DRIVER_MODE_CHOICE"])
-
-    #add include directory
-    wincIncludePath = drvWincComponent.createSettingSymbol("wincIncludePath", None)
-    wincIncludePath.setValue("../src/config/" + configName + "/driver/winc/include;../src/config/" + configName + "/driver/winc/include/dev;")
-    wincIncludePath.setCategory("C32")
-    wincIncludePath.setKey("extra-include-directories")
-    wincIncludePath.setAppend(True, ";")
-
-    #add include directory
-    wincIncludeDriverPath = drvWincComponent.createSettingSymbol("wincIncludeDriverPath", None)
-    wincIncludeDriverPath.setValue("../src/config/" + configName + "/driver/winc/include/winc1500_19_6_1/bsp;../src/config/" + configName + "/driver/winc/include/winc1500_19_6_1/bsp/include;../src/config/" + configName + "/driver/winc/include/winc1500_19_6_1/common;../src/config/" + configName + "/driver/winc/include/winc1500_19_6_1/driver;../src/config/" + configName + "/driver/winc/include/winc1500_19_6_1/socket;../src/config/" + configName + "/driver/winc/include/winc1500_19_6_1/spi_flash;")
-    wincIncludeDriverPath.setCategory("C32")
-    wincIncludeDriverPath.setKey("extra-include-directories")
-    wincIncludeDriverPath.setAppend(True, ";")
+    flagEthernetMode        = (wincDriverMode.getValue() == "Ethernet Mode")
+    flagSocketMode          = (wincDriverMode.getValue() == "Socket Mode")
+    flagTcpipStackPresent   = (flagEthernetMode and (wincUseTcpipStack.getValue() == "True"))
+    flagIwprivIntfPresent   = (flagEthernetMode and (wincUseIwprivIntf.getValue() == "True"))
+#    flagBlePresent          = False
+    flagWinc1500_19_6_1     = ((wincDevice.getValue() == "WINC1500") and (winc1500Version.getValue() == "19.6.1"))
+
+    flagHostFileSupport     = (flagSocketMode and flagWinc1500_19_6_1)
+
+    condAlways              = [True,                    None,                       []]
+    condSocketMode          = [flagSocketMode,          setEnableSocketMode,        ['DRV_WIFI_WINC_DRIVER_MODE']]
+    condEthernetMode        = [flagEthernetMode,        setEnableEthernetMode,      ['DRV_WIFI_WINC_DRIVER_MODE']]
+    condHostFileSupport     = [flagHostFileSupport,     setEnableHostFileSupport,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condTcpipStackPresent   = [flagTcpipStackPresent,   setEnableTcpipStackPresent, ['DRV_WIFI_WINC_USE_TCPIP_STACK']]
+    condIwprivIntfPresent   = [flagIwprivIntfPresent,   setEnableIwprivIntfPresent, ['DRV_WIFI_WINC_USE_IWPRIV_INTF']]
+#    condBle                 = [flagBlePresent,          setEnableBlePresent         []]
+    condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+
+    wdrvIncFiles = [
+        ['wdrv_winc.h',                         condAlways],
+        ['wdrv_winc_api.h',                     condAlways],
+        ['wdrv_winc_assoc.h',                   condAlways],
+        ['wdrv_winc_authctx.h',                 condAlways],
+#        ['wdrv_winc_ble.h',                     condBle],
+        ['wdrv_winc_bssctx.h',                  condAlways],
+        ['wdrv_winc_bssfind.h',                 condAlways],
+        ['wdrv_winc_client_api.h',              condAlways],
+        ['wdrv_winc_common.h',                  condAlways],
+        ['wdrv_winc_custie.h',                  condAlways],
+        ['wdrv_winc_debug.h',                   condAlways],
+        ['wdrv_winc_ethernet.h',                condEthernetMode],
+        ['wdrv_winc_host_file.h',               condHostFileSupport],
+        ['wdrv_winc_httpprovctx.h',             condSocketMode],
+        ['wdrv_winc_nvm.h',                     condAlways],
+        ['wdrv_winc_powersave.h',               condAlways],
+        ['wdrv_winc_socket.h',                  condSocketMode],
+        ['wdrv_winc_softap.h',                  condAlways],
+        ['wdrv_winc_ssl.h',                     condSocketMode],
+        ['wdrv_winc_sta.h',                     condAlways],
+        ['wdrv_winc_systime.h',                 condAlways],
+        ['wdrv_winc_wps.h',                     condAlways],
+        ['dev/wdrv_winc_gpio.h',                condAlways],
+        ['dev/wdrv_winc_spi.h',                 condAlways],
+        ['stack_driver/wdrv_winc_stack_drv.h',  condTcpipStackPresent],
+        ['stack_driver/wdrv_winc_pktpool.h',    condTcpipStackPresent],
+        ['stack_driver/wdrv_winc_iwpriv.h',     condIwprivIntfPresent]
+    ]
+
+    wdrvFirmwareDriverIncFiles = [
+        ['bsp/nm_bsp.h',                        condAlways],
+        ['common/nm_common.h',                  condAlways],
+        ['common/nm_debug.h',                   condAlways],
+        ['driver/m2m_hif.h',                    condAlways],
+        ['driver/m2m_periph.h',                 condAlways],
+        ['driver/m2m_types.h',                  condAlways],
+        ['driver/m2m_wifi.h',                   condAlways],
+        ['driver/nmasic.h',                     condAlways],
+        ['driver/nmbus.h',                      condAlways],
+        ['driver/nmdrv.h',                      condAlways],
+        ['driver/nmspi.h',                      condAlways],
+        ['spi_flash/spi_flash.h',               condAlways],
+        ['spi_flash/flexible_flash.h',          condWinc1500_19_6_1],
+        ['socket/m2m_socket_host_if.h',         condSocketMode],
+        ['driver/m2m_ota.h',                    condSocketMode],
+        ['driver/m2m_ssl.h',                    condSocketMode],
+        ['driver/ecc_types.h',                  condSocketMode],
+        ['socket/socket.h',                     condSocketMode],
+        ['socket/netinet_in.h',                 condSocketMode],
+    ]
+
+    for incFileEntry in wdrvIncFiles:
+        importIncFile(drvWincComponent, configName, incFileEntry)
+
+    for incFileEntry in wdrvFirmwareDriverIncFiles:
+        importIncFile(drvWincComponent, configName, incFileEntry, 'winc1500_19_6_1')
+
+    wdrvSrcFiles = [
+        ['wdrv_winc.c',                         condAlways],
+        ['wdrv_winc_assoc.c',                   condAlways],
+        ['wdrv_winc_authctx.c',                 condAlways],
+#        ['wdrv_winc_ble.c',                     condBle],
+        ['wdrv_winc_bssctx.c',                  condAlways],
+        ['wdrv_winc_bssfind.c',                 condAlways],
+        ['wdrv_winc_custie.c',                  condAlways],
+        ['wdrv_winc_ethernet.c',                condEthernetMode],
+        ['wdrv_winc_host_file.c',               condHostFileSupport],
+        ['wdrv_winc_httpprovctx.c',             condSocketMode],
+        ['wdrv_winc_nvm.c',                     condAlways],
+        ['wdrv_winc_powersave.c',               condAlways],
+        ['wdrv_winc_socket.c',                  condSocketMode],
+        ['wdrv_winc_softap.c',                  condAlways],
+        ['wdrv_winc_ssl.c',                     condSocketMode],
+        ['wdrv_winc_sta.c',                     condAlways],
+        ['wdrv_winc_systime.c',                 condAlways],
+        ['wdrv_winc_wps.c',                     condAlways],
+        ['dev/gpio/wdrv_winc_eint.c',           condAlways],
+        ['dev/gpio/wdrv_winc_gpio.c',           condAlways],
+        ['dev/spi/wdrv_winc_spi.c',             condAlways],
+        ['osal/wdrv_winc_osal.c',               condAlways],
+        ['stack_driver/wdrv_winc_stack_drv.c',  condTcpipStackPresent],
+        ['stack_driver/wdrv_winc_pktpool.c',    condTcpipStackPresent],
+        ['stack_driver/wdrv_winc_stack_itf.c',  condTcpipStackPresent],
+        ['stack_driver/wdrv_winc_itf_proxy.c',  condTcpipStackPresent],
+        ['stack_driver/wdrv_winc_iwpriv.c',     condIwprivIntfPresent]
+    ]
+
+    wdrvFirmwareDriverSrcFiles = [
+        ['common/nm_common.c',                  condAlways],
+        ['driver/m2m_hif.c',                    condAlways],
+        ['driver/m2m_periph.c',                 condAlways],
+        ['driver/m2m_wifi.c',                   condAlways],
+        ['driver/nmasic.c',                     condAlways],
+        ['driver/nmbus.c',                      condAlways],
+        ['driver/nmdrv.c',                      condAlways],
+        ['driver/nmspi.c',                      condAlways],
+        ['spi_flash/spi_flash.c',               condAlways],
+        ['spi_flash/flexible_flash.c',          condWinc1500_19_6_1],
+        ['driver/m2m_ota.c',                    condSocketMode],
+        ['driver/m2m_ssl.c',                    condSocketMode],
+        ['socket/socket.c',                     condSocketMode],
+        ['socket/inet_ntop.c',                  condSocketMode],
+        ['socket/inet_addr.c',                  condSocketMode]
+    ]
+
+    for srcFileEntry in wdrvSrcFiles:
+        importSrcFile(drvWincComponent, configName, srcFileEntry)
+
+    for srcFileEntry in wdrvFirmwareDriverSrcFiles:
+        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc1500_19_6_1')
+
+    wdrvIncPaths = [
+        ['/',                                   condAlways],
+        ['/dev',                                condAlways],
+        ['/stack_driver',                       condTcpipStackPresent]
+    ]
+
+    wdrvFirmwareDriverIncPaths = [
+        ['/drv/bsp',                            condAlways],
+        ['/drv/bsp/include',                    condAlways],
+        ['/drv/common',                         condAlways],
+        ['/drv/driver',                         condAlways],
+        ['/drv/socket',                         condSocketMode],
+        ['/drv/spi_flash',                      condAlways]
+    ]
+
+    for incPathEntry in wdrvIncPaths:
+        setIncPath(drvWincComponent, configName, incPathEntry)
+
+    for incPathEntry in wdrvFirmwareDriverIncPaths:
+        setIncPath(drvWincComponent, configName, incPathEntry)
 
     drvwincSystemDefFile = drvWincComponent.createFileSymbol("WIFI_H_FILE", None)
     drvwincSystemDefFile.setType("STRING")
@@ -1133,21 +455,29 @@ def instantiateComponent(drvWincComponent):
     drvwincSystemRtosTasksFile.setSourcePath("driver/winc/templates/system/system_rtos_tasks.c.ftl")
     drvwincSystemRtosTasksFile.setMarkup(True)
     drvwincSystemRtosTasksFile.setEnabled((Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != "BareMetal"))
-    drvwincSystemRtosTasksFile.setDependencies(genRtosTask, ["HarmonyCore.SELECT_RTOS"])
+    drvwincSystemRtosTasksFile.setDependencies(setEnabledRTOSTask, ["HarmonyCore.SELECT_RTOS"])
 
+def setVisibilityWincVersion(symbol, event):
+    if event["value"] == "WINC1500":
+        if symbol.getID() == "DRV_WIFI_WINC1500_VERSION":
+            symbol.setVisible(True)
+        else:
+            symbol.setVisible(False)
+    else:
+        if symbol.getID() == "DRV_WIFI_WINC3400_VERSION":
+            symbol.setVisible(True)
+        else:
+            symbol.setVisible(False)
 
-def drvWincshowRTOSMenu(symbol, event):
+def setVisibilityRTOSMenu(symbol, event):
     if (event["value"] == None):
         symbol.setVisible(False)
     elif (event["value"] != "BareMetal"):
-        # If not Bare Metal
         symbol.setVisible(True)
-        print("WINC RTOS")
     else:
         symbol.setVisible(False)
-        print("WINC Bare Metal")
 
-def drvWifiRTOSStandaloneMenu(symbol, event):
+def setVisibilityRTOSTaskConfig(symbol, event):
     if (event["value"] == "Standalone"):
         symbol.setVisible(True)
         print("WiFi Standalone")
@@ -1155,38 +485,30 @@ def drvWifiRTOSStandaloneMenu(symbol, event):
         symbol.setVisible(False)
         print("WiFi Combined")
 
-def drvWifiRTOSTaskDelayMenu(symbol, event):
+def setVisibilityRTOSTaskDelay(symbol, event):
     drvWifiRtos = symbol.getComponent().getSymbolByID(event["id"])
-    #drvWifiRtosUseDelay = Database.getSymbolValue("drvWinc","DRV_WIFI_RTOS_USE_DELAY")
     if(drvWifiRtos.getValue() == True):
         symbol.setVisible(True)
     else:
         symbol.setVisible(False)
 
-def genRtosTask(symbol, event):
+def setEnabledRTOSTask(symbol, event):
     symbol.setEnabled((Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != "BareMetal"))
 
-def drvWifiGenSourceFile(sourceFile, event):
-    sourceFile.setEnabled(event["value"])
-
-def SocketModeVisibility(symbol, event):
+def setVisibilityUseTcpipStack(symbol, event):
     if(event["value"] == "Ethernet Mode"):
         symbol.setVisible(True)
     else:
         symbol.setVisible(False)
 
-def IwprivModeVisibility(symbol, event):
-    id = symbol.getID()[-1]
-
-    IwprivModeVis = symbol.getComponent().getSymbolByID(event["id"])
-
-    if(IwprivModeVis.getValue() == True):
+def setVisibilityUseIwprivIntf(symbol, event):
+    if(event["value"] == True):
         symbol.setVisible(True)
     else:
         symbol.setVisible(False)
 
-def eicSourceVisibility(symbol, event):
-    eicUseSym = symbol.getComponent().getSymbolByID("WIFI_EXTERNAL_INTERRUPT_USE")
+def setVisibilityEicSource(symbol, event):
+    eicUseSym = symbol.getComponent().getSymbolByID("DRV_WIFI_WINC_INT_SRC")
 
     if eicUseSym.getValue() == False:
         symbol.setVisible(False)
@@ -1200,8 +522,8 @@ def eicSourceVisibility(symbol, event):
             symbol.setVisible(False)
             symbol.setValue(False)
 
-def eicSourceSelectChange(symbol, event):
-    eicCurSel = symbol.getComponent().getSymbolByID("WIFI_DRIVER_EIC_SRC_SELECT")
+def setValueEicSource(symbol, event):
+    eicCurSel = symbol.getComponent().getSymbolByID("DRV_WIFI_WINC_EIC_SRC_SELECT")
 
     eicID = int(event["id"].split("_")[-1])
 
@@ -1209,54 +531,67 @@ def eicSourceSelectChange(symbol, event):
         eicCurSel.setValue(eicID)
         for x in range(eicCurSel.getMax()+1):
             if x != eicID:
-                symbol.getComponent().getSymbolByID("WIFI_DRIVER_EIC_SRC_" + str(x)).setVisible(False)
+                symbol.getComponent().getSymbolByID("DRV_WIFI_WINC_EIC_SRC_" + str(x)).setVisible(False)
     elif eicCurSel.getValue() == eicID:
         for x in range(eicCurSel.getMax()+1):
             if Database.getSymbolValue("eic", "EIC_INT_" + str(x)):
-                symbol.getComponent().getSymbolByID("WIFI_DRIVER_EIC_SRC_" + str(x)).setVisible(True)
+                symbol.getComponent().getSymbolByID("DRV_WIFI_WINC_EIC_SRC_" + str(x)).setVisible(True)
 
         eicCurSel.setValue(-1)
 
-def socketModeFileGen(symbol, event):
+def setEnableSocketMode(symbol, event):
     if event["value"] == "Socket Mode":
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
-def ethernetModeFileGen(symbol, event):
+def setEnableEthernetMode(symbol, event):
     if event["value"] == "Ethernet Mode":
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
-def tcpipModeFileGen(symbol, event):
+def setEnableBlePresent(symbol, event):
     if event["value"] == "True":
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
-def iwprivModeFileGen(symbol, event):
-    if event["value"] == "True":
+def setEnableTcpipStackPresent(symbol, event):
+    if symbol.getComponent().getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE") == "Socket Mode":
+       symbol.setEnabled(False)
+
+    if event["value"] == True:
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
-def win1500FileGen(symbol, event):
+def setEnableIwprivIntfPresent(symbol, event):
+    if symbol.getComponent().getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE") == "Socket Mode":
+       symbol.setEnabled(False)
+
+    if event["value"] == True:
+       symbol.setEnabled(True)
+    else:
+       symbol.setEnabled(False)
+
+def setEnableWinc1500_19_6_1(symbol, event):
     component = symbol.getComponent()
 
-    wifi_device = component.getSymbolValue("WIFI_DEVICE_SELECT")
-    drv_version = component.getSymbolValue("WIFI_DRV_VERSION")
+    wifi_device = component.getSymbolValue("DRV_WIFI_WINC_DEVICE")
+    drv_version = component.getSymbolValue("DRV_WIFI_WINC1500_VERSION")
     if ((wifi_device == "WINC1500") and (drv_version == "19.6.1")):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
-def win1500SocketModeFileGen(symbol, event):
+def setEnableHostFileSupport(symbol, event):
+    # Host file API support requires WINC1500 version 19.6.1+ in Socket Mode
     component = symbol.getComponent()
 
-    wifi_device = component.getSymbolValue("WIFI_DEVICE_SELECT")
-    drv_version = component.getSymbolValue("WIFI_DRV_VERSION")
-    drv_mode    = component.getSymbolValue("WIFI_DRIVER_MODE_CHOICE")
+    wifi_device = component.getSymbolValue("DRV_WIFI_WINC_DEVICE")
+    drv_version = component.getSymbolValue("DRV_WIFI_WINC1500_VERSION")
+    drv_mode    = component.getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE")
     if ((wifi_device == "WINC1500") and (drv_version == "19.6.1") and (drv_mode == "Socket Mode")):
        symbol.setEnabled(True)
     else:

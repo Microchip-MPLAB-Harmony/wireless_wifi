@@ -42,10 +42,8 @@ ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 ----------------------------------------------------------------------------->
 
-<#if DRV_WIFI_USE_DRIVER == true>
     /* Initialize the WINC Driver */
-    sysObj.drvWifiWinc = WDRV_WINC_Initialize(0,NULL);
-</#if>
+    sysObj.drvWifiWinc = WDRV_WINC_Initialize(0, NULL);
 <#--
 /*******************************************************************************
  End of File

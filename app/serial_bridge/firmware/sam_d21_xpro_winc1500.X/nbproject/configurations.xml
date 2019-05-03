@@ -23,35 +23,35 @@
                   <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev/wdrv_winc_gpio.h</itemPath>
                   <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev/wdrv_winc_spi.h</itemPath>
                 </logicalFolder>
-                <logicalFolder name="f2" displayName="winc1500_19_6_1" projectFiles="true">
+                <logicalFolder name="f2" displayName="drv" projectFiles="true">
                   <logicalFolder name="f1" displayName="bsp" projectFiles="true">
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/bsp/include/nm_bsp.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp/nm_bsp.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="f2" displayName="common" projectFiles="true">
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/common/nm_common.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/common/nm_debug.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/common/nm_common.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/common/nm_debug.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="f3" displayName="driver" projectFiles="true">
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/m2m_hif.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/m2m_periph.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/m2m_types.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/m2m_wifi.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/nmasic.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/nmbus.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/nmdrv.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/nmspi.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/m2m_ota.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/m2m_ssl.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/ecc_types.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_hif.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_periph.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_types.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_wifi.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/nmasic.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/nmbus.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/nmdrv.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/nmspi.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_ota.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_ssl.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/ecc_types.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="f5" displayName="socket" projectFiles="true">
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket/m2m_socket_host_if.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket/socket.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket/netinet_in.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/m2m_socket_host_if.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/socket.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/netinet_in.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="f4" displayName="spi_flash" projectFiles="true">
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/spi_flash/spi_flash.h</itemPath>
-                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/spi_flash/flexible_flash.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/spi_flash.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/flexible_flash.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc.h</itemPath>
@@ -65,18 +65,15 @@
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_custie.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_debug.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_host_file.h</itemPath>
+                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_httpprovctx.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_nvm.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_powersave.h</itemPath>
+                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_socket.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_softap.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_ssl.h</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_socket.h</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_httpprovctx.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_sta.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_systime.h</itemPath>
                 <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_wps.h</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev/wdrv_winc_stack_drv.h</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_pktpool.h</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/wdrv_winc_iwpriv.h</itemPath>
               </logicalFolder>
             </logicalFolder>
             <itemPath>../src/config/sam_d21_xpro_winc1500/driver/driver.h</itemPath>
@@ -232,7 +229,7 @@
               <itemPath>../src/config/sam_d21_xpro_winc1500/driver/usart/src/drv_usart_local.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f1" displayName="winc" projectFiles="true">
-              <logicalFolder name="f2" displayName="dev" projectFiles="true">
+              <logicalFolder name="f1" displayName="dev" projectFiles="true">
                 <logicalFolder name="f1" displayName="gpio" projectFiles="true">
                   <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/dev/gpio/wdrv_winc_eint.c</itemPath>
                   <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/dev/gpio/wdrv_winc_gpio.c</itemPath>
@@ -241,52 +238,50 @@
                   <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/dev/spi/wdrv_winc_spi.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
-              <logicalFolder name="f3" displayName="osal" projectFiles="true">
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/osal/wdrv_winc_osal.c</itemPath>
-              </logicalFolder>
-              <logicalFolder name="f1" displayName="src" projectFiles="true">
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_assoc.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_authctx.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_bssctx.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_bssfind.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_custie.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_host_file.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_nvm.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_powersave.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_httpprovctx.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_socket.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_ssl.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_softap.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_sta.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_systime.c</itemPath>
-                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/src/wdrv_winc_wps.c</itemPath>
-              </logicalFolder>
-              <logicalFolder name="f4" displayName="winc1500_19_6_1" projectFiles="true">
+              <logicalFolder name="f3" displayName="drv" projectFiles="true">
                 <logicalFolder name="f1" displayName="common" projectFiles="true">
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/common/nm_common.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/common/nm_common.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="f2" displayName="driver" projectFiles="true">
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/m2m_hif.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/m2m_periph.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/m2m_wifi.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/nmasic.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/nmbus.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/nmdrv.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/nmspi.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/m2m_ota.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/m2m_ssl.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/m2m_hif.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/m2m_periph.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/m2m_wifi.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/nmasic.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/nmbus.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/nmdrv.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/nmspi.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/m2m_ota.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/driver/m2m_ssl.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="f4" displayName="socket" projectFiles="true">
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/socket/socket.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/socket/inet_addr.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/socket/inet_ntop.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/socket/socket.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/socket/inet_ntop.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/socket/inet_addr.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="f3" displayName="spi_flash" projectFiles="true">
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/spi_flash/spi_flash.c</itemPath>
-                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/spi_flash/flexible_flash.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/spi_flash/spi_flash.c</itemPath>
+                  <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/drv/spi_flash/flexible_flash.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
+              <logicalFolder name="f2" displayName="osal" projectFiles="true">
+                <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/osal/wdrv_winc_osal.c</itemPath>
+              </logicalFolder>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_assoc.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_authctx.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_bssctx.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_bssfind.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_custie.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_host_file.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_httpprovctx.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_nvm.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_powersave.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_socket.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_softap.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_ssl.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_sta.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_systime.c</itemPath>
+              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/wdrv_winc_wps.c</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f1" displayName="peripheral" projectFiles="true">
@@ -371,8 +366,8 @@
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="CMSIS" vendor="ARM" version="5.0.1"/>
         <pack name="SAMD21_DFP" vendor="Microchip" version="2.0.4"/>
+        <pack name="CMSIS" vendor="ARM" version="5.0.1"/>
       </packs>
       <compileType>
         <linkerTool>
@@ -431,7 +426,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src/config/default/driver/winc/include;../src/config/default/driver/winc/include/dev;../src/config/default/driver/winc/include/winc1500_19_6_1/bsp;../src/config/default/driver/winc/include/winc1500_19_6_1/bsp/include;../src/config/default/driver/winc/include/winc1500_19_6_1/common;../src/config/default/driver/winc/include/winc1500_19_6_1/driver;../src/config/default/driver/winc/include/winc1500_19_6_1/socket;../src/config/default/driver/winc/include/winc1500_19_6_1/spi_flash;../src;../src/config/default;../src/packs/ATSAMD21J18A_DFP;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/CMSIS/;../src/arm;../src/serial_bridge;../src/config/sam_d21_xpro_winc1500/driver/winc/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/bsp;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/bsp/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/common;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/spi_flash;../src/config/sam_d21_xpro_winc1500"/>
+                  value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/;../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/common;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash;../src;../src/config/sam_d21_xpro_winc1500;../src/packs/ATSAMD21J18A_DFP;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/CMSIS/;../src/arm"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>

@@ -95,9 +95,9 @@ extern "C" {
 // Section: Driver Configuration
 // *****************************************************************************
 // *****************************************************************************
-/*** Wi-Fi Driver Configuration ***/
-#define WDRV_WINC_EIC_SOURCE        EIC_PIN_4
-#define WDRV_WINC_SPI_INDEX     0
+/*** WiFi Driver Configuration ***/
+#define WDRV_WINC_EIC_SOURCE                EIC_PIN_4
+#define WDRV_WINC_SPI_INDEX                 DRV_SPI_INDEX_0
 #define WDRV_WINC_NETWORK_MODE_SOCKET
 #define WDRV_WINC_DEVICE_WINC1500
 #define WDRV_WINC_DEVICE_SPLIT_INIT
@@ -108,9 +108,8 @@ extern "C" {
 #define WDRV_WINC_DEVICE_CONF_NTP_SERVER
 #define WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
 #define WDRV_WINC_DEVICE_SOFT_AP_EXT
-#define WDRV_WINC_DEVICE_CONF_NTP_SERVER
-#define WDRV_WINC_DEVICE_SOFT_AP_EXT
-#define WDRV_WINC_DEBUG_LEVEL   WDRV_WINC_DEBUG_TYPE_NONE
+#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
+#define WDRV_WINC_DEBUG_LEVEL               WDRV_WINC_DEBUG_TYPE_NONE
 
 
 

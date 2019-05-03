@@ -23,7 +23,6 @@ ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 ----------------------------------------------------------------------------->
 
-<#if DRV_WIFI_USE_DRIVER == true>
 <#if (USE_3RDPARTY_RTOS)?has_content && USE_3RDPARTY_RTOS == true>
 <#if (DRV_WINC_TASKS == "PROTO") && (DRV_WINC_RTOS == "Standalone")>
 <#if THIRDPARTY_RTOS_USED == "ThreadX">
@@ -57,15 +56,14 @@ void WDRV_WINC_Tasks(void)
 </#if> 
     while(1)
     {
-        DRV_WINC_Tasks (sysObj.drvWifiWinc);
+        WDRV_WINC_Tasks(sysObj.drvWifiWinc);
         <@RTOS_TASK_DELAY RTOS_NAME=THIRDPARTY_RTOS_USED TASK_DELAY=DRV_WINC_RTOS_DELAY/>		
     }
  }
 </#if>
 </#if>
 <#else>
-    DRV_WINC_Tasks (sysObj.drvWifiWinc);
-</#if>
+    WDRV_WINC_Tasks(sysObj.drvWifiWinc);
 </#if>
 
 <#--

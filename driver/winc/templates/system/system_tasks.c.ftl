@@ -27,9 +27,9 @@
 <#elseif HarmonyCore.SELECT_RTOS == "FreeRTOS">
     <#lt>    xTaskCreate( _DRV_WIFI_Task,
     <#lt>        "DRV_MIIM_Tasks",
-    <#lt>        DRV_WIFI_RTOS_STACK_SIZE,
+    <#lt>        DRV_WIFI_WINC_RTOS_STACK_SIZE,
     <#lt>        (void*)NULL,
-    <#lt>        DRV_WIFI_RTOS_TASK_PRIORITY,
+    <#lt>        DRV_WIFI_WINC_RTOS_TASK_PRIORITY,
     <#lt>        (TaskHandle_t*)NULL
     <#lt>    );
 </#if>

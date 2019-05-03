@@ -304,7 +304,7 @@ void SYS_Initialize ( void* data )
 
 
     /* Initialize the WINC Driver */
-    sysObj.drvWifiWinc = WDRV_WINC_Initialize(0,NULL);
+    sysObj.drvWifiWinc = WDRV_WINC_Initialize(0, NULL);
 
     /* Initialize SPI0 Driver Instance */
     sysObj.drvSPI0 = DRV_SPI_Initialize(DRV_SPI_INDEX_0, (SYS_MODULE_INIT *)&drvSPI0InitData);

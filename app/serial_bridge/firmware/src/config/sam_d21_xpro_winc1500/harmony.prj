@@ -57,24 +57,24 @@
         <File dnOrder="6">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">flexible_flash.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/spi_flash/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/spi_flash/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/spi_flash/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/spi_flash/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">E030B0738E612FAD1C91FB88FEDA6D4C</GeneratedChecksum>
           <UserChecksum dnOrder="5">E030B0738E612FAD1C91FB88FEDA6D4C</UserChecksum>
         </File>
         <File dnOrder="7">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">inet_addr.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/socket/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/socket/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/socket/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/socket/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">C55FE5D085D2231007BDC00D4747DE6D</GeneratedChecksum>
           <UserChecksum dnOrder="5">C55FE5D085D2231007BDC00D4747DE6D</UserChecksum>
         </File>
         <File dnOrder="8">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">inet_ntop.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/socket/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/socket/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/socket/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/socket/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">2FF03E29FED92367E27A6641D9A0A968</GeneratedChecksum>
           <UserChecksum dnOrder="5">2FF03E29FED92367E27A6641D9A0A968</UserChecksum>
         </File>
@@ -105,40 +105,40 @@
         <File dnOrder="12">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">m2m_hif.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">D02A17A6A3C824DB3B356D466E072F64</GeneratedChecksum>
           <UserChecksum dnOrder="5">D02A17A6A3C824DB3B356D466E072F64</UserChecksum>
         </File>
         <File dnOrder="13">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">m2m_ota.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">5E5066B40029C82A4E0534A47C300F80</GeneratedChecksum>
           <UserChecksum dnOrder="5">5E5066B40029C82A4E0534A47C300F80</UserChecksum>
         </File>
         <File dnOrder="14">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">m2m_periph.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">F3115F243521BE09EE3543C18F2AA0E4</GeneratedChecksum>
           <UserChecksum dnOrder="5">F3115F243521BE09EE3543C18F2AA0E4</UserChecksum>
         </File>
         <File dnOrder="15">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">m2m_ssl.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">CEA58E08B0BDF82E0E841B9B1BBC130A</GeneratedChecksum>
           <UserChecksum dnOrder="5">CEA58E08B0BDF82E0E841B9B1BBC130A</UserChecksum>
         </File>
         <File dnOrder="16">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">m2m_wifi.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">F0C1435E45D2251506CFD18B6C024C68</GeneratedChecksum>
           <UserChecksum dnOrder="5">F0C1435E45D2251506CFD18B6C024C68</UserChecksum>
         </File>
@@ -153,40 +153,40 @@
         <File dnOrder="18">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">nm_common.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/common/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/common/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/common/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/common/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">78ACC13BA352E254AB86439710CD35BD</GeneratedChecksum>
           <UserChecksum dnOrder="5">78ACC13BA352E254AB86439710CD35BD</UserChecksum>
         </File>
         <File dnOrder="19">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">nmasic.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">940F80D8FFA7F18E4A9B262898B01D4E</GeneratedChecksum>
           <UserChecksum dnOrder="5">940F80D8FFA7F18E4A9B262898B01D4E</UserChecksum>
         </File>
         <File dnOrder="20">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">nmbus.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">3B81C1E0DF924E32C5DA89255A881881</GeneratedChecksum>
           <UserChecksum dnOrder="5">3B81C1E0DF924E32C5DA89255A881881</UserChecksum>
         </File>
         <File dnOrder="21">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">nmdrv.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">6909DA29667AF06D1E0402DAF4D8A542</GeneratedChecksum>
           <UserChecksum dnOrder="5">6909DA29667AF06D1E0402DAF4D8A542</UserChecksum>
         </File>
         <File dnOrder="22">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">nmspi.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">B263F317EFDE2EA49C9BEB237F829443</GeneratedChecksum>
           <UserChecksum dnOrder="5">B263F317EFDE2EA49C9BEB237F829443</UserChecksum>
         </File>
@@ -265,16 +265,16 @@
         <File dnOrder="32">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">socket.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/socket/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/socket/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/socket/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/socket/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">E87A7B051CC2C341474C66889C9AB8C7</GeneratedChecksum>
           <UserChecksum dnOrder="5">E87A7B051CC2C341474C66889C9AB8C7</UserChecksum>
         </File>
         <File dnOrder="33">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">spi_flash.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/winc1500_19_6_1/spi_flash/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/winc1500_19_6_1/spi_flash/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/drv/spi_flash/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/drv/spi_flash/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">2EBEA0A844FF84803F2902487F422462</GeneratedChecksum>
           <UserChecksum dnOrder="5">2EBEA0A844FF84803F2902487F422462</UserChecksum>
         </File>
@@ -321,48 +321,48 @@
         <File dnOrder="39">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">1BF3318EF8F0A4129E0550583766159E</GeneratedChecksum>
           <UserChecksum dnOrder="5">1BF3318EF8F0A4129E0550583766159E</UserChecksum>
         </File>
         <File dnOrder="40">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_assoc.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">BFFD0399F9A1FCCE8911BA640ACBB162</GeneratedChecksum>
           <UserChecksum dnOrder="5">BFFD0399F9A1FCCE8911BA640ACBB162</UserChecksum>
         </File>
         <File dnOrder="41">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_authctx.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">B00F714DDDE7057AFD474E16A5B6EC41</GeneratedChecksum>
           <UserChecksum dnOrder="5">B00F714DDDE7057AFD474E16A5B6EC41</UserChecksum>
         </File>
         <File dnOrder="42">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_bssctx.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">48FCB45C466C8CE61A2DD7806B46AD26</GeneratedChecksum>
           <UserChecksum dnOrder="5">48FCB45C466C8CE61A2DD7806B46AD26</UserChecksum>
         </File>
         <File dnOrder="43">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_bssfind.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">195691230A276522096DF52D9A118D3E</GeneratedChecksum>
           <UserChecksum dnOrder="5">195691230A276522096DF52D9A118D3E</UserChecksum>
         </File>
         <File dnOrder="44">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_custie.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">96E6D942A4AC1D96387179C52B21A3D8</GeneratedChecksum>
           <UserChecksum dnOrder="5">96E6D942A4AC1D96387179C52B21A3D8</UserChecksum>
         </File>
@@ -385,24 +385,24 @@
         <File dnOrder="47">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_host_file.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">DBD38304383A5CB3EE5F4DA528BDC8D0</GeneratedChecksum>
           <UserChecksum dnOrder="5">DBD38304383A5CB3EE5F4DA528BDC8D0</UserChecksum>
         </File>
         <File dnOrder="48">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_httpprovctx.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">2D921B6280E1A16F6F1B10E0E91CCECB</GeneratedChecksum>
           <UserChecksum dnOrder="5">2D921B6280E1A16F6F1B10E0E91CCECB</UserChecksum>
         </File>
         <File dnOrder="49">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_nvm.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">6555CFB4CAD728C00BF85D49C899D887</GeneratedChecksum>
           <UserChecksum dnOrder="5">6555CFB4CAD728C00BF85D49C899D887</UserChecksum>
         </File>
@@ -417,24 +417,24 @@
         <File dnOrder="51">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_powersave.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">96088A10CB585C2A2FCFCF99F7E4F7D7</GeneratedChecksum>
           <UserChecksum dnOrder="5">96088A10CB585C2A2FCFCF99F7E4F7D7</UserChecksum>
         </File>
         <File dnOrder="52">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_socket.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">55CB67BEF5446F0E687FE177FC1A643D</GeneratedChecksum>
           <UserChecksum dnOrder="5">55CB67BEF5446F0E687FE177FC1A643D</UserChecksum>
         </File>
         <File dnOrder="53">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_softap.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">1E551FAA801DDDD83E6360F5B897C338</GeneratedChecksum>
           <UserChecksum dnOrder="5">1E551FAA801DDDD83E6360F5B897C338</UserChecksum>
         </File>
@@ -449,32 +449,32 @@
         <File dnOrder="55">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_ssl.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">E029E585E3524C5E5B0974984F1F0CB7</GeneratedChecksum>
           <UserChecksum dnOrder="5">E029E585E3524C5E5B0974984F1F0CB7</UserChecksum>
         </File>
         <File dnOrder="56">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_sta.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">2E3EDEB5BDD4F7604F2DB1854540A247</GeneratedChecksum>
           <UserChecksum dnOrder="5">2E3EDEB5BDD4F7604F2DB1854540A247</UserChecksum>
         </File>
         <File dnOrder="57">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_systime.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">F6FCB280CC57CEF413AB751031ACF919</GeneratedChecksum>
           <UserChecksum dnOrder="5">F6FCB280CC57CEF413AB751031ACF919</UserChecksum>
         </File>
         <File dnOrder="58">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_wps.c</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/src/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/src/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">2F36799C2E704EEB20E56434B759DF75</GeneratedChecksum>
           <UserChecksum dnOrder="5">2F36799C2E704EEB20E56434B759DF75</UserChecksum>
         </File>
@@ -579,8 +579,8 @@
           <Name dnOrder="1">configuration.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/</LogicalPath>
           <PhysicalPath dnOrder="3">/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">E5C84F3DD02B0E04733B496B3F203222</GeneratedChecksum>
-          <UserChecksum dnOrder="5">E5C84F3DD02B0E04733B496B3F203222</UserChecksum>
+          <GeneratedChecksum dnOrder="4">DE9F3066AC5BB40AAD150FC3BBACD8D7</GeneratedChecksum>
+          <UserChecksum dnOrder="5">DE9F3066AC5BB40AAD150FC3BBACD8D7</UserChecksum>
         </File>
         <File dnOrder="72">
           <Type dnOrder="0">HEADER</Type>
@@ -689,8 +689,8 @@
         <File dnOrder="85">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">ecc_types.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">E7128B067361B4A647628DF08FB92757</GeneratedChecksum>
           <UserChecksum dnOrder="5">E7128B067361B4A647628DF08FB92757</UserChecksum>
         </File>
@@ -713,8 +713,8 @@
         <File dnOrder="88">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">flexible_flash.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/spi_flash/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/spi_flash/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/spi_flash/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">73D63376E76DC6D8EA4DDFEC37C78BF9</GeneratedChecksum>
           <UserChecksum dnOrder="5">73D63376E76DC6D8EA4DDFEC37C78BF9</UserChecksum>
         </File>
@@ -745,56 +745,56 @@
         <File dnOrder="92">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_hif.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">0FC58E21F7B7BF6AF3DAE69DCC93FB6D</GeneratedChecksum>
           <UserChecksum dnOrder="5">0FC58E21F7B7BF6AF3DAE69DCC93FB6D</UserChecksum>
         </File>
         <File dnOrder="93">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_ota.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">43F787441F9EC3EF5FB03A2ED28223D9</GeneratedChecksum>
           <UserChecksum dnOrder="5">43F787441F9EC3EF5FB03A2ED28223D9</UserChecksum>
         </File>
         <File dnOrder="94">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_periph.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">4283E4F2215531150733C77EF33E7E54</GeneratedChecksum>
           <UserChecksum dnOrder="5">4283E4F2215531150733C77EF33E7E54</UserChecksum>
         </File>
         <File dnOrder="95">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_socket_host_if.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/socket/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/socket/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">35231C4D98E5343803E2E5853DB95638</GeneratedChecksum>
           <UserChecksum dnOrder="5">35231C4D98E5343803E2E5853DB95638</UserChecksum>
         </File>
         <File dnOrder="96">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_ssl.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">B8131479F6EDD6EDBD08F1042FE1395B</GeneratedChecksum>
           <UserChecksum dnOrder="5">B8131479F6EDD6EDBD08F1042FE1395B</UserChecksum>
         </File>
         <File dnOrder="97">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_types.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">3FDE2AD673A64AE61ECC6707C18B88EB</GeneratedChecksum>
           <UserChecksum dnOrder="5">3FDE2AD673A64AE61ECC6707C18B88EB</UserChecksum>
         </File>
         <File dnOrder="98">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">m2m_wifi.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">579D7A152108A4C1289EAC023ACE0395</GeneratedChecksum>
           <UserChecksum dnOrder="5">579D7A152108A4C1289EAC023ACE0395</UserChecksum>
         </File>
@@ -817,64 +817,64 @@
         <File dnOrder="101">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">netinet_in.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/socket/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/socket/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">85A3E43B9248BB4B5D7F52CBC0D4125E</GeneratedChecksum>
           <UserChecksum dnOrder="5">85A3E43B9248BB4B5D7F52CBC0D4125E</UserChecksum>
         </File>
         <File dnOrder="102">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nm_bsp.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/bsp/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/bsp/include/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/bsp/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">CAC5C47B316983C1E122CAB2FD43AFFE</GeneratedChecksum>
           <UserChecksum dnOrder="5">CAC5C47B316983C1E122CAB2FD43AFFE</UserChecksum>
         </File>
         <File dnOrder="103">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nm_common.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/common/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/common/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/common/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/common/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">A791858549F03B47F3EEA171AB206F45</GeneratedChecksum>
           <UserChecksum dnOrder="5">A791858549F03B47F3EEA171AB206F45</UserChecksum>
         </File>
         <File dnOrder="104">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nm_debug.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/common/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/common/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/common/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/common/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">165BBC25B04F3206778AE0F11BBF5303</GeneratedChecksum>
           <UserChecksum dnOrder="5">165BBC25B04F3206778AE0F11BBF5303</UserChecksum>
         </File>
         <File dnOrder="105">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nmasic.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">C7D41375E9A5280873327873513B6B5F</GeneratedChecksum>
           <UserChecksum dnOrder="5">C7D41375E9A5280873327873513B6B5F</UserChecksum>
         </File>
         <File dnOrder="106">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nmbus.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">D5CBBFFC17CB0CB244057299A8B596AB</GeneratedChecksum>
           <UserChecksum dnOrder="5">D5CBBFFC17CB0CB244057299A8B596AB</UserChecksum>
         </File>
         <File dnOrder="107">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nmdrv.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">2BD9926C66DA3198DD131B74E85467A7</GeneratedChecksum>
           <UserChecksum dnOrder="5">2BD9926C66DA3198DD131B74E85467A7</UserChecksum>
         </File>
         <File dnOrder="108">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">nmspi.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/driver/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/driver/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">ABE375BE1BD4832F51F4640CFA1990A7</GeneratedChecksum>
           <UserChecksum dnOrder="5">ABE375BE1BD4832F51F4640CFA1990A7</UserChecksum>
         </File>
@@ -1065,16 +1065,16 @@
         <File dnOrder="132">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">socket.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/socket/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/socket/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">0234CD2BAB91760225017C5896658F46</GeneratedChecksum>
           <UserChecksum dnOrder="5">0234CD2BAB91760225017C5896658F46</UserChecksum>
         </File>
         <File dnOrder="133">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">spi_flash.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/spi_flash/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/winc1500_19_6_1/spi_flash/</PhysicalPath>
+          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/</LogicalPath>
+          <PhysicalPath dnOrder="3">/driver/winc/include/drv/spi_flash/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">CAEF6646ACC782884E7FA31BA776FBF1</GeneratedChecksum>
           <UserChecksum dnOrder="5">CAEF6646ACC782884E7FA31BA776FBF1</UserChecksum>
         </File>
@@ -1336,29 +1336,13 @@
         </File>
         <File dnOrder="166">
           <Type dnOrder="0">HEADER</Type>
-          <Name dnOrder="1">wdrv_winc_iwpriv.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">716AB414C39203D03B23EAF62937C203</GeneratedChecksum>
-          <UserChecksum dnOrder="5">716AB414C39203D03B23EAF62937C203</UserChecksum>
-        </File>
-        <File dnOrder="167">
-          <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_nvm.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
           <PhysicalPath dnOrder="3">/driver/winc/include/</PhysicalPath>
           <GeneratedChecksum dnOrder="4">D20447BBBF8A384DF14AE1055ACB800D</GeneratedChecksum>
           <UserChecksum dnOrder="5">D20447BBBF8A384DF14AE1055ACB800D</UserChecksum>
         </File>
-        <File dnOrder="168">
-          <Type dnOrder="0">HEADER</Type>
-          <Name dnOrder="1">wdrv_winc_pktpool.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">F857034E16A186D53CFF2A000250A4D8</GeneratedChecksum>
-          <UserChecksum dnOrder="5">F857034E16A186D53CFF2A000250A4D8</UserChecksum>
-        </File>
-        <File dnOrder="169">
+        <File dnOrder="167">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_powersave.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1366,7 +1350,7 @@
           <GeneratedChecksum dnOrder="4">5CCB190999DE65DBF71288BD3E805D0E</GeneratedChecksum>
           <UserChecksum dnOrder="5">5CCB190999DE65DBF71288BD3E805D0E</UserChecksum>
         </File>
-        <File dnOrder="170">
+        <File dnOrder="168">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_socket.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1374,7 +1358,7 @@
           <GeneratedChecksum dnOrder="4">FC7FE8C0E07EFC36F9F870485BDED728</GeneratedChecksum>
           <UserChecksum dnOrder="5">FC7FE8C0E07EFC36F9F870485BDED728</UserChecksum>
         </File>
-        <File dnOrder="171">
+        <File dnOrder="169">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_softap.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1382,7 +1366,7 @@
           <GeneratedChecksum dnOrder="4">8B32D91D709F4E88480986F43BCA4C1F</GeneratedChecksum>
           <UserChecksum dnOrder="5">8B32D91D709F4E88480986F43BCA4C1F</UserChecksum>
         </File>
-        <File dnOrder="172">
+        <File dnOrder="170">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_spi.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/dev/</LogicalPath>
@@ -1390,7 +1374,7 @@
           <GeneratedChecksum dnOrder="4">9E5239E89E6ACE552A016C00EA4ED131</GeneratedChecksum>
           <UserChecksum dnOrder="5">9E5239E89E6ACE552A016C00EA4ED131</UserChecksum>
         </File>
-        <File dnOrder="173">
+        <File dnOrder="171">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_ssl.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1398,7 +1382,7 @@
           <GeneratedChecksum dnOrder="4">A212B14A6420E0BFFA68A5FC918652E8</GeneratedChecksum>
           <UserChecksum dnOrder="5">A212B14A6420E0BFFA68A5FC918652E8</UserChecksum>
         </File>
-        <File dnOrder="174">
+        <File dnOrder="172">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_sta.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1406,15 +1390,7 @@
           <GeneratedChecksum dnOrder="4">D577987C34D334BCD3CEC501DFAB2ED9</GeneratedChecksum>
           <UserChecksum dnOrder="5">D577987C34D334BCD3CEC501DFAB2ED9</UserChecksum>
         </File>
-        <File dnOrder="175">
-          <Type dnOrder="0">HEADER</Type>
-          <Name dnOrder="1">wdrv_winc_stack_drv.h</Name>
-          <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
-          <PhysicalPath dnOrder="3">/driver/winc/include/dev/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">5109FBE49DBCC3C52EB0483A7C40D561</GeneratedChecksum>
-          <UserChecksum dnOrder="5">5109FBE49DBCC3C52EB0483A7C40D561</UserChecksum>
-        </File>
-        <File dnOrder="176">
+        <File dnOrder="173">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_systime.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1422,7 +1398,7 @@
           <GeneratedChecksum dnOrder="4">45AAFF3E417BB7A101A860EAF51AB395</GeneratedChecksum>
           <UserChecksum dnOrder="5">45AAFF3E417BB7A101A860EAF51AB395</UserChecksum>
         </File>
-        <File dnOrder="177">
+        <File dnOrder="174">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdrv_winc_wps.h</Name>
           <LogicalPath dnOrder="2">config/sam_d21_xpro_winc1500/driver/winc/include/</LogicalPath>
@@ -1430,7 +1406,7 @@
           <GeneratedChecksum dnOrder="4">E962248AA74BEE7A167045331D92D685</GeneratedChecksum>
           <UserChecksum dnOrder="5">E962248AA74BEE7A167045331D92D685</UserChecksum>
         </File>
-        <File dnOrder="178">
+        <File dnOrder="175">
           <Type dnOrder="0">HEADER</Type>
           <Name dnOrder="1">wdt.h</Name>
           <LogicalPath dnOrder="2">packs/ATSAMD21J18A_DFP/component/</LogicalPath>
@@ -1440,11 +1416,17 @@
         </File>
       </Files>
       <Settings dnOrder="1">
-        <Setting append="true" category="C32" delimiter=";" dnOrder="0" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/bsp;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/bsp/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/common;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/driver;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/socket;../src/config/sam_d21_xpro_winc1500/driver/winc/include/winc1500_19_6_1/spi_flash;"/>
-        <Setting append="true" category="C32" delimiter=";" dnOrder="1" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev;"/>
-        <Setting append="true" category="C32" delimiter=";" dnOrder="2" key="extra-include-directories" value="../src;../src/config/sam_d21_xpro_winc1500;../src/packs/ATSAMD21J18A_DFP;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/CMSIS/;../src/arm"/>
-        <Setting category="C32-LD" dnOrder="3" key="heap-size" value="10000"/>
-        <Setting category="C32-LD" dnOrder="4" key="no-device-startup-code" value="true"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="0" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="1" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="2" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp/include;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="3" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="4" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/common;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="5" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="6" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="7" key="extra-include-directories" value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash;"/>
+        <Setting append="true" category="C32" delimiter=";" dnOrder="8" key="extra-include-directories" value="../src;../src/config/sam_d21_xpro_winc1500;../src/packs/ATSAMD21J18A_DFP;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/CMSIS/;../src/arm"/>
+        <Setting category="C32-LD" dnOrder="9" key="heap-size" value="10000"/>
+        <Setting category="C32-LD" dnOrder="10" key="no-device-startup-code" value="true"/>
       </Settings>
     </Manifest>
     <Settings dnOrder="4">

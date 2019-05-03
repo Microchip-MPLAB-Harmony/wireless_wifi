@@ -45,8 +45,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#include "system_config.h"
-#include "system_definitions.h"
+#include "configuration.h"
+#include "definitions.h"
 #include "wdrv_winc_pktpool.h"
 #include "tcpip/src/tcpip_packet.h"
 #include "tcpip/src/link_list.h"

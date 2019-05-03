@@ -43,8 +43,8 @@
 
 <#if HarmonyCore.SELECT_RTOS != "BareMetal">
     <#lt>/* WIFI RTOS Configurations*/
-    <#lt>#define DRV_WIFI_RTOS_STACK_SIZE           ${DRV_WIFI_RTOS_STACK_SIZE}
-    <#lt>#define DRV_WIFI_RTOS_TASK_PRIORITY             ${DRV_WIFI_RTOS_TASK_PRIORITY}
+    <#lt>#define DRV_WIFI_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
+    <#lt>#define DRV_WIFI_WINC_RTOS_TASK_PRIORITY             ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY}
 </#if>
 
 <#--
