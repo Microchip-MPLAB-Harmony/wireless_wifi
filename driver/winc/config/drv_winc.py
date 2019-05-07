@@ -287,8 +287,8 @@ def instantiateComponent(drvWincComponent):
     condSocketMode          = [flagSocketMode,          setEnableSocketMode,        ['DRV_WIFI_WINC_DRIVER_MODE']]
     condEthernetMode        = [flagEthernetMode,        setEnableEthernetMode,      ['DRV_WIFI_WINC_DRIVER_MODE']]
     condHostFileSupport     = [flagHostFileSupport,     setEnableHostFileSupport,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
-    condTcpipStackPresent   = [flagTcpipStackPresent,   setEnableTcpipStackPresent, ['DRV_WIFI_WINC_USE_TCPIP_STACK']]
-    condIwprivIntfPresent   = [flagIwprivIntfPresent,   setEnableIwprivIntfPresent, ['DRV_WIFI_WINC_USE_IWPRIV_INTF']]
+    condTcpipStackPresent   = [flagTcpipStackPresent,   setEnableTcpipStackPresent, ['DRV_WIFI_WINC_USE_TCPIP_STACK', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condIwprivIntfPresent   = [flagIwprivIntfPresent,   setEnableIwprivIntfPresent, ['DRV_WIFI_WINC_USE_IWPRIV_INTF', 'DRV_WIFI_WINC_DRIVER_MODE']]
 #    condBle                 = [flagBlePresent,          setEnableBlePresent         []]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
 
@@ -558,19 +558,23 @@ def setEnableBlePresent(symbol, event):
        symbol.setEnabled(False)
 
 def setEnableTcpipStackPresent(symbol, event):
-    if symbol.getComponent().getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE") == "Socket Mode":
-       symbol.setEnabled(False)
+    component = symbol.getComponent()
 
-    if event["value"] == True:
+    wincDrvMode   = component.getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE")
+    useTcpipStack = component.getSymbolValue("DRV_WIFI_WINC_USE_TCPIP_STACK")
+    
+    if ((wincDrvMode == "Ethernet Mode") and (useTcpipStack == True)):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
 def setEnableIwprivIntfPresent(symbol, event):
-    if symbol.getComponent().getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE") == "Socket Mode":
-       symbol.setEnabled(False)
+    component = symbol.getComponent()
 
-    if event["value"] == True:
+    wincDrvMode   = component.getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE")
+    useIwprivIntf = component.getSymbolValue("DRV_WIFI_WINC_USE_IWPRIV_INTF")
+
+    if ((wincDrvMode == "Ethernet Mode") and (useIwprivIntf == True)):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
@@ -578,9 +582,10 @@ def setEnableIwprivIntfPresent(symbol, event):
 def setEnableWinc1500_19_6_1(symbol, event):
     component = symbol.getComponent()
 
-    wifi_device = component.getSymbolValue("DRV_WIFI_WINC_DEVICE")
-    drv_version = component.getSymbolValue("DRV_WIFI_WINC1500_VERSION")
-    if ((wifi_device == "WINC1500") and (drv_version == "19.6.1")):
+    wincDevice  = component.getSymbolValue("DRV_WIFI_WINC_DEVICE")
+    winc1500Ver = component.getSymbolValue("DRV_WIFI_WINC1500_VERSION")
+
+    if ((wincDevice == "WINC1500") and (winc1500Ver == "19.6.1")):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
@@ -589,10 +594,11 @@ def setEnableHostFileSupport(symbol, event):
     # Host file API support requires WINC1500 version 19.6.1+ in Socket Mode
     component = symbol.getComponent()
 
-    wifi_device = component.getSymbolValue("DRV_WIFI_WINC_DEVICE")
-    drv_version = component.getSymbolValue("DRV_WIFI_WINC1500_VERSION")
-    drv_mode    = component.getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE")
-    if ((wifi_device == "WINC1500") and (drv_version == "19.6.1") and (drv_mode == "Socket Mode")):
+    wincDevice  = component.getSymbolValue("DRV_WIFI_WINC_DEVICE")
+    winc1500Ver = component.getSymbolValue("DRV_WIFI_WINC1500_VERSION")
+    wincDrvMode = component.getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE")
+
+    if ((wincDevice == "WINC1500") and (winc1500Ver == "19.6.1") and (wincDrvMode == "Socket Mode")):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
