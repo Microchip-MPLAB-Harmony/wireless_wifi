@@ -348,7 +348,7 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, configName, incFileEntry)
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc1500_19_6_1')
+        importIncFile(drvWincComponent, configName, incFileEntry, 'winc1500_19.6.1')
 
     wdrvSrcFiles = [
         ['wdrv_winc.c',                         condAlways],
@@ -402,7 +402,7 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, configName, srcFileEntry)
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc1500_19_6_1')
+        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc1500_19.6.1')
 
     wdrvIncPaths = [
         ['/',                                   condAlways],
