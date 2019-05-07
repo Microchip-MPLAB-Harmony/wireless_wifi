@@ -51,6 +51,7 @@
                   </logicalFolder>
                   <logicalFolder name="f4" displayName="spi_flash" projectFiles="true">
                     <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/spi_flash.h</itemPath>
+                    <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/spi_flash_map.h</itemPath>
                     <itemPath>../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash/flexible_flash.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>

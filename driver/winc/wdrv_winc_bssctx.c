@@ -110,6 +110,26 @@ bool WDRV_WINC_BSSCtxIsValid
         return false;
     }
 
+#ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
+    /* Ensure the BSSID is non-zero, if valid. */
+    if (true == pBSSCtx->bssid.valid)
+    {
+        int i;
+        uint8_t macAddrChk;
+
+        macAddrChk = 0;
+        for (i=0; i<M2M_MAC_ADDRES_LEN; i++)
+        {
+            macAddrChk |= pBSSCtx->bssid.addr[i];
+        }
+
+        if (0 == macAddrChk)
+        {
+            return false;
+        }
+    }
+#endif    
+
     if (true == ssidValid)
     {
         /* If requested, check the SSID is present. */
@@ -153,8 +173,9 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetDefaults
     }
 
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
-    memset(pBSSCtx->bssid, 0, M2M_MAC_ADDRES_LEN);
-#endif
+    memset(pBSSCtx->bssid.addr, 0, M2M_MAC_ADDRES_LEN);
+    pBSSCtx->bssid.valid = false;
+#endif    
 
     /* Set context to have no SSID, all channels and not cloaked. */
     pBSSCtx->ssid.length = 0;
@@ -246,8 +267,17 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetBSSID
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    /* Copy the BSSID. */
-    memcpy(&pBSSCtx->bssid, pBSSID, M2M_MAC_ADDRES_LEN);
+    if (NULL != pBSSID)
+    {
+        /* Copy the BSSID. */
+        memcpy(&pBSSCtx->bssid, pBSSID, M2M_MAC_ADDRES_LEN);
+        pBSSCtx->bssid.valid = true;
+    }
+    else
+    {
+        memset(&pBSSCtx->bssid, 0, M2M_MAC_ADDRES_LEN);
+        pBSSCtx->bssid.valid = false;
+    }
 
     /* Validate context. */
     if (false == WDRV_WINC_BSSCtxIsValid(pBSSCtx, false))

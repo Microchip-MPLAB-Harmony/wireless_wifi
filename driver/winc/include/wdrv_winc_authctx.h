@@ -51,10 +51,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
-#include "m2m_types.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -272,7 +269,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
         uint8_t idx,
         uint8_t *pKey,
         uint8_t size
-    );
+    )
 
   Summary:
     Configure an authentication context for WEP authentication.

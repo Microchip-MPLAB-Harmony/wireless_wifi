@@ -45,8 +45,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <stdint.h>
 #include <string.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_gpio.h"
@@ -247,7 +245,7 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
                 pDcpt->assocInfoValid = false;
             }
 #ifdef WDRV_WINC_DEVICE_BSS_ROAMING
-            else if (M2M_WIFI_ROAMED== pConnectState->u8CurrState)
+            else if (M2M_WIFI_ROAMED == pConnectState->u8CurrState)
             {
             }
 #endif
@@ -1146,9 +1144,16 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
             break;
         }
 
+        /* Error state.*/
+        case SYS_STATUS_ERROR:
+        {
+            break;
+        }
+
         default:
         {
             WDRV_DBG_ERROR_PRINT("Should never happen\r\n");
+            pDcpt->sysStat = SYS_STATUS_ERROR;
             break;
         }
     }

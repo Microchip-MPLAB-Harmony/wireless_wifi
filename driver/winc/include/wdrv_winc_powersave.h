@@ -50,10 +50,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
-#include "m2m_types.h"
 
 // *****************************************************************************
 // *****************************************************************************

@@ -158,27 +158,39 @@ MACROS
 
 #define SO_KEEPALIVE                                        0x04
 /*!<
-    Enable or disable TCP keep-alive.
+    Socket option to enable or disable TCP keep-alive.
     Used with the @ref setsockopt function.
+    The option value should be cast to int type.
+    0: disable TCP keep-alive.
+    1: enable TCP keep-alive.
+    Default setting is disable.
 */
 
 #define TCP_KEEPIDLE                                        0x05
 /*!<
-    Duration between two keepalive transmissions in idle condition (in 500ms increments, so 4 would be 2 seconds). Max 2^32.
+    Socket option to set the time period after which the socket will trigger keep-alive transmissions.
     Used with the @ref setsockopt function.
+    The option value should be cast to int type.
+    Option value is the time period in units of 500ms. Maximum 2^32 - 1.
+    Default setting is 120 (60 seconds).
 */
 
 #define TCP_KEEPINTVL                                       0x06
 /*!<
-    Duration between two successive keepalive retransmissions, if acknowledgment to the previous keepalive
-    transmission is not received  (in 500ms increments, so 4 would be 2 seconds). Max 255 (127.5 seconds).
+    Socket option to set the time period between keep-alive retransmissions.
     Used with the @ref setsockopt function.
+    The option value should be cast to int type.
+    Option value is the time period in units of 500ms. Maximum 255.
+    Default setting is 1 (0.5 seconds).
 */
 
 #define TCP_KEEPCNT                                         0x07
 /*!<
-    Number of retransmissions to be carried out before declaring that the remote end is not available. Max 255.
+    Socket option to set the number of keep-alive retransmissions to be carried out before declaring that the remote end is not available.
     Used with the @ref setsockopt function.
+    The option value should be cast to int type.
+    Maximum 255.
+    Default setting is 20.
 */
 /**@}*/     //IPDefines
 
@@ -1655,21 +1667,6 @@ int16_t sendto(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t
  * @return      The function returned @ref SOCK_ERR_NO_ERROR for successful operation and a negative value (indicating the error) otherwise.
  */
 int8_t close(SOCKET sock);
-
-/*!
- * @fn          uint32_t nmi_inet_addr(char *pcIpAddr);
- *              Synchronous function which returns a BSD socket compliant Internet Protocol (IPv4) socket address.
- *              This IPv4 address in the input string parameter could either be specified as a hostname, or as a numeric string
- *              representation like n.n.n.n known as the IPv4 dotted-decimal format (i.e. "192.168.10.1").
- *              This function is used whenever an ip address needs to be set in the proper format
- *              (i.e. for the @ref tstrM2MIPConfig structure).
- * @param[in]   pcIpAddr
- *                  A null terminated string containing the IP address in IPv4 dotted-decimal address.
- * @return
- *              Unsigned 32-bit integer representing the IP address in Network byte order
- *              (eg. "192.168.10.1" will be expressed as 0x010AA8C0).
- */
-uint32_t nmi_inet_addr(char *pcIpAddr);
 
 /*!
  * @fn          int8_t gethostbyname(const char *pcHostName);

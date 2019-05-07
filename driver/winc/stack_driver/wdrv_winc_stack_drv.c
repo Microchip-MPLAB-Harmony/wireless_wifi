@@ -45,8 +45,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_stack_drv.h"
 #include "wdrv_winc_pktpool.h"
 #include "tcpip/tcpip_mac.h"
@@ -729,7 +727,7 @@ void WDRV_WINC_MACClose(DRV_HANDLE handle)
     }
 
     pDcpt->wincDrvState = WDRV_WINC_DRV_STATE_OPEN;
-    pDcpt->isLinkActive     = false;
+    pDcpt->isLinkActive = false;
 
     pDcpt->isOpen = false;
 }

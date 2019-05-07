@@ -47,7 +47,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc_ble.h"
 
 #include "at_ble_api.h"
-#include "m2m_wifi.h"
 #include "platform.h"
 
 // *****************************************************************************
@@ -169,6 +168,7 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStart(DRV_HANDLE handle)
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     plf_params_t plf_params;
+    tstrM2mRev info;
 
     /* Ensure the driver handle is valid. */
     if (NULL == pDcpt)
@@ -188,6 +188,11 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStart(DRV_HANDLE handle)
         return WDRV_WINC_STATUS_OK;
     }
 
+    if (M2M_SUCCESS != m2m_wifi_get_firmware_version(&info))
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
     /* Remove restriction on BLE use. */
     m2m_wifi_req_unrestrict_ble();
 
@@ -199,6 +204,10 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStart(DRV_HANDLE handle)
         plf_params.drvHandle    = handle;
         plf_params.ble_write_cb = m2m_wifi_ble_api_send;
         plf_params.plf_wait_cb  = _WDRV_WINC_BLEWaitCallback;
+
+        plf_params.fw_ver.major = info.u8FirmwareMajor;
+        plf_params.fw_ver.minor = info.u8FirmwareMinor;
+        plf_params.fw_ver.patch = info.u8FirmwarePatch;
 
         if (AT_BLE_SUCCESS != at_ble_init(&plf_params))
         {

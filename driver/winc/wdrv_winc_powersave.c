@@ -47,7 +47,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "wdrv_winc.h"
 #include "wdrv_winc_powersave.h"
-#include "m2m_wifi.h"
+#include "wdrv_winc_common.h"
 
 // *****************************************************************************
 // *****************************************************************************

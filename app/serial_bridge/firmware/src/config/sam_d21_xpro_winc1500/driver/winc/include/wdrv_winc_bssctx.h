@@ -51,8 +51,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
 
 // *****************************************************************************
@@ -81,7 +79,7 @@ typedef struct
 
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
     /* BSSID. */
-    uint8_t bssid[M2M_MAC_ADDRES_LEN];
+    WDRV_WINC_MAC_ADDR bssid;
 #endif
     /* Current channel of BSS. */
     uint8_t channel;
@@ -221,7 +219,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSID
     Configures the BSSID of the BSS context.
 
   Description:
-    The SSID string is copied into the BSS context.
+    The BSSID string is copied into the BSS context.
 
   Precondition:
     None.
@@ -306,6 +304,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetChannel
     None.
 
   Parameters:
+    pBSSCtx - Pointer to a BSS context.
     visible - Flag indicating if this BSS will be visible or not.
 
   Returns:

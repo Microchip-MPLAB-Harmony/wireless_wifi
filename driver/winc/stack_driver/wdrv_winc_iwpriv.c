@@ -36,8 +36,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *******************************************************************************/
 
-#include "configuration.h"
-#include "definitions.h"
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "wdrv_winc.h"
 #include "wdrv_winc_iwpriv.h"
 #include "wdrv_winc_stack_drv.h"
 #include "tcpip/src/tcpip_manager_control.h"

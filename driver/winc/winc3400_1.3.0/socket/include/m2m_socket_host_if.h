@@ -52,10 +52,6 @@ INCLUDES
 MACROS
 *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
 
-#ifdef _FIRMWARE_
-#define HOSTNAME_MAX_SIZE           (100)
-#endif
-
 #define SSL_MAX_OPT_LEN             HOSTNAME_MAX_SIZE
 
 #define ALPN_LIST_MIN_SIZE          4

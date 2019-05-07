@@ -50,8 +50,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
 
 // *****************************************************************************
@@ -67,7 +65,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
     Callback returning the system time.
 
   Description:
-    Callback returning the system time.
+    Callback returning the system time. The time is returned as UTC seconds
+    since 01/01/1970.
 
   Remarks:
     None.
@@ -246,7 +245,7 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeSNTPClientDisable(DRV_HANDLE handle);
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
-    curTime - The current UTC time.
+    curTime - The current UTC time (epoch 01/01/1970).
 
   Returns:
     WDRV_WINC_STATUS_OK            - The request has been accepted.

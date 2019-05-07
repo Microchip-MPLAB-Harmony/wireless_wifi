@@ -50,8 +50,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_bssctx.h"
 #include "wdrv_winc_authctx.h"

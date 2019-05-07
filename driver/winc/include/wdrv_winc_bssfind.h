@@ -60,8 +60,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_authctx.h"
 
@@ -296,7 +294,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindFirst
     pfNotifyCallback - Callback to receive notification of next BSS found.
 
   Returns:
-    WDRV_WINC_STATUS_OK               - A scan was initiated.
+    WDRV_WINC_STATUS_OK               - The request was accepted.
     WDRV_WINC_STATUS_NOT_OPEN         - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG      - The parameters were incorrect.
     WDRV_WINC_STATUS_SCAN_IN_PROGRESS - A scan is already in progress.
@@ -338,7 +336,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindNext
     pfNotifyCallback - Callback to receive notification of next BSS found.
 
   Returns:
-    WDRV_WINC_STATUS_OK               - A scan was initiated.
+    WDRV_WINC_STATUS_OK               - The request was accepted.
     WDRV_WINC_STATUS_NOT_OPEN         - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG      - The parameters were incorrect.
     WDRV_WINC_STATUS_SCAN_IN_PROGRESS - A scan is already in progress.
@@ -382,7 +380,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindReset
     pBSSInfo - Pointer to structure to populate with the current BSS information.
 
   Returns:
-    WDRV_WINC_STATUS_OK          - A scan was initiated.
+    WDRV_WINC_STATUS_OK          - The request was accepted.
     WDRV_WINC_STATUS_NOT_OPEN    - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG - The parameters were incorrect.
     WDRV_WINC_STATUS_NO_BSS_INFO - There is no current BBS information available.
@@ -409,7 +407,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
         uint8_t activeSlotTime,
         uint8_t passiveSlotTime,
         uint8_t numProbes
-    );
+    )
 
   Summary:
     Configures the scan operation.
@@ -432,7 +430,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
     numProbes       - Number of probes per slot.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - A scan was initiated.
+    WDRV_WINC_STATUS_OK            - The request was accepted.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
 
@@ -475,7 +473,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
     rssiThreshold - Minimum RSSI for detection.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - A scan was initiated.
+    WDRV_WINC_STATUS_OK            - The request was accepted.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
 
@@ -504,7 +502,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
 
   Description:
     To comply with regulatory domains certain channels must not be scanned.
-      This function allows which channels are enabled to be configured.
+      This function configures which channels are enabled to be used.
 
   Precondition:
     WDRV_WINC_Initialize must have been called.
@@ -515,7 +513,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
     channelMask - A channel mask detailing all the enabled channels.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - A scan was initiated.
+    WDRV_WINC_STATUS_OK            - The request was accepted.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR - The WINC was unable to accept this
@@ -535,7 +533,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels
 //*******************************************************************************
 /*
   Function:
-    uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle);
+    uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle)
 
   Summary:
     Returns the number of BSS scan results found.
@@ -565,7 +563,7 @@ uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle);
 //*******************************************************************************
 /*
   Function:
-    bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle);
+    bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle)
 
   Summary:
     Indicates if a BSS scan is in progress.
@@ -582,7 +580,7 @@ uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle);
 
   Returns:
     Flag indicating if a scan is in progress. If an error occurs the result
-      is false;
+      is false.
 
   Remarks:
     None.

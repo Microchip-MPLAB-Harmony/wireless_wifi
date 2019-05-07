@@ -382,7 +382,7 @@ typedef struct {
  */
 typedef struct{
     uint16_t  u16DataSize;          /*!< Size of the received data in bytes. */
-    uint16_t  u16RemainigDataSize;  /*!< Size of the remaining data bytes to be delivered to host. */
+    uint16_t  u16RemainingDataSize;  /*!< Size of the remaining data bytes to be delivered to host. */
 } tstrM2mIpCtrlBuf;
 
 

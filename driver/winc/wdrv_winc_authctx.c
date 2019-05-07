@@ -437,7 +437,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
         uint8_t idx,
         uint8_t *pKey,
         uint8_t size
-    );
+    )
 
   Summary:
     Configure an authentication context for WEP authentication.

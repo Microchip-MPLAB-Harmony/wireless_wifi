@@ -43,12 +43,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_socket.h"
-#include "m2m_wifi.h"
 #include "m2m_ota.h"
 
 // *****************************************************************************

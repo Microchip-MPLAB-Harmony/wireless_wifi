@@ -48,7 +48,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_bssfind.h"
-#include "m2m_wifi.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -332,13 +331,13 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindReset
 WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
 (
     DRV_HANDLE handle,
-    WDRV_WINC_BSS_INFO *const pAPInfo
+    WDRV_WINC_BSS_INFO *const pBSSInfo
 )
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle and user pointer is valid. */
-    if ((NULL == pDcpt) || (NULL == pAPInfo))
+    if ((NULL == pDcpt) || (NULL == pBSSInfo))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -356,7 +355,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
     }
 
     /* Copy BSS scan cache to user supplied buffer. */
-    memcpy(pAPInfo, &pDcpt->lastBSSScanInfo, sizeof(WDRV_WINC_BSS_INFO));
+    memcpy(pBSSInfo, &pDcpt->lastBSSScanInfo, sizeof(WDRV_WINC_BSS_INFO));
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -371,7 +370,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
         uint8_t activeSlotTime,
         uint8_t passiveSlotTime,
         uint8_t numProbes
-    );
+    )
 
   Summary:
     Configures the scan operation.
@@ -508,7 +507,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
 
   Description:
     To comply with regulatory domains certain channels must not be scanned.
-      This function allows which channels are enabled to be configured.
+      This function configures which channels are enabled to be used.
 
   Remarks:
     See wdrv_winc_bssfind.h for usage information.
@@ -547,7 +546,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels
 //*******************************************************************************
 /*
   Function:
-    uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle);
+    uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle)
 
   Summary:
     Returns the number of BSS scan results found.
@@ -579,7 +578,7 @@ uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle)
 //*******************************************************************************
 /*
   Function:
-    bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle);
+    bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle)
 
   Summary:
     Indicates if a BSS scan is in progress.

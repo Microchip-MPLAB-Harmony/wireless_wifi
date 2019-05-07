@@ -697,8 +697,14 @@ static void spi_init_pkt_sz(void)
 
 int8_t nm_spi_reset(void)
 {
+    if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
+        return M2M_ERR_BUS_FAIL;
+
     spi_cmd(CMD_RESET, 0, 0, 0, 0);
     spi_cmd_rsp(CMD_RESET);
+
+    OSAL_MUTEX_Unlock(&s_spiLock);
+
     return M2M_SUCCESS;
 }
 

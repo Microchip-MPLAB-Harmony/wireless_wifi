@@ -335,6 +335,7 @@ def instantiateComponent(drvWincComponent):
         ['driver/nmdrv.h',                      condAlways],
         ['driver/nmspi.h',                      condAlways],
         ['spi_flash/spi_flash.h',               condAlways],
+        ['spi_flash/spi_flash_map.h',           condAlways],
         ['spi_flash/flexible_flash.h',          condWinc1500_19_6_1],
         ['socket/m2m_socket_host_if.h',         condSocketMode],
         ['driver/m2m_ota.h',                    condSocketMode],

@@ -35,8 +35,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *******************************************************************************/
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_stack_drv.h"
 
 const TCPIP_MAC_OBJECT WDRV_WINC_MACObject =

@@ -42,7 +42,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_systime.h"
-#include "m2m_wifi.h"
 
 /****************************************************************************
  * Function:        WDRV_WINC_LocalTimeToUTC
@@ -218,7 +217,7 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeSetCurrent(DRV_HANDLE handle, uint32_t curT
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    if (M2M_SUCCESS != m2m_wifi_set_system_time(curTime))
+    if (M2M_SUCCESS != m2m_wifi_set_system_time(curTime + 2208988800UL))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }

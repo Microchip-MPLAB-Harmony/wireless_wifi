@@ -44,17 +44,14 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_nvm.h"
 #include "spi_flash.h"
 #ifdef WDRV_WINC_DEVICE_FLEXIBLE_FLASH_MAP
 #include "flexible_flash.h"
-#else
-#include "spi_flash_map.h"
 #endif
+#include "spi_flash_map.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -87,11 +84,13 @@ typedef struct
 #ifdef WDRV_WINC_DEVICE_FLEXIBLE_FLASH_MAP
 static const uint16_t flashLocationIDMap[] = {
     0x0000, // WDRV_WINC_NVM_REGION_RAW,
-    0x0011, // WDRV_WINC_NVM_REGION_FIRMWARE,
+    0x0011, // WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE,
+    0x0011, // WDRV_WINC_NVM_REGION_FIRMWARE_INACTIVE,
     0x0021, // WDRV_WINC_NVM_REGION_PLL_TABLE,
     0x0021, // WDRV_WINC_NVM_REGION_GAIN_TABLE,
+    0x0021, // WDRV_WINC_NVM_REGION_PLL_AND_GAIN_TABLES
     0x0031, // WDRV_WINC_NVM_REGION_ROOT_CERTS,
-    0x0036, // WDRV_WINC_NVM_REGION_TLS_CERTS,
+    0x0036, // WDRV_WINC_NVM_REGION_LOCAL_CERTS,
     0x0034, // WDRV_WINC_NVM_REGION_CONN_PARAM,
     0x0035, // WDRV_WINC_NVM_REGION_HTTP_FILES,
 #ifdef WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
@@ -99,18 +98,29 @@ static const uint16_t flashLocationIDMap[] = {
 #endif
 };
 #else
+
+#if M2M_GAIN_FLASH_OFFSET != (M2M_PLL_FLASH_OFFSET + M2M_PLL_FLASH_SZ)
+#error "PLL and gain tables are not contiguous"
+#endif
+
 static const WDRV_WINC_FLASH_MAP_ENTRY flashMap[] =
 {
-    {0                              , 0                         },  // WDRV_WINC_NVM_REGION_RAW,
-    {M2M_FIRMWARE_FLASH_OFFSET      , M2M_FIRMWARE_FLASH_SZ     },  // WDRV_WINC_NVM_REGION_FIRMWARE,
-    {M2M_PLL_FLASH_OFFSET           , M2M_PLL_FLASH_SZ          },  // WDRV_WINC_NVM_REGION_PLL_TABLE,
-    {M2M_GAIN_FLASH_OFFSET          , M2M_GAIN_FLASH_SZ         },  // WDRV_WINC_NVM_REGION_GAIN_TABLE,
-    {M2M_TLS_ROOTCER_FLASH_OFFSET   , M2M_TLS_ROOTCER_FLASH_SZ  },  // WDRV_WINC_NVM_REGION_ROOT_CERTS,
-    {M2M_TLS_SERVER_FLASH_OFFSET    , M2M_TLS_SERVER_FLASH_SZ   },  // WDRV_WINC_NVM_REGION_TLS_CERTS,
-    {M2M_CACHED_CONNS_FLASH_OFFSET  , M2M_CACHED_CONNS_FLASH_SZ },  // WDRV_WINC_NVM_REGION_CONN_PARAM,
-    {M2M_HTTP_MEM_FLASH_OFFSET      , M2M_HTTP_MEM_FLASH_SZ     },  // WDRV_WINC_NVM_REGION_HTTP_FILES,
+    {0                              , 0                                     },  // WDRV_WINC_NVM_REGION_RAW,
+    {0                              , M2M_FIRMWARE_FLASH_SZ                 },  // WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE,
+    {0                              , M2M_FIRMWARE_FLASH_SZ                 },  // WDRV_WINC_NVM_REGION_FIRMWARE_INACTIVE,
+    {M2M_PLL_FLASH_OFFSET           , M2M_PLL_FLASH_SZ                      },  // WDRV_WINC_NVM_REGION_PLL_TABLE,
+    {M2M_GAIN_FLASH_OFFSET          , M2M_GAIN_FLASH_SZ                     },  // WDRV_WINC_NVM_REGION_GAIN_TABLE,
+    {M2M_PLL_FLASH_OFFSET           , M2M_PLL_FLASH_SZ+M2M_GAIN_FLASH_SZ    },  // WDRV_WINC_NVM_REGION_PLL_AND_GAIN_TABLES,
+    {M2M_TLS_ROOTCER_FLASH_OFFSET   , M2M_TLS_ROOTCER_FLASH_SZ              },  // WDRV_WINC_NVM_REGION_ROOT_CERTS,
+    {M2M_TLS_SERVER_FLASH_OFFSET    , M2M_TLS_SERVER_FLASH_SZ               },  // WDRV_WINC_NVM_REGION_LOCAL_CERTS,
+    {M2M_CACHED_CONNS_FLASH_OFFSET  , M2M_CACHED_CONNS_FLASH_SZ             },  // WDRV_WINC_NVM_REGION_CONN_PARAM,
+#ifdef WDRV_WINC_DEVICE_WINC3400
+    {0                              , M2M_HTTP_MEM_FLASH_SZ                 },  // WDRV_WINC_NVM_REGION_HTTP_FILES,
+#else
+    {M2M_HTTP_MEM_FLASH_OFFSET      , M2M_HTTP_MEM_FLASH_SZ                 },  // WDRV_WINC_NVM_REGION_HTTP_FILES,
+#endif
 #ifdef WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
-    {0x80000                        , 512*1024                  },  // WDRV_WINC_NVM_REGION_HOST_FILE,
+    {0x80000                        , 512*1024                              },  // WDRV_WINC_NVM_REGION_HOST_FILE,
 #endif
 };
 #endif
@@ -120,6 +130,145 @@ static const WDRV_WINC_FLASH_MAP_ENTRY flashMap[] =
 // Section: WINC Driver NVM Access Implementation
 // *****************************************************************************
 // *****************************************************************************
+
+//*******************************************************************************
+/*
+  Function:
+    static uint8_t _WDRV_WINC_NVMCRC7(uint8_t crc, const uint8_t *buff, uint16_t len)
+
+  Summary:
+    Calculate a CRC.
+
+  Description:
+    Calculates a CRC over a region of data.
+
+  Precondition:
+    None.
+
+  Parameters:
+    crc   - Initial CRC value.
+    pBuff - Pointer to data to calculate CRC over.
+    len   - Length of data.
+
+  Returns:
+    - true for success.
+    - false for failure.
+
+  Remarks:
+    None.
+
+*/
+
+static uint8_t _WDRV_WINC_NVMCRC7(uint8_t crc, const uint8_t *pBuff, uint16_t len)
+{
+    uint16_t i;
+    uint16_t g;
+    uint8_t inv;
+
+    for (i=0; i<len; i++)
+    {
+        for (g=0; g<8; g++)
+        {
+            inv = (((pBuff[i] << g) & 0x80) >> 7) ^ ((crc >> 6) & 1);
+            crc = ((crc << 1) & 0x7f) ^ (9 * inv);
+        }
+    }
+
+    return crc;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
+
+  Summary:
+    Verify flash control sector.
+
+  Description:
+    Verifies that the flash control sector contains a correct magic value and CRC.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pstrControlSec - Pointer to control sector structure.
+
+  Returns:
+    - true for success.
+    - false for failure.
+
+  Remarks:
+    None.
+
+*/
+
+static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
+{
+    if(pstrControlSec->u32OtaMagicValue != OTA_MAGIC_VALUE)
+    {
+        return false;
+    }
+
+    if(pstrControlSec->u32OtaControlSecCrc != _WDRV_WINC_NVMCRC7(0x7f, (uint8_t*)pstrControlSec, sizeof(tstrOtaControlSec) - 4))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
+
+  Summary:
+    Reads the control sector from flash.
+
+  Description:
+    Attempts to read the control sector from flash, if that fails it will
+    try to read the backup sector.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pstrControlSec - Pointer to control sector structure.
+
+  Returns:
+    - true for success.
+    - false for failure.
+
+  Remarks:
+    None.
+
+*/
+
+static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
+{
+    if (M2M_SUCCESS == spi_flash_read((uint8_t*)pstrControlSec, M2M_CONTROL_FLASH_OFFSET, sizeof(tstrOtaControlSec)))
+    {
+        if (true == _WDRV_WINC_NVMVerifyCtrlSec(pstrControlSec))
+        {
+            return true;
+        }
+    }
+
+#ifdef WDRV_WINC_DEVICE_WINC3400
+    if (M2M_SUCCESS == spi_flash_read((uint8_t*)pstrControlSec, M2M_BACKUP_FLASH_OFFSET, sizeof(tstrOtaControlSec)))
+#else
+    if (M2M_SUCCESS == spi_flash_read((uint8_t*)pstrControlSec, M2M_CONTROL_FLASH_BKP_OFFSET, sizeof(tstrOtaControlSec)))
+#endif
+    {
+        if (true == _WDRV_WINC_NVMVerifyCtrlSec(pstrControlSec))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 //*******************************************************************************
 /*
@@ -183,6 +332,48 @@ static bool _WDRV_WINC_NVMFindSection
 
     switch(region)
     {
+        case WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE:
+        case WDRV_WINC_NVM_REGION_FIRMWARE_INACTIVE:
+        {
+            tstrOtaControlSec strControl;
+
+            /* Read control structure from flash. */
+            if (false == _WDRV_WINC_NVMReadCtrlSec(&strControl))
+            {
+                return false;
+            }
+
+            switch(region)
+            {
+                case WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE:
+                {
+                    *pStartAddr = strControl.u32OtaCurrentworkingImagOffset;
+                    break;
+                }
+
+                case WDRV_WINC_NVM_REGION_FIRMWARE_INACTIVE:
+                {
+                    *pStartAddr = strControl.u32OtaRollbackImageOffset;
+                    break;
+                }
+
+#ifdef WDRV_WINC_DEVICE_WINC3400
+                case WDRV_WINC_NVM_REGION_HTTP_FILES:
+                {
+                    *pStartAddr = strControl.u32OtaCurrentworkingImagOffset + (M2M_HTTP_MEM_FLASH_OFFSET - M2M_OTA_IMAGE1_OFFSET);
+                    break;
+                }
+#endif
+
+                default:
+                {
+                    break;
+                }
+            }
+
+            break;
+        }
+
         case WDRV_WINC_NVM_REGION_PLL_TABLE:
         {
             *pSize = 0x400;
@@ -204,8 +395,47 @@ static bool _WDRV_WINC_NVMFindSection
 #else
     else
     {
-        *pStartAddr = flashMap[region].address;
-        *pSize      = flashMap[region].size;
+        tstrOtaControlSec strControl;
+
+        if (0 == flashMap[region].address)
+        {
+            /* Read control structure from flash. */
+            if (false == _WDRV_WINC_NVMReadCtrlSec(&strControl))
+            {
+                return false;
+            }
+        }
+
+        switch(region)
+        {
+            case WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE:
+            {
+                *pStartAddr = strControl.u32OtaCurrentworkingImagOffset;
+                break;
+            }
+
+            case WDRV_WINC_NVM_REGION_FIRMWARE_INACTIVE:
+            {
+                *pStartAddr = strControl.u32OtaRollbackImageOffset;
+                break;
+            }
+
+#ifdef WDRV_WINC_DEVICE_WINC3400
+            case WDRV_WINC_NVM_REGION_HTTP_FILES:
+            {
+                *pStartAddr = strControl.u32OtaCurrentworkingImagOffset + (M2M_HTTP_MEM_FLASH_OFFSET - M2M_OTA_IMAGE1_OFFSET);
+                break;
+            }
+#endif
+
+            default:
+            {
+                *pStartAddr = flashMap[region].address;
+                break;
+            }
+        }
+
+        *pSize = flashMap[region].size;
     }
 #endif
 
@@ -259,6 +489,12 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
+    /* Ensure the driver is opened for exclusive flash access. */
+    if (0 == (pDcpt->intent & DRV_IO_INTENT_EXCLUSIVE))
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
 #ifdef WDRV_WINC_DEVICE_WINC1500
     /* Ensure flash is out of power save mode. */
     if (M2M_SUCCESS != spi_flash_enable(1))
@@ -273,8 +509,15 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
+    /* Erase is only supported for regions which begin on a sector boundary. and
+       are a whole number of sectors long. Any partial sector regions are blocked. */
+    if ((flashAddress | flashRegionSize) & (FLASH_SECTOR_SZ-1))
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
     /* Check requested size fits within region size. */
-    if ((numSectors * FLASH_SECTOR_SZ) > flashRegionSize)
+    if ((((uint32_t)startSector + numSectors) * FLASH_SECTOR_SZ) > flashRegionSize)
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -346,6 +589,12 @@ WDRV_WINC_STATUS WDRV_WINC_NVMWrite
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
+    /* Ensure the driver is opened for exclusive flash access. */
+    if (0 == (pDcpt->intent & DRV_IO_INTENT_EXCLUSIVE))
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
 #ifdef WDRV_WINC_DEVICE_WINC1500
     /* Ensure flash is out of power save mode. */
     if (M2M_SUCCESS != spi_flash_enable(1))
@@ -361,7 +610,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMWrite
     }
 
     /* Check requested size fits within region size. */
-    if ((offset + size) > flashRegionSize)
+    if (((offset + size) > flashRegionSize) || ((offset + size) < offset))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -428,6 +677,12 @@ WDRV_WINC_STATUS WDRV_WINC_NVMRead
 
     /* Ensure the driver instance has been opened for use. */
     if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    /* Ensure the driver is opened for exclusive flash access. */
+    if (0 == (pDcpt->intent & DRV_IO_INTENT_EXCLUSIVE))
     {
         return WDRV_WINC_STATUS_NOT_OPEN;
     }

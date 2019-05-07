@@ -223,23 +223,23 @@ static void m2m_wifi_cb(uint8_t u8OpCode, uint16_t u16DataSize, uint32_t u32Addr
             tstrM2mIpCtrlBuf  strM2mIpCtrlBuf;
             uint16_t u16Offset = pstrM2MIpRxPkt->u16PktOffset;
 
-            strM2mIpCtrlBuf.u16RemainigDataSize = pstrM2MIpRxPkt->u16PktSz;
+            strM2mIpCtrlBuf.u16RemainingDataSize = pstrM2MIpRxPkt->u16PktSz;
             if ((gpfAppEthCb) &&(gau8ethRcvBuf)&& (gu16ethRcvBufSize > 0))
             {
-                while (strM2mIpCtrlBuf.u16RemainigDataSize > 0)
+                while (strM2mIpCtrlBuf.u16RemainingDataSize > 0)
                 {
-                    if(strM2mIpCtrlBuf.u16RemainigDataSize > gu16ethRcvBufSize)
+                    if(strM2mIpCtrlBuf.u16RemainingDataSize > gu16ethRcvBufSize)
                     {
                         strM2mIpCtrlBuf.u16DataSize = gu16ethRcvBufSize ;
                     }
                     else
                     {
-                        strM2mIpCtrlBuf.u16DataSize = strM2mIpCtrlBuf.u16RemainigDataSize;
+                        strM2mIpCtrlBuf.u16DataSize = strM2mIpCtrlBuf.u16RemainingDataSize;
                     }
 
                     if (hif_receive(u32Addr+u16Offset, gau8ethRcvBuf, strM2mIpCtrlBuf.u16DataSize, 0) == M2M_SUCCESS)
                     {
-                        strM2mIpCtrlBuf.u16RemainigDataSize -= strM2mIpCtrlBuf.u16DataSize;
+                        strM2mIpCtrlBuf.u16RemainingDataSize -= strM2mIpCtrlBuf.u16DataSize;
                         u16Offset += strM2mIpCtrlBuf.u16DataSize;
                         gpfAppEthCb(M2M_WIFI_RESP_ETHERNET_RX_PACKET, gau8ethRcvBuf, &(strM2mIpCtrlBuf));
                     }

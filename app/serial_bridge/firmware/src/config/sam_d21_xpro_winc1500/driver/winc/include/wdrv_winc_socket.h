@@ -55,8 +55,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc.h"
 #include "wdrv_winc_httpprovctx.h"
 #include "socket.h"

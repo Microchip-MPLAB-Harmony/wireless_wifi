@@ -59,6 +59,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "definitions.h"
 #include "osal/osal.h"
 #include "wdrv_winc_debug.h"
+#include "m2m_wifi.h"
 #include "m2m_types.h"
 
 // DOM-IGNORE-BEGIN
@@ -140,9 +141,6 @@ typedef enum _WDRV_WINC_STATUS
     /* Out of space in resource. */
     WDRV_WINC_STATUS_NO_SPACE,
 
-    /* No more root cert results are available. */
-    WDRV_WINC_STATUS_ROOT_CERT_FIND_END,
-
     /* No Ethernet buffer was available. */
     WDRV_WINC_STATUS_NO_ETH_BUFFER
 } WDRV_WINC_STATUS;
@@ -215,6 +213,28 @@ typedef struct _WDRV_WINC_SSID
 } WDRV_WINC_SSID;
 
 // *****************************************************************************
+/*  MAC Address
+
+  Summary:
+    Structure to hold a MAC address.
+
+  Description:
+    The MAC address consist of a buffer and a valid flag.
+
+  Remarks:
+    None.
+*/
+
+typedef struct _WDRV_WINC_MAC_ADDR
+{
+    /* MAC address, must be M2M_MAC_ADDRES_LEN characters long. */
+    uint8_t addr[M2M_MAC_ADDRES_LEN];
+
+    /* Is the address valid? */
+    bool valid;
+} WDRV_WINC_MAC_ADDR;
+
+// *****************************************************************************
 /*  Connection Notify Callback
 
   Summary:
@@ -276,7 +296,7 @@ typedef void (*WDRV_WINC_STATUS_CALLBACK)
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver BSS Find Routines
+// Section: WINC Driver Common Routines
 // *****************************************************************************
 // *****************************************************************************
 

@@ -50,8 +50,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include <stdint.h>
 
-#include "configuration.h"
-#include "definitions.h"
 #include "wdrv_winc_common.h"
 
 // *****************************************************************************
@@ -80,8 +78,11 @@ typedef enum
     /* Access to the entire flash address space. */
     WDRV_WINC_NVM_REGION_RAW,
 
-    /* Access to the firmware region.*/
-    WDRV_WINC_NVM_REGION_FIRMWARE,
+    /* Access to the firmware region (active image).*/
+    WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE,
+
+    /* Access to the firmware region (inactive image).*/
+    WDRV_WINC_NVM_REGION_FIRMWARE_INACTIVE,
 
     /* Access to PLL table region.*/
     WDRV_WINC_NVM_REGION_PLL_TABLE,
@@ -89,11 +90,14 @@ typedef enum
     /* Access to gain table region.*/
     WDRV_WINC_NVM_REGION_GAIN_TABLE,
 
+    /* Access to PLL and gain tables region.*/
+    WDRV_WINC_NVM_REGION_PLL_AND_GAIN_TABLES,
+
     /* Access to root certificate region.*/
     WDRV_WINC_NVM_REGION_ROOT_CERTS,
 
-    /* Access to TLS certificate region.*/
-    WDRV_WINC_NVM_REGION_TLS_CERTS,
+    /* Access to TLS local certificate region.*/
+    WDRV_WINC_NVM_REGION_LOCAL_CERTS,
 
     /* Access to connection parameters region.*/
     WDRV_WINC_NVM_REGION_CONN_PARAM,
@@ -185,7 +189,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
-    region  - Region of NVM to erase.
+    region  - Region of NVM to write.
     pBuffer - Pointer to buffer containing the data to write.
     offset  - Offset within NVM region to write the data to.
     size    - Number of bytes to be written.
@@ -237,7 +241,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMWrite
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
-    region  - Region of NVM to erase.
+    region  - Region of NVM to read.
     pBuffer - Pointer to buffer to write the data read into.
     offset  - Offset within NVM region to read the data from.
     size    - Number of bytes to be read.

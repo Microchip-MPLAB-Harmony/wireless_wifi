@@ -46,7 +46,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "system_definitions.h"
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
-#include "m2m_wifi.h"
 
 // *****************************************************************************
 // *****************************************************************************

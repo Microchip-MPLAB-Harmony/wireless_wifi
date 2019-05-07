@@ -48,7 +48,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_sta.h"
-#include "m2m_wifi.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -170,9 +169,9 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 #endif
 
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
-    if (0 != pBSSCtx->bssid)
+    if (true == pBSSCtx->bssid.valid)
     {
-        networkID.pu8Bssid = (uint8_t*)pBSSCtx->bssid;
+        networkID.pu8Bssid = (uint8_t*)pBSSCtx->bssid.addr;
     }
     else
     {

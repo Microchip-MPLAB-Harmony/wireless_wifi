@@ -43,7 +43,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_wps.h"
-#include "m2m_wifi.h"
 
 static bool _ValidateChecksum(uint32_t pin)
 {
