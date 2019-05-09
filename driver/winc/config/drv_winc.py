@@ -90,24 +90,26 @@ def setIncPath(component, configName, incPathEntry):
     incPathSym.setDependencies(callback, dependencies)
 
 def onAttachmentConnected(source, target):
-    drvSPIIndex = target["component"].getSymbolValue("INDEX")
+    if source["id"] == 'spi':
+        drvSPIIndex = target["component"].getSymbolValue("INDEX")
 
-    wifiDrvSPIInst = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST")
-    wifiDrvSPIInstInx = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST_IDX")
+        wifiDrvSPIInst = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST")
+        wifiDrvSPIInstInx = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST_IDX")
 
-    wifiDrvSPIInst.setValue("drv_spi_" + str(drvSPIIndex))
-    wifiDrvSPIInst.setVisible(True)
+        wifiDrvSPIInst.setValue("drv_spi_" + str(drvSPIIndex))
+        wifiDrvSPIInst.setVisible(True)
 
-    wifiDrvSPIInstInx.setValue(drvSPIIndex)
+        wifiDrvSPIInstInx.setValue(drvSPIIndex)
 
 def onAttachmentDisconnected(source, target):
-    wifiDrvSPIInst = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST")
-    wifiDrvSPIInstInx = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST_IDX")
+    if source["id"] == 'spi':
+        wifiDrvSPIInst = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST")
+        wifiDrvSPIInstInx = source["component"].getSymbolByID("DRV_WIFI_WINC_SPI_INST_IDX")
 
-    wifiDrvSPIInst.setValue("")
-    wifiDrvSPIInst.setVisible(False)
+        wifiDrvSPIInst.setValue("")
+        wifiDrvSPIInst.setVisible(False)
 
-    wifiDrvSPIInstInx.setValue(-1)
+        wifiDrvSPIInstInx.setValue(-1)
 
 def instantiateComponent(drvWincComponent):
     print("WINC Driver Component")
@@ -115,7 +117,7 @@ def instantiateComponent(drvWincComponent):
 
     eicNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
 
-    drvWincComponent.addDependency("SPI", "DRV_SPI", False, True);
+    drvWincComponent.addDependency("spi", "DRV_SPI", False, True);
 
     # WINC Device
     wincDevice = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_DEVICE", None, ["WINC1500", "WINC3400"])
@@ -123,7 +125,7 @@ def instantiateComponent(drvWincComponent):
     wincDevice.setVisible(True)
 
     # Log Level
-    wincLogLevel = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_LOG_LEVEL", None, ["None", "Error", "Inform", "Mode", "Verbose"])
+    wincLogLevel = drvWincComponent.createComboSymbol("DRV_WIFI_WINC_LOG_LEVEL", None, ["None", "Error", "Inform", "Trace", "Verbose"])
     wincLogLevel.setLabel("Driver Log Level")
     wincLogLevel.setVisible(True)
 
@@ -563,7 +565,7 @@ def setEnableTcpipStackPresent(symbol, event):
 
     wincDrvMode   = component.getSymbolValue("DRV_WIFI_WINC_DRIVER_MODE")
     useTcpipStack = component.getSymbolValue("DRV_WIFI_WINC_USE_TCPIP_STACK")
-    
+
     if ((wincDrvMode == "Ethernet Mode") and (useTcpipStack == True)):
        symbol.setEnabled(True)
     else:

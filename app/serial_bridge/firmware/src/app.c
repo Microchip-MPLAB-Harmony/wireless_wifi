@@ -157,10 +157,10 @@ USB_DEVICE_CDC_EVENT_RESPONSE APP_USBDeviceCDCEventHandler
 
         case USB_DEVICE_CDC_EVENT_READ_COMPLETE:
         {
-            USB_DEVICE_CDC_EVENT_DATA_READ_COMPLETE *eventDataRead = (USB_DEVICE_CDC_EVENT_DATA_READ_COMPLETE*)pData; 
+            USB_DEVICE_CDC_EVENT_DATA_READ_COMPLETE *eventDataRead = (USB_DEVICE_CDC_EVENT_DATA_READ_COMPLETE*)pData;
 
             isReadComplete = true;
-            consoleReadBufferLength = eventDataRead->length; 
+            consoleReadBufferLength = eventDataRead->length;
             break;
         }
 
@@ -265,7 +265,7 @@ bool APP_StateReset(void)
     {
         return false;
     }
-    
+
     appData.state = APP_STATE_WAIT_FOR_CONFIGURATION;
 
     isReadComplete = true;
@@ -301,7 +301,7 @@ void APP_Initialize(void)
 
 #ifdef DRV_USBFS_DEVICE_SUPPORT
     appData.isConfigured = false;
-    
+
     isReadComplete = true;
     isWriteComplete = true;
 #else
@@ -314,7 +314,7 @@ void APP_Initialize(void)
         consoleReadBufferLength = 0;
         consoleReadReset = false;
     }
-#endif    
+#endif
 
     consoleCmdBufferLength = 0;
 }
@@ -356,18 +356,18 @@ void APP_Tasks(void)
 
             break;
         }
-            
+
         case APP_STATE_INIT_WINC:
         {
             if (SYS_STATUS_READY == WDRV_WINC_Status(sysObj.drvWifiWinc))
             {
 #ifdef DRV_USBFS_DEVICE_SUPPORT
                 appData.state = APP_STATE_WAIT_FOR_CONFIGURATION;
-#else                
+#else
                 appData.state = APP_STATE_WDRV_OPEN_BRIDGE;
 
-                DRV_USART_BufferEventHandlerSet(consoleHandle, _USARTBufferEventHandler, (uintptr_t)NULL);
-#endif                
+                DRV_USART_BufferEventHandlerSet(consoleHandle, _USARTBufferEventHandler, 0);
+#endif
 
                 SB_StreamDecoderInit(&serialBridgeDecoderState, 9600);
             }
@@ -396,7 +396,7 @@ void APP_Tasks(void)
                 isReadComplete = false;
 
                 USB_DEVICE_CDC_Read(USB_DEVICE_CDC_INDEX_0, &consoleReadTransferHandle, consoleReadBuffer, CONSOLE_BUFFER_SIZE);
-                
+
                 if(consoleReadTransferHandle == USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID)
                 {
                     appData.state = APP_STATE_ERROR;
@@ -425,9 +425,9 @@ void APP_Tasks(void)
                 if (consoleCmdBufferLength > 0)
                 {
                     isWriteComplete = false;
-                    
+
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0, &consoleWriteTransferHandle, consoleCmdBuffer, consoleCmdBufferLength, USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                    
+
                     appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
                 }
             }
@@ -450,7 +450,7 @@ void APP_Tasks(void)
             break;
         }
 #else
-        
+
         case APP_STATE_WDRV_OPEN_BRIDGE:
         {
             int tailOffset = DRV_USART_BufferCompletedBytesGet(consoleReadTransferHandle);
