@@ -291,7 +291,7 @@ static void m2m_ip_cb(uint8_t u8OpCode, uint16_t u16BufferSize,uint32_t u32Addre
                 }
                 else
                 {
-                    /* Don't tidy up here. Application must call close().
+                    /* Don't tidy up here. Application must call shutdown().
                     */
                     strRecvMsg.s16BufferSize    = s16RecvStatus;
                     strRecvMsg.pu8Buffer        = NULL;
@@ -745,14 +745,14 @@ int16_t recv(SOCKET sock, void *pvRecvBuf, uint16_t u16BufLen, uint32_t u32Timeo
 }
 /*********************************************************************
 Function
-        close
+        shutdown
 
 Description
 
 Return
         None.
 *********************************************************************/
-int8_t close(SOCKET sock)
+int8_t shutdown(SOCKET sock)
 {
     int8_t s8Ret = SOCK_ERR_INVALID_ARG;
 

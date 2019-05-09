@@ -293,7 +293,7 @@ Socket Errors
 #define SOCK_ERR_NO_ERROR                                   0
 /*!<
     Successful socket operation. This code is also used with event @ref SOCKET_MSG_RECV if a socket connection is closed.
-    In that case, the application should call @ref close().
+    In that case, the application should call @ref shutdown().
 */
 
 #define SOCK_ERR_INVALID_ADDRESS                            -1
@@ -345,7 +345,7 @@ Socket Errors
 
 #define SOCK_ERR_CONN_ABORTED                               -12
 /*!<
-    The socket is closed (reset) by the peer. If this error is received, the application should call @ref close().
+    The socket is closed (reset) by the peer. If this error is received, the application should call @ref shutdown().
 */
 
 #define SOCK_ERR_TIMEOUT                                    -13
@@ -539,7 +539,7 @@ typedef struct{
 
     Socket connect information is returned through this structure in response to the asynchronous call to the @ref connect socket function.
     This structure together with the event @ref SOCKET_MSG_CONNECT are passed-in parameters to the callback function.
-    If the application receives this structure with a negative value in s8Error, the application should call @ref close().
+    If the application receives this structure with a negative value in s8Error, the application should call @ref shutdown().
 */
 typedef struct{
     SOCKET  sock;
@@ -567,8 +567,8 @@ typedef struct{
     In case the received data from the remote peer is larger than the USER buffer size defined during the asynchronous call to the @ref recv function,
     only data up to the buffer size is delivered to the user. The user must call @ref recv again in order to receive the remaining data.
     A negative or zero buffer size indicates an error with the following code:
-    @ref SOCK_ERR_NO_ERROR          : Socket connection closed. The application should now call @ref close().
-    @ref SOCK_ERR_CONN_ABORTED      : Socket connection aborted. The application should now call @ref close().
+    @ref SOCK_ERR_NO_ERROR          : Socket connection closed. The application should now call @ref shutdown().
+    @ref SOCK_ERR_CONN_ABORTED      : Socket connection aborted. The application should now call @ref shutdown().
     @ref SOCK_ERR_TIMEOUT           : Socket receive timed out. The socket connection remains open.
 */
 typedef struct{
@@ -841,7 +841,7 @@ void registerSocketResolveCallback(tpfAppResolveCb resolve_cb);
     recvfrom
     send
     sendto
-    close
+    shutdown
     setsockopt
     getsockopt
 
@@ -852,7 +852,7 @@ void registerSocketResolveCallback(tpfAppResolveCb resolve_cb);
                         @ref SOCK_ERR_MAX_TCP_SOCK  if the number of TCP allocated sockets exceeds the number of available sockets.
 
 @remarks
-           The socket function must be called before any other related socket functions "e.g. send, recv, close ..etc"
+           The socket function must be called before any other related socket functions "e.g. send, recv, shutdown ..etc"
 \section SocketExample3 Example
     This example demonstrates the use of the socket function to allocate the socket, returning the socket handler to be used for other
 socket operations. Socket creation is dependent on the socket type.
@@ -934,7 +934,7 @@ SOCKET socket(uint16_t u16Domain, uint8_t u8Type, uint8_t u8Flags);
             else
             {
                 printf("Bind Failed. Error code = %d\n",ret);
-                close(udpServerSocket);
+                shutdown(udpServerSocket);
         }
         else
         {
@@ -1012,7 +1012,7 @@ This example demonstrates the call of the listen socket operation after a succes
                     else
                     {
                         M2M_ERR("bind Failure!\n");
-                        close(sock);
+                        shutdown(sock);
                     }
                 }
             }
@@ -1031,7 +1031,7 @@ This example demonstrates the call of the listen socket operation after a succes
                     else
                     {
                         M2M_ERR("listen Failure!\n");
-                        close(sock);
+                        shutdown(sock);
                     }
                 }
             }
@@ -1092,7 +1092,7 @@ int8_t accept(SOCKET sock, struct sockaddr *addr, uint8_t *addrlen);
     The asynchronous connect function must be called after receiving a valid socket ID from the @ref socket function.
     The application socket callback function is notified of the result of the connection attempt through the event @ref SOCKET_MSG_CONNECT,
     along with a structure @ref tstrSocketConnectMsg.
-    If socket connection fails, the application should call @ref close().
+    If socket connection fails, the application should call @ref shutdown().
     A successful connect means the TCP session is active. The application is then required to make a call to the @ref recv function
     to receive any packets transmitted by the remote server, unless the application is interrupted by a notification of socket connection
     termination.
@@ -1114,7 +1114,7 @@ int8_t accept(SOCKET sock, struct sockaddr *addr, uint8_t *addrlen);
     socket
     recv
     send
-    close
+    shutdown
 
 @return
     The function returns ZERO for successful operations and a negative value otherwise.
@@ -1176,7 +1176,7 @@ int8_t accept(SOCKET sock, struct sockaddr *addr, uint8_t *addrlen);
         else
         {
             M2M_DBG("Connection Failed, Error: %d\n",pstrConnect->s8Error");
-            close(pstrNotification->Socket);
+            shutdown(pstrNotification->Socket);
         }
     }
 @endcode
@@ -1194,8 +1194,8 @@ int8_t connect(SOCKET sock, struct sockaddr *pstrAddr, uint8_t u8AddrLen);
     socket callback.
 
     Receiving the SOCKET_MSG_RECV message in the callback with zero or negative buffer length indicates the following:
-    - @ref SOCK_ERR_NO_ERROR        : Socket connection closed. The application should now call @ref close().
-    - @ref SOCK_ERR_CONN_ABORTED    : Socket connection aborted. The application should now call @ref close().
+    - @ref SOCK_ERR_NO_ERROR        : Socket connection closed. The application should now call @ref shutdown().
+    - @ref SOCK_ERR_CONN_ABORTED    : Socket connection aborted. The application should now call @ref shutdown().
     - @ref SOCK_ERR_TIMEOUT         : Socket receive timed out. The socket connection remains open.
 
 @param [in] sock
@@ -1224,7 +1224,7 @@ int8_t connect(SOCKET sock, struct sockaddr *pstrAddr, uint8_t u8AddrLen);
 @see bind
 @see listen
 @see recvfrom
-@see close
+@see shutdown
 
 @return
     The function returns ZERO for successful operations and a negative value otherwise.
@@ -1272,7 +1272,7 @@ int8_t connect(SOCKET sock, struct sockaddr *pstrAddr, uint8_t u8AddrLen);
             else
             {
                 printf("Socet recv Error: %d\n",pstrRx->s16BufferSize);
-                close(sock);
+                shutdown(sock);
             }
         }
         break;
@@ -1323,7 +1323,7 @@ int16_t recv(SOCKET sock, void *pvRecvBuf, uint16_t u16BufLen, uint32_t u32Timeo
 @see
     socket
     bind
-    close
+    shutdown
 
 @return
     The function returns ZERO for successful operations and a negative value otherwise.
@@ -1378,7 +1378,7 @@ int16_t recv(SOCKET sock, void *pvRecvBuf, uint16_t u16BufLen, uint32_t u32Timeo
             else
             {
                 printf("Socket recv Error: %d\n",pstrRx->s16BufferSize);
-                ret = close(sock);
+                ret = shutdown(sock);
             }
         }
         break;
@@ -1502,7 +1502,7 @@ int16_t send(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t u
 int16_t sendto(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t flags, struct sockaddr *pstrDestAddr, uint8_t u8AddrLen);
 /*!
 @fn \
-    int8_t close(SOCKET sock);
+    int8_t shutdown(SOCKET sock);
 
     Synchronous close function, releases all the socket assigned resources.
 
@@ -1512,10 +1512,10 @@ int16_t sendto(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t
 
 @pre
         Sockets must be initialized through the call of the socketInit function.
-        @ref close is called only for valid socket identifiers created through the @ref socket function.
+        @ref shutdown is called only for valid socket identifiers created through the @ref socket function.
 
 @warning
-    If @ref close is called while there are still pending messages (sent or received ) they will be discarded.
+    If @ref shutdown is called while there are still pending messages (sent or received ) they will be discarded.
 
 @see
     socketInit
@@ -1524,7 +1524,7 @@ int16_t sendto(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t
 @return
     The function returned @ref SOCK_ERR_NO_ERROR for successful operation and a negative value (indicating the error) otherwise.
 */
-int8_t close(SOCKET sock);
+int8_t shutdown(SOCKET sock);
 
 /*!
 @fn \
