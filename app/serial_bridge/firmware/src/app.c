@@ -369,7 +369,7 @@ void APP_Tasks(void)
                 DRV_USART_BufferEventHandlerSet(consoleHandle, _USARTBufferEventHandler, 0);
 #endif
 
-                SB_StreamDecoderInit(&serialBridgeDecoderState, 9600);
+                SB_StreamDecoderInit(&serialBridgeDecoderState, 115200);
             }
             break;
         }
