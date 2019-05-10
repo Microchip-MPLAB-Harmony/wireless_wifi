@@ -161,72 +161,6 @@ const DRV_SPI_INIT drvSPI0InitData =
 };
 
 // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="DRV_USART Instance 0 Initialization Data">
-
-static DRV_USART_CLIENT_OBJ drvUSART0ClientObjPool[DRV_USART_CLIENTS_NUMBER_IDX0];
-
-/* USART transmit/receive transfer objects pool */
-static DRV_USART_BUFFER_OBJ drvUSART0BufferObjPool[DRV_USART_QUEUE_SIZE_IDX0];
-
-const DRV_USART_PLIB_INTERFACE drvUsart0PlibAPI = {
-    .readCallbackRegister = (DRV_USART_PLIB_READ_CALLBACK_REG)SERCOM3_USART_ReadCallbackRegister,
-    .read = (DRV_USART_PLIB_READ)SERCOM3_USART_Read,
-    .readIsBusy = (DRV_USART_PLIB_READ_IS_BUSY)SERCOM3_USART_ReadIsBusy,
-    .readCountGet = (DRV_USART_PLIB_READ_COUNT_GET)SERCOM3_USART_ReadCountGet,
-    .writeCallbackRegister = (DRV_USART_PLIB_WRITE_CALLBACK_REG)SERCOM3_USART_WriteCallbackRegister,
-    .write = (DRV_USART_PLIB_WRITE)SERCOM3_USART_Write,
-    .writeIsBusy = (DRV_USART_PLIB_WRITE_IS_BUSY)SERCOM3_USART_WriteIsBusy,
-    .writeCountGet = (DRV_USART_PLIB_WRITE_COUNT_GET)SERCOM3_USART_WriteCountGet,
-    .errorGet = (DRV_USART_PLIB_ERROR_GET)SERCOM3_USART_ErrorGet,
-    .serialSetup = (DRV_USART_PLIB_SERIAL_SETUP)SERCOM3_USART_SerialSetup
-};
-
-const uint32_t drvUsart0remapDataWidth[] = { 0x5, 0x6, 0x7, 0x0, 0x1 };
-const uint32_t drvUsart0remapParity[] = { 0x2, 0x0, 0x80000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
-const uint32_t drvUsart0remapStopBits[] = { 0x0, 0xFFFFFFFF, 0x40 };
-const uint32_t drvUsart0remapError[] = { 0x4, 0x0, 0x2 };
-
-const DRV_USART_INTERRUPT_SOURCES drvUSART0InterruptSources =
-{
-    /* Peripheral has single interrupt vector */
-    .isSingleIntSrc                        = true,
-
-    /* Peripheral interrupt line */
-    .intSources.usartInterrupt             = SERCOM3_IRQn,
-};
-
-const DRV_USART_INIT drvUsart0InitData =
-{
-    .usartPlib = &drvUsart0PlibAPI,
-
-    /* USART Number of clients */
-    .numClients = DRV_USART_CLIENTS_NUMBER_IDX0,
-
-    /* USART Client Objects Pool */
-    .clientObjPool = (uintptr_t)&drvUSART0ClientObjPool[0],
-
-    .dmaChannelTransmit = SYS_DMA_CHANNEL_NONE,
-
-    .dmaChannelReceive = SYS_DMA_CHANNEL_NONE,
-
-    /* Combined size of transmit and receive buffer objects */
-    .bufferObjPoolSize = DRV_USART_QUEUE_SIZE_IDX0,
-
-    /* USART transmit and receive buffer buffer objects pool */
-    .bufferObjPool = (uintptr_t)&drvUSART0BufferObjPool[0],
-
-    .interruptSources = &drvUSART0InterruptSources,
-
-    .remapDataWidth = drvUsart0remapDataWidth,
-
-    .remapParity = drvUsart0remapParity,
-
-    .remapStopBits = drvUsart0remapStopBits,
-
-    .remapError = drvUsart0remapError,
-};
-
-// </editor-fold>
 
 
 // *****************************************************************************
@@ -308,8 +242,6 @@ void SYS_Initialize ( void* data )
 
     /* Initialize SPI0 Driver Instance */
     sysObj.drvSPI0 = DRV_SPI_Initialize(DRV_SPI_INDEX_0, (SYS_MODULE_INIT *)&drvSPI0InitData);
-    sysObj.drvUsart0 = DRV_USART_Initialize(DRV_USART_INDEX_0, (SYS_MODULE_INIT *)&drvUsart0InitData);
-
 
     sysObj.sysTime = SYS_TIME_Initialize(SYS_TIME_INDEX_0, (SYS_MODULE_INIT *)&sysTimeInitData);
 

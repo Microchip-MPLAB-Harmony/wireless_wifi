@@ -59,7 +59,6 @@
 #include "peripheral/eic/plib_eic.h"
 #include "peripheral/tc/plib_tc3.h"
 #include "system/time/sys_time.h"
-#include "driver/usart/drv_usart.h"
 #include "driver/spi/drv_spi.h"
 #include "system/int/sys_int.h"
 #include "system/ports/sys_ports.h"
@@ -192,7 +191,6 @@ typedef struct
     SYS_MODULE_OBJ drvSPI0;
 
     SYS_MODULE_OBJ  sysTime;
-    SYS_MODULE_OBJ  drvUsart0;
 
 } SYSTEM_OBJECTS;
 

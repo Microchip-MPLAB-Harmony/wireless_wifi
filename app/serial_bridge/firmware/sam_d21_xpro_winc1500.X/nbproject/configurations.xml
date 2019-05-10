@@ -13,10 +13,6 @@
               <itemPath>../src/config/sam_d21_xpro_winc1500/driver/spi/drv_spi.h</itemPath>
               <itemPath>../src/config/sam_d21_xpro_winc1500/driver/spi/drv_spi_definitions.h</itemPath>
             </logicalFolder>
-            <logicalFolder name="f3" displayName="usart" projectFiles="true">
-              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/usart/drv_usart.h</itemPath>
-              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/usart/drv_usart_definitions.h</itemPath>
-            </logicalFolder>
             <logicalFolder name="f1" displayName="winc" projectFiles="true">
               <logicalFolder name="f1" displayName="include" projectFiles="true">
                 <logicalFolder name="f1" displayName="dev" projectFiles="true">
@@ -114,6 +110,9 @@
               <itemPath>../src/config/sam_d21_xpro_winc1500/peripheral/tc/plib_tc3.h</itemPath>
             </logicalFolder>
           </logicalFolder>
+          <logicalFolder name="f4" displayName="platform" projectFiles="true">
+            <itemPath>../src/config/sam_d21_xpro_winc1500/platform/platform_sercom_data.h</itemPath>
+          </logicalFolder>
           <logicalFolder name="f3" displayName="system" projectFiles="true">
             <logicalFolder name="f4" displayName="dma" projectFiles="true">
               <itemPath>../src/config/sam_d21_xpro_winc1500/system/dma/sys_dma.h</itemPath>
@@ -204,6 +203,9 @@
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
+      <logicalFolder name="platform" displayName="platform" projectFiles="true">
+        <itemPath>../src/platform/platform.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f4" displayName="serial_bridge" projectFiles="true">
         <itemPath>../src/serial_bridge/serial_bridge.h</itemPath>
       </logicalFolder>
@@ -221,13 +223,9 @@
                        displayName="sam_d21_xpro_winc1500"
                        projectFiles="true">
           <logicalFolder name="f2" displayName="driver" projectFiles="true">
-            <logicalFolder name="f3" displayName="spi" projectFiles="true">
+            <logicalFolder name="f2" displayName="spi" projectFiles="true">
               <itemPath>../src/config/sam_d21_xpro_winc1500/driver/spi/src/drv_spi.c</itemPath>
               <itemPath>../src/config/sam_d21_xpro_winc1500/driver/spi/src/drv_spi_local.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f2" displayName="usart" projectFiles="true">
-              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/usart/src/drv_usart.c</itemPath>
-              <itemPath>../src/config/sam_d21_xpro_winc1500/driver/usart/src/drv_usart_local.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f1" displayName="winc" projectFiles="true">
               <logicalFolder name="f1" displayName="dev" projectFiles="true">
@@ -316,6 +314,9 @@
               <itemPath>../src/config/sam_d21_xpro_winc1500/peripheral/tc/plib_tc3.c</itemPath>
             </logicalFolder>
           </logicalFolder>
+          <logicalFolder name="f5" displayName="platform" projectFiles="true">
+            <itemPath>../src/config/sam_d21_xpro_winc1500/platform/platform_sercom_data.c</itemPath>
+          </logicalFolder>
           <logicalFolder name="f3" displayName="stdio" projectFiles="true">
             <itemPath>../src/config/sam_d21_xpro_winc1500/stdio/xc32_monitor.c</itemPath>
           </logicalFolder>
@@ -337,6 +338,9 @@
           <itemPath>../src/config/sam_d21_xpro_winc1500/libc_syscalls.c</itemPath>
           <itemPath>../src/config/sam_d21_xpro_winc1500/tasks.c</itemPath>
         </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="platform" displayName="platform" projectFiles="true">
+        <itemPath>../src/platform/platform_sercom.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="serial_bridge" projectFiles="true">
         <itemPath>../src/serial_bridge/serial_bridge.c</itemPath>
@@ -427,7 +431,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/;../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/common;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash;../src;../src/config/sam_d21_xpro_winc1500;../src/packs/ATSAMD21J18A_DFP;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/CMSIS/;../src/arm"/>
+                  value="../src/config/sam_d21_xpro_winc1500/driver/winc/include/;../src/config/sam_d21_xpro_winc1500/driver/winc/include/dev;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/bsp/include;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/common;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket;../src/config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash;../src;../src/config/sam_d21_xpro_winc1500;../src/packs/ATSAMD21J18A_DFP;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/CMSIS/;../src/arm;../src/config/sam_d21_xpro_winc1500/platform"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>

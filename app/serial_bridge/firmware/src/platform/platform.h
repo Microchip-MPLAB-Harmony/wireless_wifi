@@ -25,44 +25,25 @@
  * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
  */
 
-#ifndef _SERIAL_BRIDGE_H
-#define _SERIAL_BRIDGE_H
-
-#include <stdint.h>
+#ifndef _PLATFORM_H
+#define _PLATFORM_H
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {
 #endif
 
-#define SB_CMD_BUFFER_SIZE  2048
-
-typedef enum
-{
-    SERIAL_BRIDGE_STATE_UNKNOWN,
-    SERIAL_BRIDGE_STATE_WAIT_OP_CODE,
-    SERIAL_BRIDGE_STATE_WAIT_HEADER,
-    SERIAL_BRIDGE_STATE_PROCESS_COMMAND,
-    SERIAL_BRIDGE_STATE_WAIT_PAYLOAD,
-} SERIAL_BRIDGE_STATE;
-
-typedef struct
-{
-    SERIAL_BRIDGE_STATE state;
-    uint32_t            baudRate;
-    uint8_t             dataBuf[SB_CMD_BUFFER_SIZE];
-    uint16_t            rxDataLen;
-    uint8_t             cmdType;
-    uint16_t            cmdSize;
-    uint32_t            cmdAddr;
-    uint32_t            cmdVal;
-    uint16_t            payloadLength;
-} SERIAL_BRIDGE_DECODER_STATE;
-
-void SerialBridge_Init(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, uint32_t baudRate);
-void SerialBridge_Process(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState);
+void SerialBridge_PlatformInit(void);
+void SerialBridge_PlatformUARTSetBaudRate(uint32_t baud);
+size_t SerialBridge_PlatformUARTReadGetCount(void);
+uint8_t SerialBridge_PlatformUARTReadGetByte(void);
+size_t SerialBridge_PlatformUARTReadGetBuffer(void *pBuf, size_t numBytes);
+size_t SerialBridge_PlatformUARTWriteGetCount(void);
+bool SerialBridge_PlatformUARTWritePutByte(uint8_t b);
+bool SerialBridge_PlatformUARTWritePutBuffer(const void *pBuf, size_t numBytes);
+uint32_t ATCMD_PlatformGetSysTimeMs(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _SERIAL_BRIDGE_H */
+#endif /* _PLATFORM_H */

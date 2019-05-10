@@ -1,65 +1,59 @@
-/*******************************************************************************
-  <Title>
-
-  Company:
-    Microchip Technology Inc.
-
-  File Name:
-
-  Summary:
-
-  Description:
-*******************************************************************************/
-
-//DOM-IGNORE-BEGIN
-/*******************************************************************************
-Copyright (c) 2017 released Microchip Technology Inc.  All rights reserved.
-
-Microchip licenses to you the right to use, modify, copy and distribute
-Software only when embedded on a Microchip microcontroller or digital signal
-controller that is integrated into your product or third party product
-(pursuant to the sublicense terms in the accompanying license agreement).
-
-You should refer to the license agreement accompanying this Software for
-additional information regarding your rights and obligations.
-
-SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
-EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
-MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
-IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
-CONTRACT, NEGLIGENCE, STRICT LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR
-OTHER LEGAL EQUITABLE THEORY ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES
-INCLUDING BUT NOT LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR
-CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
-SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
-(INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
- *******************************************************************************/
-//DOM-IGNORE-END
+/**
+ *
+ * Copyright (c) 2019 Microchip Technology Inc. and its subsidiaries.
+ *
+ * Subject to your compliance with these terms, you may use Microchip
+ * software and any derivatives exclusively with Microchip products.
+ * It is your responsibility to comply with third party license terms applicable
+ * to your use of third party software (including open source software) that
+ * may accompany Microchip software.
+ *
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
+ * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
+ * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
+ * LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL
+ * LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE
+ * SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE
+ * POSSIBILITY OR THE DAMAGES ARE FORESEEABLE.  TO THE FULLEST EXTENT
+ * ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY
+ * RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+ * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+ *
+ */
+/*
+ * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+ */
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 #include "serial_bridge.h"
+#include "platform/platform.h"
 #include "nmdrv.h"
 #include "nmbus.h"
 #if defined(WDRV_WINC_DEVICE_WINC1500)
 #include "m2m_wifi.h"
 #endif
 
+#define SB_HEADER_SIZE      12
+
 typedef enum
 {
     SB_COMMAND_READ_REG_WITH_RET = 0,
-    SB_COMMAND_WRITE_REG = 1,
-    SB_COMMAND_READ_BLOCK = 2,
-    SB_COMMAND_WRITE_BLOCK = 3,
-    SB_COMMAND_RECONFIGURE = 5
+    SB_COMMAND_WRITE_REG         = 1,
+    SB_COMMAND_READ_BLOCK        = 2,
+    SB_COMMAND_WRITE_BLOCK       = 3,
+    SB_COMMAND_RECONFIGURE       = 5
 } SB_COMMAND;
 
 typedef enum
 {
-    SB_RESPONSE_NACK = 0x5a,
-    SB_RESPONSE_ACK = 0xac
+    SB_RESPONSE_NACK        = 0x5a,
+    SB_RESPONSE_ID_VAR_BR   = 0x5b,
+    SB_RESPONSE_ID_FIXED_BR = 0x5c,
+    SB_RESPONSE_ACK         = 0xac
 } SB_RESPONSE;
 
 static bool _ProcessHeader(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, uint8_t *pHeader)
@@ -92,6 +86,11 @@ static bool _ProcessHeader(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, u
     if (pSBDecoderState->cmdType == SB_COMMAND_WRITE_BLOCK)
     {
         pSBDecoderState->payloadLength = pSBDecoderState->cmdSize;
+
+        if (pSBDecoderState->payloadLength > SB_CMD_BUFFER_SIZE)
+        {
+            return false;
+        }
     }
     else
     {
@@ -101,61 +100,88 @@ static bool _ProcessHeader(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, u
     return true;
 }
 
-static int _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, uint8_t *pOut)
+static bool _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
 {
-    if ((NULL == pSBDecoderState) || (NULL == pOut))
+    uint_fast16_t cnt;
+
+    if (NULL == pSBDecoderState)
     {
-        return -1;
+        return false;
     }
 
     switch (pSBDecoderState->cmdType)
     {
         case SB_COMMAND_READ_REG_WITH_RET:
         {
-            uint32_t val;
+            uint32_t regVal;
 
-            val = nm_read_reg(pSBDecoderState->cmdAddr);
+            regVal = nm_read_reg(pSBDecoderState->cmdAddr);
 
-            pOut[0] = (val >> 24) & 0xff;
-            pOut[1] = (val >> 16) & 0xff;
-            pOut[2] = (val >> 8) & 0xff;
-            pOut[3] = (val) & 0xff;
+            pSBDecoderState->dataBuf[0] = (regVal >> 24) & 0xff;
+            pSBDecoderState->dataBuf[1] = (regVal >> 16) & 0xff;
+            pSBDecoderState->dataBuf[2] = (regVal >> 8) & 0xff;
+            pSBDecoderState->dataBuf[3] = (regVal) & 0xff;
 
-            return 4;
+            if (false == SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, 4))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         case SB_COMMAND_WRITE_REG:
         {
             nm_write_reg(pSBDecoderState->cmdAddr, pSBDecoderState->cmdVal);
 
-            return 0;
+            return true;
         }
 
         case SB_COMMAND_READ_BLOCK:
         {
-            nm_read_block(pSBDecoderState->cmdAddr, pOut, pSBDecoderState->cmdSize);
+            cnt = pSBDecoderState->cmdSize;
 
-            return pSBDecoderState->cmdSize;
+            while (cnt >= SB_CMD_BUFFER_SIZE)
+            {
+                if (M2M_SUCCESS != nm_read_block(pSBDecoderState->cmdAddr, pSBDecoderState->dataBuf, SB_CMD_BUFFER_SIZE))
+                    return false;
+
+                if (false == SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, SB_CMD_BUFFER_SIZE))
+                    return false;
+            }
+
+            if (cnt)
+            {
+                if (M2M_SUCCESS != nm_read_block(pSBDecoderState->cmdAddr, pSBDecoderState->dataBuf, cnt))
+                    return false;
+
+                if (false == SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, pSBDecoderState->cmdSize))
+                    return false;
+            }
+
+            return true;
         }
 
         case SB_COMMAND_WRITE_BLOCK:
         {
-            if (M2M_SUCCESS == nm_write_block(pSBDecoderState->cmdAddr, pSBDecoderState->cmdBuffer, pSBDecoderState->cmdSize))
+            if (M2M_SUCCESS == nm_write_block(pSBDecoderState->cmdAddr, pSBDecoderState->dataBuf, pSBDecoderState->cmdSize))
             {
-                pOut[0] = SB_RESPONSE_ACK;
+                pSBDecoderState->dataBuf[0] = SB_RESPONSE_ACK;
             }
             else
             {
-                pOut[0] = SB_RESPONSE_NACK;
+                pSBDecoderState->dataBuf[0] = SB_RESPONSE_NACK;
             }
 
-            return 1;
+            return SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, 1);
         }
 
         case SB_COMMAND_RECONFIGURE:
         {
+            SerialBridge_PlatformUARTSetBaudRate(pSBDecoderState->cmdVal);
+
             pSBDecoderState->baudRate = pSBDecoderState->cmdVal;
-            return 0;
+            return true;
         }
 
         default:
@@ -163,10 +189,10 @@ static int _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, u
         }
     }
 
-    return -1;
+    return true;
 }
 
-void SB_StreamDecoderInit(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, uint32_t baudRate)
+void SerialBridge_Init(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, uint32_t baudRate)
 {
     if (NULL == pSBDecoderState)
     {
@@ -176,6 +202,8 @@ void SB_StreamDecoderInit(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, ui
     pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
     pSBDecoderState->baudRate = baudRate;
 
+    SerialBridge_PlatformUARTSetBaudRate(baudRate);
+
 #if defined(WDRV_WINC_DEVICE_WINC1500)
     m2m_wifi_download_mode();
 #elif defined(WDRV_WINC_DEVICE_WINC3400)
@@ -183,158 +211,112 @@ void SB_StreamDecoderInit(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, ui
 #endif
 }
 
-uint32_t SB_StreamDecoderGetBaudRate(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
+void SerialBridge_Process(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
 {
     if (NULL == pSBDecoderState)
     {
-        return 0;
+        return;
     }
 
-    return pSBDecoderState->baudRate;
-}
-
-int SB_StreamDecoder(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, const uint8_t *pIn, int inLength, uint8_t *pOut)
-{
-    int outLength = 0;
-    int cmdOutLength;
-
-    if ((NULL == pSBDecoderState) || (NULL == pIn) || (NULL == pOut))
+    switch (pSBDecoderState->state)
     {
-        return -1;
-    }
-
-    while (inLength)
-    {
-        switch (pSBDecoderState->state)
+        case SERIAL_BRIDGE_STATE_WAIT_OP_CODE:
         {
-            case SERIAL_BRIDGE_STATE_WAIT_OP_CODE:
-            {
-                uint8_t opCode;
+            uint8_t opCode;
 
-                opCode = *pIn++;
-                inLength--;
-
-                switch (opCode)
-                {
-                    case 0x12:
-                    {
-                        *pOut++ = 0x5c;     /* Baud rate change not currently support due to USART driver issue */
-                        outLength++;
-                        break;
-                    }
-
-                    case 0x13:
-                    {
-                        break;
-                    }
-
-                    case 0xa5:
-                    {
-                        pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_HEADER;
-                        pSBDecoderState->cmdBufferAccumLength = 0;
-                        break;
-                    }
-
-                    default:
-                    {
-                        break;
-                    }
-                }
-
-                break;
-            }
-
-            case SERIAL_BRIDGE_STATE_WAIT_HEADER:
-            {
-                int copyLength;
-
-                copyLength = inLength;
-
-                if ((copyLength+pSBDecoderState->cmdBufferAccumLength) > SB_HEADER_SIZE)
-                {
-                    copyLength = SB_HEADER_SIZE - pSBDecoderState->cmdBufferAccumLength;
-                }
-
-                memcpy(&pSBDecoderState->cmdBuffer[pSBDecoderState->cmdBufferAccumLength], pIn, copyLength);
-
-                pIn += copyLength;
-                inLength -= copyLength;
-
-                pSBDecoderState->cmdBufferAccumLength += copyLength;
-
-                if (SB_HEADER_SIZE == pSBDecoderState->cmdBufferAccumLength)
-                {
-                    if (true == _ProcessHeader(pSBDecoderState, pSBDecoderState->cmdBuffer))
-                    {
-                        *pOut++ = SB_RESPONSE_ACK;
-                        outLength++;
-
-                        if (pSBDecoderState->payloadLength > 0)
-                        {
-                            pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_PAYLOAD;
-                        }
-                        else
-                        {
-                            cmdOutLength = _ProcessCommand(pSBDecoderState, pOut);
-
-                            pOut += cmdOutLength;
-                            outLength += cmdOutLength;
-
-                            pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
-                        }
-                    }
-                    else
-                    {
-                        pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
-                        *pOut++ = SB_RESPONSE_NACK;
-                        outLength++;
-                    }
-
-                    pSBDecoderState->cmdBufferAccumLength = 0;
-                }
-                break;
-            }
-
-            case SERIAL_BRIDGE_STATE_WAIT_PAYLOAD:
-            {
-                int copyLength;
-
-                copyLength = inLength;
-
-                if ((copyLength+pSBDecoderState->cmdBufferAccumLength) > pSBDecoderState->payloadLength)
-                {
-                    copyLength = pSBDecoderState->payloadLength - pSBDecoderState->cmdBufferAccumLength;
-                }
-
-                memcpy(&pSBDecoderState->cmdBuffer[pSBDecoderState->cmdBufferAccumLength], pIn, copyLength);
-
-                pIn += copyLength;
-                inLength -= copyLength;
-
-                pSBDecoderState->cmdBufferAccumLength += copyLength;
-
-                if (pSBDecoderState->payloadLength == pSBDecoderState->cmdBufferAccumLength)
-                {
-                    cmdOutLength = _ProcessCommand(pSBDecoderState, pOut);
-
-                    pOut += cmdOutLength;
-                    outLength += cmdOutLength;
-
-                    pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
-                }
-                break;
-            }
-
-            default:
+            if (0 == SerialBridge_PlatformUARTReadGetBuffer(&opCode, 1))
             {
                 break;
             }
+
+            switch (opCode)
+            {
+                case 0x12:
+                {
+                    SerialBridge_PlatformUARTWritePutByte(SB_RESPONSE_ID_VAR_BR);
+                    break;
+                }
+
+                case 0x13:
+                {
+                    break;
+                }
+
+                case 0xa5:
+                {
+                    pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_HEADER;
+                    pSBDecoderState->rxDataLen = 0;
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+
+            break;
+        }
+
+        case SERIAL_BRIDGE_STATE_WAIT_HEADER:
+        {
+            pSBDecoderState->rxDataLen += SerialBridge_PlatformUARTReadGetBuffer(&pSBDecoderState->dataBuf[pSBDecoderState->rxDataLen], SB_HEADER_SIZE - pSBDecoderState->rxDataLen);
+
+            if (SB_HEADER_SIZE != pSBDecoderState->rxDataLen)
+            {
+                break;
+            }
+
+            if (true == _ProcessHeader(pSBDecoderState, pSBDecoderState->dataBuf))
+            {
+                SerialBridge_PlatformUARTWritePutByte(SB_RESPONSE_ACK);
+
+                if (pSBDecoderState->payloadLength > 0)
+                {
+                    pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_PAYLOAD;
+                    pSBDecoderState->rxDataLen = 0;
+                }
+                else
+                {
+                    pSBDecoderState->state = SERIAL_BRIDGE_STATE_PROCESS_COMMAND;
+                }
+            }
+            else
+            {
+                pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
+
+                SerialBridge_PlatformUARTWritePutByte(SB_RESPONSE_NACK);
+            }
+
+            break;
+        }
+
+        case SERIAL_BRIDGE_STATE_PROCESS_COMMAND:
+        {
+            _ProcessCommand(pSBDecoderState);
+
+            pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
+            break;
+        }
+
+        case SERIAL_BRIDGE_STATE_WAIT_PAYLOAD:
+        {
+            pSBDecoderState->rxDataLen += SerialBridge_PlatformUARTReadGetBuffer(&pSBDecoderState->dataBuf[pSBDecoderState->rxDataLen], pSBDecoderState->payloadLength - pSBDecoderState->rxDataLen);
+
+            if (pSBDecoderState->payloadLength == pSBDecoderState->rxDataLen)
+            {
+                _ProcessCommand(pSBDecoderState);
+
+                pSBDecoderState->state = SERIAL_BRIDGE_STATE_WAIT_OP_CODE;
+            }
+            break;
+        }
+
+        default:
+        {
+            break;
         }
     }
 
-    return outLength;
+    return;
 }
-
-/*******************************************************************************
- End of File
-*/
