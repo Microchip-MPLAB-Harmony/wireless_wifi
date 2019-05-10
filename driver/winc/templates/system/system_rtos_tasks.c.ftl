@@ -1,5 +1,5 @@
 <#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
-    <#lt>void WDRV_WINC_Tasks(  void *pvParameters  )
+    <#lt>static void _WDRV_WINC_Tasks(  void *pvParameters  )
     <#lt>{
     <#lt>    while(1)
     <#lt>    {

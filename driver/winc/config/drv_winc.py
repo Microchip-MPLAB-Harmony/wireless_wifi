@@ -293,27 +293,6 @@ def instantiateComponent(drvWincComponent):
     #### Code Generation ####
     ############################################################################
 
-    #add '<#include \'/framework/driver/winc/templates/drv_wifi_winc.h.ftl\'>'  to list SYSTEM_CONFIG_H_DRIVER_CONFIGURATION
-    drvWincConfigHeaderFile = drvWincComponent.createFileSymbol('WIFI_WINC_CONFIG', None)
-    drvWincConfigHeaderFile.setType('STRING')
-    drvWincConfigHeaderFile.setOutputName('core.LIST_SYSTEM_CONFIG_H_DRIVER_CONFIGURATION')
-    drvWincConfigHeaderFile.setSourcePath('driver/winc/templates/drv_wifi_winc.h.ftl')
-    drvWincConfigHeaderFile.setMarkup(True)
-
-    #add '<#include \'/framework/driver/winc/templates/drv_winc_init.c.ftl\'>'  to list SYSTEM_INIT_C_SYS_INITIALIZE_DRIVERS
-    drvWincInitSourceFtl = drvWincComponent.createFileSymbol(None, None)
-    drvWincInitSourceFtl.setType('STRING')
-    drvWincInitSourceFtl.setOutputName('core.LIST_SYSTEM_INIT_C_SYS_INITIALIZE_DRIVERS')
-    drvWincInitSourceFtl.setSourcePath('driver/winc/templates/drv_winc_init.c.ftl')
-    drvWincInitSourceFtl.setMarkup(True)
-
-    #add '<#include \'/framework/driver/winc/templates/drv_winc_tasks.c.ftl\'>'  to list SYSTEM_TASKS_C_CALL_DRIVER_TASKS
-    # drvWincSysTaskSourceFtl = drvWincComponent.createFileSymbol(None, None)
-    # drvWincSysTaskSourceFtl.setType('STRING')
-    # drvWincSysTaskSourceFtl.setOutputName('core.LIST_SYSTEM_TASKS_C_CALL_DRIVER_TASKS')
-    # drvWincSysTaskSourceFtl.setSourcePath('driver/winc/templates/drv_winc_tasks.c.ftl')
-    # drvWincSysTaskSourceFtl.setMarkup(True)
-
     flagEthernetMode        = (wincDriverMode.getValue() == 'Ethernet Mode')
     flagSocketMode          = (wincDriverMode.getValue() == 'Socket Mode')
     flagTcpipStackPresent   = (flagEthernetMode and (wincUseTcpipStack.getValue() == 'True'))
@@ -478,31 +457,43 @@ def instantiateComponent(drvWincComponent):
     for incPathEntry in wdrvFirmwareDriverIncPaths:
         setIncPath(drvWincComponent, configName, incPathEntry)
 
-    drvwincSystemDefFile = drvWincComponent.createFileSymbol('WIFI_H_FILE', None)
+    drvwincSystemDefFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_DEF', None)
     drvwincSystemDefFile.setType('STRING')
     drvwincSystemDefFile.setOutputName('core.LIST_SYSTEM_DEFINITIONS_H_INCLUDES')
     drvwincSystemDefFile.setSourcePath('driver/winc/templates/system/system_definitions.h.ftl')
     drvwincSystemDefFile.setMarkup(True)
 
-    drvwincSystemDefObjFile = drvWincComponent.createFileSymbol('DRV_WIFI_DEF_OBJ', None)
+    drvwincSystemDefObjFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYSTEM_DEF_OBJECT', None)
     drvwincSystemDefObjFile.setType('STRING')
     drvwincSystemDefObjFile.setOutputName('core.LIST_SYSTEM_DEFINITIONS_H_OBJECTS')
     drvwincSystemDefObjFile.setSourcePath('driver/winc/templates/system/system_definitions_objects.h.ftl')
     drvwincSystemDefObjFile.setMarkup(True)
 
-    drvwincSystemConfFile = drvWincComponent.createFileSymbol('DRV_WIFI_CONFIGURATION_H', None)
+    drvwincSystemConfFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYSTEM_CFG', None)
     drvwincSystemConfFile.setType('STRING')
     drvwincSystemConfFile.setOutputName('core.LIST_SYSTEM_CONFIG_H_DRIVER_CONFIGURATION')
     drvwincSystemConfFile.setSourcePath('driver/winc/templates/system/system_config.h.ftl')
     drvwincSystemConfFile.setMarkup(True)
 
-    drvwincSystemTaskFile = drvWincComponent.createFileSymbol('DRV_SDHC_SYSTEM_TASKS_C', None)
+    drvwincSystemInitDataFile = drvWincComponent.createFileSymbol("DRV_WIFI_WINC_INIT_DATA", None)
+    drvwincSystemInitDataFile.setType("STRING")
+    drvwincSystemInitDataFile.setOutputName("core.LIST_SYSTEM_INIT_C_DRIVER_INITIALIZATION_DATA")
+    drvwincSystemInitDataFile.setSourcePath("driver/winc/templates/system/system_initialize_data.c.ftl")
+    drvwincSystemInitDataFile.setMarkup(True)
+
+    drvwincSystemInitFile = drvWincComponent.createFileSymbol("DRV_WIFI_WINC_SYS_INIT", None)
+    drvwincSystemInitFile.setType("STRING")
+    drvwincSystemInitFile.setOutputName("core.LIST_SYSTEM_INIT_C_SYS_INITIALIZE_DRIVERS")
+    drvwincSystemInitFile.setSourcePath("driver/winc/templates/system/system_initialize.c.ftl")
+    drvwincSystemInitFile.setMarkup(True)
+
+    drvwincSystemTaskFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYSTEM_TASKS_C', None)
     drvwincSystemTaskFile.setType('STRING')
     drvwincSystemTaskFile.setOutputName('core.LIST_SYSTEM_TASKS_C_CALL_DRIVER_TASKS')
     drvwincSystemTaskFile.setSourcePath('driver/winc/templates/system/system_tasks.c.ftl')
     drvwincSystemTaskFile.setMarkup(True)
 
-    drvwincSystemRtosTasksFile = drvWincComponent.createFileSymbol('DRV_SDHC_SYS_RTOS_TASK', None)
+    drvwincSystemRtosTasksFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYS_RTOS_TASK', None)
     drvwincSystemRtosTasksFile.setType('STRING')
     drvwincSystemRtosTasksFile.setOutputName('core.LIST_SYSTEM_RTOS_TASKS_C_DEFINITIONS')
     drvwincSystemRtosTasksFile.setSourcePath('driver/winc/templates/system/system_rtos_tasks.c.ftl')

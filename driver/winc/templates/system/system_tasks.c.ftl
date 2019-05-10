@@ -25,8 +25,8 @@
 <#if HarmonyCore.SELECT_RTOS == "BareMetal">
     <#lt>WDRV_WINC_Tasks(sysObj.drvWifiWinc); 
 <#elseif HarmonyCore.SELECT_RTOS == "FreeRTOS">
-    <#lt>    xTaskCreate( _DRV_WIFI_Task,
-    <#lt>        "DRV_MIIM_Tasks",
+    <#lt>    xTaskCreate( _WDRV_WINC_Tasks,
+    <#lt>        "WDRV_WINC_Tasks",
     <#lt>        DRV_WIFI_WINC_RTOS_STACK_SIZE,
     <#lt>        (void*)NULL,
     <#lt>        DRV_WIFI_WINC_RTOS_TASK_PRIORITY,
