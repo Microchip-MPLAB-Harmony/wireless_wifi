@@ -80,6 +80,7 @@
 // Section: Driver Initialization Data
 // *****************************************************************************
 // *****************************************************************************
+
 // <editor-fold defaultstate="collapsed" desc="DRV_SPI Instance 0 Initialization Data">
 
 /* SPI Client Objects Pool */
@@ -300,7 +301,6 @@ void SYS_Initialize ( void* data )
     EIC_Initialize();
 
     TC3_TimerInitialize();
-
 
 
     /* Initialize the WINC Driver */

@@ -95,7 +95,7 @@ extern "C" {
 // Section: Driver Configuration
 // *****************************************************************************
 // *****************************************************************************
-/*** WiFi Driver Configuration ***/
+/*** WiFi WINC Driver Configuration ***/
 #define WDRV_WINC_EIC_SOURCE                EIC_PIN_4
 #define WDRV_WINC_SPI_INDEX                 DRV_SPI_INDEX_0
 #define WDRV_WINC_NETWORK_MODE_SOCKET
@@ -110,9 +110,6 @@ extern "C" {
 #define WDRV_WINC_DEVICE_SOFT_AP_EXT
 #define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
 #define WDRV_WINC_DEBUG_LEVEL               WDRV_WINC_DEBUG_TYPE_NONE
-
-
-
 
 /* SPI Driver Instance 0 Configuration Options */
 #define DRV_SPI_INDEX_0                       0

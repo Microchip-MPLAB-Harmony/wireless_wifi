@@ -218,7 +218,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         result = m2m_wifi_connect_psk(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &pskParams);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
-                                    pAuthCtx->authType, &pAuthCtx->authInfo.PSK, channel);
+                                    pAuthCtx->authType, (void*)&pAuthCtx->authInfo.PSK, channel);
 #endif
     }
     else if (WDRV_WINC_AUTH_TYPE_WEP == pAuthCtx->authType)

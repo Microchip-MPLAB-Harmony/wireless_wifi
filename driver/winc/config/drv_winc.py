@@ -211,6 +211,8 @@ def instantiateComponent(drvWincComponent):
     winc3400UseBle = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400', None)
     winc3400UseBle.setLabel('Use BLE?')
     winc3400UseBle.setDefaultValue(False)
+    winc3400UseBle.setVisible(wincDevice.getValue() == 'WINC3400')
+    winc3400UseBle.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC Driver Mode
     wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Ethernet Mode', 'Socket Mode'])
@@ -508,7 +510,7 @@ def setVisibilityWincVersion(symbol, event):
         else:
             symbol.setVisible(False)
     else:
-        if symbol.getID() == 'DRV_WIFI_WINC3400_VERSION':
+        if (symbol.getID() == 'DRV_WIFI_WINC3400_VERSION') or (symbol.getID() == 'DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400'):
             symbol.setVisible(True)
         else:
             symbol.setVisible(False)
