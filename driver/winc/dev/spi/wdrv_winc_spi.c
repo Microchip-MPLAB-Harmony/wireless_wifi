@@ -155,7 +155,6 @@ bool WDRV_WINC_SPISend(unsigned char *const buf, uint32_t size)
     unsigned char *pData;
 
     pData = buf;
-    SYS_PORT_PinClear(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
 
 #ifdef DRV_SPI_DMA_MODE
     while ((true == ret) && (size > SPI_DMA_MAX_TX_SIZE))
@@ -170,7 +169,7 @@ bool WDRV_WINC_SPISend(unsigned char *const buf, uint32_t size)
     {
         ret = _SPI_Tx(pData, size);
     }
-    SYS_PORT_PinSet(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
+
     return ret;
 }
 
@@ -184,7 +183,6 @@ bool WDRV_WINC_SPIReceive(unsigned char *const buf, uint32_t size)
     unsigned char *pData;
 
     pData = buf;
-    SYS_PORT_PinClear(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
 
 #ifdef DRV_SPI_DMA_MODE
     while ((true == ret) && (size > SPI_DMA_MAX_RX_SIZE))
@@ -199,7 +197,7 @@ bool WDRV_WINC_SPIReceive(unsigned char *const buf, uint32_t size)
     {
         ret = _SPI_Rx(pData, size);
     }
-    SYS_PORT_PinSet(PORT_PIN_PA05); // sercom0 spi_ss pin is PA05
+
     return ret;
 }
 
