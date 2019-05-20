@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <executable name="dist/sam_d21_xpro_winc1500/production/weather_client_samd21_xpro_winc1500.X.production.elf">
+    <memory name="program">
+      <units>bytes</units>
+      <length>262144</length>
+      <used>56238</used>
+      <free>205906</free>
+    </memory>
+    <memory name="data">
+      <units>bytes</units>
+      <length>32768</length>
+      <used>6950</used>
+      <free>25818</free>
+    </memory>
+  </executable>
+</project>
