@@ -42,15 +42,16 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "nmspi.h"
 
+static tenuNmState genuNmState = NM_STATE_DEINIT;
 /**
-*   @fn     nm_get_hif_info(uint16_t *pu16FwHifInfo, uint16_t *pu16OtaHifInfo);
-*   @brief  Get Hif info of images in both partitions (Firmware and Ota).
-*   @param [out]    pu16FwHifInfo
-*                   Pointer holding Hif info of image in the active partition.
-*   @param [out]    pu16OtaHifInfo
-*                   Pointer holding Hif info of image in the inactive partition.
-*   @return ZERO in case of success and Negative error code in case of failure
-*/
+ *  @fn         nm_get_hif_info(uint16_t *pu16FwHifInfo, uint16_t *pu16OtaHifInfo);
+ *  @brief      Get Hif info of images in both partitions (Firmware and Ota).
+ *  @param[out] pu16FwHifInfo
+ *                  Pointer holding Hif info of image in the active partition.
+ *  @param[out] pu16OtaHifInfo
+ *                  Pointer holding Hif info of image in the inactive partition.
+ *  @return     @ref M2M_SUCCESS in case of success and Negative error code in case of failure
+ */
 int8_t nm_get_hif_info(uint16_t *pu16FwHifInfo, uint16_t *pu16OtaHifInfo)
 {
     int8_t ret = M2M_SUCCESS;
@@ -70,20 +71,21 @@ int8_t nm_get_hif_info(uint16_t *pu16FwHifInfo, uint16_t *pu16OtaHifInfo)
     }
     return ret;
 }
+
 /**
-*   @fn     nm_get_firmware_full_info(tstrM2mRev* M2mRev)
-*   @brief  Get Firmware version info
-*   @param [out]    M2mRev
-*               pointer holds address of structure "tstrM2mRev" that contains the firmware version parameters
-*/
-int8_t nm_get_firmware_full_info(tstrM2mRev* pstrRev)
+ *  @fn         nm_get_firmware_full_info(tstrM2mRev* M2mRev)
+ *  @brief      Get Firmware version info
+ *  @param[out] M2mRev
+ *                  Pointer holds address of structure @ref tstrM2mRev that contains the firmware version parameters
+ */
+int8_t nm_get_firmware_full_info(tstrM2mRev *pstrRev)
 {
     uint16_t    fw_hif_info = 0;
     uint32_t    reg = 0;
     int8_t      ret = M2M_SUCCESS;
     tstrGpRegs strgp = {0};
 
-    memset((uint8_t*)pstrRev,0,sizeof(tstrM2mRev));
+    memset((uint8_t*)pstrRev, 0, sizeof(tstrM2mRev));
     nm_get_hif_info(&fw_hif_info, NULL);
 
     M2M_INFO("Fw HIF: %04x\r\n", fw_hif_info);
@@ -94,14 +96,14 @@ int8_t nm_get_firmware_full_info(tstrM2mRev* pstrRev)
         {
             if(reg != 0)
             {
-                ret = nm_read_block(reg|0x30000,(uint8_t*)&strgp,sizeof(tstrGpRegs));
+                ret = nm_read_block(reg|0x30000, (uint8_t*)&strgp, sizeof(tstrGpRegs));
                 if(ret == M2M_SUCCESS)
                 {
                     reg = strgp.u32Firmware_Ota_rev;
                     reg &= 0x0000ffff;
                     if(reg != 0)
                     {
-                        ret = nm_read_block(reg|0x30000,(uint8_t*)pstrRev,sizeof(tstrM2mRev));
+                        ret = nm_read_block(reg|0x30000, (uint8_t*)pstrRev, sizeof(tstrM2mRev));
                         if(ret == M2M_SUCCESS)
                         {
                             M2M_INFO("Firmware HIF (%u) : %u.%u\r\n", M2M_GET_HIF_BLOCK(pstrRev->u16FirmwareHifInfo), M2M_GET_HIF_MAJOR(pstrRev->u16FirmwareHifInfo), M2M_GET_HIF_MINOR(pstrRev->u16FirmwareHifInfo));
@@ -136,24 +138,22 @@ int8_t nm_get_firmware_full_info(tstrM2mRev* pstrRev)
     {
         M2M_ERR("Unknown Firmware Version\r\n");
     }
-
     return ret;
 }
-
 /**
-*   @fn     nm_get_ota_firmware_info(tstrM2mRev* pstrRev)
-*   @brief  Get Firmware version info
-*   @param [out]    M2mRev
-*               pointer holds address of structure "tstrM2mRev" that contains the firmware version parameters
-*/
-int8_t nm_get_ota_firmware_info(tstrM2mRev* pstrRev)
+ *  @fn         nm_get_ota_firmware_info(tstrM2mRev* pstrRev)
+ *  @brief      Get Firmware version info
+ *  @param[out] M2mRev
+ *                  Pointer holds address of structure @ref tstrM2mRev that contains the firmware version parameters
+ */
+int8_t nm_get_ota_firmware_info(tstrM2mRev *pstrRev)
 {
     uint16_t    ota_hif_info = 0;
     uint32_t    reg = 0;
     int8_t      ret = M2M_SUCCESS;
     tstrGpRegs strgp = {0};
 
-    memset((uint8_t*)pstrRev,0,sizeof(tstrM2mRev));
+    memset((uint8_t*)pstrRev, 0, sizeof(tstrM2mRev));
     nm_get_hif_info(NULL, &ota_hif_info);
 
     M2M_INFO("OTA HIF: %04x\r\n", ota_hif_info);
@@ -164,14 +164,14 @@ int8_t nm_get_ota_firmware_info(tstrM2mRev* pstrRev)
         {
             if(reg != 0)
             {
-                ret = nm_read_block(reg|0x30000,(uint8_t*)&strgp,sizeof(tstrGpRegs));
+                ret = nm_read_block(reg|0x30000, (uint8_t*)&strgp, sizeof(tstrGpRegs));
                 if(ret == M2M_SUCCESS)
                 {
                     reg = strgp.u32Firmware_Ota_rev;
                     reg >>= 16;
                     if(reg != 0)
                     {
-                        ret = nm_read_block(reg|0x30000,(uint8_t*)pstrRev,sizeof(tstrM2mRev));
+                        ret = nm_read_block(reg|0x30000, (uint8_t*)pstrRev, sizeof(tstrM2mRev));
                         if(ret == M2M_SUCCESS)
                         {
                             M2M_INFO("OTA HIF (%u) : %u.%u\r\n", M2M_GET_HIF_BLOCK(pstrRev->u16FirmwareHifInfo), M2M_GET_HIF_MAJOR(pstrRev->u16FirmwareHifInfo), M2M_GET_HIF_MINOR(pstrRev->u16FirmwareHifInfo));
@@ -209,13 +209,11 @@ int8_t nm_get_ota_firmware_info(tstrM2mRev* pstrRev)
     return ret;
 }
 
-/*
-*   @fn     nm_drv_init_download_mode
-*   @brief  Initialize NMC1000 driver
-*   @return M2M_SUCCESS in case of success and Negative error code in case of failure
-*   @param [in] arg
-*               Generic argument
-*/
+/**
+ *  @fn         nm_drv_init_download_mode
+ *  @brief      Initialize NMC1000 driver in download mode
+ *  @return     @ref M2M_SUCCESS in case of success and Negative error code in case of failure
+ */
 int8_t nm_drv_init_download_mode(void)
 {
     int8_t ret = M2M_SUCCESS;
@@ -234,8 +232,9 @@ int8_t nm_drv_init_download_mode(void)
     M2M_INFO("Chip ID %lx\r\n", nmi_get_chipid());
 
     /*disable all interrupt in ROM (to disable uart) in 2b0 chip*/
-    nm_write_reg(0x20300,0);
+    nm_write_reg(0x20300, 0);
 
+    genuNmState = NM_STATE_INIT;
 ERR1:
     return ret;
 }
@@ -278,11 +277,13 @@ int8_t nm_drv_init_hold(void)
     /*return power save to default value*/
     chip_idle();
 
+    genuNmState = NM_STATE_INIT;
+
     return ret;
 #ifdef NO_HW_CHIP_EN
 ERR2:
-#endif
     nm_bus_iface_deinit();
+#endif
 ERR1:
     return ret;
 }
@@ -325,8 +326,9 @@ int8_t nm_drv_init_start(void * arg)
         goto ERR2;
     }
 
-    return ret;
+    genuNmState = NM_STATE_START;
 
+    return ret;
 ERR2:
     nm_bus_iface_deinit();
     nm_spi_deinit();
@@ -334,13 +336,14 @@ ERR1:
     return ret;
 }
 
-/*
-*   @fn     nm_drv_init
-*   @brief  Initialize NMC1000 driver
-*   @return M2M_SUCCESS in case of success and Negative error code in case of failure
-*   @param [in] arg - Generic argument passed on to nm_drv_init_start
-*/
-int8_t nm_drv_init(void * arg)
+/**
+ *  @fn         nm_drv_init
+ *  @brief      Initialize NMC1000 driver
+ *  @param[in]  arg
+ *                  Generic argument passed on to nm_drv_init_start
+ *  @return     @ref M2M_SUCCESS in case of success and Negative error code in case of failure
+ */
+int8_t nm_drv_init(void* arg)
 {
     int8_t ret = M2M_SUCCESS;
 
@@ -352,11 +355,11 @@ int8_t nm_drv_init(void * arg)
     return ret;
 }
 
-/*
-*   @fn     nm_drv_deinit
-*   @brief  Deinitialize NMC1000 driver
-*/
-int8_t nm_drv_deinit(void * arg)
+/**
+ *  @fn         nm_drv_deinit
+ *  @brief      Deinitialize NMC1000 driver
+ */
+int8_t nm_drv_deinit(void* arg)
 {
     int8_t ret;
 
@@ -375,22 +378,33 @@ int8_t nm_drv_deinit(void * arg)
     nm_spi_deinit();
 
 ERR1:
+    genuNmState = NM_STATE_DEINIT;
+
     return ret;
 }
 
 
 /**
-*   @fn     nm_cpu_start(void)
-*   @brief  Start CPU from the WINC module
-*   @return ZERO in case of success and Negative error code in case of failure
-*/
-
+ *  @fn         nm_cpu_start(void)
+ *  @brief      Start CPU from the WINC module
+ *  @return     @ref M2M_SUCCESS in case of success and Negative error code in case of failure
+ */
 int8_t nm_cpu_start(void)
 {
     int8_t ret;
 
     ret = cpu_start();
     return ret;
+}
+
+/**
+ *  @fn         nm_get_state(void)
+ *  @brief      Get the current state of the WINC module
+ *  @return     The current state of the WINC module
+ */
+tenuNmState nm_get_state(void)
+{
+    return genuNmState;
 }
 
 //DOM-IGNORE-END

@@ -302,6 +302,7 @@ def instantiateComponent(drvWincComponent):
 #    flagBlePresent          = False
     flagWinc1500_19_6_1     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.6.1'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
+    flagWinc3400_1_3_0      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.0'))
 
     flagHostFileSupport     = (flagSocketMode and flagWinc1500_19_6_1)
 
@@ -314,6 +315,7 @@ def instantiateComponent(drvWincComponent):
 #    condBle                 = [flagBlePresent,          setEnableBlePresent         []]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc3400_1_3_0      = [flagWinc3400_1_3_0,      setEnableWinc3400_1_3_0,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
 
     wdrvIncFiles = [
         ['wdrv_winc.h',                         condAlways],
@@ -379,6 +381,9 @@ def instantiateComponent(drvWincComponent):
     for incFileEntry in wdrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.2.2')
 
+    for incFileEntry in wdrvFirmwareDriverIncFiles:
+        importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.3.0')
+
     wdrvSrcFiles = [
         ['wdrv_winc.c',                         condAlways],
         ['wdrv_winc_assoc.c',                   condAlways],
@@ -437,6 +442,9 @@ def instantiateComponent(drvWincComponent):
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.2.2')
+
+    for srcFileEntry in wdrvFirmwareDriverSrcFiles:
+        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.3.0')
 
     wdrvIncPaths = [
         ['/',                                   condAlways],
@@ -657,6 +665,17 @@ def setEnableWinc3400_1_2_2(symbol, event):
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
 
     if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.2.2') and (checkPrefix(symbol))):
+       symbol.setEnabled(True)
+    else:
+       symbol.setEnabled(False)
+
+def setEnableWinc3400_1_3_0(symbol, event):
+    component = symbol.getComponent()
+
+    wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
+
+    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.3.0') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)

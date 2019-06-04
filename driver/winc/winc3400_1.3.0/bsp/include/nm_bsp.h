@@ -62,6 +62,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  * @addtogroup BSPDefine
  * @{
  */
+
 #ifdef _NM_BSP_BIG_END
 /*! Switch endianness of 32bit word (In the case that Host is BE) */
 #define NM_BSP_B_L_32(x) \
@@ -69,7 +70,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (((x) & 0x0000FF00) << 8)  + \
 (((x) & 0x00FF0000) >> 8)   + \
 (((x) & 0xFF000000) >> 24))
-
 /*! Switch endianness of 16bit word (In the case that Host is BE) */
 #define NM_BSP_B_L_16(x) \
 ((((x) & 0x00FF) << 8) + \

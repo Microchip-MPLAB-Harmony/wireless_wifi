@@ -1111,7 +1111,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
             }
             else
             {
-#ifdef WDRV_WINC_DEVICE_WINC3400
+#ifdef WDRV_WINC_DEVICE_USE_FLASH_INIT
                 tstrFlashState  strFlashState;
                 m2m_flash_get_state(&strFlashState);
                 WDRV_DBG_INFORM_PRINT("FlashAccess:%x:%d%d\r\n", strFlashState.u16LastAccessId, strFlashState.u8Success, strFlashState.u8Changed);
@@ -1264,6 +1264,7 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
     /* Initialise the interrupts. */
     WDRV_WINC_INTInitialize();
 
+    memset(&wifiParam, 0, sizeof(tstrWifiInitParam));
     /* Construct M2M WiFi initialisation structure. */
     wifiParam.pfAppWifiCb = _WDRV_WINC_WifiCallback;
 #ifndef WDRV_WINC_NETWORK_MODE_SOCKET
@@ -1276,7 +1277,7 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
 #endif
 #else
     /* For socket mode. */
-#if defined(WDRV_WINC_DEVICE_WINC1500)
+#ifdef WDRV_WINC_DEVICE_DYNAMIC_BYPASS_MODE
     /* WINC1500 has a separate Ethernet enable flag. */
     wifiParam.strEthInitParam.u8EthernetEnable = false;
 #endif

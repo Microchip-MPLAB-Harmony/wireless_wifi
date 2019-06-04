@@ -91,7 +91,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 static uint8_t gu8Crc_off = 0;
 
-static OSAL_MUTEX_HANDLE_TYPE s_spiLock = NULL;
+static OSAL_MUTEX_HANDLE_TYPE s_spiLock = 0;
 
 static inline int8_t spi_read(uint8_t *b, uint16_t sz)
 {

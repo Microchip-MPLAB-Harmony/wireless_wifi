@@ -95,10 +95,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
             @brief
                 Here are listed all the functions that implement the Wifi Monitoring Mode APIs.
             @endcond
+            @defgroup   BLEAPI          BLE
+            @brief
+                Here are listed all the functions that implement the BLE APIs.
         @}
-        @defgroup   BLEAPI          Functions
-        @brief
-            Here are listed all the functions that implement the BLE APIs.
     @}
  */
 
@@ -249,13 +249,13 @@ Enums and Data structures
 @remarks
     This is useful when putting the WINC in "download mode" to access the flash via SPI. By using
     @ref m2m_wifi_get_state and checking against the desired state, it is possible to validate if
-    the Application should proceed with the SPI Flash access or not.
+    the Application can proceed with the WINC flash access or not.
 */
 typedef enum {
     WIFI_STATE_DEINIT,
     /*!< Wifi is not initialized */
     WIFI_STATE_INIT,
-    /*!< Wifi has been initialized */
+    /*!< Wifi has been initialized. WINC flash access is possible via m2m_flash APIs. */
     WIFI_STATE_START,
     /*!< Wifi has started */
 } tenuWifiState;
@@ -280,6 +280,64 @@ typedef enum {
             The encryption keys involve WINC efuse contents, so WINC efuses should not be written
             while this option is in use. */
 } tenuCredStoreOption;
+
+/*!
+@enum   \
+    tenuTlsCertExpSettings
+
+@brief  TLS Certificate Expiry Validation Options
+
+@remarks
+*/
+typedef enum {
+    TLS_CERT_EXP_CHECK_DISABLE,
+    /*!<
+        Certificate expiry is not checked.
+        Server authentication does not depend on expiry of certificates.
+    */
+    TLS_CERT_EXP_CHECK_ENABLE,
+    /*!<
+        Certificate expiry is checked and current time is required.
+        Server authentication fails if a certificate has expired or the current time is unknown.
+    */
+    TLS_CERT_EXP_CHECK_EN_IF_SYS_TIME
+    /*!<
+        Certificate expiry is only checked if current time is known.
+        Server authentication fails if a certificate has expired; passes if the current time is unknown.
+    */
+} tenuTlsCertExpSettings;
+
+/*!
+@enum   \
+    tenu1xOption
+@brief
+
+@remarks
+
+*/
+typedef enum {
+    WIFI_1X_BYPASS_SERVER_AUTH,
+    /*!< Server authentication for 802.1x connections. Values are of type int.\n
+        0: Authenticate server; Default, Recommended.\n
+        1: Bypass server authentication.\n
+    */
+    WIFI_1X_TIME_VERIF_MODE,
+    /*!< Mode for checking expiry of server certificate chain.
+        Values are of type @ref tenuTlsCertExpSettings.
+        Default is @ref TLS_CERT_EXP_CHECK_EN_IF_SYS_TIME.
+    */
+    WIFI_1X_SESSION_CACHING,
+    /*!< TLS session caching on/off for 802.1x connections. Values are of type int.\n
+        0: Session caching off.\n
+        1: Session caching on; Default.\n
+        Note that the WINC implementation of PEAPv0 does not support session caching; this setting is ignored for PEAPv0 methods.
+    */
+    WIFI_1X_SPECIFIC_ROOTCERT,
+    /*!< SHA1 digest of subject name of the root certificate to be used during server authentication. Values are:\n
+        20-byte arrays: authentication is limited to this particular root certificate; Recommended\n
+        0-byte array: authentication can succeed with any certificate in the WINC root certificate store; Default.\n
+    */
+} tenu1xOption;
 
 /*!
 @struct     \
@@ -1001,6 +1059,71 @@ int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkI
 /*!
 @ingroup WLANCONNECT
 @fn \
+    int8_t m2m_wifi_1x_set_option(tenu1xOption enuOptionName, const void *pOptionValue, size_t OptionLen);
+
+@brief
+    API to set (write) options relating to Wi-Fi connection using WPA(2) Enterprise authentication.
+
+@details
+    The following options can be set:\n
+        @ref WIFI_1X_BYPASS_SERVER_AUTH\n
+        @ref WIFI_1X_TIME_VERIF_MODE\n
+        @ref WIFI_1X_SESSION_CACHING\n
+        @ref WIFI_1X_SPECIFIC_ROOTCERT\n
+    The setting applies to all subsequent connection attempts via @ref m2m_wifi_connect_1x_mschap2
+    or @ref m2m_wifi_connect_1x_tls.\n
+    Connection attempts via @ref m2m_wifi_default_connect use the
+    settings which were in place at the time of the original connection.
+
+@param[in]  enuOptionName
+    The option to set.
+
+@param[in]  pOptionValue
+    Pointer to a buffer containing the value to set. The buffer must be at least as long as OptionLen.
+    If OptionLen is 0, then pOptionValue may be NULL.
+
+@param[in]  OptionLen
+    The length of the option value being set.
+
+@return
+    The function returns @ref M2M_SUCCESS if the parameters are valid and @ref M2M_ERR_INVALID_ARG otherwise.
+*/
+int8_t m2m_wifi_1x_set_option(tenu1xOption enuOptionName, const void *pOptionValue, size_t OptionLen);
+
+/*!
+@ingroup WLANCONNECT
+@fn \
+    int8_t m2m_wifi_1x_get_option(tenu1xOption enuOptionName, void *pOptionValue, size_t *pOptionLen);
+
+@brief
+    API to get (read) options relating to Wi-Fi connection using WPA(2) Enterprise authentication.
+
+@details
+    The following options can be read:\n
+        @ref WIFI_1X_BYPASS_SERVER_AUTH\n
+        @ref WIFI_1X_TIME_VERIF_MODE\n
+        @ref WIFI_1X_SESSION_CACHING\n
+        @ref WIFI_1X_SPECIFIC_ROOTCERT\n
+
+@param[in]      enuOptionName
+    The option to get.
+
+@param[out]     pOptionValue
+    Pointer to a buffer to be filled with the value being read. The buffer must be at least as long as the length in pOptionLen
+
+@param[inout]  pOptionLen
+    Pointer to a length.
+    When calling the function, this length must be the length of the buffer available for reading the option value.
+    When the function returns, this length is the length of the data that has been populated by the function.
+
+@return
+    The function returns @ref M2M_SUCCESS if the parameters are valid and @ref M2M_ERR_INVALID_ARG otherwise.
+*/
+int8_t m2m_wifi_1x_get_option(tenu1xOption enuOptionName, void *pOptionValue, size_t *pOptionLen);
+
+/*!
+@ingroup WLANCONNECT
+@fn \
     int8_t m2m_wifi_connect_1x_mschap2(tenuCredStoreOption enuCredStoreOption, tstrNetworkId *pstrNetworkId, tstrAuth1xMschap2 *pstrAuth1xMschap2);
 
 @brief
@@ -1538,10 +1661,10 @@ int8_t m2m_wifi_start_provision_mode(tstrM2MAPConfig *pstrAPConfig, char *pcHttp
             memcpy(apModeConfig.strApConfigExt.au8DNSServerIP, apModeConfig.strApConfig.au8DHCPServerIP, 4);
 
             // Subnet mask
-            apModeConfig.strApConfigExt.au8SubnetMask[0]    = 255;
-            apModeConfig.strApConfigExt.au8SubnetMask[1]    = 255;
-            apModeConfig.strApConfigExt.au8SubnetMask[2]    = 255;
-            apModeConfig.strApConfigExt.au8SubnetMask[3]    = 0;
+            apModeConfig.strApConfigExt.au8SubnetMask[0] = 255;
+            apModeConfig.strApConfigExt.au8SubnetMask[1] = 255;
+            apModeConfig.strApConfigExt.au8SubnetMask[2] = 255;
+            apModeConfig.strApConfigExt.au8SubnetMask[3] = 0;
 
             m2m_wifi_start_provision_mode_ext(&apModeConfig, "atmelwincconf.com", bEnableRedirect);
 
@@ -2099,10 +2222,10 @@ int8_t m2m_wifi_enable_ap(const tstrM2MAPConfig *pstrM2MAPConfig);
             memcpy(apModeConfig.strApConfigExt.au8DNSServerIP, apModeConfig.strApConfig.au8DHCPServerIP, 4);
 
             // Subnet mask
-            apModeConfig.strApConfigExt.au8SubnetMask[0]    = 255;
-            apModeConfig.strApConfigExt.au8SubnetMask[1]    = 255;
-            apModeConfig.strApConfigExt.au8SubnetMask[2]    = 255;
-            apModeConfig.strApConfigExt.au8SubnetMask[3]    = 0;
+            apModeConfig.strApConfigExt.au8SubnetMask[0] = 255;
+            apModeConfig.strApConfigExt.au8SubnetMask[1] = 255;
+            apModeConfig.strApConfigExt.au8SubnetMask[2] = 255;
+            apModeConfig.strApConfigExt.au8SubnetMask[3] = 0;
 
             // Trigger AP
             m2m_wifi_enable_ap_ext(&apModeConfig);
@@ -2976,7 +3099,6 @@ int8_t m2m_wifi_set_device_name(uint8_t *pu8DeviceName, uint8_t u8DeviceNameLeng
     Configures what NTP server the SNTP client should use. Only 1 server name can be provided, if the configured server name begins with an asterisk then it will be treated as a server pool.
     The SNTP client can also use the NTP server provided by the DHCP server through option 42.
     By default the NTP server provided by DHCP will be tried first, then the built-in default NTP server (time.nist.gov) will be used.
-    Configuring a server name will overwrite the built-in default server until next reboot.
 
 @param[in]  pu8NTPServerName
     Buffer holding the NTP server name. If the first character is an asterisk (*) then it will be treated as a server pool, where the asterisk will
@@ -2986,14 +3108,15 @@ int8_t m2m_wifi_set_device_name(uint8_t *pu8DeviceName, uint8_t u8DeviceNameLeng
     Length of the NTP server name. Should not exceed the maximum NTP server name length of @ref M2M_NTP_MAX_SERVER_NAME_LENGTH.
 
 @param[in]  useDHCP
-    Should the NTP server provided by the DHCP server be used.
+    Explicity tell the WINC if it should use the NTP server provided by the DHCP server or not.
 
 @warning
     SNTP should be configured before the connection takes place. If SNTP is configured after the device connects to a
-    network, the new configuration can take a minimum of 24h to be aplied. However, it can take even longer since it is
+    network, the new configuration can take a minimum of 24h to be applied. However, it can take even longer since it is
     triggered by DHCP renewal.
-    Currently there is also a know issue in which if the WINC obtains the NTP server from DHCP and then connects to a
-    different network, it will still used the NTP from the previous network.
+    Currently there is also a known issue in which if the WINC obtains the NTP server from DHCP and then connects to a
+    different network, it will still use the NTP from the previous network.
+    Configuring a server name will overwrite the built-in default server until next reboot.
 
 @return
     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
@@ -3484,7 +3607,7 @@ int8_t m2m_wifi_enable_firmware_logs(uint8_t u8Enable);
 /*!
 @ingroup WLANCONF
 @fn \
-    int8_t m2m_wifi_set_battery_voltage(uint8_t u8BattVolt);
+    int8_t m2m_wifi_set_battery_voltage(uint16_t u16BattVoltx100);
 
 @brief
     Set the battery voltage to update the firmware calculations.
@@ -3492,21 +3615,24 @@ int8_t m2m_wifi_enable_firmware_logs(uint8_t u8Enable);
 @pre
     Must be called after initialization through the following function @ref m2m_wifi_init.
 
-@param[in]  dbBattVolt
-    Battery Voltage as double.
+@param[in]  u16BattVoltx100
+    Battery voltage as double (multiplied by 100).
 
 @return
     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
 
 @see
     m2m_wifi_init
+
+@warning
+    This is not supported in the current release.
 */
 int8_t m2m_wifi_set_battery_voltage(uint16_t u16BattVoltx100);
 
 /*!
 @ingroup WLANETH
 @fn \
-    int8_t m2m_wifi_enable_mac_mcast(uint8_t *, uint8_t);
+    int8_t m2m_wifi_enable_mac_mcast(uint8_t *pu8MulticastMacAddress, uint8_t u8AddRemove);
 
 @brief
     Asynchronous API to add or remove MAC addresses to the multicast filter.
@@ -3543,7 +3669,7 @@ int8_t m2m_wifi_enable_mac_mcast(uint8_t *pu8MulticastMacAddress, uint8_t u8AddR
 /*!
 @ingroup WLANETH
 @fn \
-    int8_t m2m_wifi_set_receive_buffer(void *, uint16_t);
+    int8_t m2m_wifi_set_receive_buffer(void *pvBuffer, uint16_t u16BufferLen);
 
 @brief
     Synchronous function for setting or modifying the receiver buffer's length.
@@ -3714,7 +3840,7 @@ int8_t m2m_wifi_ble_set_gain_table(uint8_t table_idx);
 
 @brief
     Asynchronous API to request restricting of BLE functionality by placing the BLE processor in a low power state.
-    It is recommended to do this if it is know that BLE functionality will not be used for any significant length of time.
+    It is recommended to do this if it is known that BLE functionality will not be used for any significant length of time.
 
 @return
     The function returns @ref M2M_SUCCESS if the command has been successfully queued to the WINC,

@@ -87,14 +87,14 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  * |     20 K           |     4 K   |   TLS CERTIFICATE         |   X.509 Root certificate storage              |
  * |     24 K           |     8 K   |   TLS Server              |   TLS Server Private Key and certificates     |
  * |     32 K           |     4 K   |   Connection Parameters   |   Parameters for success connection to AP     |
- * |     36 K           |     8 K   |   Program Firmware        |   Downloader firmware                         |
- * |     44 K           |   296 K   |   Main Firmware           |   Main Firmware to run WiFi Chip              |
- * |    340 K           |     8 K   |   HTTP Files              |   Files used with Provisioning Mode           |
- * |    348 K           |     0 K   |   PS_Firmware             |   Power Save Firmware (Unused)                |
- * |    348 K           |   160 K   |   BT Firmware             |   BT Firmware for BT Cortus                   |
- * |    508 K           |     4 K   |   Host control section    |   Structured data used by Host driver         |
- * |    512 K           |   472 K   |   OTA                     |   OTA image                                   |
- * |                    |           |       Program Firmware    |                                               |
+ * |     36 K           |   472 K   |   Firmware Image 1        |   Firmware image, comprising:                 |
+ * |     36 K           |     8 K   |       Program Firmware    |       Downloader firmware                     |
+ * |     44 K           |   296 K   |       Main Firmware       |       Main Firmware to run WiFi Chip          |
+ * |    340 K           |     8 K   |       HTTP Files          |       Files used with Provisioning Mode       |
+ * |    348 K           |   160 K   |       BT Firmware         |       BT Firmware for BT Cortus               |
+ * |    508 K           |     4 K   |   Empty                   |   Unused                                      |
+ * |    512 K           |   472 K   |   Firmware Image 2        |   Available for firmware image update         |
+ * |                    |           |       Program Firmware    |       (flip-flop with Firmware Image 1)       |
  * |                    |           |       Main Firmware       |                                               |
  * |                    |           |       HTTP Files          |                                               |
  * |                    |           |       BT Firmware         |                                               |
@@ -185,13 +185,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #error "Common Size Mismatch"
 #endif
 
-/*
- * Host Control Section
- */
-#define HOST_CONTROL_FLASH_OFFSET           (M2M_OTA_IMAGE1_OFFSET + OTA_IMAGE_SIZE)
-#define HOST_CONTROL_FLASH_SZ               (FLASH_SECTOR_SZ * 1)
-#define HOST_CONTROL_FLASH_SIG              0x414f5354
-
 /**
  *
  * OTA image 2 offset
@@ -261,9 +254,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  * Check that total size of content
  * does not exceed total size of memory allocated
  */
-#if ((FLASH_COMMON_SZ + OTA_IMAGE_SIZE + HOST_CONTROL_FLASH_SZ) > M2M_OTA_IMAGE2_OFFSET)
+#if ((FLASH_COMMON_SZ + OTA_IMAGE_SIZE) > M2M_OTA_IMAGE2_OFFSET)
 #error "Exceed Flash Size"
-#endif /* ((FLASH_COMMON_SZ + OTA_IMAGE_SIZE + HOST_CONTROL_FLASH_SZ) > M2M_OTA_IMAGE2_OFFSET) */
+#endif /* ((FLASH_COMMON_SZ + OTA_IMAGE_SIZE) > M2M_OTA_IMAGE2_OFFSET) */
 #if ((M2M_OTA_IMAGE2_OFFSET + OTA_IMAGE_SIZE) > FLASH_8M_TOTAL_SZ)
 #error "OTA Exceed Flash Size"
 #endif /* ((M2M_OTA_IMAGE2_OFFSET + OTA_IMAGE_SIZE) > FLASH_8M_TOTAL_SZ) */

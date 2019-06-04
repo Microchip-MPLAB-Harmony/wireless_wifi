@@ -50,6 +50,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /**@addtogroup COMMONDEF
  * @{
  */
+
 /*states*/
 #define M2M_SUCCESS                 ((int8_t)0)
 #define M2M_ERR_SEND                ((int8_t)-1)
@@ -67,7 +68,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define M2M_ERR_FW_VER_MISMATCH     ((int8_t)-13)
 #define M2M_ERR_SCAN_IN_PROGRESS    ((int8_t)-14)
 #define M2M_ERR_INVALID_ARG         ((int8_t)-15)
-#define M2M_ERR_INVALID             ((int8_t)-16)
 
 #define NBIT31                      (0x80000000)
 #define NBIT30                      (0x40000000)
@@ -104,9 +104,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #ifndef BIG_ENDIAN
 /*! Most significant byte of 32bit word (LE) */
-#define BYTE_0(word)                ((uint8_t)(((word) >> 0 ) & 0x000000FFUL))
+#define BYTE_0(word)                ((uint8_t)(((word) >> 0)  & 0x000000FFUL))
 /*! Second most significant byte of 32bit word (LE) */
-#define BYTE_1(word)                ((uint8_t)(((word) >> 8 ) & 0x000000FFUL))
+#define BYTE_1(word)                ((uint8_t)(((word) >> 8)  & 0x000000FFUL))
 /*! Third most significant byte of 32bit word (LE) */
 #define BYTE_2(word)                ((uint8_t)(((word) >> 16) & 0x000000FFUL))
 /*! Least significant byte of 32bit word (LE) */
@@ -117,9 +117,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /*! Second most significant byte of 32bit word (BE) */
 #define BYTE_1(word)                ((uint8_t)(((word) >> 16) & 0x000000FFUL))
 /*! Third most significant byte of 32bit word (BE) */
-#define BYTE_2(word)                ((uint8_t)(((word) >> 8 ) & 0x000000FFUL))
+#define BYTE_2(word)                ((uint8_t)(((word) >> 8)  & 0x000000FFUL))
 /*! Least significant byte of 32bit word (BE) */
-#define BYTE_3(word)                ((uint8_t)(((word) >> 0 ) & 0x000000FFUL))
+#define BYTE_3(word)                ((uint8_t)(((word) >> 0)  & 0x000000FFUL))
 #endif
 /**@}*/
 
@@ -142,15 +142,16 @@ extern "C" {
 int8_t hexstr_2_bytes(uint8_t *pu8Out, uint8_t *pu8In, uint8_t u8SizeOut);
 
 /*!
- * @ingroup     COMMONAPI
- * @fn          void nm_sleep(uint32_t);
- * @brief
- * @param[in]   u32TimeMsec
- *              Time unit in milliseconds
- * @pre
- * @warning     Maximum value must nor exceed 4294967295 milliseconds which is equal to 4294967.295 seconds.\n
+ * @fn          void nm_sleep(uint32_t u32TimeMsec);
+ * @brief       Used to put the host to sleep for the specified duration (in milliseconds).
+ *              Forcing the host to sleep for extended period may lead to host not being able to respond
+ *              to WINC board events. It is important to be considerate while choosing the sleep period.
+ * @param [in]  u32TimeMsec
+ *                  Time unit in milliseconds.
+ * @pre         Initialize @ref nm_bsp_init first.
  * @note        Implementation of this function is host dependent.
- * @see
+ * @warning     Maximum value must nor exceed 4294967295 milliseconds which is equal to 4294967.295 seconds.
+ * @see         nm_bsp_init
  * @return      None
  */
 void nm_sleep(uint32_t u32TimeMsec);

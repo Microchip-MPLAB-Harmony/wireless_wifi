@@ -45,6 +45,8 @@ INCLUDES
 MACROS
 *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
 
+#define	min(a,b)	(((a) < (b)) ? (a) : (b))
+
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
 DATA TYPES
 *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
@@ -71,81 +73,81 @@ static void m2m_ssl_cb(uint8_t u8OpCode, uint16_t u16DataSize, uint32_t u32Addr)
     int8_t s8tmp = M2M_SUCCESS;
     switch(u8OpCode)
     {
-    case M2M_SSL_REQ_ECC:
-    {
-        tstrEccReqInfo strEccREQ;
-        s8tmp = hif_receive(u32Addr, (uint8_t *)&strEccREQ, sizeof(tstrEccReqInfo), 0);
-        if(s8tmp == M2M_SUCCESS)
+        case M2M_SSL_REQ_ECC:
         {
-            if(gpfAppSSLCb)
+            tstrEccReqInfo strEccREQ;
+            s8tmp = hif_receive(u32Addr, (uint8_t *)&strEccREQ, sizeof(tstrEccReqInfo), 0);
+            if(s8tmp == M2M_SUCCESS)
             {
-                gu32HIFAddr = u32Addr + sizeof(tstrEccReqInfo);
-                gpfAppSSLCb(M2M_SSL_REQ_ECC, &strEccREQ);
+                if(gpfAppSSLCb)
+                {
+                    gu32HIFAddr = u32Addr + sizeof(tstrEccReqInfo);
+                    gpfAppSSLCb(M2M_SSL_REQ_ECC, &strEccREQ);
+                }
             }
         }
-    }
-    break;
-    case M2M_SSL_RESP_SET_CS_LIST:
-    {
-        tstrSslSetActiveCsList strCsList;
-        s8tmp = hif_receive(u32Addr, (uint8_t *)&strCsList, sizeof(tstrSslSetActiveCsList), 0);
-        if(s8tmp == M2M_SUCCESS)
+        break;
+        case M2M_SSL_RESP_SET_CS_LIST:
         {
-            if(gpfAppSSLCb)
-                gpfAppSSLCb(M2M_SSL_RESP_SET_CS_LIST, &strCsList);
-        }
-    }
-    break;
-    case M2M_SSL_RESP_WRITE_OWN_CERTS:
-    {
-        tstrTlsSrvChunkHdr strTlsSrvChunkRsp;
-        uint8_t bCallApp = 1;
-
-        s8tmp = hif_receive(u32Addr, (uint8_t *)&strTlsSrvChunkRsp, sizeof(tstrTlsSrvChunkHdr), 0);
-        if(s8tmp == M2M_SUCCESS)
-        {
-            uint16_t offset = strTlsSrvChunkRsp.u16Offset32;
-            uint16_t chunk_size = strTlsSrvChunkRsp.u16Size32;
-            uint16_t total_size = strTlsSrvChunkRsp.u16TotalSize32;
-            tenuTlsFlashStatus status = (tenuTlsFlashStatus)(strTlsSrvChunkRsp.u16Sig);
-
-            /* If first chunk, reset status. */
-            if(offset == 0)
-                genuStatus = TLS_FLASH_OK_NO_CHANGE;
-            /* Only send status to app when processing last chunk. */
-            if(offset + chunk_size != total_size)
-                bCallApp = 0;
-
-            switch(status)
+            tstrSslSetActiveCsList strCsList;
+            s8tmp = hif_receive(u32Addr, (uint8_t *)&strCsList, sizeof(tstrSslSetActiveCsList), 0);
+            if(s8tmp == M2M_SUCCESS)
             {
-            case TLS_FLASH_OK:
-                // Good flash write. Update status if no errors yet.
-                if(genuStatus == TLS_FLASH_OK_NO_CHANGE)
-                    genuStatus = status;
-                break;
-            case TLS_FLASH_OK_NO_CHANGE:
-                // No change, don't update status.
-                break;
-            case TLS_FLASH_ERR_CORRUPT:
-                // Corrupt. Always update status.
-                genuStatus = status;
-                break;
-            case TLS_FLASH_ERR_NO_CHANGE:
-                // Failed flash write. Update status if no more serious error.
-                if((genuStatus != TLS_FLASH_ERR_CORRUPT) && (genuStatus != TLS_FLASH_ERR_UNKNOWN))
-                    genuStatus = status;
-                break;
-            default:
-                // Don't expect any other case. Ensure we don't mask a previous corrupt error.
-                if(genuStatus != TLS_FLASH_ERR_CORRUPT)
-                    genuStatus = TLS_FLASH_ERR_UNKNOWN;
-                break;
+                if(gpfAppSSLCb)
+                    gpfAppSSLCb(M2M_SSL_RESP_SET_CS_LIST, &strCsList);
             }
         }
-        if(bCallApp && gpfAppSSLCb)
-            gpfAppSSLCb(M2M_SSL_RESP_WRITE_OWN_CERTS, &genuStatus);
-    }
-    break;
+        break;
+        case M2M_SSL_RESP_WRITE_OWN_CERTS:
+        {
+            tstrTlsSrvChunkHdr strTlsSrvChunkRsp;
+            uint8_t bCallApp = 1;
+
+            s8tmp = hif_receive(u32Addr, (uint8_t *)&strTlsSrvChunkRsp, sizeof(tstrTlsSrvChunkHdr), 0);
+            if(s8tmp == M2M_SUCCESS)
+            {
+                uint16_t offset = strTlsSrvChunkRsp.u16Offset32;
+                uint16_t chunk_size = strTlsSrvChunkRsp.u16Size32;
+                uint16_t total_size = strTlsSrvChunkRsp.u16TotalSize32;
+                tenuTlsFlashStatus status = (tenuTlsFlashStatus)(strTlsSrvChunkRsp.u16Sig);
+
+                /* If first chunk, reset status. */
+                if(offset == 0)
+                    genuStatus = TLS_FLASH_OK_NO_CHANGE;
+                /* Only send status to app when processing last chunk. */
+                if(offset + chunk_size != total_size)
+                    bCallApp = 0;
+
+                switch(status)
+                {
+                    case TLS_FLASH_OK:
+                        // Good flash write. Update status if no errors yet.
+                        if(genuStatus == TLS_FLASH_OK_NO_CHANGE)
+                            genuStatus = status;
+                        break;
+                    case TLS_FLASH_OK_NO_CHANGE:
+                        // No change, don't update status.
+                        break;
+                    case TLS_FLASH_ERR_CORRUPT:
+                        // Corrupt. Always update status.
+                        genuStatus = status;
+                        break;
+                    case TLS_FLASH_ERR_NO_CHANGE:
+                        // Failed flash write. Update status if no more serious error.
+                        if((genuStatus != TLS_FLASH_ERR_CORRUPT) && (genuStatus != TLS_FLASH_ERR_UNKNOWN))
+                            genuStatus = status;
+                        break;
+                    default:
+                        // Don't expect any other case. Ensure we don't mask a previous corrupt error.
+                        if(genuStatus != TLS_FLASH_ERR_CORRUPT)
+                            genuStatus = TLS_FLASH_ERR_UNKNOWN;
+                        break;
+                }
+            }
+            if(bCallApp && gpfAppSSLCb)
+                gpfAppSSLCb(M2M_SSL_RESP_WRITE_OWN_CERTS, &genuStatus);
+        }
+        break;
     }
     if(s8tmp != M2M_SUCCESS)
     {
@@ -399,20 +401,4 @@ int8_t m2m_ssl_set_active_ciphersuites(uint32_t u32SslCsBMP)
     return s8Ret;
 }
 
-/*!
-@fn         int8_t m2m_ssl_set_cert_verification_mode(tenuCertVerifMode enuMode)
-@brief      Sets the TLS certificate verification mode.
-@param [in] enuMode
-                The required verification mode.
-@return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
-*/
-int8_t m2m_ssl_set_cert_verification_mode(tenuCertVerifMode enuMode)
-{
-    int8_t s8Ret = M2M_SUCCESS;
-    tstrSslCertVerif  strCertVerif;
-
-    strCertVerif.u32Mode = (uint32_t)enuMode;
-    s8Ret = hif_send(M2M_REQ_GROUP_SSL, M2M_SSL_REQ_SET_CERT_VERIF_MODE, (uint8_t *)&strCertVerif, sizeof(tstrSslCertVerif), NULL, 0, 0);
-
-    return s8Ret;
-}
+//DOM-IGNORE-END

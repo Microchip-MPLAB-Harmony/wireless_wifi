@@ -210,8 +210,8 @@ static int8_t access_control_sector(tenuCSOp enuOp, uint32_t *param)
     case CS_SWITCH:
         if (strControlSec.u32OtaRollbackImageValidStatus == OTA_STATUS_VALID)
         {
-            uint32_t tmp = strControlSec.u32OtaCurrentworkingImagOffset;
-            strControlSec.u32OtaCurrentworkingImagOffset = strControlSec.u32OtaRollbackImageOffset;
+            uint32_t tmp = strControlSec.u32OtaCurrentWorkingImagOffset;
+            strControlSec.u32OtaCurrentWorkingImagOffset = strControlSec.u32OtaRollbackImageOffset;
             strControlSec.u32OtaRollbackImageOffset = tmp;
             bUpdate = true;
         }
@@ -222,7 +222,7 @@ static int8_t access_control_sector(tenuCSOp enuOp, uint32_t *param)
         if (param == NULL)
             s8Ret = M2M_ERR_FAIL;
         else
-            *param = strControlSec.u32OtaCurrentworkingImagOffset;
+            *param = strControlSec.u32OtaCurrentWorkingImagOffset;
         break;
     case CS_GET_INACTIVE:
         if (param == NULL)

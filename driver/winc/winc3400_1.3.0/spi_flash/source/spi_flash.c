@@ -40,6 +40,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #define TIMEOUT (-1) /*MS*/
 
+#define MAX_PROG_CNT 2
+#define MAX_RETRY 4
+#define MAX_ATTEMPT_STATUS_READ     50000
+
 #define HOST_SHARE_MEM_BASE     (0xd0000UL)
 #define CORTUS_SHARE_MEM_BASE   (0x60000000UL)
 #define NMI_SPI_FLASH_ADDR      (0x111c)
@@ -300,18 +304,40 @@ static int8_t spi_flash_pp(uint32_t u32Offset, uint8_t *pu8Buf, uint16_t u16Sz)
 {
     int8_t ret = M2M_SUCCESS;
     uint8_t tmp;
-    spi_flash_write_enable();
+    int i;
+    int p;
+    int x;
+
     /* use shared packet memory as temp mem */
     ret += nm_write_block(HOST_SHARE_MEM_BASE, pu8Buf, u16Sz);
-    ret += spi_flash_page_program(HOST_SHARE_MEM_BASE, u32Offset, u16Sz);
-    do
+
+    for(i = 0, p = 0; (i < MAX_RETRY) && (p < MAX_PROG_CNT); i++)
     {
-        if(ret != M2M_SUCCESS) goto ERR;
-        ret += spi_flash_read_status_reg(&tmp);
+        if((spi_flash_write_enable() == M2M_SUCCESS) &&
+           (spi_flash_page_program(HOST_SHARE_MEM_BASE, u32Offset, u16Sz) == M2M_SUCCESS))
+        {
+            x = 0;
+            while(++x < MAX_ATTEMPT_STATUS_READ)
+            {
+                if(spi_flash_read_status_reg(&tmp) != M2M_SUCCESS)
+                {
+                    break;
+                }
+                if(!(tmp & 0x01))
+                {
+                    p++;
+                    break;
+                }
+            }
+        }
     }
-    while(tmp & 0x01);
-    ret += spi_flash_write_disable();
-ERR:
+    ret = spi_flash_write_disable();
+
+    if(p < MAX_PROG_CNT)
+    {
+        ret = M2M_ERR_FAIL;
+    }
+
     return ret;
 }
 
@@ -494,8 +520,11 @@ ERR:
 int8_t spi_flash_erase(uint32_t u32Offset, uint32_t u32Sz)
 {
     uint32_t i = 0;
-    int8_t ret = M2M_SUCCESS;
     uint8_t  tmp = 0;
+    int p;
+    int j;
+    int x;
+
 #ifdef PROFILING
     uint32_t t;
     t = nm_bsp_get_tick();
@@ -503,23 +532,38 @@ int8_t spi_flash_erase(uint32_t u32Offset, uint32_t u32Sz)
     M2M_DBG("\r\n>Start erasing...\r\n");
     for(i = u32Offset; i < (u32Sz +u32Offset); i += (16*FLASH_PAGE_SZ))
     {
-        ret += spi_flash_write_enable();
-        ret += spi_flash_read_status_reg(&tmp);
-        ret += spi_flash_sector_erase(i);
-        ret += spi_flash_read_status_reg(&tmp);
-        do
+        for(j = 0, p = 0; (j < MAX_RETRY) && (p < MAX_PROG_CNT); j++)
         {
-            if(ret != M2M_SUCCESS) goto ERR;
-            ret += spi_flash_read_status_reg(&tmp);
-        } while(tmp & 0x01);
-
+            if((spi_flash_write_enable() == M2M_SUCCESS) &&
+               (spi_flash_read_status_reg(&tmp) == M2M_SUCCESS) &&
+               (spi_flash_sector_erase(i) == M2M_SUCCESS) &&
+               (spi_flash_read_status_reg(&tmp) == M2M_SUCCESS))
+            {
+                x = 0;
+                while(++x < MAX_ATTEMPT_STATUS_READ)
+                {
+                    if(spi_flash_read_status_reg(&tmp) != M2M_SUCCESS)
+                    {
+                        break;
+                    }
+                    if(!(tmp & 0x01))
+                    {
+                        p++;
+                        break;
+                    }
+                }
+            }
+        }
+        if(p != MAX_PROG_CNT)
+        {
+            return M2M_ERR_FAIL;
+        }
     }
     M2M_DBG("Done\r\n");
 #ifdef PROFILING
     M2M_PRINT("#Erase time = %f sec\n", (nm_bsp_get_tick()-t)/1000.0);
 #endif
-ERR:
-    return ret;
+    return M2M_SUCCESS;
 }
 
 /**
@@ -541,11 +585,11 @@ uint32_t spi_flash_get_size(void)
             u32FlashPwr = ((u32FlashId>>16)&0xff) - 0x11; /*2MBIT is the min*/
             /*That number power 2 to get the flash size*/
             gu32InternalFlashSize = 1<<u32FlashPwr;
-            M2M_INFO("Flash Size %lu Mb\n", gu32InternalFlashSize);
+            M2M_INFO("Flash Size %lu Mb\r\n", gu32InternalFlashSize);
         }
         else
         {
-            M2M_ERR("Cann't Detect Flash size\n");
+            M2M_ERR("Can't detect Flash size\r\n");
         }
     }
 

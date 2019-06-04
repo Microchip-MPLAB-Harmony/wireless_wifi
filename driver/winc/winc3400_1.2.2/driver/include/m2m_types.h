@@ -2083,7 +2083,7 @@ typedef struct {
     /*!< Sequence number is used while update the control structure to keep track of how many times that section updated. */
     uint32_t    u32OtaLastCheckTime;
     /*!< Last time OTA check for update. */
-    uint32_t    u32OtaCurrentworkingImagOffset;
+    uint32_t    u32OtaCurrentWorkingImagOffset;
     /*!< Current working offset in flash. */
     uint32_t    u32OtaCurrentworkingImagFirmwareVer;
     /*!< Current working image firmware version [Major/Product ID/Minor/Patch] */

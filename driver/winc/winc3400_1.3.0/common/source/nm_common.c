@@ -68,26 +68,27 @@ void nm_reset(void)
 static uint8_t hexchar_2_val(uint8_t ch)
 {
     ch -= 0x30;
-    if(ch <= 9)
-    return ch;
+    if (ch <= 9)
+        return ch;
     ch |= 0x20;
     ch -= 0x31;
-    if(ch <= 5)
-    return ch + 10;
+    if (ch <= 5)
+        return ch + 10;
     return 0xFF;
 }
+
 /* Convert hexstring to bytes */
 int8_t hexstr_2_bytes(uint8_t *pu8Out, uint8_t *pu8In, uint8_t u8SizeOut)
 {
     while(u8SizeOut--)
     {
         uint8_t   u8Out = hexchar_2_val(*pu8In++);
-        if(u8Out > 0xF)
-        return M2M_ERR_INVALID_ARG;
+        if (u8Out > 0xF)
+            return M2M_ERR_INVALID_ARG;
         *pu8Out = u8Out * 0x10;
         u8Out = hexchar_2_val(*pu8In++);
-        if(u8Out > 0xF)
-        return M2M_ERR_INVALID_ARG;
+        if (u8Out > 0xF)
+            return M2M_ERR_INVALID_ARG;
         *pu8Out += u8Out;
         pu8Out++;
     }

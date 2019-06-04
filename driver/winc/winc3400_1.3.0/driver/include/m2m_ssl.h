@@ -32,6 +32,7 @@ CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
 SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *******************************************************************************/
+//DOM-IGNORE-END
 
 /** @defgroup SSLAPI SSL
     @brief
@@ -178,23 +179,5 @@ void m2m_ssl_ecc_process_done(void);
 @return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
 */
 int8_t m2m_ssl_set_active_ciphersuites(uint32_t u32SslCsBMP);
-
-/*!
-@ingroup    SSLFUNCTIONS
-@fn         int8_t m2m_ssl_set_cert_verification_mode(tenuCertVerifMode enuMode);
-@brief      Sets the TLS certificate verification mode.
-@details    By default, the expiry date is checked when processing TLS certificates from the peer.
-                (Expiry date must be later than current system time, and current system time must be known.)
-            This API allows this check to be weakened or bypassed altogether.
-            It is recommended that the check is only weakened temporarily and for well-understood reasons. Once the
-            weakening is no longer required then this API should be called again to revert to the default setting.
-            The available settings are described in @ref tenuCertVerifMode. The default setting is @ref TLS_CERT_NO_BYPASS.
-            One possible usage would be to allow WPA(2) Enterprise connection when the system time is not known.
-@see        tenuCertVerifMode
-@param[in]  enuMode
-                The required verification mode.
-@return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
-*/
-int8_t m2m_ssl_set_cert_verification_mode(tenuCertVerifMode enuMode);
 
 #endif /* __M2M_SSL_H__ */

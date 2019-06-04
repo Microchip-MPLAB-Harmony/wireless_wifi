@@ -179,6 +179,7 @@ MACROS
     SSL-Socket Connect with ALPN command value.
 */
 
+#define SOCKET_CMD_RAW_SET_SOCK_OPT         0x54
 
 
 #define PING_ERR_SUCCESS                    0
@@ -389,12 +390,12 @@ typedef struct {
 @brief
 */
 typedef struct {
-    tstrSockAddr        strRemoteAddr;
-    int16_t          s16RecvStatus;
-    uint16_t          u16DataOffset;
+    tstrSockAddr    strRemoteAddr;
+    int16_t         s16RecvStatus;
+    uint16_t        u16DataOffset;
     SOCKET          sock;
-    uint8_t           u8Void;
-    uint16_t          u16SessionID;
+    uint8_t         u8Void;
+    uint16_t        u16SessionID;
 } tstrRecvReply;
 
 

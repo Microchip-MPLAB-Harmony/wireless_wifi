@@ -147,7 +147,7 @@ MACROS
 #define M2M_DRIVER_VERSION_MAJOR_NO                     (1)
 /*!< Driver Major release version number.
 */
-#define M2M_DRIVER_VERSION_MINOR_NO                     (3)
+#define M2M_DRIVER_VERSION_MINOR_NO                     (1)
 /*!< Driver Minor release version number.
 */
 #define M2M_DRIVER_VERSION_PATCH_NO                     (0)
@@ -156,7 +156,7 @@ MACROS
 
 /**@}*/     // VERSIONDEF
 
-/**@defgroup  WLANDefines Defines
+/**@addtogroup  WlanDefines
  * @ingroup m2m_wifi
  */
 /**@{*/
@@ -173,14 +173,17 @@ MACROS
 /*!< The offset of the Ethernet header within the WLAN Tx Buffer.
  */
 
+
 #define M2M_ETHERNET_HDR_LEN                            14
 /*!< Length of the Ethernet header in bytes.
 */
+
 
 #define M2M_MAX_SSID_LEN                                33
 /*!< 1 more than the max SSID length.
     This matches the size of SSID buffers (max SSID length + 1-byte length field).
  */
+
 
 #define M2M_MAX_PSK_LEN                                 65
 /*!< 1 more than the WPA PSK length (in ASCII format).
@@ -206,6 +209,7 @@ MACROS
     many beacon intervals it shall sleep before it retrieves the queued frames
     from the AP.
 */
+
 
 #define M2M_CUST_IE_LEN_MAX                             252
 /*!< The maximum size of IE (Information Element).
@@ -233,7 +237,7 @@ MACROS
     must be restricted to an AP with a certain BSSID.
 */
 
-#define M2M_AUTH_1X_USER_LEN_MAX                        132
+#define M2M_AUTH_1X_USER_LEN_MAX                        100
 /*!< The maximum length (in ASCII characters) of domain name + username (including '@' or '\')
     for authentication with Enterprise methods.
 */
@@ -247,6 +251,7 @@ MACROS
 #define M2M_AUTH_1X_CERT_LEN_MAX                        1584
 /*!< The maximum length (in bytes) of certificate for authentication with Enterprise TLS methods.
 */
+
 #define M2M_802_1X_UNENCRYPTED_USERNAME_FLAG            0x80
 /*!< Flag to indicate that the 802.1x user-name should be sent (unencrypted) in the initial EAP
     identity response. Intended for use with EAP-TLS only.
@@ -262,6 +267,7 @@ MACROS
 #define M2M_802_1X_TLS_FLAG                             0x02
 /*!< Flag to indicate 802.1x TLS credentials: domain/user-name/private-key/certificate.
 */
+
 #define M2M_802_1X_TLS_CLIENT_CERTIFICATE               1
 /*!< Info type used in @ref tstrM2mWifiAuthInfoHdr to indicate Enterprise TLS client certificate.
 */
@@ -1258,9 +1264,13 @@ typedef struct {
             @ref M2M_802_1X_PREPEND_DOMAIN_FLAG
     */
     uint8_t     u8DomainLength;
-    /*!< Length of Domain. (Offset of Domain understood to be 0.) */
-    uint16_t    u16UserNameLength;
-    /*!< Length of UserName. (Offset of UserName understood to be u8DomainLength.) */
+    /*!< Length of Domain. (Offset of Domain, within au81xAuthDetails, understood to be 0.) */
+    uint8_t     u8UserNameLength;
+    /*!< Length of UserName. (Offset of UserName, within au81xAuthDetails, understood to be u8DomainLength.) */
+    uint8_t     u8HdrLength;
+    /*!< Length of header (offset of au81xAuthDetails within tstrM2mWifi1xHdr).
+        Legacy implementations may have 0 here, in which case header is 12 bytes.
+        The unusual placing of this field is in order to hit a zero in legacy implementations. */
     uint16_t    u16PrivateKeyOffset;
     /*!< Offset within au81xAuthDetails of PrivateKey/Password. */
     uint16_t    u16PrivateKeyLength;
@@ -1269,10 +1279,18 @@ typedef struct {
     /*!< Offset within au81xAuthDetails of Certificate. */
     uint16_t    u16CertificateLength;
     /*!< Length of Certificate. */
+    uint8_t   au8TlsSpecificRootNameSha1[20];
+    /*!< SHA1 digest of subject name to identify specific root certificate for phase 1 server verification. */
+    uint32_t  u32TlsCsBmp;
+    /*!< Bitmap of TLS ciphersuites supported.
+        Set to 0 by driver. The firmware uses whichever set of ciphersuites is active (via @ref
+        m2m_ssl_set_active_ciphersuites) when m2m_wifi_connect_1x_* is called. */
+    uint32_t  u32TlsHsFlags;
+    /*!< TLS handshake flags for phase 1. */
+    uint32_t  u32Rsv;
+    /*!< Reserved, set to 0. */
     uint8_t     au81xAuthDetails[];
     /*!< Placeholder for concatenation of Domain, UserName, PrivateKey/Password, Certificate.
-            Padding (0s) is placed between UserName and PrivateKey/Password so that
-            PrivateKey/Password begins on a 4-byte boundary.
             Certificate (for 1x Tls only) is sent over HIF separately from the other parameters. */
 } tstrM2mWifi1xHdr;
 
@@ -2378,19 +2396,6 @@ typedef struct {
     uint32_t    u32CsBMP;
 } tstrSslSetActiveCsList;
 
-typedef enum {
-    TLS_CERT_NO_BYPASS,
-    /*!< Peer certificate expiry times are checked, which causes failure if system time
-        is not available. Default behaviour. */
-    TLS_CERT_TIME_BYPASS_IF_UNAVAILABLE,
-    /*!< Peer certificate expiry times are only checked if system time is available. */
-    TLS_CERT_TIME_BYPASS,
-    /*!< Peer certificate expiry times are not checked. */
-} tenuCertVerifMode;
-
-typedef struct {
-    uint32_t    u32Mode;
-} tstrSslCertVerif;
 /**@}*/     // SSLEnums
 
 /**@addtogroup TLSDefines

@@ -34,9 +34,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *******************************************************************************/
 //DOM-IGNORE-END
 
-/**@defgroup SOCKETAPI SOCKET
- */
-
 #ifndef __SOCKET_H__
 #define __SOCKET_H__
 
@@ -105,9 +102,33 @@ MACROS
      Passed to the @ref socket function for the socket creation operation.
 */
 
+#define  SOCK_RAW                                           3
+/*!<
+     Socket type used for sending and receiving raw frames.
+     Raw socket expects and returns IP header.
+     Please note that SO_BROADCAST socket option is not currently supported when using RAW socket.
+     Similarly to SOCK_DGRAM it is oriented towards unreliable connectionless communication.
+     Passed to the @ref socket function for the socket creation operation.
+*/
+
 #define SOCKET_FLAGS_SSL                                    0x01
 /*!<
     This flag shall be passed to the socket API for SSL session.
+*/
+
+#define SOCKET_FLAGS_IPPROTO_RAW                            0x02
+/*!<
+    This flag shall be passed to the @ref socket API when requesting for @ref SOCK_RAW.
+    Passing this flag allows the Application to use a socket of type raw to send/receive frames.
+    This assumes that the application will fill the IP and protocol (UDP, TCP, ICMP) headers.
+    Typically, when sending ICMP frames via RAW socket, there are two options that can be used:
+        - IPPROTO_RAW  - Raw IP packets, implies that IP_HDRINCL is enabled and therefore
+                         the host application should fill in the corresponding protocol header checksum.
+        - IPPROTO_ICMP - ICMP packets, the WINC would fill in the ICMP header checksum (not supported).
+    @warning
+        Please note that only SOCKET_FLAGS_IPPROTO_RAW is currently supported.
+        Raw sockets can be used to send TCP/UDP/ICMP packets, however, the current implementation only
+        supports receiving Raw ICMP frames, which also requires @ref SO_ICMP_FILTER to be set appropriately.
 */
 
 #define TCP_SOCK_MAX                                        (7)
@@ -120,7 +141,12 @@ MACROS
     Maximum number of simultaneous UDP sockets.
 */
 
-#define MAX_SOCKET                                          (TCP_SOCK_MAX + UDP_SOCK_MAX)
+#define RAW_SOCK_MAX                                        1
+/*!<
+    Maximum number of simultaneous RAW sockets.
+*/
+
+#define MAX_SOCKET                                          (TCP_SOCK_MAX + UDP_SOCK_MAX + RAW_SOCK_MAX)
 /*!<
     Maximum number of simultaneous sockets.
 */
@@ -137,11 +163,25 @@ MACROS
     Used with the @ref setsockopt function
 */
 
+#define SOL_RAW                                             255
+/*!<
+    Raw Socket option level.
+    Used with the @ref setsockopt function
+*/
+
 #define SO_SET_UDP_SEND_CALLBACK                            0x00
 /*!<
     Socket option used by the application to enable/disable
-    the use of UDP send callbacks.
-    Used with the @ref setsockopt function.
+    the use of UDP send callbacks.\n
+    Used with the @ref setsockopt function.\n
+    The option value should be cast to int type.\n
+    0: disable UDP send callbacks.\n
+    1: enable UDP send callbacks.\n
+    Default setting is enable.
+
+    @warning @ref connect and @ref bind cause this setting to
+        be lost, so the application should only set this option
+        after calling @ref connect or @ref bind.
 */
 
 #define IP_ADD_MEMBERSHIP                                   0x01
@@ -156,42 +196,78 @@ MACROS
     Used with the @ref setsockopt function.
 */
 
-#define SO_KEEPALIVE                                        0x04
+#define SO_TCP_KEEPALIVE                                    0x04
 /*!<
-    Socket option to enable or disable TCP keep-alive.
-    Used with the @ref setsockopt function.
-    The option value should be cast to int type.
-    0: disable TCP keep-alive.
-    1: enable TCP keep-alive.
+    Socket option to enable or disable TCP keep-alive.\n
+    Used with the @ref setsockopt function.\n
+    The option value should be cast to int type.\n
+    0: disable TCP keep-alive.\n
+    1: enable TCP keep-alive.\n
     Default setting is disable.
+
+    @warning @ref connect and @ref bind cause this setting to
+    be lost, so the application should only set this option
+    after calling @ref connect or @ref bind.
 */
 
-#define TCP_KEEPIDLE                                        0x05
+#define SO_TCP_KEEPIDLE                                     0x05
 /*!<
-    Socket option to set the time period after which the socket will trigger keep-alive transmissions.
-    Used with the @ref setsockopt function.
-    The option value should be cast to int type.
+    Socket option to set the time period after which the socket will trigger keep-alive transmissions.\n
+    Used with the @ref setsockopt function.\n
+    The option value should be cast to int type.\n
     Option value is the time period in units of 500ms. Maximum 2^32 - 1.
     Default setting is 120 (60 seconds).
+
+    @warning @ref connect and @ref bind cause this setting to
+    be lost, so the application should only set this option
+    after calling @ref connect or @ref bind.
 */
 
-#define TCP_KEEPINTVL                                       0x06
+#define SO_TCP_KEEPINTVL                                    0x06
 /*!<
-    Socket option to set the time period between keep-alive retransmissions.
-    Used with the @ref setsockopt function.
-    The option value should be cast to int type.
+    Socket option to set the time period between keep-alive retransmissions.\n
+    Used with the @ref setsockopt function.\n
+    The option value should be cast to int type.\n
     Option value is the time period in units of 500ms. Maximum 255.
     Default setting is 1 (0.5 seconds).
+
+    @warning @ref connect and @ref bind cause this setting to
+    be lost, so the application should only set this option
+    after calling @ref connect or @ref bind.
 */
 
-#define TCP_KEEPCNT                                         0x07
+#define SO_TCP_KEEPCNT                                      0x07
 /*!<
-    Socket option to set the number of keep-alive retransmissions to be carried out before declaring that the remote end is not available.
-    Used with the @ref setsockopt function.
-    The option value should be cast to int type.
+    Socket option to set the number of keep-alive retransmissions to be carried out before declaring that the remote end is not available.\n
+    Used with the @ref setsockopt function.\n
+    The option value should be cast to int type.\n
     Maximum 255.
     Default setting is 20.
+
+    @warning @ref connect and @ref bind cause this setting to
+    be lost, so the application should only set this option
+    after calling @ref connect or @ref bind.
 */
+
+#define SO_ICMP_FILTER                                      0x01
+/*!<
+    Socket option to set the ICMP filter for raw sockets when receiving.\n
+    Current implementation allows for a filter none (0) or filter all (anything else).
+    Filter none means that all ICMP frames will be delivered to the host via raw socket.
+    Filter all means that all ICMP frames will NOT be delivered to host and handled internally by the WINC (please note that fragmentation is not supported by the WINC).
+    Used with the @ref setsockopt function.\n
+    The option value should be cast to int type.\n
+    Default setting is 0 (filter none).
+
+    @warning @ref bind and @ref shutdown will cause this setting to be lost,
+    so the application should only set this option after @ref bind.
+*/
+
+#define RAW_SOCK_ID                                         (TCP_SOCK_MAX + UDP_SOCK_MAX)
+/*!<
+    Socket number to be used for RAW socket.
+*/
+
 /**@}*/     //IPDefines
 
 
@@ -306,8 +382,7 @@ MACROS
     SSL_CIPHER_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256      \
 )
 /*!<
-    All supported ECC Ciphers. These ciphers are turned off by default at startup.
-    The application may enable them if it has an ECC math engine (like ATECC508).
+    All supported ciphers which use ECDSA.
 */
 
 #define SSL_DEFAULT_CIPHERS \
@@ -382,7 +457,7 @@ Socket Errors
 #define SOCK_ERR_NO_ERROR                                   0
 /*!<
     Successful socket operation. This code is also used with event @ref SOCKET_MSG_RECV if a socket connection is closed.
-    In that case, the application should call @ref close().
+    In that case, the application should call @ref shutdown().
 */
 
 #define SOCK_ERR_INVALID_ADDRESS                            -1
@@ -434,7 +509,7 @@ Socket Errors
 
 #define SOCK_ERR_CONN_ABORTED                               -12
 /*!<
-    The socket is closed (reset) by the peer. If this error is received, the application should call @ref close().
+    The socket is closed (reset) by the peer. If this error is received, the application should call @ref shutdown().
 */
 
 #define SOCK_ERR_TIMEOUT                                    -13
@@ -667,7 +742,7 @@ typedef struct {
 
     Socket connect information is returned through this structure in response to the asynchronous call to the @ref connect socket function.
     This structure together with the event @ref SOCKET_MSG_CONNECT are passed-in parameters to the callback function.
-    If the application receives this structure with a negative value in s8Error, the application should call @ref close().
+    If the application receives this structure with a negative value in s8Error, the application should call @ref shutdown().
 */
 typedef struct {
     SOCKET  sock;
@@ -694,8 +769,8 @@ typedef struct {
     In case the received data from the remote peer is larger than the USER buffer size defined during the asynchronous call to the @ref recv function,
     only data up to the USER buffer size is delivered to the user. The user must call @ref recv again in order to receive the remaining data.
     A negative or zero buffer size indicates an error with the following code:
-    @ref SOCK_ERR_NO_ERROR          : Socket connection closed. The application should now call @ref close().
-    @ref SOCK_ERR_CONN_ABORTED      : Socket connection aborted. The application should now call @ref close().
+    @ref SOCK_ERR_NO_ERROR          : Socket connection closed. The application should now call @ref shutdown().
+    @ref SOCK_ERR_CONN_ABORTED      : Socket connection aborted. The application should now call @ref shutdown().
     @ref SOCK_ERR_TIMEOUT           : Socket receive timed out. The socket connection remains open.
 */
 typedef struct {
@@ -973,6 +1048,7 @@ uint8_t IsSocketReady(void);
 void registerSocketCallback(tpfAppSocketCb socket_cb, tpfAppResolveCb resolve_cb);
 void registerSocketEventCallback(tpfAppSocketCb socket_cb);
 void registerSocketResolveCallback(tpfAppResolveCb resolve_cb);
+
 /*!
 @fn \
     SOCKET socket(uint16_t u16Domain, uint8_t u8Type, uint8_t u8Flags);
@@ -986,11 +1062,12 @@ void registerSocketResolveCallback(tpfAppResolveCb resolve_cb);
                 Socket type. Allowed values are:
                 - [SOCK_STREAM](@ref SOCK_STREAM)
                 - [SOCK_DGRAM](@ref SOCK_DGRAM)
+                - [SOCK_RAW](@ref SOCK_RAW)
 
 @param [in] u8Flags
                 Used to specify the socket creation flags. It shall be set to zero for normal TCP/UDP sockets,
-                or [SOCKET_FLAGS_SSL](@ref SOCKET_FLAGS_SSL) if the socket is used for SSL session. The use of the flag
-                [SOCKET_FLAGS_SSL](@ref SOCKET_FLAGS_SSL) has no meaning in case of UDP sockets.
+                or [SOCKET_FLAGS_SSL](@ref SOCKET_FLAGS_SSL) if the socket is used for SSL session or [SOCKET_FLAGS_IPPROTO_RAW](@ref SOCKET_FLAGS_IPPROTO_RAW) if the socket is used for raw ICMP frames. The use of the flag
+                [SOCKET_FLAGS_SSL](@ref SOCKET_FLAGS_SSL) or [SOCKET_FLAGS_IPPROTO_RAW](@ref SOCKET_FLAGS_IPPROTO_RAW) has no meaning in case of UDP sockets.
 
 @pre
     The @ref socketInit function must be called once at the beginning of the application to initialize the socket handler.
@@ -1005,7 +1082,7 @@ void registerSocketResolveCallback(tpfAppResolveCb resolve_cb);
     recvfrom
     send
     sendto
-    close
+    shutdown
     setsockopt
     getsockopt
 
@@ -1016,7 +1093,7 @@ void registerSocketResolveCallback(tpfAppResolveCb resolve_cb);
                         @ref SOCK_ERR_MAX_TCP_SOCK  if the number of TCP allocated sockets exceeds the number of available sockets.
 
 @remarks
-           The socket function must be called before any other related socket functions "e.g. send, recv, close ..etc"
+           The socket function must be called before any other related socket functions "e.g. send, recv, shutdown ..etc"
 \section SocketExample3 Example
     This example demonstrates the use of the socket function to allocate the socket, returning the socket handler to be used for other
 socket operations. Socket creation is dependent on the socket type.
@@ -1098,7 +1175,7 @@ SOCKET socket(uint16_t u16Domain, uint8_t u8Type, uint8_t u8Flags);
             else
             {
                 printf("Bind Failed. Error code = %d\n",ret);
-                close(udpServerSocket);
+                shutdown(udpServerSocket);
         }
         else
         {
@@ -1176,7 +1253,7 @@ This example demonstrates the call of the listen socket operation after a succes
                     else
                     {
                         M2M_ERR("bind Failure!\n");
-                        close(sock);
+                        shutdown(sock);
                     }
                 }
             }
@@ -1195,7 +1272,7 @@ This example demonstrates the call of the listen socket operation after a succes
                     else
                     {
                         M2M_ERR("listen Failure!\n");
-                        close(sock);
+                        shutdown(sock);
                     }
                 }
             }
@@ -1256,7 +1333,7 @@ int8_t accept(SOCKET sock, struct sockaddr *addr, uint8_t *addrlen);
     The asynchronous connect function must be called after receiving a valid socket ID from the @ref socket function.
     The application socket callback function is notified of the result of the connection attempt through the event @ref SOCKET_MSG_CONNECT,
     along with a structure @ref tstrSocketConnectMsg.
-    If socket connection fails, the application should call @ref close().
+    If socket connection fails, the application should call @ref shutdown().
     A successful connect means the TCP session is active. The application is then required to make a call to the @ref recv function
     to receive any packets transmitted by the remote server, unless the application is interrupted by a notification of socket connection
     termination.
@@ -1278,7 +1355,7 @@ int8_t accept(SOCKET sock, struct sockaddr *addr, uint8_t *addrlen);
     socket
     recv
     send
-    close
+    shutdown
 
 @return
     The function returns ZERO for successful operations and a negative value otherwise.
@@ -1340,7 +1417,7 @@ int8_t accept(SOCKET sock, struct sockaddr *addr, uint8_t *addrlen);
         else
         {
             M2M_DBG("Connection Failed, Error: %d\n",pstrConnect->s8Error");
-            close(pstrNotification->Socket);
+            shutdown(pstrNotification->Socket);
         }
     }
 @endcode
@@ -1358,8 +1435,8 @@ int8_t connect(SOCKET sock, struct sockaddr *pstrAddr, uint8_t u8AddrLen);
     socket callback.
 
     Receiving the SOCKET_MSG_RECV message in the callback with zero or negative buffer length indicates the following:
-    - @ref SOCK_ERR_NO_ERROR        : Socket connection closed. The application should now call @ref close().
-    - @ref SOCK_ERR_CONN_ABORTED    : Socket connection aborted. The application should now call @ref close().
+    - @ref SOCK_ERR_NO_ERROR        : Socket connection closed. The application should now call @ref shutdown().
+    - @ref SOCK_ERR_CONN_ABORTED    : Socket connection aborted. The application should now call @ref shutdown().
     - @ref SOCK_ERR_TIMEOUT         : Socket receive timed out. The socket connection remains open.
 
 @param [in] sock
@@ -1388,7 +1465,7 @@ int8_t connect(SOCKET sock, struct sockaddr *pstrAddr, uint8_t u8AddrLen);
 @see bind
 @see listen
 @see recvfrom
-@see close
+@see shutdown
 
 @return
     The function returns ZERO for successful operations and a negative value otherwise.
@@ -1437,7 +1514,7 @@ int8_t connect(SOCKET sock, struct sockaddr *pstrAddr, uint8_t u8AddrLen);
             else
             {
                 printf("Socket recv Error: %d\n",pstrRx->s16BufferSize);
-                close(sock);
+                shutdown(sock);
             }
         }
         break;
@@ -1488,7 +1565,7 @@ int16_t recv(SOCKET sock, void *pvRecvBuf, uint16_t u16BufLen, uint32_t u32Timeo
 @see
     socket
     bind
-    close
+    shutdown
 
 @return
     The function returns ZERO for successful operations and a negative value otherwise.
@@ -1544,7 +1621,7 @@ int16_t recv(SOCKET sock, void *pvRecvBuf, uint16_t u16BufLen, uint32_t u32Timeo
             else
             {
                 printf("Socket recv Error: %d\n",pstrRx->s16BufferSize);
-                ret = close(sock);
+                ret = shutdown(sock);
             }
         }
         break;
@@ -1654,19 +1731,19 @@ int16_t send(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t u
 int16_t sendto(SOCKET sock, void *pvSendBuffer, uint16_t u16SendLength, uint16_t flags, struct sockaddr *pstrDestAddr, uint8_t u8AddrLen);
 
 /*!
- * @fn          int8_t close(SOCKET sock);
- * @brief       Synchronous close function, releases all the socket assigned resources.
+ * @fn          int8_t shutdown(SOCKET sock);
+ * @brief       Synchronous shutdown function, releases all the socket assigned resources.
  * @param[in]   sock
  *                  Socket ID, must hold a non negative value.
  *                  A negative value will return a socket error @ref SOCK_ERR_INVALID_ARG. Indicating that an invalid argument is passed in.
  * @pre
  *              Sockets must be initialized through the call of the socketInit function.
- *              @ref close is called only for valid socket identifiers created through the @ref socket function.
- * @warning     If @ref close is called while there are still pending messages (sent or received ) they will be discarded.
+ *              @ref shutdown is called only for valid socket identifiers created through the @ref socket function.
+ * @warning     If @ref shutdown is called while there are still pending messages (sent or received ) they will be discarded.
  * @see         socketInit, socket
  * @return      The function returned @ref SOCK_ERR_NO_ERROR for successful operation and a negative value (indicating the error) otherwise.
  */
-int8_t close(SOCKET sock);
+int8_t shutdown(SOCKET sock);
 
 /*!
  * @fn          int8_t gethostbyname(const char *pcHostName);
@@ -1687,40 +1764,50 @@ int8_t close(SOCKET sock);
 int8_t gethostbyname(const char *pcHostName);
 
 /*!
- * @fn          int8_t setsockopt(SOCKET socket, uint8_t u8Level, uint8_t option_name, const void *option_value, uint16_t u16OptionLen);
- * @brief       The setsockopt function shall set the option specified by the option_name argument, at the protocol level specified
- *              by the level argument, to the value pointed to by the option_value argument for the socket specified by the socket argument.
- * @details
- *              Possible Options:
- *                  - [SO_SET_UDP_SEND_CALLBACK](@ref SO_SET_UDP_SEND_CALLBACK):
- *                      Enable/Disable callback messages for sendto. Since UDP is unreliable by default the user maybe interested (or not)
- *                      in receiving a message of @ref SOCKET_MSG_SENDTO for each call of sendto.
- *                      Enabled if option_value points to a non-zero value, disabled otherwise.
- *                  - [IP_ADD_MEMBERSHIP](@ref IP_ADD_MEMBERSHIP):
- *                      Valid for UDP sockets,this option is used to receive frames sent to a multicast group.
- *                      option_value shall be a pointer to Unsigned 32 bit integer containing the Multicast ipv4 address.
- *                  - [IP_DROP_MEMBERSHIP](@ref IP_DROP_MEMBERSHIP):
- *                      Valid for UDP sockets,this option is used to Stop receiving frames sent to a multicast group.
- *                      option_value shall be a pointer to Unsigned 32 bit integer containing the Multicast ipv4 address.
- *
- *                  Possible values for s32Level: This argument is ignored.
- * @param[in]   socket
- *                  Socket handler.
- * @param[in]   u8Level
- *                  Protocol level. Always SOL_SOCKET for now.
- * @param[in]   option_name
- *                  Option to be set.
- * @param[in]   option_value
- *                  Pointer to the user provided value.
- * @param[in]   u16OptionLen
- *                  Length of the option value.
- * @warning
- *              Note that sending IGMP packets to Join/Leave multicast groups is not currently implemented.\n
- *              Calling this function will Pass/Filter packets sent to the Multicast address provided in the option_value.
- * @sa          SOL_SOCKET, SOL_SSL_SOCKET, IP_ADD_MEMBERSHIP, IP_DROP_MEMBERSHIP
- * @return      The function shall return @ref SOCK_ERR_NO_ERROR for successful operation and a negative value otherwise.
- */
-int8_t setsockopt(SOCKET socket, uint8_t u8Level, uint8_t option_name, const void *option_value, uint16_t u16OptionLen);
+@fn \
+    int8_t setsockopt(SOCKET socket, uint8_t u8Level, uint8_t option_name,
+       const void *option_value, uint16_t u16OptionLen);
+
+    The setsockopt() function shall set the option specified by the option_name
+    argument, at the protocol level specified by the level argument, to the value
+    pointed to by the option_value argument for the socket specified by the socket argument.
+
+@param[in]  socket
+                Socket handler.
+
+@param[in]  u8Level
+                Protocol level.\n
+                Supported protocol levels are @ref SOL_SOCKET, @ref SOL_SSL_SOCKET and @ref SOL_RAW.
+
+@param[in]  option_name
+                Option to be set.\n
+                For protocol level @ref SOL_SOCKET, the supported option names are:\n
+                    @ref SO_SET_UDP_SEND_CALLBACK\n
+                    @ref SO_TCP_KEEPALIVE\n
+                    @ref SO_TCP_KEEPIDLE\n
+                    @ref SO_TCP_KEEPINTVL\n
+                    @ref SO_TCP_KEEPCNT\n
+                For protocol level @ref SOL_SSL_SOCKET, the supported option names are:\n
+                    @ref SO_SSL_BYPASS_X509_VERIF\n
+                    @ref SO_SSL_SNI\n
+                    @ref SO_SSL_ENABLE_SESSION_CACHING\n
+                    @ref SO_SSL_ENABLE_CERTNAME_VALIDATION\n
+                    @ref SO_SSL_ALPN\n
+                For protocol level @ref SOL_RAW, the supported option names are:\n
+                    @ref SO_ICMP_FILTER\n
+
+@param[in]  option_value
+                Pointer to user provided value.
+
+@param[in]  u16OptionLen
+                Length of the option value in bytes. Refer to each option documentation for the required length.
+
+@return
+    The function shall return \ref SOCK_ERR_NO_ERROR for successful operation
+    and a negative value (indicating the error) otherwise.
+*/
+int8_t setsockopt(SOCKET socket, uint8_t u8Level, uint8_t option_name,
+                         const void *option_value, uint16_t u16OptionLen);
 
 /*!
  * @fn          int8_t getsockopt(SOCKET sock, uint8_t u8Level, uint8_t u8OptName, const void *pvOptValue, uint8_t *pu8OptLen);
@@ -1852,7 +1939,7 @@ int8_t get_alpn_index(SOCKET sock);
  *
  *  This function gets detail about a socket failure. The application can call this when notified
  *  of a socket failure via @ref SOCKET_MSG_CONNECT or @ref SOCKET_MSG_RECV.
- *  If used, it must be called before @ref close.
+ *  If used, it must be called before @ref shutdown.
 
  * @param[in]   sock
  *                  Socket ID obtained by a call to @ref socket.

@@ -83,7 +83,7 @@ struct sockaddr_in{
     */
 };
 
-const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
+const char *inet_ntop(int af, const void *src, char *dst, size_t size);
 in_addr_t inet_addr(const char *cp);
 
 // DOM-IGNORE-BEGIN

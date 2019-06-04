@@ -40,7 +40,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <sys/types.h>
 #include "socket.h"
 
-const char *inet_ntop(int af, const void *src, char *dst, socklen_t size)
+const char *inet_ntop(int af, const void *src, char *dst, size_t size)
 {
     uint8_t i, v, t, c, n;
     char *rp = dst;
