@@ -25,12 +25,13 @@
         <#lt>#define WDRV_WINC_DEVICE_BSS_ROAMING
         <#lt>#define WDRV_WINC_DEVICE_FLEXIBLE_FLASH_MAP
         <#lt>#define WDRV_WINC_DEVICE_DYNAMIC_BYPASS_MODE
+        <#lt>#define WDRV_WINC_DEVICE_WPA_SOFT_AP
         <#if DRV_WIFI_WINC_DRIVER_MODE == "Socket Mode">
             <#lt>#define WDRV_WINC_DEVICE_CONF_NTP_SERVER
             <#lt>#define WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
             <#lt>#define WDRV_WINC_DEVICE_SOFT_AP_EXT
         </#if>
-    <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
+        <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
     </#if>
 <#elseif DRV_WIFI_WINC_DEVICE == "WINC3400">
     <#lt>#define WDRV_WINC_DEVICE_WINC3400
@@ -49,7 +50,7 @@
         </#if>
     </#if>
     <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>
-    <#lt>#define WDRV_WINC_ENABLE_BLE
+        <#lt>#define WDRV_WINC_ENABLE_BLE
     </#if>
 </#if>
 <#if DRV_WIFI_WINC_LOG_LEVEL == "None">

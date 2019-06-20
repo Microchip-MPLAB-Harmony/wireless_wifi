@@ -392,7 +392,9 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
 
                 if (WDRV_WINC_AUTH_TYPE_WPA_PSK == pProvInfo->u8SecType)
                 {
-                    memcpy(&authCtx.authInfo.PSK, &pProvInfo->au8Password, M2M_MAX_PSK_LEN);
+                    authCtx.authInfo.WPAPerPSK.size = (uint8_t)strlen((const char*)pProvInfo->au8Password);
+                    memset(&authCtx.authInfo.WPAPerPSK.key, 0, M2M_MAX_PSK_LEN-1);
+                    memcpy(&authCtx.authInfo.WPAPerPSK.key, &pProvInfo->au8Password, authCtx.authInfo.WPAPerPSK.size);
                 }
 
                 /* Pass information to user application via the callback, the
@@ -1278,7 +1280,6 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
 #else
     /* For socket mode. */
 #ifdef WDRV_WINC_DEVICE_DYNAMIC_BYPASS_MODE
-    /* WINC1500 has a separate Ethernet enable flag. */
     wifiParam.strEthInitParam.u8EthernetEnable = false;
 #endif
 #endif

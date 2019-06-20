@@ -125,9 +125,12 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
     }
 
     /* Validate authentication type if context is present. */
-    if ((NULL != pAuthCtx) &&
-        (WDRV_WINC_AUTH_TYPE_OPEN != pAuthCtx->authType) &&
-        (WDRV_WINC_AUTH_TYPE_WEP != pAuthCtx->authType))
+    if ((NULL != pAuthCtx) && (WDRV_WINC_AUTH_TYPE_OPEN != pAuthCtx->authType)
+                           && (WDRV_WINC_AUTH_TYPE_WEP != pAuthCtx->authType)
+#ifdef WDRV_WINC_DEVICE_WPA_SOFT_AP
+                           && (WDRV_WINC_AUTH_TYPE_WPA_PSK != pAuthCtx->authType)
+#endif
+                            )
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -148,6 +151,16 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
         pAPCfg->u8KeySz   = 0;
         pAPCfg->au8WepKey[0] = '\0';
     }
+#ifdef WDRV_WINC_DEVICE_WPA_SOFT_AP
+    else if (WDRV_WINC_AUTH_TYPE_WPA_PSK == pAuthCtx->authType)
+    {
+        /* If WPA2 authentication is requested copy key. */
+        pAPCfg->u8SecType = M2M_WIFI_SEC_WPA_PSK;
+
+        pAPCfg->u8KeySz = pAuthCtx->authInfo.WPAPerPSK.size;
+        memcpy(pAPCfg->au8Key, pAuthCtx->authInfo.WPAPerPSK.key, pAPCfg->u8KeySz);
+    }
+#endif
     else if (WDRV_WINC_AUTH_TYPE_WEP == pAuthCtx->authType)
     {
         /* If WEP authentication is requested validate the key index and size. */
