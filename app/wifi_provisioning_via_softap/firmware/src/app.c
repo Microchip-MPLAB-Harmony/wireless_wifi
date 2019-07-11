@@ -28,10 +28,16 @@
 // *****************************************************************************
 
 #include "app.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/socket.h"
-#include "config/sam_d21_xpro_winc1500/system/console/sys_debug.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/common/nm_common.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_wifi.h"
+#include "socket.h"
+
+
+#if defined(WDRV_WINC_DEVICE_WINC1500)
+#include "system/console/sys_debug.h"
+#elif defined(WDRV_WINC_DEVICE_WINC3400)
+#include "system/debug/sys_debug.h"
+#endif 
+#include "nm_common.h"
+#include "m2m_wifi.h"
 
 
 #include "wdrv_winc_client_api.h"

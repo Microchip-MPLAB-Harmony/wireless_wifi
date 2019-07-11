@@ -32,8 +32,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "configuration.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_wifi.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/socket.h"
+
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 

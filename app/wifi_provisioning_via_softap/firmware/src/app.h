@@ -32,8 +32,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "configuration.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver/m2m_wifi.h"
-#include "config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket/socket.h"
+
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
@@ -41,41 +40,6 @@ extern "C" {
 
 #endif
 // DOM-IGNORE-END
-
-
-/** Wi-Fi AP Settings. */
-#define MAIN_M2M_AP_SEC                      M2M_WIFI_SEC_OPEN
-//#define MAIN_M2M_AP_SEC						M2M_WIFI_SEC_WPA_PSK
-#define MAIN_M2M_AP_WEP_KEY                  "1234567890"
-#define MAIN_M2M_AP_SSID_MODE                SSID_MODE_VISIBLE
-
-#define MAIN_HTTP_PROV_SERVER_DOMAIN_NAME    "atmelconfig.com"
-
-#define MAIN_M2M_DEVICE_NAME                 "WINC1500_00:00"
-// #define MAIN_M2M_DEVICE_NAME					"MCHP_Kiran"
-
-#define MAIN_MAC_ADDRESS                     {0xf8, 0xf0, 0x05, 0x45, 0xD4, 0x84}
-
-/** Using broadcast address for simplicity. */
-#define MAIN_SERVER_PORT                    (80)
-
-/** IP address parsing. */
-#define IPV4_BYTE(val, index)               ((val >> (index * 8)) & 0xFF)
-
-/** Send buffer of TCP socket. */
-#define MAIN_PREFIX_BUFFER                  "GET /data/2.5/weather?q="
-#define MAIN_POST_BUFFER                    "&appid=c592e14137c3471fa9627b44f6649db4&mode=xml&units=metric HTTP/1.1\r\nHost: api.openweathermap.org\r\nAccept: */*\r\n\r\n"
-
-/** Weather information provider server. */
-#define MAIN_WEATHER_SERVER_NAME            "api.openweathermap.org"
-
-/** Input City Name. */
-#define MAIN_CITY_NAME                      "paris"
-
-/** Receive buffer size. */
-#define MAIN_WIFI_M2M_BUFFER_SIZE           1400
-
-#define MAIN_HEX2ASCII(x)                   (((x) >= 10) ? (((x) - 10) + 'A') : ((x) + '0'))
 
 
 // *****************************************************************************

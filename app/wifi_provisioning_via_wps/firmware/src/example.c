@@ -74,6 +74,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  * ===================================
  * Wi-Fi Provisioning via WPS Example
  * ===================================
+ * WPS Push Button Test
  * SW0 button pressed
  * Device is connecting using WPS Push Button option
  * [APP_ExampleWPSPushButtonDiscoveryCallback] In
@@ -96,6 +97,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  * ===================================
  * Wi-Fi Provisioning via WPS Example
  * ===================================
+ * WPS Pin Test, the pin number is: 12345670
  * [APP_ExampleWPSPinDiscoveryCallback] In
  * SSID : xxxxx, authtyp : x pw : xxxxxxxx
  * Connect AP, SSID = xxxxx
@@ -158,7 +160,11 @@ static void btn_init(void)
 static void APP_ExampleWPSPinDiscoveryCallback(DRV_HANDLE handle, WDRV_WINC_BSS_CONTEXT *pBSSCtx, WDRV_WINC_AUTH_CONTEXT *pAuthCtx)
 {
    APP_DebugPrintf("[APP_ExampleWPSPinDiscoveryCallback] In\r\n"); 
-   APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.PSK);
+#if defined(WDRV_WINC_DEVICE_WINC1500)
+    APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.PSK);
+#elif defined(WDRV_WINC_DEVICE_WINC3400)
+    APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.WPAPerPSK.key);
+#endif 
     if (pAuthCtx == NULL) {
         APP_DebugPrintf("WPS is not enabled OR Timedout\r\n");
         return;
@@ -171,7 +177,12 @@ static void APP_ExampleWPSPinDiscoveryCallback(DRV_HANDLE handle, WDRV_WINC_BSS_
 static void APP_ExampleWPSPushButtonDiscoveryCallback(DRV_HANDLE handle, WDRV_WINC_BSS_CONTEXT *pBSSCtx, WDRV_WINC_AUTH_CONTEXT *pAuthCtx)
 {
     APP_DebugPrintf("[APP_ExampleWPSPushButtonDiscoveryCallback] In\r\n");
+#if defined(WDRV_WINC_DEVICE_WINC1500)
     APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.PSK);
+#elif defined(WDRV_WINC_DEVICE_WINC3400)
+    APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.WPAPerPSK.key);
+#endif 
+    
     if (pAuthCtx == NULL) {
         APP_DebugPrintf("WPS is not enabled OR Timedout\r\n");
         state = EXAMP_STATE_WPS_CHECK_BUTTON;
@@ -247,6 +258,7 @@ void APP_ExampleTasks(DRV_HANDLE handle)
 
             if (!MAIN_WPS_PUSH_BUTTON_FEATURE) {
                 
+                 APP_DebugPrintf("WPS Pin Test, the pin number is: %d\r\n", MAIN_WPS_PIN_NUMBER);
                 /* case 2 WPS PIN method */
                 if (WDRV_WINC_STATUS_OK != WDRV_WINC_WPSEnrolleeDiscoveryStartPIN(handle, MAIN_WPS_PIN_NUMBER, &APP_ExampleWPSPinDiscoveryCallback))
                 {
@@ -254,8 +266,10 @@ void APP_ExampleTasks(DRV_HANDLE handle)
                 }
                 
                 state = EXAMP_STATE_WPS_PIN;
+                break;
             }
             
+             APP_DebugPrintf("WPS Push Button Test\r\n");
             /* case 1 WPS Push Button method. */
             state = EXAMP_STATE_WPS_CHECK_BUTTON;
             break;
