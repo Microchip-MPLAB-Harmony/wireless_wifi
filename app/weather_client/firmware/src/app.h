@@ -50,8 +50,7 @@ extern "C" {
 
 #define MAIN_HTTP_PROV_SERVER_DOMAIN_NAME    "atmelconfig.com"
 
-#define MAIN_M2M_DEVICE_NAME                 "WINC1500_00:00"
-// #define MAIN_M2M_DEVICE_NAME					"MCHP_Kiran"
+#define MAIN_M2M_DEVICE_NAME                 "MicrochipDemoAp"
 
 #define MAIN_MAC_ADDRESS                     {0xf8, 0xf0, 0x05, 0x45, 0xD4, 0x84}
 

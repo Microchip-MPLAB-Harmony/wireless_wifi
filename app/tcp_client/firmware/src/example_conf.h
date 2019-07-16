@@ -46,7 +46,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #ifndef _EXAMPLE_CONF_H
 #define _EXAMPLE_CONF_H
 
-#define WLAN_SSID           "padap"
+#define WLAN_SSID           "MicrochipDemoAp"
 #define WLAN_AUTH_WPA_PSK
 //#define WLAN_AUTH_OPEN
 #define WLAN_PSK            "12345678"

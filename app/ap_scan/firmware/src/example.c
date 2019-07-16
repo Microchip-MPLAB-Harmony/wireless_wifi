@@ -54,7 +54,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc_gpio.h"
 
 
-#define WLAN_SSID           "MCHP_Kiran"
+#define WLAN_SSID           "MicrochipDemoAp"
 #define WLAN_AUTH_WPA_PSK    M2M_WIFI_SEC_WPA_PSK
 #define WLAN_PSK            "12345678"
 
