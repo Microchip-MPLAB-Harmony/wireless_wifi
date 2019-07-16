@@ -493,7 +493,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWEP
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWPA
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-        uint8_t *pPSK,
+        uint8_t *const pPSK,
         uint8_t size
     )
 
@@ -532,8 +532,9 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWPA
     pAuthCtx->authType = WDRV_WINC_AUTH_TYPE_WPA_PSK;
 
     /* Copy the key and zero out unused parts of the buffer. */
-    memset(&pAuthCtx->authInfo.PSK, 0, M2M_MAX_PSK_LEN);
-    memcpy(&pAuthCtx->authInfo.PSK, pPSK, size);
+    memset(&pAuthCtx->authInfo.WPAPerPSK.key, 0, M2M_MAX_PSK_LEN);
+    memcpy(&pAuthCtx->authInfo.WPAPerPSK.key, pPSK, size);
+    pAuthCtx->authInfo.WPAPerPSK.size = size;
 
     return WDRV_WINC_STATUS_OK;
 }

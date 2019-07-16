@@ -347,7 +347,7 @@ static bool _WDRV_WINC_NVMFindSection
             {
                 case WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE:
                 {
-                    *pStartAddr = strControl.u32OtaCurrentworkingImagOffset;
+                    *pStartAddr = strControl.u32OtaCurrentWorkingImagOffset;
                     break;
                 }
 
@@ -360,7 +360,7 @@ static bool _WDRV_WINC_NVMFindSection
 #ifdef WDRV_WINC_DEVICE_WINC3400
                 case WDRV_WINC_NVM_REGION_HTTP_FILES:
                 {
-                    *pStartAddr = strControl.u32OtaCurrentworkingImagOffset + (M2M_HTTP_MEM_FLASH_OFFSET - M2M_OTA_IMAGE1_OFFSET);
+                    *pStartAddr = strControl.u32OtaCurrentWorkingImagOffset + (M2M_HTTP_MEM_FLASH_OFFSET - M2M_OTA_IMAGE1_OFFSET);
                     break;
                 }
 #endif
@@ -410,7 +410,7 @@ static bool _WDRV_WINC_NVMFindSection
         {
             case WDRV_WINC_NVM_REGION_FIRMWARE_ACTIVE:
             {
-                *pStartAddr = strControl.u32OtaCurrentworkingImagOffset;
+                *pStartAddr = strControl.u32OtaCurrentWorkingImagOffset;
                 break;
             }
 
@@ -423,7 +423,7 @@ static bool _WDRV_WINC_NVMFindSection
 #ifdef WDRV_WINC_DEVICE_WINC3400
             case WDRV_WINC_NVM_REGION_HTTP_FILES:
             {
-                *pStartAddr = strControl.u32OtaCurrentworkingImagOffset + (M2M_HTTP_MEM_FLASH_OFFSET - M2M_OTA_IMAGE1_OFFSET);
+                *pStartAddr = strControl.u32OtaCurrentWorkingImagOffset + (M2M_HTTP_MEM_FLASH_OFFSET - M2M_OTA_IMAGE1_OFFSET);
                 break;
             }
 #endif

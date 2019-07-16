@@ -49,6 +49,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "peripheral/sercom/usart/plib_sercom3_usart.h"
+#include "peripheral/nvmctrl/plib_nvmctrl.h"
 #include "peripheral/evsys/plib_evsys.h"
 #include "peripheral/sercom/spim/plib_sercom0_spi.h"
 #include "driver/winc/include/wdrv_winc_api.h"
@@ -58,10 +59,10 @@
 #include "peripheral/dmac/plib_dmac.h"
 #include "peripheral/eic/plib_eic.h"
 #include "peripheral/tc/plib_tc3.h"
+#include "system/debug/sys_debug.h"
 #include "system/time/sys_time.h"
 #include "system/console/sys_console.h"
 #include "system/console/src/sys_console_uart_definitions.h"
-#include "system/console/sys_debug.h"
 #include "driver/spi/drv_spi.h"
 #include "system/int/sys_int.h"
 #include "system/ports/sys_ports.h"
@@ -193,9 +194,10 @@ typedef struct
     /* SPI0 Driver Object */
     SYS_MODULE_OBJ drvSPI0;
 
+    SYS_MODULE_OBJ  sysDebug;
+
     SYS_MODULE_OBJ  sysTime;
     SYS_MODULE_OBJ  sysConsole0;
-    SYS_MODULE_OBJ  sysDebug;
 
 
 } SYSTEM_OBJECTS;

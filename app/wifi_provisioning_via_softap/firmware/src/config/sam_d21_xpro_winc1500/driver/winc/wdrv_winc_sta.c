@@ -200,25 +200,25 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         tstrAuthPsk pskParams;
         uint8_t pskLength;
 
-        pskLength = strlen((const char*)pAuthCtx->authInfo.PSK);
+        pskLength = pAuthCtx->authInfo.WPAPerPSK.size;
 
         if ((M2M_MAX_PSK_LEN-1) == pskLength)
         {
-            pskParams.pu8Psk          = (uint8_t*)pAuthCtx->authInfo.PSK;
+            pskParams.pu8Psk          = (uint8_t*)pAuthCtx->authInfo.WPAPerPSK.key;
             pskParams.pu8Passphrase   = NULL;
             pskParams.u8PassphraseLen = 0;
         }
         else
         {
             pskParams.pu8Psk          = NULL;
-            pskParams.pu8Passphrase   = (uint8_t*)pAuthCtx->authInfo.PSK;
+            pskParams.pu8Passphrase   = (uint8_t*)pAuthCtx->authInfo.WPAPerPSK.key;
             pskParams.u8PassphraseLen = pskLength;
         }
 
         result = m2m_wifi_connect_psk(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &pskParams);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
-                                    pAuthCtx->authType, (void*)&pAuthCtx->authInfo.PSK, channel);
+                                    pAuthCtx->authType, (void*)&pAuthCtx->authInfo.WPAPerPSK.key, channel);
 #endif
     }
     else if (WDRV_WINC_AUTH_TYPE_WEP == pAuthCtx->authType)

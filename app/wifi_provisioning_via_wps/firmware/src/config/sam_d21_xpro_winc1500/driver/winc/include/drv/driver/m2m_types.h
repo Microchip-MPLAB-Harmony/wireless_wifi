@@ -2715,7 +2715,7 @@ typedef struct {
     /*!<
         Last time OTA check for update
     */
-    uint32_t u32OtaCurrentworkingImagOffset;
+    uint32_t u32OtaCurrentWorkingImagOffset;
     /*!<
         Current working offset in flash
     */

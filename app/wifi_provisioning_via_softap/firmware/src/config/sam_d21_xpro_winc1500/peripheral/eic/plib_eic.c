@@ -98,8 +98,6 @@ void EIC_Initialize (void)
                               EIC_CONFIG_SENSE6_NONE  |
                               EIC_CONFIG_SENSE7_NONE ;
 
-    /* External Interrupt Asynchronous Mode enable */
-    EIC_REGS->EIC_WAKEUP = 0x10;
 
 
     /* External Interrupt enable*/

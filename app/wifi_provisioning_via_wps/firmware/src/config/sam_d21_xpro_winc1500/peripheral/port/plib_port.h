@@ -102,6 +102,8 @@
 #define GPIO_PA15_InputEnable()       (PORT_REGS->GROUP[0].PORT_DIRCLR = 1 << 15)
 #define GPIO_PA15_PIN                  PORT_PIN_PA15
 
+
+
 // *****************************************************************************
 /* PORT Group
 

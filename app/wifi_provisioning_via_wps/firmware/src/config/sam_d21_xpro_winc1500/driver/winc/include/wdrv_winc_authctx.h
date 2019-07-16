@@ -120,8 +120,12 @@ typedef struct
     /* Union of data structures for each authentication type. */
     union
     {
-        /* WPA-PSK authentication state. */
-        uint8_t PSK[M2M_MAX_PSK_LEN];
+        /* WPA-PSK (Personal) authentication state. */
+        struct
+        {
+            uint8_t size;
+            uint8_t key[M2M_MAX_PSK_LEN];
+        } WPAPerPSK;
 
         /* WEP authentication state. */
         struct
@@ -310,7 +314,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWEP
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWPA
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-        uint8_t *pPSK,
+        uint8_t *const pPSK,
         uint8_t size
     )
 

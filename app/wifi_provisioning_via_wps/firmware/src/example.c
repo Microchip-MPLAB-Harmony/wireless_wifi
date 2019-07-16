@@ -160,11 +160,8 @@ static void btn_init(void)
 static void APP_ExampleWPSPinDiscoveryCallback(DRV_HANDLE handle, WDRV_WINC_BSS_CONTEXT *pBSSCtx, WDRV_WINC_AUTH_CONTEXT *pAuthCtx)
 {
    APP_DebugPrintf("[APP_ExampleWPSPinDiscoveryCallback] In\r\n"); 
-#if defined(WDRV_WINC_DEVICE_WINC1500)
-    APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.PSK);
-#elif defined(WDRV_WINC_DEVICE_WINC3400)
     APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.WPAPerPSK.key);
-#endif 
+
     if (pAuthCtx == NULL) {
         APP_DebugPrintf("WPS is not enabled OR Timedout\r\n");
         return;
@@ -177,11 +174,8 @@ static void APP_ExampleWPSPinDiscoveryCallback(DRV_HANDLE handle, WDRV_WINC_BSS_
 static void APP_ExampleWPSPushButtonDiscoveryCallback(DRV_HANDLE handle, WDRV_WINC_BSS_CONTEXT *pBSSCtx, WDRV_WINC_AUTH_CONTEXT *pAuthCtx)
 {
     APP_DebugPrintf("[APP_ExampleWPSPushButtonDiscoveryCallback] In\r\n");
-#if defined(WDRV_WINC_DEVICE_WINC1500)
-    APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.PSK);
-#elif defined(WDRV_WINC_DEVICE_WINC3400)
     APP_DebugPrintf("SSID : %s, authtyp : %d pw : %s\r\n", pBSSCtx->ssid.name, pAuthCtx->authType, pAuthCtx->authInfo.WPAPerPSK.key);
-#endif 
+
     
     if (pAuthCtx == NULL) {
         APP_DebugPrintf("WPS is not enabled OR Timedout\r\n");
