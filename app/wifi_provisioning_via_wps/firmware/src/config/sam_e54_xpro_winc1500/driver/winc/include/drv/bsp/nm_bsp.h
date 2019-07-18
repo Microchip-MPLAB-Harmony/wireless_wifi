@@ -1,26 +1,17 @@
 /*******************************************************************************
-  MPLAB Harmony Example Configuration File
-
-  Company:
-    Microchip Technology Inc.
-
   File Name:
-    example_conf.h
+    nm_common.h
 
   Summary:
-    This header file provides configuration for the example.
+    This module contains WINC1500 BSP APIs declarations.
 
   Description:
-    This header file provides function prototypes and data type definitions for
-    the application.  Some of these are required by the system (such as the
-    "APP_Initialize" and "APP_Tasks" prototypes) and some of them are only used
-    internally by the application (such as the "APP_STATES" definition).  Both
-    are defined here for convenience.
-*******************************************************************************/
+    This module contains WINC1500 BSP APIs declarations.
+ *******************************************************************************/
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (c) 2013-2014 released Microchip Technology Inc.  All rights reserved.
+Copyright (c) 2017 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -30,7 +21,7 @@ controller that is integrated into your product or third party product
 You should refer to the license agreement accompanying this Software for
 additional information regarding your rights and obligations.
 
-SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
 MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
 IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
@@ -43,25 +34,46 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *******************************************************************************/
 //DOM-IGNORE-END
 
-#ifndef _EXAMPLE_CONF_H
-#define _EXAMPLE_CONF_H
-
-
-/** WPS PIN number */
-#define MAIN_WPS_PIN_NUMBER              12345670
-
-/** WPS Push Button Feature */
-#define MAIN_WPS_PUSH_BUTTON_FEATURE     true
-
-/** Settings for button and timer */
-#define MAIN_BIT0                        (0x0001)
-#define MAIN_SW0                         MAIN_BIT0
-
-#define GPIO_SW0_GET               	GPIO_PA15_Get 
-
-#endif /* _EXAMPLE_CONF_H */
-
-/*******************************************************************************
- End of File
+/** @defgroup nm_bsp BSP
+    @brief
+        Description of the BSP (<strong>B</strong>oard <strong>S</strong>upport <strong>P</strong>ackage) module.
+    @{
+        @defgroup   DataT       Data Types
+        @defgroup   BSPDefine   Defines
+        @defgroup   BSPAPI      Functions
+        @brief
+            Lists the available BSP (<strong>B</strong>oard <strong>S</strong>upport <strong>P</strong>ackage) APIs.
+    @}
  */
 
+/**@addtogroup BSPDefine
+   @{
+ */
+#ifndef _NM_BSP_H_
+#define _NM_BSP_H_
+
+
+#define BSP_MIN(x,y) ((x)>(y)?(y):(x))
+/*!<
+*     Computes the minimum value between \b x and \b y.
+*/
+/**@}*/     //BSPDefine
+
+ //@}
+
+#ifdef _NM_BSP_BIG_END
+#define NM_BSP_B_L_32(x)      \
+((((x) & 0x000000FF) << 24) + \
+(((x) & 0x0000FF00) << 8)   + \
+(((x) & 0x00FF0000) >> 8)   + \
+(((x) & 0xFF000000) >> 24))
+
+#define NM_BSP_B_L_16(x) \
+((((x) & 0x00FF) << 8) + \
+(((x)  & 0xFF00) >> 8))
+#else
+#define NM_BSP_B_L_32(x)  (x)
+#define NM_BSP_B_L_16(x)  (x)
+#endif
+
+#endif  /*_NM_BSP_H_*/

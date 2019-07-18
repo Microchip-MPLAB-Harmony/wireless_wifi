@@ -56,9 +56,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /** Settings for button and timer */
 #define MAIN_BIT0                        (0x0001)
 #define MAIN_SW0                         MAIN_BIT0
-
-#define GPIO_SW0_GET               	GPIO_PA15_Get 
-
+#define GPIO_SW0_GET                     GPIO_PB31_Get
 #endif /* _EXAMPLE_CONF_H */
 
 /*******************************************************************************

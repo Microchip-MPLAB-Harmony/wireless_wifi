@@ -137,7 +137,7 @@ static bool gbPressButton = false;
  */
 static void btn_press(uint8_t btn, uint8_t press)
 {
-	if (MAIN_SW1 == btn) {
+	if (MAIN_SW0 == btn) {
             if (press ==  0) {
                 APP_DebugPrintf("SW0 button pressed\r\n");
                 state = EXAMP_STATE_WPS_PUSH_BUTTON;
@@ -150,9 +150,9 @@ static void btn_press(uint8_t btn, uint8_t press)
  */
 static void btn_init(void)
 {
-    if (GPIO_PA15_Get() == 0)
+    if (GPIO_SW0_GET() == 0)
     {
-        btn_press(MAIN_SW1, 0);
+        btn_press(MAIN_SW0, 0);
         gbPressButton = true;
     }
 }
@@ -297,7 +297,6 @@ void APP_ExampleTasks(DRV_HANDLE handle)
             break;
         }
 
-        
         case EXAMP_STATE_CONNECT_AP:
         {
             if (WDRV_WINC_STATUS_OK != WDRV_WINC_IPUseDHCPSet(handle, &APP_ExampleSTAModeDHCPAddressEventCallback))

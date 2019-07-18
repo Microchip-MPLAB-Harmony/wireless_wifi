@@ -1,26 +1,19 @@
 /*******************************************************************************
-  MPLAB Harmony Example Configuration File
-
-  Company:
-    Microchip Technology Inc.
+  WINC Wireless Driver OS Abstraction Layer
 
   File Name:
-    example_conf.h
+    wdrv_winc_osal.c
 
   Summary:
-    This header file provides configuration for the example.
+    OS abstraction layer for WINC wireless driver.
 
   Description:
-    This header file provides function prototypes and data type definitions for
-    the application.  Some of these are required by the system (such as the
-    "APP_Initialize" and "APP_Tasks" prototypes) and some of them are only used
-    internally by the application (such as the "APP_STATES" definition).  Both
-    are defined here for convenience.
-*******************************************************************************/
+    OS abstraction layer for WINC wireless driver.
+ *******************************************************************************/
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (c) 2013-2014 released Microchip Technology Inc.  All rights reserved.
+Copyright (c) 2017 released Microchip Technology Inc.  All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -30,7 +23,7 @@ controller that is integrated into your product or third party product
 You should refer to the license agreement accompanying this Software for
 additional information regarding your rights and obligations.
 
-SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
 MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
 IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
@@ -41,27 +34,34 @@ CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
 SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *******************************************************************************/
+
+#include "osal/osal.h"
+#include "wdrv_winc_common.h"
+
+#if (OSAL_USE_RTOS == 1 || OSAL_USE_RTOS == 9)
+void WDRV_MSDelay(uint32_t ms)
+{
+    if (!ms)
+    {
+        ms = 1;
+    }
+
+    vTaskDelay(ms * portTICK_PERIOD_MS);
+}
+#else
+void WDRV_MSDelay(uint32_t ms)
+{
+    SYS_TIME_HANDLE tmrHandle = SYS_TIME_HANDLE_INVALID;
+
+    if (SYS_TIME_SUCCESS != SYS_TIME_DelayMS(ms, &tmrHandle))
+    {
+        return;
+    }
+
+    while (true != SYS_TIME_DelayIsComplete(tmrHandle))
+    {
+    }
+}
+#endif /* (OSAL_USE_RTOS == 1 || OSAL_USE_RTOS == 9) */
+
 //DOM-IGNORE-END
-
-#ifndef _EXAMPLE_CONF_H
-#define _EXAMPLE_CONF_H
-
-
-/** WPS PIN number */
-#define MAIN_WPS_PIN_NUMBER              12345670
-
-/** WPS Push Button Feature */
-#define MAIN_WPS_PUSH_BUTTON_FEATURE     true
-
-/** Settings for button and timer */
-#define MAIN_BIT0                        (0x0001)
-#define MAIN_SW0                         MAIN_BIT0
-
-#define GPIO_SW0_GET               	GPIO_PA15_Get 
-
-#endif /* _EXAMPLE_CONF_H */
-
-/*******************************************************************************
- End of File
- */
-

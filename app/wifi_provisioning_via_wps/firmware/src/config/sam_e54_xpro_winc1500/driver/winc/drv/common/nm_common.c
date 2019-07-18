@@ -1,26 +1,17 @@
 /*******************************************************************************
-  MPLAB Harmony Example Configuration File
-
-  Company:
-    Microchip Technology Inc.
-
   File Name:
-    example_conf.h
+    nm_common.c
 
   Summary:
-    This header file provides configuration for the example.
+    This module contains common APIs implementations.
 
   Description:
-    This header file provides function prototypes and data type definitions for
-    the application.  Some of these are required by the system (such as the
-    "APP_Initialize" and "APP_Tasks" prototypes) and some of them are only used
-    internally by the application (such as the "APP_STATES" definition).  Both
-    are defined here for convenience.
-*******************************************************************************/
+    This module contains common APIs implementations.
+ *******************************************************************************/
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (c) 2013-2014 released Microchip Technology Inc.  All rights reserved.
+Copyright (c) 2017 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -30,7 +21,7 @@ controller that is integrated into your product or third party product
 You should refer to the license agreement accompanying this Software for
 additional information regarding your rights and obligations.
 
-SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
 MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
 IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
@@ -41,27 +32,36 @@ CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
 SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *******************************************************************************/
-//DOM-IGNORE-END
 
-#ifndef _EXAMPLE_CONF_H
-#define _EXAMPLE_CONF_H
+#include "nm_common.h"
+#include "wdrv_winc_common.h"
+#include "wdrv_winc_gpio.h"
 
-
-/** WPS PIN number */
-#define MAIN_WPS_PIN_NUMBER              12345670
-
-/** WPS Push Button Feature */
-#define MAIN_WPS_PUSH_BUTTON_FEATURE     true
-
-/** Settings for button and timer */
-#define MAIN_BIT0                        (0x0001)
-#define MAIN_SW0                         MAIN_BIT0
-
-#define GPIO_SW0_GET               	GPIO_PA15_Get 
-
-#endif /* _EXAMPLE_CONF_H */
-
-/*******************************************************************************
- End of File
+/*!
+ *  @fn         nm_sleep
+ *  @brief      Sleep in units of mSec
+ *  @param[IN]  u32TimeMsec
+ *              Time in milliseconds
  */
+void nm_sleep(uint32_t u32TimeMsec)
+{
+    WDRV_MSDelay(u32TimeMsec);
+}
 
+/*!
+ *  @fn     nm_reset
+ *  @brief  Reset NMC1500 SoC by setting CHIP_EN and RESET_N signals low,
+ *           CHIP_EN high then RESET_N high
+ */
+void nm_reset(void)
+{
+    WDRV_WINC_GPIOChipEnableDeassert();
+    WDRV_WINC_GPIOResetAssert();
+    nm_sleep(100);
+    WDRV_WINC_GPIOChipEnableAssert();
+    nm_sleep(10);
+    WDRV_WINC_GPIOResetDeassert();
+    nm_sleep(10);
+}
+
+//DOM-IGNORE-END
