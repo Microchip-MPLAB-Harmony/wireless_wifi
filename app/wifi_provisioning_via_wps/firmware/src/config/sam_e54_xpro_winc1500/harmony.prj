@@ -515,16 +515,16 @@
           <Name dnOrder="1">wdrv_winc_socket.c</Name>
           <LogicalPath dnOrder="2">config/sam_e54_xpro_winc1500/driver/winc/</LogicalPath>
           <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">F45D8FEBEDD985E2610888B47947264F</GeneratedChecksum>
-          <UserChecksum dnOrder="5">F45D8FEBEDD985E2610888B47947264F</UserChecksum>
+          <GeneratedChecksum dnOrder="4">3CEF4A070D58120FD71B5646CE5D87BE</GeneratedChecksum>
+          <UserChecksum dnOrder="5">3CEF4A070D58120FD71B5646CE5D87BE</UserChecksum>
         </File>
         <File dnOrder="64">
           <Type dnOrder="0">SOURCE</Type>
           <Name dnOrder="1">wdrv_winc_softap.c</Name>
           <LogicalPath dnOrder="2">config/sam_e54_xpro_winc1500/driver/winc/</LogicalPath>
           <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">2AA438D6AC8CBF2598CE2B0F25232C12</GeneratedChecksum>
-          <UserChecksum dnOrder="5">2AA438D6AC8CBF2598CE2B0F25232C12</UserChecksum>
+          <GeneratedChecksum dnOrder="4">E9F3F99EAD057EC535F85A3BBD59ECAA</GeneratedChecksum>
+          <UserChecksum dnOrder="5">E9F3F99EAD057EC535F85A3BBD59ECAA</UserChecksum>
         </File>
         <File dnOrder="65">
           <Type dnOrder="0">SOURCE</Type>
@@ -547,8 +547,8 @@
           <Name dnOrder="1">wdrv_winc_sta.c</Name>
           <LogicalPath dnOrder="2">config/sam_e54_xpro_winc1500/driver/winc/</LogicalPath>
           <PhysicalPath dnOrder="3">/driver/winc/</PhysicalPath>
-          <GeneratedChecksum dnOrder="4">76DCAAC1CBE08601BDCF197D94EE3C05</GeneratedChecksum>
-          <UserChecksum dnOrder="5">76DCAAC1CBE08601BDCF197D94EE3C05</UserChecksum>
+          <GeneratedChecksum dnOrder="4">DB8216302E46AE6637F2FBD3F104EC56</GeneratedChecksum>
+          <UserChecksum dnOrder="5">DB8216302E46AE6637F2FBD3F104EC56</UserChecksum>
         </File>
         <File dnOrder="68">
           <Type dnOrder="0">SOURCE</Type>
