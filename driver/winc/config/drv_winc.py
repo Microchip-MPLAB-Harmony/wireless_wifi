@@ -137,8 +137,8 @@ def instantiateComponent(drvWincComponent):
     print('WINC Driver Component')
     configName = Variables.get('__CONFIGURATION_NAME')
 
-    eicNode = Database.getSymbolValue('eic', 'EIC_INT_COUNT')
-    
+    eicNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
+
     drvWincComponent.addDependency('spi', 'DRV_SPI', False, True);
 
     # WINC Device
@@ -174,14 +174,15 @@ def instantiateComponent(drvWincComponent):
 
     # External Interrupt Selection
     if eicNode:
-        
+        extIntCount = int(eicNode.getAttribute('value'))
+
         eicSrcSelDepList = []
 
-        for x in range(eicNode):
+        for x in range(extIntCount):
             wincEicSrcX = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_EIC_SRC_' + str(x), wincIntSrc)
             wincEicSrcX.setLabel('EIC Channel ' + str(x))
             wincEicSrcX.setVisible(False)
-            wincEicSrcX.setDependencies(setVisibilityEicSource, ['DRV_WIFI_WINC_INT_SRC', 'eic.EIC_INT'])
+            wincEicSrcX.setDependencies(setVisibilityEicSource, ['DRV_WIFI_WINC_INT_SRC', 'core:EIC_INTERRUPT_ENABLE_UPDATE'])
 
             eicSrcSelDepList.append('DRV_WIFI_WINC_EIC_SRC_' + str(x))
 
@@ -190,7 +191,7 @@ def instantiateComponent(drvWincComponent):
         wincEicSrcSel.setDependencies(setValueEicSource, eicSrcSelDepList)
         wincEicSrcSel.setDefaultValue(-1)
         wincEicSrcSel.setMin(-1)
-        wincEicSrcSel.setMax(eicNode-1)
+        wincEicSrcSel.setMax(extIntCount-1)
 
     # WINC1500 Version
     winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1', '19.5.4'])
@@ -562,13 +563,13 @@ def setVisibilityUseIwprivIntf(symbol, event):
 
 def setVisibilityEicSource(symbol, event):
     eicUseSym = symbol.getComponent().getSymbolByID('DRV_WIFI_WINC_INT_SRC')
-    
+
     if eicUseSym.getValue() == False:
         symbol.setVisible(False)
         symbol.setValue(False)
     else:
         eicID = symbol.getID().split('_')[-1]
-        
+
         if Database.getSymbolValue('eic', 'EIC_INT_' + eicID):
             symbol.setVisible(True)
         else:
