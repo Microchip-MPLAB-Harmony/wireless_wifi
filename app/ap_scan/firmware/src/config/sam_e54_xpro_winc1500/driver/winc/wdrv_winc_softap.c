@@ -318,6 +318,8 @@ WDRV_WINC_STATUS WDRV_WINC_APStop(DRV_HANDLE handle)
     pDcpt->isAP           = false;
     pDcpt->isProvisioning = false;
     pDcpt->assocInfoValid = false;
+    pDcpt->haveIPAddress  = false;
+    pDcpt->ipAddress      = 0;
 
     return WDRV_WINC_STATUS_OK;
 }
