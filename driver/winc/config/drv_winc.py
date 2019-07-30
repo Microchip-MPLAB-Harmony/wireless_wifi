@@ -182,7 +182,7 @@ def instantiateComponent(drvWincComponent):
             wincEicSrcX = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_EIC_SRC_' + str(x), wincIntSrc)
             wincEicSrcX.setLabel('EIC Channel ' + str(x))
             wincEicSrcX.setVisible(False)
-            wincEicSrcX.setDependencies(setVisibilityEicSource, ['DRV_WIFI_WINC_INT_SRC', 'core:EIC_INTERRUPT_ENABLE_UPDATE'])
+            wincEicSrcX.setDependencies(setVisibilityEicSource, ['DRV_WIFI_WINC_INT_SRC', 'eic.EIC_INT'])
 
             eicSrcSelDepList.append('DRV_WIFI_WINC_EIC_SRC_' + str(x))
 
