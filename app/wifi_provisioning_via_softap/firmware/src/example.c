@@ -45,6 +45,53 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *******************************************************************************/
 
+/** \mainpage
+ * \section intro Introduction
+ * This example demonstrates the use of the WINC1500 with the SAMD21 Xplained Pro board
+ * to connect to AP via softap mode.<br>
+ * It uses the following hardware:
+ * - the SAMD21 Xplained Pro.
+ * - the WINC1500 on EXT1. / WINC3400 on EXT1
+ *
+ *
+ * \section usage Usage
+ * -# Assemble the devices and connect to USB debug cable from PC.
+ * -# On the computer, open and configure a terminal application as the follows.
+ * \code
+ *    Baud Rate : 115200
+ *    Data : 8bit
+ *    Parity bit : none
+ *    Stop bit : 1bit
+ *    Flow control : none
+ * \endcode
+ *
+ * -# 1. Power on the board, the board enter softAP mode
+ *  # 2. On the mobile phone, go to the WiFi setting page to to connect to the AP "WINC1500_PROVISION_AP"
+ * -# 3. Launch the mobile APP, click "Connect to WINC1500" button, click "SSID/ Security/ PW" button,  enter SSID and password on the mobile APP
+ *  # 4. The board will change to STA mode and connect to the target AP
+ * -# Configure below code in the example_conf.h for WPS push button feature.
+
+ * \code
+ * ===========================================
+ * WINC WiFi Provisioning Soft AP Example
+ * ===========================================
+ *
+ * AP started, you can connect to WINC1500_PROVISION_AP
+ * On the android device, connect to WINC1500_PROVISION_AP then run setting app
+ * Bind on socket 0 successful, server_socket = 0
+ * Listen on socket 0 successful
+ * AP Mode: Station connected
+ * AP Mode: Station IP address is 192.168.1.100
+ * Connection from  192.168.1.100:47600
+ * Disable to AP.
+ * AP Mode: Station disconnected
+ * STA mode: Station connected
+ * STA Mode: Station IP address is 192.168.0.103
+ *
+ * \endcode
+ *
+ */
+
 #include "app.h"
 #include "wdrv_winc_client_api.h"
 #include "example_conf.h"
@@ -235,10 +282,7 @@ static void APP_ExampleSocketEventCallback(SOCKET socket, uint8_t messageType, v
             else
             {
                 APP_DebugPrintf("Receive on socket %d failed\r\n", socket);
-
-                shutdown(serverSocket);
-                serverSocket = -1;
-                state = EXAMP_STATE_ERROR;
+                shutdown(socket);
             }
             
                 memset(recvBuffer, 0, TCP_BUFFER_SIZE);
@@ -264,6 +308,27 @@ static void APP_ExampleAPConnectNotifyCallback(DRV_HANDLE handle, WDRV_WINC_CONN
     if (WDRV_WINC_CONN_STATE_CONNECTED == currentState)
     {
         APP_DebugPrintf("AP Mode: Station connected\r\n");
+        
+        if (-1 == serverSocket)
+        {
+            serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+
+            if (serverSocket >= 0)
+            {
+                struct sockaddr_in addr;
+
+                /* Listen on the socket. */
+
+                addr.sin_family = AF_INET;
+                addr.sin_port = _htons(TCP_LISTEN_PORT);
+                addr.sin_addr.s_addr = 0;
+
+                bind(serverSocket, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
+
+                state = EXAMP_STATE_SOCKET_LISTENING;
+            }
+        }
+        
     }
     else if (WDRV_WINC_CONN_STATE_DISCONNECTED == currentState)
     {
@@ -275,7 +340,6 @@ static void APP_ExampleAPConnectNotifyCallback(DRV_HANDLE handle, WDRV_WINC_CONN
             serverSocket = -1;
         }
 
-        state = EXAMP_STATE_STA_STARTED;
     }
 }
 
@@ -432,6 +496,12 @@ void APP_ExampleTasks(DRV_HANDLE handle)
             if (WDRV_WINC_STATUS_OK == WDRV_WINC_APStop(handle))
             {
                 state = EXAMP_STATE_STA_STARTED;
+            
+                if (-1 != serverSocket)
+                {
+                    shutdown(serverSocket);
+                    serverSocket = -1;
+                }
             }
              
             WDRV_MSDelay(500);
