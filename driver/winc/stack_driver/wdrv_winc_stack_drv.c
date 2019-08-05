@@ -132,6 +132,28 @@ static void _WDRV_WINC_MACConnectNotifyCallback
     }
     else
     {
+        if (WDRV_WINC_OP_MODE_STA == pDcpt->operatingMode)
+        {
+            if (0 == errorCode)
+            {
+                /* For a normal STA disconnect return to the open state. */
+                if ((true == pDcpt->isLinkActive) &&
+                    (WDRV_WINC_DRV_STATE_CONNECTED == pDcpt->wincDrvState))
+                {
+                    pDcpt->wincDrvState = WDRV_WINC_DRV_STATE_OPEN;
+                }
+            }
+            else
+            {
+                /* For a disconnect with error, return to the open state
+                 if currently trying to connect. */
+                if (WDRV_WINC_DRV_STATE_CONNECTING == pDcpt->wincDrvState)
+                {
+                    pDcpt->wincDrvState = WDRV_WINC_DRV_STATE_OPEN;
+                }
+            }
+        }
+
         pDcpt->isLinkActive = false;
     }
 }
@@ -390,7 +412,7 @@ static void _WDRV_WINC_MACDrvStateMachine(WDRV_WINC_MACDCPT *const pDcpt)
                                     &pDcpt->bssCtx, &pDcpt->authCtx, NULL, NULL))
                     {
                         pDcpt->wincDrvState = WDRV_WINC_DRV_STATE_CONNECTED;
-                        pDcpt->isLinkActive     = true;
+                        pDcpt->isLinkActive = true;
                     }
                 }
                 else if (WDRV_WINC_OP_MODE_STA == pDcpt->operatingMode)
