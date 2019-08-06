@@ -407,6 +407,7 @@ def instantiateComponent(drvWincComponent):
         ['dev/gpio/wdrv_winc_gpio.c',           condAlways],
         ['dev/spi/wdrv_winc_spi.c',             condAlways],
         ['osal/wdrv_winc_osal.c',               condAlways],
+        ['stack_driver/wdrv_winc_ctrl_itf.c',   condTcpipStackPresent],
         ['stack_driver/wdrv_winc_stack_drv.c',  condTcpipStackPresent],
         ['stack_driver/wdrv_winc_pktpool.c',    condTcpipStackPresent],
         ['stack_driver/wdrv_winc_stack_itf.c',  condTcpipStackPresent],
