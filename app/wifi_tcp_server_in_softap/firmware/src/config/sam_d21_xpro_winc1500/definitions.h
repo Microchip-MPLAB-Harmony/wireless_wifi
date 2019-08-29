@@ -59,8 +59,8 @@
 #include "peripheral/dmac/plib_dmac.h"
 #include "peripheral/eic/plib_eic.h"
 #include "peripheral/tc/plib_tc3.h"
-#include "system/time/sys_time.h"
 #include "system/debug/sys_debug.h"
+#include "system/time/sys_time.h"
 #include "system/console/sys_console.h"
 #include "system/console/src/sys_console_uart_definitions.h"
 #include "driver/spi/drv_spi.h"
@@ -194,9 +194,9 @@ typedef struct
     /* SPI0 Driver Object */
     SYS_MODULE_OBJ drvSPI0;
 
-    SYS_MODULE_OBJ  sysTime;
     SYS_MODULE_OBJ  sysDebug;
 
+    SYS_MODULE_OBJ  sysTime;
     SYS_MODULE_OBJ  sysConsole0;
 
 

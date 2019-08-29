@@ -46,11 +46,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #ifndef _EXAMPLE_CONF_H
 #define _EXAMPLE_CONF_H
 
-#if defined(WDRV_WINC_DEVICE_WINC1500)
 #define WLAN_SSID           "WINC1500_SOFT_AP"
-#elif defined(WDRV_WINC_DEVICE_WINC3400)
-#define WLAN_SSID           "WINC3400_SOFT_AP"
-#endif 
 #define WLAN_CHANNEL        1 /* WINC1500's Working Channel */
 
 // uncomment one of the authentication type below (Open or WEP)
