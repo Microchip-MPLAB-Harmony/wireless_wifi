@@ -141,7 +141,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     }
 
 #ifdef WDRV_WINC_NETWORK_MODE_SOCKET
-    if (false == pDcpt->useDHCP)
+    if ((false == pDcpt->useDHCP) && (0 != pDcpt->ipAddress))
     {
         /* If not using DHCP, turn off DHCP on the WINC and config the IP
            address and subnet, gateway and DNS server static addresses. */
@@ -165,6 +165,20 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         {
             return WDRV_WINC_STATUS_CONNECT_FAIL;
         }
+
+        pDcpt->useDHCP = false;
+    }
+    else
+    {
+        result = m2m_wifi_enable_dhcp(1);
+
+        if (M2M_SUCCESS != result)
+        {
+            return WDRV_WINC_STATUS_CONNECT_FAIL;
+        }
+
+        pDcpt->useDHCP   = true;
+        pDcpt->ipAddress = 0;
     }
 #endif
 
@@ -200,25 +214,25 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         tstrAuthPsk pskParams;
         uint8_t pskLength;
 
-        pskLength = strlen((const char*)pAuthCtx->authInfo.PSK);
+        pskLength = pAuthCtx->authInfo.WPAPerPSK.size;
 
         if ((M2M_MAX_PSK_LEN-1) == pskLength)
         {
-            pskParams.pu8Psk          = (uint8_t*)pAuthCtx->authInfo.PSK;
+            pskParams.pu8Psk          = (uint8_t*)pAuthCtx->authInfo.WPAPerPSK.key;
             pskParams.pu8Passphrase   = NULL;
             pskParams.u8PassphraseLen = 0;
         }
         else
         {
             pskParams.pu8Psk          = NULL;
-            pskParams.pu8Passphrase   = (uint8_t*)pAuthCtx->authInfo.PSK;
+            pskParams.pu8Passphrase   = (uint8_t*)pAuthCtx->authInfo.WPAPerPSK.key;
             pskParams.u8PassphraseLen = pskLength;
         }
 
         result = m2m_wifi_connect_psk(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &pskParams);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
-                                    pAuthCtx->authType, (void*)&pAuthCtx->authInfo.PSK, channel);
+                                    pAuthCtx->authType, (void*)&pAuthCtx->authInfo.WPAPerPSK.key, channel);
 #endif
     }
     else if (WDRV_WINC_AUTH_TYPE_WEP == pAuthCtx->authType)

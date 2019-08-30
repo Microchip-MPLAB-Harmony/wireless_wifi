@@ -395,7 +395,7 @@ bool WDRV_WINC_IPUseDHCPGet(DRV_HANDLE handle)
         return false;
     }
 
-    return pDcpt->useDHCP;
+    return ((true == pDcpt->useDHCP) || (0 == pDcpt->ipAddress));
 }
 
 //*******************************************************************************
