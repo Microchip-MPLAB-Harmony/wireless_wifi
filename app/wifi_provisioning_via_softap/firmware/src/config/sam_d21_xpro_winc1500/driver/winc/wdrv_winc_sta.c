@@ -141,7 +141,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     }
 
 #ifdef WDRV_WINC_NETWORK_MODE_SOCKET
-    if (false == pDcpt->useDHCP)
+    if ((false == pDcpt->useDHCP) && (0 != pDcpt->ipAddress))
     {
         /* If not using DHCP, turn off DHCP on the WINC and config the IP
            address and subnet, gateway and DNS server static addresses. */
@@ -165,6 +165,20 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         {
             return WDRV_WINC_STATUS_CONNECT_FAIL;
         }
+
+        pDcpt->useDHCP = false;
+    }
+    else
+    {
+        result = m2m_wifi_enable_dhcp(1);
+
+        if (M2M_SUCCESS != result)
+        {
+            return WDRV_WINC_STATUS_CONNECT_FAIL;
+        }
+
+        pDcpt->useDHCP   = true;
+        pDcpt->ipAddress = 0;
     }
 #endif
 
