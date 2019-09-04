@@ -150,13 +150,8 @@
 #endif
 
 #ifndef   __RESTRICT
-  #if __ICCARM_V8
     #define __RESTRICT            __restrict
-  #else
-    /* Needs IAR language extensions */
-    #define __RESTRICT            restrict
   #endif
-#endif
 
 #ifndef   __STATIC_INLINE
   #define __STATIC_INLINE       static inline
