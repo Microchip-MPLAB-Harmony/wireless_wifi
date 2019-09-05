@@ -224,15 +224,17 @@ def instantiateComponent(drvWincComponent):
     wincUseTcpipStack = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_TCPIP_STACK', wincDriverMode)
     wincUseTcpipStack.setLabel('Use Harmony TCP/IP Stack?')
     wincUseTcpipStack.setVisible(False)
-    wincUseTcpipStack.setValue(False)
+    wincUseTcpipStack.setDefaultValue(False)
     wincUseTcpipStack.setDependencies(setVisibilityUseTcpipStack, ['DRV_WIFI_WINC_DRIVER_MODE'])
+    # At startup, Hide Mac Capability
+    drvWincComponent.setCapabilityEnabled("libdrvWincMac", False)
 
     # WINC Use Simple IWPRIV Control Interface
     wincUseIwprivIntf = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_IWPRIV_INTF', wincUseTcpipStack)
     wincUseIwprivIntf.setLabel('Use Simple IWPRIV Control Interface?')
     wincUseIwprivIntf.setVisible(False)
     wincUseIwprivIntf.setDependencies(setVisibilityUseIwprivIntf, ['DRV_WIFI_WINC_USE_TCPIP_STACK'])
-    wincUseIwprivIntf.setDefaultValue(True)
+    wincUseIwprivIntf.setDefaultValue(False)
 
     # RTOS Configuration
     wincRtosMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_RTOS_MENU', None)
@@ -618,6 +620,9 @@ def setEnableEthernetMode(symbol, event):
     if ((event['value'] == 'Ethernet Mode') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
     else:
+       res = symbol.getComponent().getCapabilityEnabled("libdrvWincMac")
+       if (res == True):
+           symbol.getComponent().setCapabilityEnabled("libdrvWincMac",False)
        symbol.setEnabled(False)
 
 def setEnableBlePresent(symbol, event):
@@ -634,8 +639,14 @@ def setEnableTcpipStackPresent(symbol, event):
 
     if ((wincDrvMode == 'Ethernet Mode') and (useTcpipStack == True)):
        symbol.setEnabled(True)
+       res = component.getCapabilityEnabled("libdrvWincMac")
+       if (res == False):
+           component.setCapabilityEnabled("libdrvWincMac", True)
     else:
        symbol.setEnabled(False)
+       res = component.getCapabilityEnabled("libdrvWincMac")
+       if (res == True):
+           Component.setCapabilityEnabled("libdrvWincMac", False)
 
 def setEnableIwprivIntfPresent(symbol, event):
     component = symbol.getComponent()
