@@ -301,7 +301,7 @@ def instantiateComponent(drvWincComponent):
     flagSocketMode          = (wincDriverMode.getValue() == 'Socket Mode')
     flagTcpipStackPresent   = (flagEthernetMode and (wincUseTcpipStack.getValue() == 'True'))
     flagIwprivIntfPresent   = (flagEthernetMode and (wincUseIwprivIntf.getValue() == 'True'))
-#    flagBlePresent          = False
+    flagBlePresent          = (winc3400UseBle.getValue() == 'True')
     flagWinc1500_19_6_1     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.6.1'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
     flagWinc3400_1_3_0      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.0'))
@@ -314,17 +314,18 @@ def instantiateComponent(drvWincComponent):
     condHostFileSupport     = [flagHostFileSupport,     setEnableHostFileSupport,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condTcpipStackPresent   = [flagTcpipStackPresent,   setEnableTcpipStackPresent, ['DRV_WIFI_WINC_USE_TCPIP_STACK', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condIwprivIntfPresent   = [flagIwprivIntfPresent,   setEnableIwprivIntfPresent, ['DRV_WIFI_WINC_USE_IWPRIV_INTF', 'DRV_WIFI_WINC_DRIVER_MODE']]
-#    condBle                 = [flagBlePresent,          setEnableBlePresent         []]
+    condBle                 = [flagBlePresent,          setEnableBlePresent,        ['DRV_WIFI_WINC_DEVICE','DRV_WIFI_WINC3400_VERSION','DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400']]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_3_0      = [flagWinc3400_1_3_0,      setEnableWinc3400_1_3_0,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+
 
     wdrvIncFiles = [
         ['wdrv_winc.h',                         condAlways],
         ['wdrv_winc_api.h',                     condAlways],
         ['wdrv_winc_assoc.h',                   condAlways],
         ['wdrv_winc_authctx.h',                 condAlways],
-#        ['wdrv_winc_ble.h',                     condBle],
+        ['wdrv_winc_ble.h',                     condBle],
         ['wdrv_winc_bssctx.h',                  condAlways],
         ['wdrv_winc_bssfind.h',                 condAlways],
         ['wdrv_winc_client_api.h',              condAlways],
@@ -374,6 +375,29 @@ def instantiateComponent(drvWincComponent):
         ['socket/netinet_in.h',                 condSocketMode],
     ]
 
+    bledrvFirmwareDriverIncFiles = [
+        ['at_ble_api/at_ble_api.h',             condBle],
+        ['platform/platform.h',                 condBle],
+        ['ble_stack/atts_task.h',               condBle],
+        ['ble_stack/cmn_defs.h',                condBle],
+        ['ble_stack/dbg_task.h',                condBle],
+        ['ble_stack/ble_device.h',              condBle],
+        ['ble_stack/diss_task.h',               condBle],
+        ['ble_stack/error.h',                   condBle],
+        ['ble_stack/event.h',                   condBle],
+        ['ble_stack/gapc_task.h',               condBle],
+        ['ble_stack/gapm_task.h',               condBle],
+        ['ble_stack/gattc_task.h',              condBle],
+        ['ble_stack/gattm_task.h',              condBle],
+        ['ble_stack/htpt.h',                    condBle],
+        ['ble_stack/htpt_task.h',               condBle],
+        ['ble_stack/interface.h',               condBle],
+        ['ble_stack/ll_if.h',                   condBle],
+        ['ble_stack/profiles.h',                condBle],
+        ['ble_stack/smpc_task.h',               condBle],
+        ['ble_stack/wifiprov_task.h',           condBle],
+    ]
+
     for incFileEntry in wdrvIncFiles:
         importIncFile(drvWincComponent, configName, incFileEntry)
 
@@ -386,11 +410,14 @@ def instantiateComponent(drvWincComponent):
     for incFileEntry in wdrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.3.0')
 
+    for incFileEntry in bledrvFirmwareDriverIncFiles:
+        importIncFile(drvWincComponent, configName, incFileEntry, 'bluetooth_driver')
+
     wdrvSrcFiles = [
         ['wdrv_winc.c',                         condAlways],
         ['wdrv_winc_assoc.c',                   condAlways],
         ['wdrv_winc_authctx.c',                 condAlways],
-#        ['wdrv_winc_ble.c',                     condBle],
+        ['wdrv_winc_ble.c',                     condBle],
         ['wdrv_winc_bssctx.c',                  condAlways],
         ['wdrv_winc_bssfind.c',                 condAlways],
         ['wdrv_winc_custie.c',                  condAlways],
@@ -437,6 +464,25 @@ def instantiateComponent(drvWincComponent):
         ['socket/inet_addr.c',                  condSocketMode]
     ]
 
+    bledrvFirmwareDriverSrcFiles = [
+        ['ble_stack/dbg_task.c',                 condBle],
+        ['ble_stack/error.c',                    condBle],
+        ['ble_stack/event.c',                    condBle],
+        ['ble_stack/gap.c',                      condBle],
+        ['ble_stack/gapc_task.c',                condBle],
+        ['ble_stack/gapm_task.c',                condBle],
+        ['ble_stack/gatt_client.c',              condBle],
+        ['ble_stack/gatt_server.c',              condBle],
+        ['ble_stack/gattc_task.c',               condBle],
+        ['ble_stack/gattm_task.c',               condBle],
+        ['ble_stack/htpt.c',                     condBle],
+        ['ble_stack/htpt_task.c',                condBle],
+        ['ble_stack/interface.c',                condBle],
+        ['ble_stack/security.c',                 condBle],
+        ['ble_stack/wifiprov_task.c',            condBle],
+        ['platform/platform.c',                 condBle],
+    ]
+
     for srcFileEntry in wdrvSrcFiles:
         importSrcFile(drvWincComponent, configName, srcFileEntry)
 
@@ -448,6 +494,9 @@ def instantiateComponent(drvWincComponent):
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.3.0')
+
+    for srcFileEntry in bledrvFirmwareDriverSrcFiles:
+        importSrcFile(drvWincComponent, configName, srcFileEntry, 'bluetooth_driver')
 
     wdrvIncPaths = [
         ['/',                                   condAlways],
@@ -461,7 +510,10 @@ def instantiateComponent(drvWincComponent):
         ['/drv/common',                         condAlways],
         ['/drv/driver',                         condAlways],
         ['/drv/socket',                         condSocketMode],
-        ['/drv/spi_flash',                      condAlways]
+        ['/drv/spi_flash',                      condAlways],
+        ['/drv/at_ble_api',                     condBle],
+        ['/drv/ble_stack',                      condBle],
+        ['/drv/platform',                       condBle]
     ]
 
     for incPathEntry in wdrvIncPaths:
@@ -611,10 +663,13 @@ def setValueWincPrefix(symbol, event):
         symbol.setValue('')
 
 def setEnableSocketMode(symbol, event):
-    if ((event['value'] == 'Socket Mode') and (checkPrefix(symbol))):
-       symbol.setEnabled(True)
+    component = symbol.getComponent()
+
+    setSocketMode  =  component.getSymbolValue('DRV_WIFI_WINC_DRIVER_MODE')
+    if ((setSocketMode == 'Socket Mode') and (checkPrefix(symbol))):
+        symbol.setEnabled(True)
     else:
-       symbol.setEnabled(False)
+        symbol.setEnabled(False)
 
 def setEnableEthernetMode(symbol, event):
     if ((event['value'] == 'Ethernet Mode') and (checkPrefix(symbol))):
@@ -626,7 +681,12 @@ def setEnableEthernetMode(symbol, event):
        symbol.setEnabled(False)
 
 def setEnableBlePresent(symbol, event):
-    if event['value'] == 'True':
+    component = symbol.getComponent()
+
+    wincDeviceMode   = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+    useBleDriverMode = component.getSymbolValue('DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400')
+
+    if ((wincDeviceMode == 'WINC3400') and (useBleDriverMode == True)):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
