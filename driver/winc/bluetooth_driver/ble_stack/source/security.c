@@ -31,9 +31,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "gapm_task.h"
 #include "gapc_task.h"
 #include "dbg_task.h"
-
-//#include "device.h"
-#include "./drv/ble_stack/device.h"
+#include "drv/ble_stack/ble_device.h"
 
 at_ble_status_t at_ble_authenticate(at_ble_handle_t conn_handle, at_ble_pair_features_t* features,
     at_ble_LTK_t* ltk, at_ble_CSRK_t* csrk)

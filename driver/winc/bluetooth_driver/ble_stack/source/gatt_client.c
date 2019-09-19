@@ -27,7 +27,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "platform.h"
 #include "gattc_task.h"
-#include "device.h"
+#include "ble_device.h"
 
 static uint8_t at_ble_uuid_type2len(at_ble_uuid_type_t type)
 {

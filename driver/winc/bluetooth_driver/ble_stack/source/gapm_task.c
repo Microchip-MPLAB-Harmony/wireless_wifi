@@ -38,8 +38,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "gapc_task.h"
 
 #include "error.h"
-//#include "device.h"
-#include "./drv/ble_stack/device.h"
+#include "drv/ble_stack/ble_device.h"
 
 // original location : llm.h
 enum

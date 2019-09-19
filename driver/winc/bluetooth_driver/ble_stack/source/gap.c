@@ -31,9 +31,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "gapm_task.h"
 #include "gapc_task.h"
 #include "dbg_task.h"
-
-//#include "device.h"
-#include "./drv/ble_stack/device.h"
+#include "drv/ble_stack/ble_device.h"
 #include "event.h"
 
 // Slave preferred Connection interval Min

@@ -33,9 +33,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "gattm_task.h"
 #include "htpt_task.h"
 #include "wifiprov_task.h"
-//#include "device.h"
-#include "./drv/ble_stack/device.h"
-
+#include "drv/ble_stack/ble_device.h"
 #include "interface.h"
 #include "event.h"
 #include "osal/osal.h"
