@@ -8,4 +8,4 @@ def loadModule():
     drvWifiWincComponent.addCapability("libdrvWincMac", "MAC")
 
     ## Serial Bridge Application
-    appWincAtCmd = Module.CreateComponent("appWincSerialBridge", "Serial Bridge Application", "/Applications/WINC/", "app/serial_bridge/config/app_winc_serial_bridge.py")
+    appWincAtCmd = Module.CreateComponent("appWincSerialBridge", "Serial Bridge Application", "/Applications/WINC/", "apps/serial_bridge/config/app_winc_serial_bridge.py")
