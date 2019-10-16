@@ -511,7 +511,7 @@ SOCKET socket(uint16_t u16Domain, uint8_t u8Type, uint8_t u8Flags)
     SOCKET                  sock = -1;
     uint8_t                 u8SockID;
     uint8_t                 u8Count;
-    volatile tstrSocket     *pstrSock;
+    volatile tstrSocket     *pstrSock       = NULL;
     static volatile uint8_t u8NextTcpSock   = 0;
     static volatile uint8_t u8NextUdpSock   = 0;
 
