@@ -902,7 +902,7 @@ int8_t nm_spi_write_reg(uint32_t u32Addr, uint32_t u32Val)
 int8_t nm_spi_read_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
 {
     uint8_t retry = SPI_RETRY_COUNT;
-    uint8_t tmpBuf[2] = {0,0);
+    uint8_t tmpBuf[2] = {0,0};
     uint8_t *puTmpBuf;
 
     if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
