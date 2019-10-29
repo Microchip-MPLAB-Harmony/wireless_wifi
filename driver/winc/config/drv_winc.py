@@ -194,7 +194,7 @@ def instantiateComponent(drvWincComponent):
         wincEicSrcSel.setMax(extIntCount-1)
 
     # WINC1500 Version
-    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1', '19.5.4'])
+    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1'])
     winc1500Version.setLabel('Firmware Version')
     winc1500Version.setVisible(True)
     winc1500Version.setDefaultValue('19.6.1')
