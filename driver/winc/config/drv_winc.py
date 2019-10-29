@@ -724,7 +724,13 @@ def setEnableWinc1500_19_6_1(symbol, event):
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
-
+    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
+    wincVerPrefix = component.getSymbolByID('DRV_WIFI_WINC_VER_PREFIX')
+    
+    if (wincDevice == 'WINC1500'):
+        wincVerPrefix.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
+    else:
+        wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
     if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.6.1') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
     else:
@@ -735,7 +741,13 @@ def setEnableWinc3400_1_2_2(symbol, event):
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
-
+    winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
+    wincVerPrefix = component.getSymbolByID('DRV_WIFI_WINC_VER_PREFIX')
+    if (wincDevice == 'WINC1500'):
+        wincVerPrefix.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
+    else:
+        wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
+   
     if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.2.2') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
     else:
@@ -745,7 +757,14 @@ def setEnableWinc3400_1_3_0(symbol, event):
     component = symbol.getComponent()
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+    winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
+    wincVerPrefix = component.getSymbolByID('DRV_WIFI_WINC_VER_PREFIX')
+    
+    if (wincDevice == 'WINC1500'):
+        wincVerPrefix.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
+    else:
+        wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
 
     if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.3.0') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
