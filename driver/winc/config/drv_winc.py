@@ -696,17 +696,16 @@ def setEnableTcpipStackPresent(symbol, event):
 
     wincDrvMode   = component.getSymbolValue('DRV_WIFI_WINC_DRIVER_MODE')
     useTcpipStack = component.getSymbolValue('DRV_WIFI_WINC_USE_TCPIP_STACK')
+    wincMacActive = component.getCapabilityEnabled("libdrvWincMac")
 
     if ((wincDrvMode == 'Ethernet Mode') and (useTcpipStack == True)):
        symbol.setEnabled(True)
-       res = component.getCapabilityEnabled("libdrvWincMac")
-       if (res == False):
+       if (wincMacActive == False):
            component.setCapabilityEnabled("libdrvWincMac", True)
     else:
        symbol.setEnabled(False)
-       res = component.getCapabilityEnabled("libdrvWincMac")
-       if (res == True):
-           Component.setCapabilityEnabled("libdrvWincMac", False)
+       if (wincMacActive == True):
+           component.setCapabilityEnabled("libdrvWincMac", False)
 
 def setEnableIwprivIntfPresent(symbol, event):
     component = symbol.getComponent()
