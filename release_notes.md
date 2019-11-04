@@ -3,7 +3,7 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
-## Wireless Release v1.0
+## Wireless Release v3.0.0
 ### New Features
 
 - **New part support** - This release introduces initial support for SAMD21 and SAME54 families of 32-bit microcontrollers.
@@ -12,8 +12,8 @@
 
     | Development Kits                                                                                                                               | Number of applications |
     | ---                                                                                                                                            | --- |
-    | [SAM D21 Xplained Pro Evaluation Kit](https://www.microchip.com/DevelopmentTools/ProductDetails.aspx?PartNO=ATSAMD21-XPRO)                     | 8 |
-    | [SAM E54 Xplained Pro Evaluation Kit](https://www.microchip.com/developmenttools/ProductDetails/ATSAME54-XPRO)                                 | 8 |
+    | [SAM D21 Xplained Pro Evaluation Kit](https://www.microchip.com/DevelopmentTools/ProductDetails.aspx?PartNO=ATSAMD21-XPRO)                     | 7 |
+    | [SAM E54 Xplained Pro Evaluation Kit](https://www.microchip.com/developmenttools/ProductDetails/ATSAME54-XPRO)                                 | 5 |
 
 
 ### Known Issues
@@ -22,11 +22,13 @@ The current known issues are as follows:
 
 * In the Microchip Harmony Configurator (MHC), EIC module for Interrupts should be selected after selecting the WINC driver component.
 
-* Please see the help documentation in the doc folder for this Harmony 3 module. Documentation is available across CHM, PDF and HTML formats.
+* Beta release for SAME54- Only applications fully tested.
 
-* Test Harness under development - Only applications fully tested. HTTPS TLS based test cases to be implemented in test harness.
+* MH3-24109 - non-RTOS WINC1500 project incorrectly includes configuration.h 
 
-* Preliminary support added for WINC3400 using MPLAB X and XC32. This complete tooling support will be added in future release of MPLAB X.
+* Preliminary support added for WINC3400 using MPLAB X and XC32. This complete tooling support will be added in a future release.
+
+* Please see the help documentation in the doc and docs folder for this Harmony 3 module. Documentation is available across CHM, PDF and HTML formats.
 
 ### Development Tools
 

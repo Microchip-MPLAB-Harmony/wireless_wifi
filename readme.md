@@ -30,9 +30,10 @@ reference information.
 
 | Folder     | Description                                               |
 | ---        | ---                                                       |
-| app        | Example applications for Wireless library components      |
+| apps       | Example applications for Wireless library components      |
 | config     | Wireless module configuration file                        |
-| docs       | Wireless library help documentation                       |
+| doc        | Wireless library help documentation (chm)                 |
+| docs       | Wireless library help documentation (html)                |
 | drivers    | Driver/Firmware files for different products              |
 | utilities  | Contains root certs, firmware programmer/downloader       |
 
