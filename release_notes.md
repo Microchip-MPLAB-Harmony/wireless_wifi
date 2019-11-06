@@ -32,8 +32,7 @@ The current known issues are as follows:
 
 ### Development Tools
 
-* [MPLAB® X IDE v5.20](https://www.microchip.com/mplab/mplab-x-ide)
-* [MPLAB® XC32 C/C++ Compiler v2.20](https://www.microchip.com/mplab/compilers)
-* [IAR Embedded Workbench® for ARM® (v8.32 or above)](https://www.iar.com/iar-embedded-workbench/#!?architecture=Arm)
+* [MPLAB® X IDE v5.25](https://www.microchip.com/mplab/mplab-x-ide)
+* [MPLAB® XC32 C/C++ Compiler v2.30](https://www.microchip.com/mplab/compilers)
 * MPLAB® X IDE plug-ins:
 * MPLAB® Harmony Configurator (MHC) v3.3.0.0 and above.
