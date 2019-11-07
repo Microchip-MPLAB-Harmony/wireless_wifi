@@ -3,6 +3,19 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless Release v3.0.1
+### New Features
+- N/A
+
+### Bug fixes
+- Fixed MHC component tree for wireless.
+
+### Known Issues
+- Same as v3.0.0
+
+### Development Tools
+- Same as v3.0.0
+
 ## Wireless Release v3.0.0
 ### New Features
 
