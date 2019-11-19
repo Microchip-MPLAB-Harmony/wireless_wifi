@@ -304,7 +304,7 @@ def instantiateComponent(drvWincComponent):
     flagBlePresent          = (winc3400UseBle.getValue() == 'True')
     flagWinc1500_19_6_1     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.6.1'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
-    flagWinc3400_1_2_2__1_3_0      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.0'))
+    flagWinc3400            = ((wincDevice.getValue() == 'WINC3400'))
 
     flagHostFileSupport     = (flagSocketMode and flagWinc1500_19_6_1)
 
@@ -317,7 +317,7 @@ def instantiateComponent(drvWincComponent):
     condBle                 = [flagBlePresent,          setEnableBlePresent,        ['DRV_WIFI_WINC_DEVICE','DRV_WIFI_WINC3400_VERSION','DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400']]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
-    condWinc3400_1_2_2__1_3_0      = [flagWinc3400_1_2_2__1_3_0,      setEnableWinc3400_1_2_2__1_3_0,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc3400            = [flagWinc3400,            setEnableWinc3400,          ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
 
 
     wdrvIncFiles = [
@@ -354,7 +354,7 @@ def instantiateComponent(drvWincComponent):
         ['bsp/nm_bsp.h',                        condAlways],
         ['common/nm_common.h',                  condAlways],
         ['common/nm_debug.h',                   condAlways],
-        ['driver/m2m_flash.h',                  condWinc3400_1_2_2__1_3_0],
+        ['driver/m2m_flash.h',                  condWinc3400],
         ['driver/m2m_hif.h',                    condAlways],
         ['driver/m2m_periph.h',                 condAlways],
         ['driver/m2m_types.h',                  condAlways],
@@ -446,7 +446,7 @@ def instantiateComponent(drvWincComponent):
 
     wdrvFirmwareDriverSrcFiles = [
         ['common/nm_common.c',                  condAlways],
-        ['driver/m2m_flash.c',                  condWinc3400_1_2_2__1_3_0],
+        ['driver/m2m_flash.c',                  condWinc3400],
         ['driver/m2m_hif.c',                    condAlways],
         ['driver/m2m_periph.c',                 condAlways],
         ['driver/m2m_wifi.c',                   condAlways],
@@ -723,13 +723,7 @@ def setEnableWinc1500_19_6_1(symbol, event):
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
-    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
-    wincVerPrefix = component.getSymbolByID('DRV_WIFI_WINC_VER_PREFIX')
     
-    if (wincDevice == 'WINC1500'):
-        wincVerPrefix.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
-    else:
-        wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
     if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.6.1') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
     else:
@@ -740,19 +734,13 @@ def setEnableWinc3400_1_2_2(symbol, event):
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
-    winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
-    wincVerPrefix = component.getSymbolByID('DRV_WIFI_WINC_VER_PREFIX')
-    if (wincDevice == 'WINC1500'):
-        wincVerPrefix.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
-    else:
-        wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
-   
+    
     if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.2.2') and (checkPrefix(symbol))):
        symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
-def setEnableWinc3400_1_2_2__1_3_0(symbol, event):
+def setEnableWinc3400(symbol, event):
     component = symbol.getComponent()
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
@@ -765,10 +753,8 @@ def setEnableWinc3400_1_2_2__1_3_0(symbol, event):
     else:
         wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
 
-    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.3.0')  and (checkPrefix(symbol))):
+    if ((wincDevice == 'WINC3400') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
-    elif( (wincDevice == 'WINC3400') and (winc3400Ver == '1.2.2')  and (checkPrefix(symbol))):
-       symbol.setEnabled(True)
     else:
        symbol.setEnabled(False)
 
@@ -786,4 +772,14 @@ def setEnableHostFileSupport(symbol, event):
        symbol.setEnabled(False)
 
 def setEnablePrefix(symbol, event):
+    component = symbol.getComponent()
+    
+    wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+    winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
+    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
+    wincVerPrefix = component.getSymbolByID('DRV_WIFI_WINC_VER_PREFIX')
+    if (wincDevice == 'WINC1500'):
+        wincVerPrefix.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
+    else:
+        wincVerPrefix.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
     symbol.setEnabled(checkPrefix(symbol))
