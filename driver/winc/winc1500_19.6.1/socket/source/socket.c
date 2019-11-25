@@ -1258,7 +1258,7 @@ int8_t sslEnableCertExpirationCheck(tenuSslCertExpSettings enuValidationSetting)
 Function
 		IsSocketReady
 
-Description 
+Description
 
 Return
 		None.

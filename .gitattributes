@@ -18,3 +18,5 @@
 *.chm -text
 *.html -text
 *.css -text
+*.exe -text
+*.bin -text
