@@ -210,7 +210,7 @@ def instantiateComponent(drvWincComponent):
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 Version
-    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.0'])
+    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2'])
     winc3400Version.setLabel('Firmware Version')
     winc3400Version.setVisible(False)
     winc3400Version.setDefaultValue('1.2.2')
@@ -224,7 +224,7 @@ def instantiateComponent(drvWincComponent):
     winc3400UseBle.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC Driver Mode
-    wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Ethernet Mode', 'Socket Mode'])
+    wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Socket Mode'])
     wincDriverMode.setLabel('Driver Mode')
     wincDriverMode.setDefaultValue('Socket Mode')
     wincDriverMode.setVisible(True)
