@@ -224,7 +224,7 @@ def instantiateComponent(drvWincComponent):
     winc3400UseBle.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC Driver Mode
-    wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Socket Mode'])
+    wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Ethernet Mode', 'Socket Mode'])
     wincDriverMode.setLabel('Driver Mode')
     wincDriverMode.setDefaultValue('Socket Mode')
     wincDriverMode.setVisible(True)
