@@ -3,6 +3,21 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless Release v3.1.0
+### New Features
+- Support for WINC3400 (v1.2.2) on SAMD21.
+- Support for WINC3400 (v1.2.2) on SAME54 - Beta release.
+
+### Bug fixes
+- Fixed MHC Component Manager menu for Wireless.
+
+### Known Issues
+- Version interop issues for provisioning .apk with some Android versions.
+- Default password for Bluetooth provisioning is '123456'.
+
+### Development Tools
+- Same as v3.0.0
+
 ## Wireless Release v3.0.0
 ### New Features
 
