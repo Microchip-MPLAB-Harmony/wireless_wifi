@@ -263,10 +263,10 @@ def instantiateComponent(drvWincComponent):
 
     # WiFi Driver Task Stack Size
     wincTaskSize = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_RTOS_STACK_SIZE', wincRtosMenu)
-    wincTaskSize.setLabel('Task Size')
+    wincTaskSize.setLabel('Task Size (in bytes)')
     wincTaskSize.setVisible(True)
     wincTaskSize.setDescription('WiFi WINC Driver RTOS Task Stack Size')
-    wincTaskSize.setDefaultValue(1024)
+    wincTaskSize.setDefaultValue(4096)
     wincTaskSize.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_WINC_RTOS'])
 
     # WiFi Driver Task Priority

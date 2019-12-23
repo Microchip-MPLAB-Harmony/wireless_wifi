@@ -64,8 +64,12 @@
 <#elseif DRV_WIFI_WINC_LOG_LEVEL == "Verbose">
     <#lt>#define WDRV_WINC_DEBUG_LEVEL               WDRV_WINC_DEBUG_TYPE_VERBOSE
 </#if>
-<#if HarmonyCore.SELECT_RTOS != "BareMetal">
+<#if (HarmonyCore.SELECT_RTOS)?? && HarmonyCore.SELECT_RTOS != "BareMetal">
     <#lt>/*** WiFi WINC Driver RTOS Configuration ***/
-    <#lt>#define DRV_WIFI_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
+	<#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
+        <#lt>#define DRV_WIFI_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE / 4}
+    <#else>
+        <#lt>#define DRV_WIFI_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
+    </#if>
     <#lt>#define DRV_WIFI_WINC_RTOS_TASK_PRIORITY        ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY}
 </#if>
