@@ -3,6 +3,36 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless Release v3.1.1
+### New Features
+- Added Bypass (Ethernet) mode support for WINC.
+
+### Bug fixes
+- Fixed MHC menu for RTOS memory allocation size change (words to bytes).
+
+### Known Issues
+- MISRA false positives:
+1. driver/winc/drv/driver/m2m_wifi.c(1140) 	644	9.1
+Variable 'strNetworkId' (line 1131) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+			
+2. driver/winc/wdrv_winc_nvm.c(413) 	644	9.1
+Variable 'strControl' (line 398) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+			
+3. app.c(136) 	530	9.1
+Symbol 'args' (line 135) not initialized [MISRA 2012 Rule 9.1, mandatory]
+			
+4. driver/winc/drv/driver/nmspi.c(904) 	644	9.1
+Variable 'tmpBuf' (line 881) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
+5. driver/winc/drv/driver/nmflash.c(690) 	530	9.1
+Symbol 'write_init_params' (line 684) not initialized [MISRA 2012 Rule 9.1, mandatory]
+
+6. wifi_provisioning_via_softap/example.c(269) 	644	9.1
+Variable 'wep_parameters' (line 188) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
+### Development Tools
+- Same as v3.0.0
+
 ## Wireless Release v3.1.0
 ### New Features
 - Support for WINC3400 (v1.2.2) on SAMD21.

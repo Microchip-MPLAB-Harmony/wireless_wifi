@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Module name="wireless" id="3df688d2-3497-4810-bb14-5715317180e5" version="3.1.0">
+<Module name="wireless" id="3df688d2-3497-4810-bb14-5715317180e5" version="3.1.1">
     <ConfigRoot path="config/module.py"/>
 </Module>
