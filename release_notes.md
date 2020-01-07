@@ -6,11 +6,20 @@
 ## Wireless Release v3.1.1
 ### New Features
 - Added Bypass (Ethernet) mode support for WINC.
+WINC1500 Socket Mode vs Ethernet Mode
+
+The WINC modules are capable of operating in either Socket mode or Ethernet (A.K.A. bypass) mode.
+
+•	Socket mode allows an application running on the host MCU to utilize the TCP/IP stack within the firmware of the WINC device, such that the host MCU does not need to run its own TCP/IP stack. This approach is memory efficient and faster to implement.
+•	Ethernet (bypass) mode disables the TCP/IP stack within the firmware of the WINC device, instead the host MCU can only send and receive Ethernet frames. This mode allows the host MCU to operate its own TCP/IP stack treating the WINC device as a simple Ethernet controller. This approach provides flexibility.
 
 ### Bug fixes
 - Fixed MHC menu for RTOS memory allocation size change (words to bytes).
 
 ### Known Issues
+- Bypass mode currently works only with the reference example - wifi_winc_sta_bypass.
+All other examples are configured to work with socket mode.
+
 - MISRA false positives:
 1. driver/winc/drv/driver/m2m_wifi.c(1140) 	644	9.1
 Variable 'strNetworkId' (line 1131) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
