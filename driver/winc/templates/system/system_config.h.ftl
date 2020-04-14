@@ -9,6 +9,8 @@
 <#if -1 < DRV_WIFI_WINC_SPI_INST_IDX>
     <#lt>#define WDRV_WINC_SPI_INDEX                 DRV_SPI_INDEX_${DRV_WIFI_WINC_SPI_INST_IDX}
 </#if>
+<#lt>#define WDRV_WINC_CHIP_EN_PIN		${DRV_WIFI_WINC_CHIP_ENABLE_PIN?string}
+<#lt>#define WDRV_WINC_RESETN_PIN		${DRV_WIFI_WINC_RESET_PIN?string}
 <#if DRV_WIFI_WINC_DRIVER_MODE == "Ethernet Mode">
     <#lt>#define WDRV_WINC_NETWORK_MODE_ETHERNET
 <#else>

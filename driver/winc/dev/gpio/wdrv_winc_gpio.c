@@ -40,6 +40,23 @@
 #include "configuration.h"
 #include "definitions.h"
 
+/*** Macros for WDRV_WINC_RESETN pin ***/
+#define WDRV_WINC_RESETN_Set()                  PORT_PinSet(WDRV_WINC_RESETN_PIN);
+#define WDRV_WINC_RESETN_Clear()                PORT_PinClear(WDRV_WINC_RESETN_PIN);
+#define WDRV_WINC_RESETN_Toggle()               PORT_PinToggle(WDRV_WINC_RESETN_PIN);
+#define WDRV_WINC_RESETN_Get()                  PORT_PinRead(WDRV_WINC_RESETN_PIN);
+#define WDRV_WINC_RESETN_OutputEnable()         PORT_PinOutputEnable(WDRV_WINC_RESETN_PIN);
+#define WDRV_WINC_RESETN_InputEnable()          PORT_PinInputEnable(WDRV_WINC_RESETN_PIN);
+
+
+/*** Macros for WDRV_WINC_CHIP_EN pin ***/
+#define WDRV_WINC_CHIP_EN_Set()                 PORT_PinSet(WDRV_WINC_CHIP_EN_PIN);
+#define WDRV_WINC_CHIP_EN_Clear()               PORT_PinClear(WDRV_WINC_CHIP_EN_PIN);
+#define WDRV_WINC_CHIP_EN_Toggle()              PORT_PinToggle(WDRV_WINC_CHIP_EN_PIN);
+#define WDRV_WINC_CHIP_EN_Get()                 PORT_PinRead(WDRV_WINC_CHIP_EN_PIN);
+#define WDRV_WINC_CHIP_EN_OutputEnable()        PORT_PinOutputEnable(WDRV_WINC_CHIP_EN_PIN);
+#define WDRV_WINC_CHIP_EN_InputEnable()         PORT_PinInputEnable(WDRV_WINC_CHIP_EN_PIN);
+
 /****************************************************************************
  * Function:        WDRV_WINC_GPIOResetAssert
  * Summary: Reset the WINC by asserting the reset line.
