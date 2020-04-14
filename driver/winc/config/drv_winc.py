@@ -144,6 +144,10 @@ def onAttachmentDisconnected(source, target):
 
 def instantiateComponent(drvWincComponent):
     print('WINC Driver Component')
+    
+    res = Database.activateComponents(["sys_time"])
+    res = Database.activateComponents(["eic"])
+    
     configName = Variables.get('__CONFIGURATION_NAME')
 
     eicNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
@@ -190,7 +194,7 @@ def instantiateComponent(drvWincComponent):
         for x in range(extIntCount):
             wincEicSrcX = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_EIC_SRC_' + str(x), wincIntSrc)
             wincEicSrcX.setLabel('EIC Channel ' + str(x))
-            wincEicSrcX.setVisible(False)
+            wincEicSrcX.setVisible(True)
             wincEicSrcX.setDependencies(setVisibilityEicSource, ['DRV_WIFI_WINC_INT_SRC', 'eic.EIC_INT'])
 
             eicSrcSelDepList.append('DRV_WIFI_WINC_EIC_SRC_' + str(x))
