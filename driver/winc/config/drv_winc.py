@@ -1,13 +1,6 @@
 ###############################################################################
 ######################### WincDriver Configurations ###########################
 ###############################################################################
-global sort_alphanumeric
-
-def sort_alphanumeric(l):
-    import re
-    convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
-    return sorted(l, key = alphanum_key)
 
 def checkPrefix(symbol):
     component = symbol.getComponent()
@@ -151,10 +144,10 @@ def onAttachmentDisconnected(source, target):
 
 def instantiateComponent(drvWincComponent):
     print('WINC Driver Component')
-
+    
     res = Database.activateComponents(["sys_time"])
     res = Database.activateComponents(["eic"])
-
+    
     configName = Variables.get('__CONFIGURATION_NAME')
 
     eicNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
@@ -215,31 +208,6 @@ def instantiateComponent(drvWincComponent):
 
     wincSymPinConfigComment = drvWincComponent.createCommentSymbol("DRV_WIFI_WINC_EIC_CONFIG_COMMENT", None)
     wincSymPinConfigComment.setLabel("***EIC channel must be configured in EIC component for interrupt source***")
-
-    wincSymChipEnablePin = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_CHIP_ENABLE_PIN", None)
-    wincSymChipEnablePin .setLabel("Chip Enable Pin")
-    wincSymChipEnablePin .setOutputMode("Key")
-    wincSymChipEnablePin .setDisplayMode("Description")
-
-    wincSymResetPin = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_RESET_PIN", None)
-    wincSymResetPin.setLabel("Reset Pin")
-    wincSymResetPin.setOutputMode("Key")
-    wincSymResetPin.setDisplayMode("Description")
-
-    availablePinDictionary = {}
-
-    # Send message to core to get available pins
-    availablePinDictionary = Database.sendMessage("core", "PIN_LIST", availablePinDictionary)
-
-    for pad in sort_alphanumeric(availablePinDictionary.values()):
-        key = "SYS_PORT_PIN_" + pad
-        value = list(availablePinDictionary.keys())[list(availablePinDictionary.values()).index(pad)]
-        description = pad
-        wincSymChipEnablePin.addKey(key, value, description)
-        wincSymResetPin.addKey(key, value, description)
-
-    wincSymPinConfigComment = drvWincComponent.createCommentSymbol("DRV_WIFI_WINC_PINS_CONFIG_COMMENT", None)
-    wincSymPinConfigComment.setLabel("***Above selected pins must be configured as GPIO Output in Pin Manager***")
 
     # WINC1500 Version
     winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1'])
