@@ -313,7 +313,8 @@ uint8_t WDRV_WINC_SSLCTXCipherSuitesGet
     (
         DRV_HANDLE handle,
         WDRV_WINC_CIPHER_SUITE_CONTEXT *pSSLCipherSuiteCtx,
-        WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK pfSSLListCallback
+        WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK pfSSLListCallback,
+        WDRV_WINC_REQ_ECC_CALLBACK pfECCREQCallback
     )
 
   Summary:
@@ -331,7 +332,8 @@ WDRV_WINC_STATUS WDRV_WINC_SSLActiveCipherSuitesSet
 (
     DRV_HANDLE handle,
     WDRV_WINC_CIPHER_SUITE_CONTEXT *pSSLCipherSuiteCtx,
-    WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK pfSSLListCallback
+    WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK pfSSLListCallback,
+    WDRV_WINC_SSL_REQ_ECC_CALLBACK pfECCREQCallback
 )
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
@@ -349,6 +351,7 @@ WDRV_WINC_STATUS WDRV_WINC_SSLActiveCipherSuitesSet
     }
 
     pDcpt->pfSSLCipherSuiteListCB = pfSSLListCallback;
+    pDcpt->pfSSLReqECCCB = pfECCREQCallback;
 
     /* Set the active cipher suite. */
     if (M2M_SUCCESS != m2m_ssl_set_active_ciphersuites(pSSLCipherSuiteCtx->ciperSuites))
@@ -356,5 +359,72 @@ WDRV_WINC_STATUS WDRV_WINC_SSLActiveCipherSuitesSet
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
+    return WDRV_WINC_STATUS_OK;
+}
+
+WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
+(
+    WDRV_WINC_ECC_RSP_INFO eccRsp,
+    uint8_t *pRspDataBuff, 
+    uint16_t rspDataSz
+)
+{
+    int8_t s8Ret = M2M_SUCCESS;
+    tstrEccReqInfo strECCResp;
+    
+    strECCResp.u16REQ = eccRsp.reqCmd;
+    strECCResp.u16Status = eccRsp.status;
+    strECCResp.u32SeqNo = eccRsp.seqNo;
+    strECCResp.u32UserData = eccRsp.userData;
+    memcpy(&strECCResp.strEcdhREQ, &eccRsp.ecdhRspInfo, sizeof(tstrEcdhReqInfo));
+            
+    m2m_ssl_ecc_process_done();
+    
+    s8Ret = m2m_ssl_handshake_rsp(&strECCResp, pRspDataBuff, rspDataSz);
+    
+    if (s8Ret == M2M_SUCCESS)
+        return WDRV_WINC_STATUS_OK;
+    else
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+}
+
+WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveCert
+(
+    uint16_t *pCurveType, 
+    uint8_t *pHash, 
+    uint8_t *pSig, 
+    WDRV_WINC_EC_Point_Rep *pKey
+)
+{
+    int8_t s8Ret = M2M_SUCCESS;
+    s8Ret = m2m_ssl_retrieve_cert(pCurveType, pHash, pSig, (tstrECPoint*)pKey);
+    
+    if (s8Ret == M2M_SUCCESS)
+        return WDRV_WINC_STATUS_OK;
+    else
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+}
+
+WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
+(
+    uint8_t* pHash, 
+    uint16_t hashSz
+)
+{
+    int8_t s8Ret = M2M_SUCCESS;
+    s8Ret = m2m_ssl_retrieve_hash(pHash, hashSz);
+    
+    if (s8Ret == M2M_SUCCESS)
+        return WDRV_WINC_STATUS_OK;
+    else
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+}
+
+WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert
+(
+    void
+)
+{
+    m2m_ssl_stop_processing_certs();
     return WDRV_WINC_STATUS_OK;
 }
