@@ -362,6 +362,27 @@ WDRV_WINC_STATUS WDRV_WINC_SSLActiveCipherSuitesSet
     return WDRV_WINC_STATUS_OK;
 }
 
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
+    (
+        WDRV_WINC_ECC_RSP_INFO eccRsp,
+        uint8_t *pRspDataBuff, 
+        uint16_t rspDataSz
+    )
+
+  Summary:
+    Handshake Response for ECC cipher suites .
+
+  Description:
+    Passes the ECC response data to WINC.
+
+  Remarks:
+    None.
+
+*/
+
 WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
 (
     WDRV_WINC_ECC_RSP_INFO eccRsp,
@@ -369,7 +390,7 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
     uint16_t rspDataSz
 )
 {
-    int8_t s8Ret = M2M_SUCCESS;
+    int8_t result = M2M_SUCCESS;
     tstrEccReqInfo strECCResp;
     
     strECCResp.u16REQ = eccRsp.reqCmd;
@@ -380,13 +401,39 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
             
     m2m_ssl_ecc_process_done();
     
-    s8Ret = m2m_ssl_handshake_rsp(&strECCResp, pRspDataBuff, rspDataSz);
+    result = m2m_ssl_handshake_rsp(&strECCResp, pRspDataBuff, rspDataSz);
     
-    if (s8Ret == M2M_SUCCESS)
+    if (M2M_SUCCESS == result)
+    {
         return WDRV_WINC_STATUS_OK;
+    }
     else
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
 }
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveCert
+    (
+        uint16_t *pCurveType, 
+        uint8_t *pHash, 
+        uint8_t *pSig, 
+        WDRV_WINC_EC_Point_Rep *pKey
+    )
+
+  Summary:
+    Retrieve the certificate to be verified from the WINC
+
+  Description:
+    Retrieve the certificate to be verified from the WINC
+
+  Remarks:
+    None.
+
+*/
 
 WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveCert
 (
@@ -396,14 +443,38 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveCert
     WDRV_WINC_EC_Point_Rep *pKey
 )
 {
-    int8_t s8Ret = M2M_SUCCESS;
-    s8Ret = m2m_ssl_retrieve_cert(pCurveType, pHash, pSig, (tstrECPoint*)pKey);
+    int8_t result = M2M_SUCCESS;
+    result = m2m_ssl_retrieve_cert(pCurveType, pHash, pSig, (tstrECPoint*)pKey);
     
-    if (s8Ret == M2M_SUCCESS)
+    if (M2M_SUCCESS == result)
+    {
         return WDRV_WINC_STATUS_OK;
+    }
     else
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
 }
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
+    (
+        uint8_t *pHash, 
+        uint16_t hashSz
+    )
+
+  Summary:
+    Retrieve the certificate hash
+
+  Description:
+    Retrieve the certificate hash from the WINC
+
+  Remarks:
+    None.
+
+*/
 
 WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
 (
@@ -411,19 +482,36 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
     uint16_t hashSz
 )
 {
-    int8_t s8Ret = M2M_SUCCESS;
-    s8Ret = m2m_ssl_retrieve_hash(pHash, hashSz);
+    int8_t result = M2M_SUCCESS;
+    result = m2m_ssl_retrieve_hash(pHash, hashSz);
     
-    if (s8Ret == M2M_SUCCESS)
+    if (M2M_SUCCESS == result)
+    {
         return WDRV_WINC_STATUS_OK;
+    }
     else
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
 }
 
-WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert
-(
-    void
-)
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert(void)
+
+  Summary:
+    Stop processing the certificate
+
+  Description:
+    Stop processing the certificate
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert(void)
 {
     m2m_ssl_stop_processing_certs();
     return WDRV_WINC_STATUS_OK;

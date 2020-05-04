@@ -765,6 +765,7 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
                         pDcpt->pfSSLReqECCCB((DRV_HANDLE)pDcpt, info, &ecdhReqInfo);
                         break;
                     }        
+
                     case ECC_REQ_SIGN_VERIFY:
                     {
                         WDRV_WINC_ECDSA_VERIFY_REQ_INFO ecdsaVerifyReqInfo;
@@ -772,6 +773,7 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
                         pDcpt->pfSSLReqECCCB((DRV_HANDLE)pDcpt, info, &ecdsaVerifyReqInfo);
                         break;
                     }
+
                     case ECC_REQ_SIGN_GEN:
                     {
                         WDRV_WINC_ECDSA_SIGN_REQ_INFO ecdsaSignReqInfo;
@@ -780,11 +782,16 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
                         break;
                         
                     }
+
+		    default:
+                    {
+                        break;
+                    }
                 }
                                         
             }
-             break;
-         }
+            break;
+        }
 
         default:
         {

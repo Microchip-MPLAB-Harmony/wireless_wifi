@@ -51,7 +51,6 @@
 #include <stdint.h>
 
 #include "wdrv_winc_common.h"
-#include "ecc_types.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -91,6 +90,38 @@
 #define WDRV_WINC_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256         0xc02f
 #define WDRV_WINC_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256       0xc02b
 
+// *****************************************************************************
+/* The size of the the largest supported EC
+
+  Summary:
+    The size of the the largest supported EC. For now, assuming
+    the 256-bit EC is the largest supported curve type.
+
+  Description:
+    These defines the size of the the largest supported EC.
+
+  Remarks:
+    None.
+
+*/
+
+#define ECC_LARGEST_CURVE_SIZE                      (32)
+
+// *****************************************************************************
+/* Maximum size of one coordinate of an EC point
+
+  Summary:
+    Maximum size of one coordinate of an EC point.
+
+  Description:
+    These defines the maximum size of one coordinate of an EC point.
+
+  Remarks:
+    None.
+
+*/
+
+#define ECC_POINT_MAX_SIZE                          ECC_LARGEST_CURVE_SIZE
 
 // *****************************************************************************
 /*  Elliptic Curve point representation
@@ -105,22 +136,17 @@
     None.
 */
 typedef struct{
+    /* The X-coordinate of the ec point. */
     uint8_t     x[ECC_POINT_MAX_SIZE];
-    /*!<
-        The X-coordinate of the ec point.
-    */
+    
+    /* The Y-coordinate of the ec point. */
     uint8_t     y[ECC_POINT_MAX_SIZE];
-    /*!<
-        The Y-coordinate of the ec point.
-    */
+
+    /* Point size in bytes (for each of the coordinates). */
     uint16_t    size;
-    /*!<
-        Point size in bytes (for each of the coordinates).
-    */
+
+    /* ID for the corresponding private key. */
     uint16_t    privKeyID;
-    /*!<
-        ID for the corresponding private key.
-    */
 }WDRV_WINC_EC_Point_Rep;
 
 // *****************************************************************************
@@ -560,7 +586,7 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveCert
     (
         uint8_t *pHash, 
         uint16_t hashSz
-    );
+    )
 
   Summary:
     Retrieve the certificate hash
@@ -593,10 +619,7 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert
-    (
-        void
-    );
+    WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert(void)
 
   Summary:
     Stop processing the certificate
@@ -618,8 +641,5 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
     None.
 
 */
-WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert
-(
-    void
-);
+WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert(void);
 #endif /* _WDRV_WINC_SSL_H */
