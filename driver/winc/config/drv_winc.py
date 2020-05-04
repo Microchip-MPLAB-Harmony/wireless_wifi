@@ -201,7 +201,7 @@ def instantiateComponent(drvWincComponent):
         for x in range(extIntCount):
             wincEicSrcX = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_EIC_SRC_' + str(x), wincIntSrc)
             wincEicSrcX.setLabel('EIC Channel ' + str(x))
-            wincEicSrcX.setVisible(True)
+            wincEicSrcX.setVisible(False)
             wincEicSrcX.setDependencies(setVisibilityEicSource, ['DRV_WIFI_WINC_INT_SRC', 'eic.EIC_INT'])
 
             eicSrcSelDepList.append('DRV_WIFI_WINC_EIC_SRC_' + str(x))
@@ -212,6 +212,9 @@ def instantiateComponent(drvWincComponent):
         wincEicSrcSel.setDefaultValue(-1)
         wincEicSrcSel.setMin(-1)
         wincEicSrcSel.setMax(extIntCount-1)
+
+    wincSymPinConfigComment = drvWincComponent.createCommentSymbol("DRV_WIFI_WINC_EIC_CONFIG_COMMENT", None)
+    wincSymPinConfigComment.setLabel("***EIC channel must be configured in EIC component for interrupt source***")
 
     wincSymChipEnablePin = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_CHIP_ENABLE_PIN", None)
     wincSymChipEnablePin .setLabel("Chip Enable Pin")
