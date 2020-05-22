@@ -1,6 +1,10 @@
 /*** WiFi WINC Driver Configuration ***/
 <#if DRV_WIFI_WINC_INT_SRC == "EIC">
-    <#lt>#define WDRV_WINC_EIC_SOURCE                EIC_PIN_${DRV_WIFI_WINC_EIC_SRC_SELECT}
+    <#lt>#define WDRV_WINC_EIC_SOURCE                EIC_PIN_${DRV_WIFI_WINC_EIC_SRC_SELECT}	
+<#elseif DRV_WIFI_WINC_INT_SRC == "GPIO">
+    <#lt>#define WDRV_WINC_GPIO_SOURCE               ${DRV_WIFI_WINC_GPIO_SRC_SELECT}
+<#elseif DRV_WIFI_WINC_INT_SRC == "PIO">
+    <#lt>#define WDRV_WINC_PIO_SOURCE                ${DRV_WIFI_WINC_PIO_SRC_SELECT}
 <#elseif DRV_WIFI_WINC_INT_SRC == "External_Interrupt">
 <#elseif DRV_WIFI_WINC_INT_SRC == "Change_Notification">
     <#lt>#define WDRV_WINC_INT_SOURCE INT_SOURCE_CHANGE_NOTICE

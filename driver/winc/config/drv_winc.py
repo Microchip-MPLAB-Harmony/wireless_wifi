@@ -2,6 +2,14 @@
 ######################### WincDriver Configurations ###########################
 ###############################################################################
 
+global sort_alphanumeric
+
+def sort_alphanumeric(l):
+	import re
+	convert = lambda text: int(text) if text.isdigit() else text.lower()
+	alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
+	return sorted(l, key = alphanum_key)
+
 def checkPrefix(symbol):
     component = symbol.getComponent()
 
@@ -179,6 +187,16 @@ def instantiateComponent(drvWincComponent):
 
     if eicNode:
         wincIntSrcList.append('EIC')
+    else:
+	    periphNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals")
+	    modules = periphNode.getChildren()
+
+	    for module in range (0, len(modules)):
+		    periphName = str(modules[module].getAttribute("name"))
+		    if periphName == "PIO":
+			    wincIntSrcList.append('PIO')
+		    elif periphName == "GPIO":
+			    wincIntSrcList.append('GPIO')
 
     if len(wincIntSrcList):
         wincIntSrc = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_INT_SRC', None, wincIntSrcList)
@@ -205,9 +223,50 @@ def instantiateComponent(drvWincComponent):
         wincEicSrcSel.setDefaultValue(-1)
         wincEicSrcSel.setMin(-1)
         wincEicSrcSel.setMax(extIntCount-1)
+        wincSymPinConfigComment = drvWincComponent.createCommentSymbol("DRV_WIFI_WINC_EIC_CONFIG_COMMENT", None)
+        wincSymPinConfigComment.setLabel("***EIC channel must be configured in EIC component for interrupt source***")
 
-    wincSymPinConfigComment = drvWincComponent.createCommentSymbol("DRV_WIFI_WINC_EIC_CONFIG_COMMENT", None)
-    wincSymPinConfigComment.setLabel("***EIC channel must be configured in EIC component for interrupt source***")
+    elif 'GPIO' in wincIntSrcList:
+        # Devices using GPIO Interrupts such as PIC32MZ
+        availablePinDictionary = {}
+        # Send message to core to get available pins
+        availablePinDictionary = Database.sendMessage("core", "PIN_LIST", availablePinDictionary)
+
+        wincGpioIntSrc = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_GPIO_SRC_SELECT", None)
+        wincGpioIntSrc.setLabel("Interrupt Pin")
+        wincGpioIntSrc.setOutputMode("Key")
+        wincGpioIntSrc.setDisplayMode("Description")
+        
+        for pad in sort_alphanumeric(availablePinDictionary.values()):
+            key = "GPIO_PIN_" + pad
+            value = list(availablePinDictionary.keys())[list(availablePinDictionary.values()).index(pad)]
+            description = pad
+            wincGpioIntSrc.addKey(key, value, description)
+
+        wincGpioIntSrc.addKey("GPIO_PIN_NONE", "-1", "None")
+        wincGpioIntSrc = drvWincComponent.createCommentSymbol("DRV_WINC_PINS_CONFIG_COMMENT", None)
+        wincGpioIntSrc.setLabel("***Above selected pins must be configured as GPIO Output in Pin Manager***")
+
+    elif 'PIO' in wincIntSrcList:
+        #PIO is used in Cortex-M7 and MPU devices 
+        availablePinDictionary = {}
+        # Send message to core to get available pins
+        availablePinDictionary = Database.sendMessage("core", "PIN_LIST", availablePinDictionary)
+
+        wincPioIntSrc = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_PIO_SRC_SELECT", None)
+        wincPioIntSrc.setLabel("Interrupt Pin")
+        wincPioIntSrc.setOutputMode("Key")
+        wincPioIntSrc.setDisplayMode("Description")
+        
+        for pad in sort_alphanumeric(availablePinDictionary.values()):
+            key = "PIO_PIN_" + pad
+            value = list(availablePinDictionary.keys())[list(availablePinDictionary.values()).index(pad)]
+            description = pad
+            wincPioIntSrc.addKey(key, value, description)
+
+        wincPioIntSrc.addKey("PIO_PIN_NONE", "-1", "None")
+        wincPioIntSrc = drvWincComponent.createCommentSymbol("DRV_WINC_PINS_CONFIG_COMMENT", None)
+        wincPioIntSrc.setLabel("***Above selected pins must be configured as PIO Output in Pin Manager***")               
 
     # WINC1500 Version
     winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1'])
@@ -234,7 +293,8 @@ def instantiateComponent(drvWincComponent):
     wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Ethernet Mode', 'Socket Mode'])
     wincDriverMode.setLabel('Driver Mode')
     wincDriverMode.setDefaultValue('Socket Mode')
-    wincDriverMode.setVisible(True)
+    wincDriverMode.setVisible(wincDevice.getValue() == 'WINC1500')
+    wincDriverMode.setDependencies(setVisibilityWincBypass, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC Use TCP/IP Stack
     wincUseTcpipStack = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_TCPIP_STACK', wincDriverMode)
@@ -584,6 +644,11 @@ def setVisibilityWincVersion(symbol, event):
         else:
             symbol.setVisible(False)
 
+def setVisibilityWincBypass(symbol, event):
+    if event['value'] == 'WINC3400':
+        symbol.setVisible(False)
+    else:
+        symbol.setVisible(True)        
 def setVisibilityRTOSMenu(symbol, event):
     if (event['value'] == None):
         symbol.setVisible(False)
