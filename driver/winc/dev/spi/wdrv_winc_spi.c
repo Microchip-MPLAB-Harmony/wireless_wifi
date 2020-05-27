@@ -61,7 +61,12 @@ static OSAL_SEM_HANDLE_TYPE txSyncSem;
 static OSAL_SEM_HANDLE_TYPE rxSyncSem;
 
 #if defined(__PIC32MZ__)
-/* Cache Management to be enabled in core and system component of MHC.*/
+/****************************************************************************
+ * Function:        _DataCacheClean
+ * Summary: Used in Cache management to clean cache based on address.
+ * Cache Management to be enabled in core & system components of MHC.
+ * If not enabled in the project graph, below code segment should be disabled.
+ *****************************************************************************/
 static void _DataCacheClean(unsigned char *address, uint32_t size)
 {
     if (IS_KVA0(address))
