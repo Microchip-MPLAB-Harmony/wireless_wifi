@@ -40,6 +40,16 @@
 #include "configuration.h"
 #include "definitions.h"
 
+#if defined(INT_SOURCE_CHANGE_NOTICE) && (WDRV_WINC_INT_SOURCE == INT_SOURCE_CHANGE_NOTICE)
+#ifdef PLIB_PORTS_ExistsPinChangeNoticePerPort
+#define WDRV_INT_SOURCE WDRV_WINC_INT_SOURCE_CN_PORT
+#else
+#define WDRV_INT_SOURCE INT_SOURCE_CHANGE_NOTICE
+#endif
+#elif defined(WDRV_WINC_INT_SOURCE)
+#define WDRV_INT_SOURCE WDRV_WINC_INT_SOURCE
+#endif
+
 /****************************************************************************
  * Function:        WDRV_WINC_INTInitialize
  * Summary: Initializes interrupts for the WiFi driver.

@@ -39,10 +39,11 @@
 #include "definitions.h"
 #include "osal/osal.h"
 #include "wdrv_winc_common.h"
+
+#if defined(__PIC32MZ__)
 #include "system/cache/sys_cache.h"
 #include "sys/kmem.h"
 
-#if defined(__PIC32MZ__)
 #define WDRV_DCACHE_CLEAN(addr, size) _DataCacheClean(addr, size)
 #else /* !defined(__PIC32MZ__) */
 #define WDRV_DCACHE_CLEAN(addr, size) do { } while (0)
