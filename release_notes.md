@@ -3,6 +3,23 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless Release v3.2.0
+### New Features
+- WINC: Adds support/Callback for ECC callback.
+- WINC: Adds Support for M0/M4/M7 Hosts through GPIO & PIO interrupts. Earlier only EIC Interrupts were allowed.
+- WINC: Updated cache maintenance option for PIC32MZ.
+
+### Bug fixes
+- WINC: Fixed MHC Component Manager menu for Wireless Bypass mode (Supported only for WINC1500 in this release).
+- WINC: Improved documentation for WINC driver and application examples.
+- WINC: SYS_Console related changes to reflect updates in core/csp/bsp v3.7.0.
+
+### Known Issues
+- Same as v3.1.1
+
+### Development Tools
+- Same as v3.1.1
+
 ## Wireless Release v3.1.1
 ### New Features
 - Added Bypass (Ethernet) mode support for WINC.
