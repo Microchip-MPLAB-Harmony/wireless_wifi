@@ -545,6 +545,10 @@ typedef struct
 
     /* Semaphore for ISR to signal foreground. */
     OSAL_SEM_HANDLE_TYPE isrSemaphore;
+    
+    /* Mutex for event process. */
+    OSAL_MUTEX_HANDLE_TYPE eventProcessMutex;
+ 
 } WDRV_WINC_DCPT;
 
 // *****************************************************************************

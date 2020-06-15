@@ -1150,6 +1150,11 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
             pDcpt->sysStat = SYS_STATUS_BUSY;
 
             WDRV_DBG_INFORM_PRINT("WINC: Initializing...\r\n");
+            
+            if(OSAL_RESULT_TRUE != OSAL_MUTEX_Create(&pDcpt->eventProcessMutex))
+            {
+                pDcpt->sysStat = SYS_STATUS_ERROR;
+            }
 
             /* Initialise SPI handling. */
             WDRV_WINC_SPIInitialize();
@@ -1183,17 +1188,22 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
         /* Running steady state. */
         case SYS_STATUS_READY:
         {
-            if (pDcpt->isOpen == true)
+            if (OSAL_RESULT_TRUE == OSAL_MUTEX_Lock(&pDcpt->eventProcessMutex, OSAL_WAIT_FOREVER))
             {
-                /* If driver instance is open the check HIF ISR semaphore and
-                   handle a pending event. */
-                if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->isrSemaphore, OSAL_WAIT_FOREVER))
+                if (pDcpt->isOpen == true)
                 {
-                    if (M2M_SUCCESS != m2m_wifi_handle_events())
+                    /* If driver instance is open the check HIF ISR semaphore and
+                       handle a pending event. */
+
+                    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->isrSemaphore, OSAL_WAIT_FOREVER))
                     {
-                        OSAL_SEM_Post(&pDcpt->isrSemaphore);
+                        if (M2M_SUCCESS != m2m_wifi_handle_events())
+                        {
+                            OSAL_SEM_Post(&pDcpt->isrSemaphore);
+                        }
                     }
                 }
+                OSAL_MUTEX_Unlock(&pDcpt->eventProcessMutex);
             }
             break;
         }
@@ -1476,10 +1486,16 @@ void WDRV_WINC_Close(DRV_HANDLE handle)
 
     /* Destroy M2M HIF semaphore. */
     OSAL_SEM_Post(&pDcpt->isrSemaphore);
-    OSAL_SEM_Delete(&pDcpt->isrSemaphore);
+    if (OSAL_RESULT_TRUE == OSAL_MUTEX_Lock(&pDcpt->eventProcessMutex, OSAL_WAIT_FOREVER))
+    {
+        /* Destroy M2M HIF semaphore. */
+        OSAL_SEM_Delete(&pDcpt->isrSemaphore);
 
-    /* Reset minimal state to show driver is closed. */
-    pDcpt->isOpen        = false;
+
+        /* Reset minimal state to show driver is closed. */
+        pDcpt->isOpen        = false;
+        OSAL_MUTEX_Unlock(&pDcpt->eventProcessMutex);
+    }
     pDcpt->isConnected   = false;
 #ifdef WDRV_WINC_NETWORK_MODE_SOCKET
     pDcpt->haveIPAddress = false;
