@@ -8,17 +8,31 @@
 - WINC: Adds support/Callback for ECC callback.
 - WINC: Adds Support for M0/M4/M7 Hosts through GPIO & PIO interrupts. Earlier only EIC Interrupts were allowed.
 - WINC: Updated cache maintenance option for PIC32MZ.
+- PIC32MZW1: Add WLAN driver support and application examples for PIC32MZW1 device
 
 ### Bug fixes
 - WINC: Fixed MHC Component Manager menu for Wireless Bypass mode (Supported only for WINC1500 in this release).
 - WINC: Improved documentation for WINC driver and application examples.
 - WINC: SYS_Console related changes to reflect updates in core/csp/bsp v3.7.0.
+- PIC32MZW1: IOP failures (all security modes) due to short preamble
+- PIC32MZW1: Fix failures in Management Frame Protection.
+- PIC32MZW1: Link Control: Firmware Overwrites MAC address in broadcast packets
+- PIC32MZW1: Fix in AP mode to support 8 STA connections.
+- PIC32MZW1: [Coverity] Buffer not null terminated in wdrv_pic32mzw_regdomain.c
+- PIC32MZW1: Fix issue with triggerring dependencies when the PIC32MZW1 wireless driver in included.
 
 ### Known Issues
-- Same as v3.1.1
+- WINC: Same as v3.1.1
+- PIC32MZW1: TCP Tx occasionally stalls when 11n is enabled.
+- PIC32MZW1: STA mode connection problems when multiple APs are present with the same SSID but different security settings.
+- PIC32MZW1: Scanning is not supported in AP mode.
+- PIC32MZW1: TCP Tx occasionally stalls when 11n is enabled.
+- PIC32MZW1: QoS Data unsupported in transmit path.
 
 ### Development Tools
-- Same as v3.1.1
+- WINC: Same as v3.1.1
+- PIC32MZW1: [MPLAB X v5.35 ](https://www.microchip.com/mplab/mplab-x-ide)
+- PIC32MZW1: [MPLAB® XC32 C/C++ Compiler v2.40](https://www.microchip.com/mplab/compilers)
 
 ## Wireless Release v3.1.1
 ### New Features
