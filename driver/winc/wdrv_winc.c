@@ -1151,9 +1151,11 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 
             WDRV_DBG_INFORM_PRINT("WINC: Initializing...\r\n");
             
-            if(OSAL_RESULT_TRUE != OSAL_MUTEX_Create(&pDcpt->eventProcessMutex))
+            if (OSAL_RESULT_TRUE != OSAL_MUTEX_Create(&pDcpt->eventProcessMutex))
             {
+                WDRV_DBG_ERROR_PRINT("eventProcessMutex create failed\r\n");
                 pDcpt->sysStat = SYS_STATUS_ERROR;
+                break;
             }
 
             /* Initialise SPI handling. */
