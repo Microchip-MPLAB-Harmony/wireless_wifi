@@ -13,4 +13,3 @@
 **/*.IAR/settings
 **/*.IAR/*.dep
 **/*.IAR/*.custom_argvars
-harmony-manifest-success.yml

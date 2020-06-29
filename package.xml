@@ -3,7 +3,7 @@
     <Dependencies>
         <Dependency name="csp" version="v3.7.0"/>
         <Dependency name="core" version="v3.7.0"/>
-        <Dependency name="net" version="v3.6.0_release"/>
+        <Dependency name="net" version="v3.6.1"/>
         <Dependency name="bsp" version="v3.7.0"/>
     </Dependencies>
 </Package>
