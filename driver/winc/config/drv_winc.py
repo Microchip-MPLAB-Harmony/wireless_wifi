@@ -5,10 +5,10 @@
 global sort_alphanumeric
 
 def sort_alphanumeric(l):
-	import re
-	convert = lambda text: int(text) if text.isdigit() else text.lower()
-	alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
-	return sorted(l, key = alphanum_key)
+    import re
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
+    return sorted(l, key = alphanum_key)
 
 def checkPrefix(symbol):
     component = symbol.getComponent()
@@ -188,15 +188,15 @@ def instantiateComponent(drvWincComponent):
     if eicNode:
         wincIntSrcList.append('EIC')
     else:
-	    periphNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals")
-	    modules = periphNode.getChildren()
+        periphNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals")
+        modules = periphNode.getChildren()
 
-	    for module in range (0, len(modules)):
-		    periphName = str(modules[module].getAttribute("name"))
-		    if periphName == "PIO":
-			    wincIntSrcList.append('PIO')
-		    elif periphName == "GPIO":
-			    wincIntSrcList.append('GPIO')
+        for module in range (0, len(modules)):
+            periphName = str(modules[module].getAttribute("name"))
+            if periphName == "PIO":
+                wincIntSrcList.append('PIO')
+            elif periphName == "GPIO":
+                wincIntSrcList.append('GPIO')
 
     if len(wincIntSrcList):
         wincIntSrc = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_INT_SRC', None, wincIntSrcList)
@@ -276,10 +276,10 @@ def instantiateComponent(drvWincComponent):
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 Version
-    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2'])
+    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.1'])
     winc3400Version.setLabel('Firmware Version')
     winc3400Version.setVisible(False)
-    winc3400Version.setDefaultValue('1.2.2')
+    winc3400Version.setDefaultValue('1.3.1')
     winc3400Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 BLE API Support
@@ -293,8 +293,9 @@ def instantiateComponent(drvWincComponent):
     wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Ethernet Mode', 'Socket Mode'])
     wincDriverMode.setLabel('Driver Mode')
     wincDriverMode.setDefaultValue('Socket Mode')
-    wincDriverMode.setVisible(wincDevice.getValue() == 'WINC1500')
+    wincDriverMode.setVisible(wincDevice.getValue() == 'WINC3400' or wincDevice.getValue() == 'WINC1500')
     wincDriverMode.setDependencies(setVisibilityWincBypass, ['DRV_WIFI_WINC_DEVICE'])
+    wincDriverMode.setDependencies(setVisibilityWincFWVersion, ['DRV_WIFI_WINC3400_VERSION'])
 
     # WINC Use TCP/IP Stack
     wincUseTcpipStack = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_TCPIP_STACK', wincDriverMode)
@@ -371,6 +372,7 @@ def instantiateComponent(drvWincComponent):
     flagBlePresent          = (winc3400UseBle.getValue() == 'True')
     flagWinc1500_19_6_1     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.6.1'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
+    flagWinc3400_1_3_1      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.1'))
     flagWinc3400            = ((wincDevice.getValue() == 'WINC3400'))
 
     flagHostFileSupport     = (flagSocketMode and flagWinc1500_19_6_1)
@@ -384,6 +386,7 @@ def instantiateComponent(drvWincComponent):
     condBle                 = [flagBlePresent,          setEnableBlePresent,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400']]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc3400_1_3_1      = [flagWinc3400_1_3_1,      setEnableWinc3400_1_3_1,    ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400            = [flagWinc3400,            setEnableWinc3400,          ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
 
     wdrvIncFiles = [
@@ -474,7 +477,7 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.2.2')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.3.0')
+        importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.3.1')
 
     for incFileEntry in bledrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, configName, incFileEntry, 'bluetooth_driver')
@@ -559,7 +562,7 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.2.2')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.3.0')
+        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.3.1')
 
     for srcFileEntry in bledrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, configName, srcFileEntry, 'bluetooth_driver')
@@ -645,10 +648,21 @@ def setVisibilityWincVersion(symbol, event):
             symbol.setVisible(False)
 
 def setVisibilityWincBypass(symbol, event):
-    if event['value'] == 'WINC3400':
-        symbol.setVisible(False)
+    if event['value'] == 'WINC1500' or event['value'] == 'WINC3400':
+        symbol.setVisible(True)
+
+def setVisibilityWincFWVersion(symbol, event):
+    component = symbol.getComponent()
+    deviceWinc = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+
+    if deviceWinc == 'WINC3400':
+        if event['value'] == '1.2.2':
+            symbol.setVisible(False)
+        else:
+            symbol.setVisible(True)
     else:
-        symbol.setVisible(True)        
+        symbol.setVisible(True)
+
 def setVisibilityRTOSMenu(symbol, event):
     if (event['value'] == None):
         symbol.setVisible(False)
@@ -807,6 +821,17 @@ def setEnableWinc3400_1_2_2(symbol, event):
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
 
     if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.2.2') and (checkPrefix(symbol))):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
+def setEnableWinc3400_1_3_1(symbol, event):
+    component = symbol.getComponent()
+
+    wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
+
+    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.3.1') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)
