@@ -815,7 +815,7 @@ int8_t m2m_wifi_connect_psk(
                                    NULL, 0, 0);
                 }
             }
-			free(pstrPsk);	
+            free(pstrPsk);	
         }
     }
     return ret;
