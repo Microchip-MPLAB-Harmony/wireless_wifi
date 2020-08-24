@@ -43,7 +43,7 @@
     <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
     <#if DRV_WIFI_WINC3400_VERSION == "1.2.2">
         <#lt>#define WDRV_WINC_DEVICE_USE_FLASH_INIT
-    <#elseif DRV_WIFI_WINC3400_VERSION == "1.3.0">
+    <#elseif DRV_WIFI_WINC3400_VERSION == "1.3.1">
         <#lt>#define WDRV_WINC_DEVICE_ENTERPRISE_CONNECT
         <#lt>#define WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
         <#lt>#define WDRV_WINC_DEVICE_BSS_ROAMING
