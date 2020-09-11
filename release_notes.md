@@ -3,6 +3,35 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless Release v3.3.0
+### New Features
+- WINC: Adds support for WINC3400 FW v1.3.1.
+- WINC: Updated cache maintenance option for PIC32MZ.
+
+### Bug fixes
+- WINC: Updated documentation for WINC driver and application examples.
+- WINC: SAMD21 + WINC3400 application startup issues
+
+### Known Issues
+- WINC: SAME54 + WINC3400 application examples have a delay added to overcome the Powerup sequence mismatch.
+This is a known issue which will be solved in a future Firmware release.
+
+- MISRA false positives:
+1. driver/winc/drv/driver/m2m_wifi.c(1140) 	644	9.1
+Variable 'strNetworkId' (line 1131) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+			
+2. app.c(136) 	530	9.1
+Symbol 'args' (line 135) not initialized [MISRA 2012 Rule 9.1, mandatory]
+			
+3. driver/winc/drv/driver/nmspi.c(904) 	644	9.1
+Variable 'tmpBuf' (line 881) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
+### Development Tools
+- WINC: [MPLAB X v5.4 ](https://www.microchip.com/mplab/mplab-x-ide)
+- WINC: [MPLAB® XC32 C/C++ Compiler v2.41](https://www.microchip.com/mplab/compilers)
+- PIC32MZW1: [MPLAB X v5.4 ](https://www.microchip.com/mplab/mplab-x-ide)
+- PIC32MZW1: [MPLAB® XC32 C/C++ Compiler v2.41](https://www.microchip.com/mplab/compilers)
+
 ## Wireless Release v3.2.0
 ### New Features
 - WINC: Adds support/Callback for ECC callback.
