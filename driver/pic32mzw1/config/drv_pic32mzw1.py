@@ -130,6 +130,10 @@ def instantiateComponent(drvPic32mzw1Component):
     Database.setSymbolValue('core', 'RFTM0_INTERRUPT_ENABLE', True, 1)
     Database.setSymbolValue('core', 'RFTM0_INTERRUPT_HANDLER_LOCK', True, 1)
     Database.setSymbolValue('core', 'RFTM0_INTERRUPT_HANDLER', 'WDRV_PIC32MZW_TasksRFTimer0ISR', 1)
+	
+    Database.setSymbolValue('core', 'RFSMC_INTERRUPT_ENABLE', True, 1)
+    Database.setSymbolValue('core', 'RFSMC_INTERRUPT_HANDLER_LOCK', True, 1)
+    Database.setSymbolValue('core', 'RFSMC_INTERRUPT_HANDLER', 'WDRV_PIC32MZW_TasksRFSMCISR', 1)
 
     # Enable dependent Harmony core components
     if Database.getSymbolValue('HarmonyCore', 'ENABLE_DRV_COMMON') == False: 
@@ -184,22 +188,6 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1TaskPriority.setDefaultValue(1)
     pic32mzw1TaskPriority.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
 
-    # WiFi Use Task Delay?
-    pic32mzw1UseTaskDelay = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_RTOS_USE_DELAY', pic32mzw1RtosMenu)
-    pic32mzw1UseTaskDelay.setLabel('Use Task Delay?')
-    pic32mzw1UseTaskDelay.setVisible(True)
-    pic32mzw1UseTaskDelay.setDescription('WiFi PIC32MZW1 Driver Task Uses Delay?')
-    pic32mzw1UseTaskDelay.setDefaultValue(True)
-    pic32mzw1UseTaskDelay.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
-
-    # WiFi Driver Task Delay
-    pic32mzw1DrvTaskDelay = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_RTOS_DELAY', pic32mzw1RtosMenu)
-    pic32mzw1DrvTaskDelay.setLabel('Task Delay')
-    pic32mzw1DrvTaskDelay.setVisible(True)
-    pic32mzw1DrvTaskDelay.setDescription('WiFi Driver Task Delay')
-    pic32mzw1DrvTaskDelay.setDefaultValue(1)
-    pic32mzw1DrvTaskDelay.setDependencies(setVisibilityRTOSTaskDelay, ['DRV_WIFI_PIC32MZW1_RTOS', 'DRV_WIFI_PIC32MZW1_RTOS_USE_DELAY'])
-
     # Support WPA3?
     pic32mzw1SupportWpa3 = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_WPA3', None)
     pic32mzw1SupportWpa3.setLabel('Support WPA3?')
@@ -213,6 +201,12 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1RequireBa414e.setVisible(False)
     pic32mzw1RequireBa414e.setDefaultValue(True)
     pic32mzw1RequireBa414e.setDependencies(setRequireBa414e, ['DRV_WIFI_PIC32MZW1_SUPPORT_WPA3'])
+	
+	# WiFi Regulatory Domain name
+    pic32mzw1RegDomain = drvPic32mzw1Component.createComboSymbol('DRV_WIFI_PIC32MZW1_REG_DOMAIN', None, ['None', 'GEN', 'USA', 'EMEA', 'CUST1', 'CUST2'])
+    pic32mzw1RegDomain.setLabel('Regulatory Domain')
+    pic32mzw1RegDomain.setVisible(True)
+    pic32mzw1RegDomain.setDefaultValue('GEN')
 
     ############################################################################
     #### Code Generation ####
@@ -236,7 +230,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_mac.h',         condAlways],
         ['wdrv_pic32mzw_regdomain.h',   condAlways],
         ['wdrv_pic32mzw_softap.h',      condAlways],
-        ['wdrv_pic32mzw_sta.h',         condAlways]
+        ['wdrv_pic32mzw_sta.h',         condAlways],
+		['wdrv_pic32mzw_ps.h',			condAlways]
     ]
 
     for incFileEntry in wdrvIncFiles:
@@ -253,7 +248,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_int.c',         condAlways],
         ['wdrv_pic32mzw_regdomain.c',   condAlways],
         ['wdrv_pic32mzw_softap.c',      condAlways],
-        ['wdrv_pic32mzw_sta.c',         condAlways]
+        ['wdrv_pic32mzw_sta.c',         condAlways],
+		['wdrv_pic32mzw_ps.c',			condAlways]
     ]
 
     for srcFileEntry in wdrvSrcFiles:
@@ -333,13 +329,6 @@ def setVisibilityRTOSTaskConfig(symbol, event):
     else:
         symbol.setVisible(False)
         print('WiFi Combined')
-
-def setVisibilityRTOSTaskDelay(symbol, event):
-    drvWifiRtos = symbol.getComponent().getSymbolByID(event['id'])
-    if(drvWifiRtos.getValue() == True):
-        symbol.setVisible(True)
-    else:
-        symbol.setVisible(False)
 
 def setSupportWpa3(symbol, event):
     if ((event['value'] != 'BareMetal') and (event['value'] != None)):
