@@ -695,6 +695,8 @@ static int8_t hif_isr(void)
                     M2M_ERR("(hif) host app didn't set RX Done <%u><%X>\n", strHif.u8Gid, strHif.u8Opcode);
                     return hif_set_rx_done();
                 }
+                
+                return M2M_SUCCESS;
             }
             else
             {
