@@ -279,21 +279,6 @@ def instantiateComponent(syswifiComponent):
     ############################################################################
     configName = Variables.get("__CONFIGURATION_NAME")
 
-    #syswifiHeaderFile = syswifiComponent.createFileSymbol("SYS_WIFI_HEADER", None)
-    #syswifiHeaderFile.setSourcePath("system/wifi/sys_wifi.h")
-    #syswifiHeaderFile.setOutputName("sys_wifi.h")
-    #syswifiHeaderFile.setDestPath("system/wifi/")
-    #syswifiHeaderFile.setProjectPath("config/" + configName + "/system/wifi/")
-    #syswifiHeaderFile.setType("HEADER")
-    #syswifiHeaderFile.setOverwrite(True)
-
-    #syswifiSourceFile = syswifiComponent.createFileSymbol("SYS_WIFI_SOURCE", None)
-    #syswifiSourceFile.setSourcePath("system/wifi/src/sys_wifi.c")
-    #syswifiSourceFile.setOutputName("sys_wifi.c")
-    #syswifiSourceFile.setDestPath("system/wifi/src")
-    #syswifiSourceFile.setProjectPath("config/" + configName + "/system/wifi/")
-    #syswifiSourceFile.setType("SOURCE")
-    #syswifiSourceFile.setOverwrite(True)
 
     syswifiSourceFile = syswifiComponent.createFileSymbol("SYS_WIFI_SOURCE", None)
     syswifiSourceFile.setSourcePath("system/wifi/templates/src/sys_wifi.c.ftl")
@@ -394,7 +379,10 @@ def syswifishowRTOSMenu(symbol, event):
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_CALLOC_FUNC", "calloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_DRAM_SIZE", 65000)
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_USER_NOTIFICATION", True)
-        Database.setSymbolValue("core", "XC32_HEAP_SIZE", 160000)
+        #Database.setSymbolValue("core", "XC32_HEAP_SIZE", 160000)
+        triggerDict = {}
+        triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
+
         Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
     else:
         symbol.setVisible(False)
@@ -411,7 +399,9 @@ def syswifishowRTOSMenu(symbol, event):
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_CALLOC_FUNC", "calloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_DRAM_SIZE", 65000)
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_USER_NOTIFICATION", True)
-        Database.setSymbolValue("core", "XC32_HEAP_SIZE", 150000)
+        #Database.setSymbolValue("core", "XC32_HEAP_SIZE", 150000)
+        triggerDict = {}
+        triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
         Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
 
 
@@ -530,7 +520,8 @@ def finalizeComponent(syswifiComponent):
 #Application layer
     res = Database.activateComponents(["tcpip_apps_config"],"System Component", True)
     if(Database.getSymbolValue("tcpip_apps_config", "TCPIP_AUTOCONFIG_ENABLE_DHCP_CLIENT") != True):
-            Database.setSymbolValue("tcpip_apps_config", "TCPIP_AUTOCONFIG_ENABLE_DHCP_CLIENT", True)
+        Database.setSymbolValue("tcpip_apps_config", "TCPIP_AUTOCONFIG_ENABLE_DHCP_CLIENT", True)
+        if ( syswifisysComponent != None ):
             res=syswifisysComponent.addComponent("TCP/IP STACK")
             res=syswifisysComponent.addComponent("tcpipStack")
             res=syswifisysComponent.addComponent("tcpipNetConfig")
@@ -581,10 +572,6 @@ def finalizeComponent(syswifiComponent):
 
     if(Database.getSymbolValue("tcpip_transport_config", "TCPIP_AUTOCONFIG_ENABLE_TCP") != True):
         Database.setSymbolValue("tcpip_transport_config", "TCPIP_AUTOCONFIG_ENABLE_TCP", True)       
-    
-
-#    res = Database.activateComponents(["TCP/IP STACK"],"System Component", True)
-    #syswifiComponent.setCapabilityEnabled("syswifiSrvc", True)
 
     # Enable dependent Harmony core components
     if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_COMMON") == False):
@@ -603,37 +590,33 @@ def finalizeComponent(syswifiComponent):
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_CALLOC_FUNC", "calloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_DRAM_SIZE", 65000)
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_USER_NOTIFICATION", True)
-        Database.setSymbolValue("core", "XC32_HEAP_SIZE", 150000)
+        #Database.setSymbolValue("core", "XC32_HEAP_SIZE", 150000)
+        triggerDict = {}
+        triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
         Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
         Database.setSymbolValue("core", "EWPLL_ENABLE", True)        
         Database.setSymbolValue("tcpipIcmp", "TCPIP_ICMP_CLIENT_USER_NOTIFICATION", True)
         Database.setSymbolValue("tcpipIcmp", "TCPIP_STACK_USE_ICMP_CLIENT", True)
         Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_hw", True)
-        Database.setSymbolValue("uart1", "UART_TX_RING_BUFFER_SIZE", 1024)
+        Database.setSymbolValue("uart1", "UART_TX_RING_BUFFER_SIZE", 2048)
         Database.setSymbolValue("core", "CRYPTO_CLOCK_ENABLE", True)
         Database.setSymbolValue("core", "RNG_CLOCK_ENABLE", True)
         Database.setSymbolValue("sys_console", "SYS_CONSOLE_PRINT_BUFFER_SIZE", 256)
     else:
-        #Database.setSymbolValue("tcpipStack", "TCPIP_STACK_MALLOC_FUNC", "pvPortMalloc")
-        #Database.setSymbolValue("tcpipStack", "TCPIP_STACK_FREE_FUNC", "vPortFree")
-        #Database.setSymbolValue("tcpipStack", "TCPIP_STACK_CALLOC_FUNC", "APP_Calloc")
-        #Database.setSymbolValue("tcpipStack", "TCPIP_STACK_DRAM_SIZE", 75000)
-        #Database.setSymbolValue("core", "XC32_HEAP_SIZE", 10240)
-        #Database.setSymbolValue("FreeRTOS", "FREERTOS_TOTAL_HEAP_SIZE",160000)
-        #Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_MALLOC_FUNC", "malloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_FREE_FUNC", "free")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_CALLOC_FUNC", "calloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_DRAM_SIZE", 65000)
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_USER_NOTIFICATION", True)
-        Database.setSymbolValue("core", "XC32_HEAP_SIZE", 150000)
+        triggerDict = {}
+        triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
         Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
         Database.setSymbolValue("core", "OSCCON_NOSC_VALUE", "SPLL")
         Database.setSymbolValue("core", "EWPLL_ENABLE", True)
         Database.setSymbolValue("tcpipIcmp", "TCPIP_ICMP_CLIENT_USER_NOTIFICATION", True)
         Database.setSymbolValue("tcpipIcmp", "TCPIP_STACK_USE_ICMP_CLIENT", True)
         Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_hw", True)
-        Database.setSymbolValue("uart1", "UART_TX_RING_BUFFER_SIZE", 1024)
+        Database.setSymbolValue("uart1", "UART_TX_RING_BUFFER_SIZE", 2048)
         Database.setSymbolValue("core", "CRYPTO_CLOCK_ENABLE", True)
         Database.setSymbolValue("core", "RNG_CLOCK_ENABLE", True)
         Database.setSymbolValue("sys_console", "SYS_CONSOLE_PRINT_BUFFER_SIZE", 256)

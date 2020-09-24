@@ -247,6 +247,9 @@ def netTLSautoMenu(symbol, event):
 
 def finalizeComponent(netComponent):
     #Database.setSymbolValue("core", "XC32_HEAP_SIZE", 160000)
+    triggerDict = {}
+    triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
+
     res = Database.activateComponents(["sysWifiPic32mzw1"])
     res = Database.activateComponents(["netPres"],"System Component", True)
 
