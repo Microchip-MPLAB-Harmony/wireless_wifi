@@ -6,6 +6,7 @@
 ## Wireless Release v3.3.0
 ### New Features
 - WINC: Adds support for WINC3400 FW v1.3.1.
+- WINC: Added Bypass mode application example for SAME54 + WINC3400.
 - WINC: Updated cache maintenance option for PIC32MZ.
 
 ### Bug fixes
@@ -13,10 +14,7 @@
 - WINC: SAMD21 + WINC3400 application startup issues
 
 ### Known Issues
-- WINC: SAME54 + WINC3400 application examples have a delay added to overcome the Powerup sequence mismatch.
-This is a known issue which will be solved in a future Firmware release.
-
-- MISRA false positives:
+- WINC MISRA warnings/false positives:
 1. driver/winc/drv/driver/m2m_wifi.c(1140) 	644	9.1
 Variable 'strNetworkId' (line 1131) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
 			
