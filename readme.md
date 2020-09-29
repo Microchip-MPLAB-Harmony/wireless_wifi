@@ -1,4 +1,9 @@
-﻿![Microchip logo](https://raw.githubusercontent.com/wiki/Microchip-MPLAB-Harmony/Microchip-MPLAB-Harmony.github.io/images/microchip_logo.png)
+﻿---
+title: Harmony 3 Wireless Package
+nav_order: 1
+---
+
+![Microchip logo](https://raw.githubusercontent.com/wiki/Microchip-MPLAB-Harmony/Microchip-MPLAB-Harmony.github.io/images/microchip_logo.png)
 ![Harmony logo small](https://raw.githubusercontent.com/wiki/Microchip-MPLAB-Harmony/Microchip-MPLAB-Harmony.github.io/images/microchip_mplab_harmony_logo_small.png)
 
 # MPLAB® Harmony 3 Wireless
@@ -25,6 +30,11 @@ reference information.
 - [MPLAB® Harmony License](mplab_harmony_license.md)
 - [MPLAB® Harmony 3 Wireless Wiki](https://github.com/Microchip-MPLAB-Harmony/wireless/wiki)
 - [MPLAB® Harmony 3 Wireless API Help](https://microchip-mplab-harmony.github.io/wireless)
+- [MPLAB® Harmony 3 WINC Wireless APIs](doc/WINC%20Driver.pdf)
+- [MPLAB® Harmony 3 PIC32MZW1 Wireless APIs](driver/readme.md)
+
+<br />
+<br />
 
 # Contents Summary
 
@@ -35,7 +45,47 @@ reference information.
 | doc        | Wireless library help documentation (chm)                 |
 | docs       | Wireless library help documentation (html)                |
 | drivers    | Driver/Firmware files for different products              |
+| system     | Application Service Architecture                          |
 | utilities  | Contains root certs, firmware programmer/downloader       |
+<br />
+<br />
+
+## Code Examples
+
+The following applications are provided to demonstrate the typical or interesting usage models of one or more wireless drivers/libraries.
+
+## PIC32MZW1
+
+| Name | Status|
+|:---------|:-----------|
+| [Wi-Fi STA](apps\wifi_sta\readme_driver_usage.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Wi-Fi Soft-AP](apps\wifi_ap\readme_driver_usage.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Wi-Fi STA - Wi-Fi Service Variant](apps\wifi_sta\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Wi-Fi Soft-AP - Wi-Fi Service Variant](apps\wifi_ap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Paho MQTT Client](apps\paho_mqtt_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Paho MQTT TLS Client](apps\paho_mqtt_tls_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [TCP Client](apps\tcp_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [TCP Server](apps\tcp_server\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [UDP Client](apps\udp_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [UDP Server](apps\udp_server\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Weather Client](apps\weather_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Wi-Fi Easy Config](apps\wifi_easy_config\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [WiFi-Ethernet Dual Interface](apps\wifi_eth_dual_interface\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+
+## WINC
+
+| Name | Status|
+|:---------|:-----------|
+| [AP Scan](apps\ap_scan\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [Power Save Mode](apps/power_save_mode_example/readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [Serial Bridge](apps\wifi_winc_sta_bypass\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [TCP Client](apps\tcp_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [TCP Server](apps\tcp_server\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Wi-Fi Provisioning via BLE](apps\wifi_provision_via_ble\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [Wi-Fi Provisioning via Soft-AP](apps\wifi_provisioning_via_softap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [Wi-Fi Provisioning via WPS](apps\wifi_provisioning_via_wps\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [Wi-Fi TCP Server in Soft-AP](apps\wifi_tcp_server_in_softap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [Wi-Fi WINC STA Bypass](apps\wifi_winc_sta_bypass\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
 
 ____
 
