@@ -98,6 +98,12 @@ SYS_MODULE_OBJ g_NetAppDbgHdl;
 #define SYS_NET_PERIOIDC_TIMEOUT   30 //Sec
 #define SYS_NET_TIMEOUT_CONST (SYS_NET_PERIOIDC_TIMEOUT * SYS_TMR_TickCounterFrequencyGet())
 
+static inline void SYS_NET_SetInstStatus(SYS_NET_Handle *hdl, SYS_NET_STATUS status)
+{
+    hdl->status = status;
+    SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Handle (0x%p) State (%s)\r\n", hdl, SYS_NET_GET_STATUS_STR(status));
+}
+
 void SYS_NET_StartTimer(SYS_NET_Handle *hdl, uint32_t timerInfo)
 {
     /* Start the Timer */
@@ -473,7 +479,7 @@ static void* SYS_NET_AllocHandle()
             /* Give Semaphore */
             OSAL_SEM_Post(&g_SysNetSemaphore);
 
-            SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Assigned g_asSysNetHandle[%d] (%d)\r\n", i, g_asSysNetHandle[i]);
+            SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Assigned g_asSysNetHandle[%d] (%p)\r\n", i, &g_asSysNetHandle[i]);
 
             return &g_asSysNetHandle[i];
         }
@@ -545,33 +551,17 @@ static void SYS_NET_SetSockType(SYS_NET_Handle *hdl)
 
 static bool SYS_NET_Ll_Status(SYS_NET_Handle *hdl)
 {
-    IPV4_ADDR NetIp;
-#if defined(TCPIP_STACK_USE_IPV6)
-    IPV6_ADDR_STRUCT currIpv6Add;
-#endif
     TCPIP_NET_HANDLE hNet = TCPIP_STACK_IndexToNet(SYS_NET_DEFAULT_NET_INTF);
 
     /* Check if the Lower Interface is up or not */
-    if (TCPIP_STACK_NetIsUp(hNet) == false)
+    if (TCPIP_STACK_NetIsLinked(hNet) == false)
     {
-        SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Lower Interface Not UP");
-
         return false;
     }
-
-    /* Check if the interface has been assigned an IP or not */
-    NetIp.Val = 0;
-    NetIp.Val = TCPIP_STACK_NetAddress(hNet);
-    if (NetIp.Val == 0)
+	
+    /* Check if the IP Layer is Ready */
+    if (TCPIP_STACK_NetIsReady(hNet) == false)
     {
-
-#if defined(TCPIP_STACK_USE_IPV6)
-        if (TCPIP_STACK_NetIPv6AddressGet(hNet, IPV6_ADDR_TYPE_UNICAST, &currIpv6Add, NULL))
-        {
-            return true;
-        }
-#endif		
-        SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Interface not assigned IP yet");
         return false;
     }
 
@@ -613,13 +603,13 @@ TCPIP_DNS_RESULT SYS_NET_DNS_Resolve(SYS_NET_Handle *hdl)
             /* In case the Host Name is the IP Address itself */
             SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "DNS Resolved; IP = %s", hdl->cfg_info.host_name);
 
-            hdl->status = SYS_NET_STATUS_DNS_RESOLVED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DNS_RESOLVED);
 
             return (SYS_MODULE_OBJ) hdl;
         }
 
         /* In case the Host Name is the IP Address itself; This should never come */
-        hdl->status = SYS_NET_STATUS_DNS_RESOLVE_FAILED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DNS_RESOLVE_FAILED);
 
         return result;
     }
@@ -632,14 +622,14 @@ TCPIP_DNS_RESULT SYS_NET_DNS_Resolve(SYS_NET_Handle *hdl)
             /* DNS cannot be resolved */
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Could Not Resolve DNS = %d (TCPIP_DNS_RESULT)\r\n", result);
 
-            hdl->status = SYS_NET_STATUS_DNS_RESOLVE_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DNS_RESOLVE_FAILED);
         }
 
         return result;
     }
 
     /* Wait for the DNS Client to resolve the Host Name */
-    hdl->status = SYS_NET_STATUS_RESOLVING_DNS;
+    SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_RESOLVING_DNS);
 
     return result;
 }
@@ -654,7 +644,7 @@ void SYS_NET_NetPres_Signal(NET_PRES_SKT_HANDLE_T handle, NET_PRES_SIGNAL_HANDLE
 
         SYS_NETDEBUG_DBG_PRINT(g_NetAppDbgHdl, NET_CFG, "Received FIN from Peer\r\n");
 
-        hdl->status = SYS_NET_STATUS_PEER_SENT_FIN;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_PEER_SENT_FIN);
     }
 }
 
@@ -766,7 +756,7 @@ SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *
     {
         SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "TCPIP Stack Not UP\r\n");
 
-        hdl->status = SYS_NET_STATUS_LOWER_LAYER_DOWN;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
 
         return (SYS_MODULE_OBJ) hdl;
     }
@@ -790,7 +780,7 @@ SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *
     {
         SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "ServerOpen failed!\r\n");
 
-        hdl->status = SYS_NET_STATUS_SOCK_OPEN_FAILED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SOCK_OPEN_FAILED);
 
         return (SYS_MODULE_OBJ) hdl;
     }
@@ -807,7 +797,7 @@ SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *
     }
 
     /* Wait for Connection */
-    hdl->status = SYS_NET_STATUS_SERVER_AWAITING_CONNECTION;
+    SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SERVER_AWAITING_CONNECTION);
 
     return (SYS_MODULE_OBJ) hdl;
 }
@@ -846,7 +836,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             /* DNS Resolved */
         case TCPIP_DNS_RES_OK:
         {
-            hdl->status = SYS_NET_STATUS_DNS_RESOLVED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DNS_RESOLVED);
         }
             break;
 
@@ -861,7 +851,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             {
                 SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Could Not Resolve DNS\r\n");
 
-                hdl->status = SYS_NET_STATUS_DNS_RESOLVE_FAILED;
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DNS_RESOLVE_FAILED);
 
                 break;
             }
@@ -873,7 +863,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         {
             SYS_NETDEBUG_DBG_PRINT(g_NetAppDbgHdl, NET_CFG, "Could Not Resolve DNS = %d (TCPIP_DNS_RESULT)\r\n", result);
 
-            hdl->status = SYS_NET_STATUS_DNS_RESOLVE_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DNS_RESOLVE_FAILED);
         }
         }
     }
@@ -899,7 +889,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             {
                 SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Could Not Open Socket\r\n");
 
-                hdl->status = SYS_NET_STATUS_SOCK_OPEN_FAILED;
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SOCK_OPEN_FAILED);
             }
 
             SYS_NET_GiveSemaphore(hdl);
@@ -927,7 +917,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Handler Registration failed!\r\n");
         }
 
-        hdl->status = SYS_NET_STATUS_CLIENT_CONNECTING;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_CLIENT_CONNECTING);
     }
         break;
 
@@ -943,7 +933,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         /* Check if it is a secured connection */
         if (hdl->cfg_info.enable_tls)
         {
-            hdl->status = SYS_NET_STATUS_WAIT_FOR_SNTP;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_WAIT_FOR_SNTP);
             break;
         }
 #endif            
@@ -962,7 +952,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         }
 
         /* Set the state to Connected */
-        hdl->status = SYS_NET_STATUS_CONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_CONNECTED);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -991,14 +981,14 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         {
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "SSL Connection Negotiation Failed; Aborting\r\n");
 
-            hdl->status = SYS_NET_STATUS_TLS_NEGOTIATION_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATION_FAILED);
 
             break;
         }
 
         SYS_NET_StartTimer(hdl, SYS_NET_TIMEOUT_CONST);
 
-        hdl->status = SYS_NET_STATUS_TLS_NEGOTIATING;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATING);
     }
         break;
 
@@ -1011,7 +1001,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
 
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "SSL Connection Negotiation Failed - Timer Expired\r\n");
 
-            hdl->status = SYS_NET_STATUS_TLS_NEGOTIATION_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATION_FAILED);
 
             break;
         }
@@ -1025,7 +1015,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         {
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "SSL Connection Negotiation Failed - Aborting\r\n");
 
-            hdl->status = SYS_NET_STATUS_TLS_NEGOTIATION_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATION_FAILED);
 
             break;
         }
@@ -1041,7 +1031,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
 
         SYS_NET_ResetTimer(hdl);
 
-        hdl->status = SYS_NET_STATUS_CONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_CONNECTED);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -1064,7 +1054,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             /* Close socket */
             NET_PRES_SocketClose(hdl->socket);
 
-            hdl->status = SYS_NET_STATUS_DISCONNECTED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
             SYS_NET_GiveSemaphore(hdl);
 
@@ -1077,30 +1067,8 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             SYS_NET_TakeSemaphore(hdl);
 
             if (hdl->cfg_info.enable_reconnect)
-            {
-                hdl->socket = NET_PRES_SocketOpen(0,
-                                                  hdl->sock_type,
-                                                  TCPIP_DNS_TYPE_A,
-                                                  hdl->cfg_info.port,
-                                                  (NET_PRES_ADDRESS*) & hdl->server_ip,
-                                                  NULL);
-                if (hdl->socket == INVALID_SOCKET)
-                {
-                    SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "ClientOpen failed!\r\n");
-                }
-                else
-                    hdl->status = SYS_NET_STATUS_CLIENT_CONNECTING;
-
-                if (SYS_NET_Set_Sock_Option(hdl) == false)
-                {
-                    SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Sock Option Failed\r\n");
-                }
-
-                /* Register the CB with NetPres */
-                if (NET_PRES_SocketSignalHandlerRegister(hdl->socket, 0xffff, SYS_NET_NetPres_Signal, hdl) == NULL)
-                {
-                    SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Handler Registration failed!\r\n");
-                }
+            {               
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
             }
 
             break;
@@ -1127,7 +1095,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         /* Close socket */
         NET_PRES_SocketClose(hdl->socket);
 
-        hdl->status = SYS_NET_STATUS_DISCONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
         /* Call the Application CB to give 'SSL Negotiation Failed' event */
         if (hdl->callback_fn)
@@ -1137,7 +1105,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
 
         if (hdl->cfg_info.enable_reconnect)
         {
-            hdl->status = SYS_NET_STATUS_LOWER_LAYER_DOWN;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
         }
     }
         break;
@@ -1146,7 +1114,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         /* DNS Could not be resolved */
     case SYS_NET_STATUS_DNS_RESOLVE_FAILED:
     {
-        hdl->status = SYS_NET_STATUS_DISCONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
         /* Call the Application CB to give 'DNS Resolve Failed' event */
         if (hdl->callback_fn)
@@ -1156,7 +1124,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
 
         if (hdl->cfg_info.enable_reconnect)
         {
-            hdl->status = SYS_NET_STATUS_LOWER_LAYER_DOWN;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
         }
     }
         break;
@@ -1164,7 +1132,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         /* Socket Open failed */
     case SYS_NET_STATUS_SOCK_OPEN_FAILED:
     {
-        hdl->status = SYS_NET_STATUS_DISCONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
         /* Call the Application CB to give 'Socket Open Failed' event */
         if (hdl->callback_fn)
@@ -1192,7 +1160,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
         /* Close socket */
         NET_PRES_SocketClose(hdl->socket);
 
-        hdl->status = SYS_NET_STATUS_DISCONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -1217,7 +1185,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
                 SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "ClientOpen failed!\r\n");
             }
             else
-                hdl->status = SYS_NET_STATUS_CLIENT_CONNECTING;
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_CLIENT_CONNECTING);
 
             if (SYS_NET_Set_Sock_Option(hdl) == false)
             {
@@ -1273,7 +1241,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             /* Failed to open a server socket */
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "ServerOpen failed!\r\n");
 
-            hdl->status = SYS_NET_STATUS_SOCK_OPEN_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SOCK_OPEN_FAILED);
 
             SYS_NET_GiveSemaphore(hdl);
 
@@ -1292,7 +1260,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
         }
 
         /* Wait for Connection */
-        hdl->status = SYS_NET_STATUS_SERVER_AWAITING_CONNECTION;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SERVER_AWAITING_CONNECTION);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -1314,7 +1282,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
 #ifdef SYS_NET_TLS_ENABLED				
             if (hdl->cfg_info.enable_tls)
             {
-                hdl->status = SYS_NET_STATUS_WAIT_FOR_SNTP;
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_WAIT_FOR_SNTP);
 
                 break;
             }
@@ -1329,7 +1297,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             }
 
             /* We got a connection */
-            hdl->status = SYS_NET_STATUS_CONNECTED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_CONNECTED);
 
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Received a connection\r\n");
 
@@ -1361,12 +1329,12 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
         {
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "SSL Connection Negotiation Failed; Aborting\r\n");
 
-            hdl->status = SYS_NET_STATUS_TLS_NEGOTIATION_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATION_FAILED);
 
             break;
         }
 
-        hdl->status = SYS_NET_STATUS_TLS_NEGOTIATING;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATING);
     }
         break;
 
@@ -1382,7 +1350,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
         {
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "SSL Connection Negotiation Failed - Aborting\r\n");
 
-            hdl->status = SYS_NET_STATUS_TLS_NEGOTIATION_FAILED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_TLS_NEGOTIATION_FAILED);
 
             break;
         }
@@ -1396,7 +1364,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             NET_PRES_SocketInfoGet(hdl->socket, &hdl->sNetInfo.sTcpInfo);
         }
 
-        hdl->status = SYS_NET_STATUS_CONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_CONNECTED);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -1422,7 +1390,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             NET_PRES_SocketClose(hdl->socket);
 
             /* Change the State */
-            hdl->status = SYS_NET_STATUS_DISCONNECTED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
             SYS_NET_GiveSemaphore(hdl);
 
@@ -1448,7 +1416,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
                     SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "SYS_NET_TCPIP_ServerOpen failed!\r\n");
                 }
                 else
-                    hdl->status = SYS_NET_STATUS_SERVER_AWAITING_CONNECTION;
+                    SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SERVER_AWAITING_CONNECTION);
 
                 if (SYS_NET_Set_Sock_Option(hdl) == false)
                 {
@@ -1500,7 +1468,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
         NET_PRES_SocketClose(hdl->socket);
 
         /* Change the State */
-        hdl->status = SYS_NET_STATUS_DISCONNECTED;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -1527,7 +1495,7 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             }
             else
             {
-                hdl->status = SYS_NET_STATUS_SERVER_AWAITING_CONNECTION;
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SERVER_AWAITING_CONNECTION);
             }
 
             if (SYS_NET_Set_Sock_Option(hdl) == false)
@@ -1650,7 +1618,7 @@ int32_t SYS_NET_CtrlMsg(SYS_MODULE_OBJ obj,
             /* Close socket */
             NET_PRES_SocketClose(hdl->socket);
 
-            hdl->status = SYS_NET_STATUS_DISCONNECTED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
         }
 
         if (buffer != NULL)
@@ -1662,7 +1630,7 @@ int32_t SYS_NET_CtrlMsg(SYS_MODULE_OBJ obj,
 
         /* Changing the status to lower layer down as 
          * DNS needs to be resolved */
-        hdl->status = SYS_NET_STATUS_LOWER_LAYER_DOWN;
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
 
         SYS_NET_GiveSemaphore(hdl);
 
@@ -1678,7 +1646,7 @@ int32_t SYS_NET_CtrlMsg(SYS_MODULE_OBJ obj,
             NET_PRES_SocketClose(hdl->socket);
 
             /* Change the State */
-            hdl->status = SYS_NET_STATUS_DISCONNECTED;
+            SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_DISCONNECTED);
 
             SYS_NET_GiveSemaphore(hdl);
 
@@ -1694,7 +1662,7 @@ int32_t SYS_NET_CtrlMsg(SYS_MODULE_OBJ obj,
             {
                 /* Changing the status to lower layer down as 
                  * DNS needs to be resolved */
-                hdl->status = SYS_NET_STATUS_LOWER_LAYER_DOWN;
+                SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
             }
 
             ret_val = SYS_NET_SUCCESS;

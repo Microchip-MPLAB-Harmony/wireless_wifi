@@ -75,6 +75,7 @@ or access point(AP)
     
     Enable Debug Logs:
         Enables/Disables Wi-Fi and Wi-Fi Provisioning System Service flows and levels.
+        Note: In case the user enables debug logs, user needs to manually add the 'App Debug Service' component from Wireless-> System Service-> App Debug Service.
     
       
 ## Enabling Wi-Fi System Service

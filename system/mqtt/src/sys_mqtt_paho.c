@@ -49,6 +49,12 @@ extern uint8_t g_OmitPacketType;
 // *****************************************************************************
 // *****************************************************************************
 
+static inline void SYS_MQTT_SetInstStatus(SYS_MQTT_Handle *hdl, SYS_MQTT_STATUS status)
+{
+    hdl->eStatus = status;
+    SYS_MQTTDEBUG_INFO_PRINT(g_AppDebugHdl, MQTT_CFG, "Handle (0x%p) State (%d)\r\n", hdl, status);
+}
+
 void SYS_MQTT_TcpClientCallback(uint32_t event, void *data, void* cookie)
 {
     SYS_MQTT_Handle *hdl = (SYS_MQTT_Handle *) cookie;
@@ -66,7 +72,7 @@ void SYS_MQTT_TcpClientCallback(uint32_t event, void *data, void* cookie)
             break;
         }
 
-        hdl->eStatus = SYS_MQTT_STATUS_SOCK_CONNECTED;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_SOCK_CONNECTED);
     }
         break;
 
@@ -75,7 +81,7 @@ void SYS_MQTT_TcpClientCallback(uint32_t event, void *data, void* cookie)
         /* TCP Socket got disconnected */
         SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_CFG, "Status DOWN\r\n");
 
-        hdl->eStatus = SYS_MQTT_STATUS_MQTT_DISCONNECTING;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_DISCONNECTING);
     }
         break;
     }
@@ -123,7 +129,7 @@ void SYS_MQTT_ProcessTimeout(SYS_MQTT_Handle *hdl, SYS_MQTT_EVENT_TYPE cbEvent, 
 
         SYS_MQTT_ResetTimer(hdl);
 
-        hdl->eStatus = nextStatus;
+        SYS_MQTT_SetInstStatus(hdl, nextStatus);
     }
 }
 
@@ -206,7 +212,7 @@ SYS_MODULE_OBJ SYS_MQTT_PAHO_Open(SYS_MQTT_Config *cfg,
 
     hdl->netSrvcHdl = SYS_MODULE_OBJ_INVALID;
 
-    hdl->eStatus = SYS_MQTT_STATUS_LOWER_LAYER_DOWN;
+    SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_LOWER_LAYER_DOWN);
 
     SYS_MQTTDEBUG_FN_EXIT_PRINT(g_AppDebugHdl, MQTT_CFG);
 
@@ -217,8 +223,6 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
 {
     static uint32_t connCbSent = 0;
     SYS_MQTT_Handle *hdl = (SYS_MQTT_Handle *) obj;
-
-    SYS_MQTTDEBUG_FN_ENTER_PRINT(g_AppDebugHdl, MQTT_CFG);
 
     if (obj == SYS_MODULE_OBJ_INVALID)
     {
@@ -259,7 +263,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
         {
             SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_CFG, "TCPIP Socket Opened\r\n");
 
-            hdl->eStatus = SYS_MQTT_STATUS_SOCK_CLIENT_CONNECTING;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_SOCK_CLIENT_CONNECTING);
 
             return;
         }
@@ -267,7 +271,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
         {
             SYS_MQTTDEBUG_ERR_PRINT(g_AppDebugHdl, MQTT_CFG, "TCPIP Socket Open FAILED\r\n");
 
-            hdl->eStatus = SYS_MQTT_STATUS_SOCK_OPEN_FAILED;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_SOCK_OPEN_FAILED);
 
             return;
         }
@@ -338,14 +342,14 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
         {
             SYS_MQTTDEBUG_ERR_PRINT(g_AppDebugHdl, MQTT_CFG, "MQTTConnect() failed (%d)\r\n", rc);
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_CONN_FAILED;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_CONN_FAILED);
 
             return;
         }
 
         SYS_MQTT_StartTimer(hdl, SYS_MQTT_TIMEOUT_CONST);
 
-        hdl->eStatus = SYS_MQTT_STATUS_WAIT_FOR_MQTT_CONACK;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_WAIT_FOR_MQTT_CONACK);
     }
         break;
 
@@ -364,7 +368,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
         {
             SYS_MQTT_ResetTimer(hdl);
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_CONNECTED;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_CONNECTED);
 
             hdl->uVendorInfo.sPahoInfo.subscribeCount = 0;
 
@@ -392,7 +396,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
 
                 hdl->uVendorInfo.sPahoInfo.sPubSubCfgInProgress.topicName = hdl->sCfgInfo.sSubscribeConfig[0].topicName;
 
-                hdl->eStatus = SYS_MQTT_STATUS_WAIT_FOR_MQTT_SUBACK;
+                SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_WAIT_FOR_MQTT_SUBACK);
             }
             else
             {
@@ -440,7 +444,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
 
             SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_DATA, "Suback received for Topic (%s)\r\n", hdl->uVendorInfo.sPahoInfo.sPubSubCfgInProgress.topicName);
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_CONNECTED;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_CONNECTED);
 
             if (connCbSent == 0)
             {
@@ -497,7 +501,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
 
             strcpy(sMqttSubCfg.topicName, hdl->uVendorInfo.sPahoInfo.sPubSubCfgInProgress.topicName);
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_CONNECTED;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_CONNECTED);
 
             SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_DATA, "Unsuback received for Topic (%s)\r\n", hdl->uVendorInfo.sPahoInfo.sPubSubCfgInProgress.topicName);
 
@@ -533,7 +537,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
         {
             SYS_MQTT_ResetTimer(hdl);
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_CONNECTED;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_CONNECTED);
 
             SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_DATA, "Puback received\r\n", g_sMqttMsg.payload);
 
@@ -586,7 +590,7 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
             hdl->sCfgInfo.sSubscribeConfig[i].entryValid = 0;
         }
 
-        hdl->eStatus = SYS_MQTT_STATUS_MQTT_DISCONNECTED;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_DISCONNECTED);
 
         /* Call the Application CB to give 'Disconnected' event */
         if (hdl->callback_fn)
@@ -611,8 +615,6 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
     }
         break;
     }
-
-    SYS_MQTTDEBUG_FN_EXIT_PRINT(g_AppDebugHdl, MQTT_CFG);
 }
 
 int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgType, void *data, uint16_t len)
@@ -684,7 +686,7 @@ int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgT
 
         hdl->uVendorInfo.sPahoInfo.sPubSubCfgInProgress.qos = psMqttSubCfg->qos;
 
-        hdl->eStatus = SYS_MQTT_STATUS_WAIT_FOR_MQTT_SUBACK;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_WAIT_FOR_MQTT_SUBACK);
     }
         break;
 
@@ -743,7 +745,7 @@ int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgT
 
         hdl->uVendorInfo.sPahoInfo.sPubSubCfgInProgress.topicName = (char *) &hdl->sCfgInfo.sSubscribeConfig[i].topicName;
 
-        hdl->eStatus = SYS_MQTT_STATUS_WAIT_FOR_MQTT_UNSUBACK;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_WAIT_FOR_MQTT_UNSUBACK);
 
         SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_DATA, "Unsubscribed to Topic %s)\r\n", (char *) data);
     }
@@ -794,7 +796,7 @@ int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgT
 
         SYS_MQTT_StartTimer(hdl, SYS_MQTT_TIMEOUT_CONST);
 
-        hdl->eStatus = SYS_MQTT_STATUS_SOCK_CLIENT_CONNECTING;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_SOCK_CLIENT_CONNECTING);
     }
         break;
 
@@ -816,7 +818,7 @@ int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgT
                 return SYS_MQTT_FAILURE;
             }
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_DISCONNECTING;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_DISCONNECTING);
         }
 
         if ((hdl->eStatus != SYS_MQTT_STATUS_IDLE) &&
@@ -832,7 +834,7 @@ int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgT
                 return SYS_MQTT_FAILURE;
             }
 
-            hdl->eStatus = SYS_MQTT_STATUS_MQTT_DISCONNECTING;
+            SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_MQTT_DISCONNECTING);
         }
     }
         break;
@@ -885,7 +887,7 @@ int32_t SYS_MQTT_Paho_SendMsg(SYS_MODULE_OBJ obj, SYS_MQTT_PublishTopicCfg *psTo
 
     if (psTopicCfg->qos != 0)
     {
-        hdl->eStatus = SYS_MQTT_STATUS_WAIT_FOR_MQTT_PUBACK;
+        SYS_MQTT_SetInstStatus(hdl, SYS_MQTT_STATUS_WAIT_FOR_MQTT_PUBACK);
     }
 
     SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_DATA, "Publish to Topic (%s)\r\n", psTopicCfg->topicName);
@@ -897,19 +899,13 @@ SYS_MODULE_OBJ SYS_MQTT_Paho_GetNetHdlFromNw(Network* n)
 {
     int32_t i = 0;
 
-    SYS_MQTTDEBUG_FN_ENTER_PRINT(g_AppDebugHdl, MQTT_DATA);
-
     for (i = 0; i < SYS_MQTT_MAX_NUM_OF_INSTANCES; i++)
     {
         if (n == &g_asSysMqttHandle[i].uVendorInfo.sPahoInfo.sPahoNetwork)
         {
-            SYS_MQTTDEBUG_FN_EXIT_PRINT(g_AppDebugHdl, MQTT_CFG);
-
             return g_asSysMqttHandle[i].netSrvcHdl;
         }
     }
-
-    SYS_MQTTDEBUG_FN_EXIT_PRINT(g_AppDebugHdl, MQTT_CFG);
 
     return SYS_MODULE_OBJ_INVALID;
 }

@@ -513,7 +513,7 @@ void* SYS_MQTT_AllocHandle()
         {
             OSAL_SEM_Post(&g_SysMqttSemaphore);
 
-            SYS_MQTTDEBUG_INFO_PRINT(g_AppDebugHdl, MQTT_CFG, "Assigned g_asSysMqttHandle[%d] (%d)\r\n", i, g_asSysMqttHandle[i]);
+            SYS_MQTTDEBUG_INFO_PRINT(g_AppDebugHdl, MQTT_CFG, "Assigned g_asSysMqttHandle[%d] (%p)\r\n", i, &g_asSysMqttHandle[i]);
 
             return &g_asSysMqttHandle[i];
         }
