@@ -7,6 +7,7 @@
 ### New Features
 - WINC: Adds support for WINC3400 FW v1.3.1.
 - WINC: Added Bypass mode application example for SAME54 + WINC3400.
+- WINC: Added new application example support for SAME54.
 - WINC: Updated cache maintenance option for PIC32MZ.
 - PIC32MZW1: Update PIC32MZW1 WLAN driver to v3.1 with new application examples.
 - PIC32MZW1: Basic 802.11 Powersave implementation.
