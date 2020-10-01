@@ -56,7 +56,7 @@ Please note that these are actually ‘free format’ strings; the above table p
 
 |	Parameter			 | 						Description								|
 |-------------------------|--------------------------------------------------------------|
-| ```pfRegDomCallback```	|	Pointer to callback function to receive the requested regulatory domain information. A pointer to a function of the following prototype: ```bool func(DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, bool isCurrent, const char * pRegDomain )```|
+| ```pfRegDomCallback```	|	Pointer to callback function to receive the requested regulatory domain information. A pointer to a function of the following prototype:  ```bool func(DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, bool isCurrent, const WDRV_PIC32MZW_REGDOMAIN_INFO *const pRegDomInfo)```|
 |
 
 When called in response to a SET request, the callback will receive a single message indicating:
@@ -103,7 +103,7 @@ Requests either the name of the currently active regulatory domain or the names 
 -------------------------|--------------------------------------------------------------|
 |```handle```		|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |```selection```	|	Type of regulatory domain information to retrieve: - WDRV_PIC32MZW_REGDOMAIN_SELECT_CURRENT - WDRV_PIC32MZW_REGDOMAIN_SELECT_ALL |
-| ```pfRegDomCallback```	|	Pointer to callback function to receive the requested regulatory domain information. A pointer to a function of the following prototype: ```bool func(DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, bool isCurrent, const char * pRegDomain )```|
+| ```pfRegDomCallback```	|	Pointer to callback function to receive the requested regulatory domain information. A pointer to a function of the following prototype: ```bool func(DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, bool isCurrent, const WDRV_PIC32MZW_REGDOMAIN_INFO *const pRegDomInfo)```|
 |
 
 
