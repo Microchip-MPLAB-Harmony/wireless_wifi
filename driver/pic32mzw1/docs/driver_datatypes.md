@@ -358,9 +358,40 @@ Please note: the following definitions are all prefixed with ```‘WDRV_PIC32MZW
 
 |	Definition		 | 		Description					|
 |-------------------------|-----------------------------|
+|NONE|  | 
 |CURRENT|	Request only the information for the currently active region |
 |ALL|	Request information on all the regulatory configurations stored on the module|
 |
+
+<br />
+<br />
+
+```
+WDRV_PIC32MZW_REGDOMAIN_INFO
+{
+	uint8_t regDomainLen;
+    uint8_t regDomain[WDRV_PIC32MZW_REGDOMAIN_MAX_NAME_LEN];
+    struct
+    {
+        uint16_t major;
+        uint16_t minor;
+    } version;
+}
+```
+
+### Description:
+Specifies the country code length, country code associated with the
+    regulatory domain, major and minor values of RF PHY version.
+
+### Fields:
+
+|	Field		 | 		Description					|
+|-------------------------|-----------------------------|
+|regDomainLen |	Length of Country code|
+|regDomain|	Country code for the regulatory domain|
+|version	| RF version values|
+|
+
 
 <br />
 <br />

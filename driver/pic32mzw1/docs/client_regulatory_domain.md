@@ -37,7 +37,7 @@ Requests that the current regulatory domain is changed to that specified.
 |	Parameter			 | 						Description								|
 |-------------------------|--------------------------------------------------------------|
 |```handle```		|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
-|```pRegDomain```	|	Pointer to a string name of the regulatory domain.|
+|```pRegDomain```	|	Constant pointer to a constant structure, i.e const ```WDRV_PIC32MZW_REGDOMAIN_INFO *const pRegDomInfo```, which contains regulatory domain name and version information|
 |
 
 #### String	Region
@@ -47,7 +47,6 @@ Requests that the current regulatory domain is changed to that specified.
 |GEN	|	Generic/world-wide region|
 |USA	| 	North America|
 |EMEA	|	Europe|
-|JPN	|	Japan|
 |CUST1	|	Provided for customer configuration (chip-down)|
 |CUST2	|	Provided for customer configuration (chip-down)|
 |
@@ -63,9 +62,9 @@ Please note that these are actually ‘free format’ strings; the above table p
 When called in response to a SET request, the callback will receive a single message indicating:
 
 ```
-	index=1 & ofTotal = 1		i.e. 1 of 1 messages
+	index = 1 & ofTotal = 1		i.e. 1 of 1 messages
 	isCurrent = True | False	True indicating success
-	pRegDomain					Contains the name of the region
+	pRegDomain					const pointer to const WDRV_PIC32MZW_REGDOMAIN_INFO
 ```
 
 #### Returns:
@@ -111,9 +110,9 @@ Requests either the name of the currently active regulatory domain or the names 
 When called in response to a GET request, the callback will executed multiple times (once for each region) indicating:
 
 ```
-	index=x & ofTotal = y		i.e. x of y messages
+	index = x & ofTotal = y		i.e. x of y messages
 	isCurrent = True | False	True indicating region is active
-	pRegDomain					Contains the name of the region
+	pRegDomain					const pointer to const WDRV_PIC32MZW_REGDOMAIN_INFO
 ```
 
 #### Returns:
