@@ -11,6 +11,7 @@ nav_order: 2
 The PIC32MZW1 Wi-Fi module consists of two instances, a control instance and a data instance.
 The control instance is driven as a conventional Harmony system interface by the system kernel or scheduler to initialize and run the module, the data instance implements a Harmony TCP/IP stack MAC Driver module instance driven by the Harmony TCP/IP stack.
 
+
 ```
 SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
 (
@@ -18,6 +19,7 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
 	const SYS_MODULE_INIT *const init
 )
 ```
+
 #### Description:
 This function initializes the PIC32MZW1 Wi-Fi module instance.
 
@@ -26,13 +28,17 @@ WDRV_PIC32MZW_Initialize must have been called.
 
 #### Parameters:
 
+|	Parameter			 | 						Description								|
+|-------------------------|--------------------------------------------------------------|
 | index | Zero-based index of the module instance to be initialized. This value is either: - Zero: Module Control Instance, - Non_Zero: Module Data Instance | 
 |Init	| Pointer to the data structure containing any data necessary to initialize the module. This pointer may be null if no data is required. |
+|
 
 #### Returns:
 A handle to the instance of the module that was initialized.
 NOTE: This handle is a necessary parameter to all the other system level routines for that module.
-Remarks:
+
+#### Remarks:
 For the control instance this function will normally only be called once during system initialization.
 
 ---------------------------------------------------------------------------------------------------------
@@ -40,6 +46,7 @@ For the control instance this function will normally only be called once during 
 ```
 void WDRV_PIC32MZW_Deinitialize(SYS_MODULE_OBJ object)
 ```
+
 #### Description:
 This function deinitializes a PIC32MZW1 Wi-Fi module instance.
 

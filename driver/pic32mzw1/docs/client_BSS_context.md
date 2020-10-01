@@ -19,21 +19,24 @@ In some applications a BSS can be cloaked therefore the state can be configured 
 ### Available APIs are listed below
 
 
-```bool WDRV_PIC32MZW_BSSCtxIsValid
+```
+bool WDRV_PIC32MZW_BSSCtxIsValid
 (
 	const WDRV_PIC32MZW_BSS_CONTEXT *const pBSSCtx, 
 	bool ssidValid
 )
 ``` 
+
 #### Description:
 Tests the elements of the BSS context to judge if their values are legal.
 
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 |```pBSSCtx``` |	Pointer to a BSS context.|
 | ```ssidValid``` |	Flag indicating if the SSID within the context must be valid.|
+|
 
 #### Returns:
 true or false indicating if context is valid.
@@ -44,19 +47,22 @@ it is legal for the SSID field to be zero length.
 
 -----------------------------------------------------------------------------------------------------------
  
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetDefaults
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetDefaults
 (
 	WDRV_PIC32MZW_BSS_CONTEXT *const pBSSCtx
 )
 ```
+
 #### Description:
 Ensures that each element of the structure is configured into a legal state.
 
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```pBSSCtx``` |	Pointer to a BSS context. |
+|
 
 #### Returns:
 
@@ -68,22 +74,26 @@ A default context is not valid until it is configured.
 
 -----------------------------------------------------------------------------------------------------------
  
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetSSID
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetSSID
 (
 	WDRV_PIC32MZW_BSS_CONTEXT *const pBSSCtx, 
 	uint8_t *const pSSID, 
 	uint8_t ssidLength
 )
 ```
+
 #### Description:
 The SSID string and length provided are copied into the BSS context.
+
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```pBSSCtx``` |	Pointer to a BSS context. |
 | ```pSSID``` |	Pointer to buffer containing the new SSID. |
 | ```ssidLength``` |	The length of the SSID held in the pSSID buffer. |
+|
 
 #### Returns:
 
@@ -93,7 +103,8 @@ The SSID string and length provided are copied into the BSS context.
 
 -----------------------------------------------------------------------------------------------------------
 
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetBSSID
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetBSSID
 (
 	WDRV_PIC32MZW_BSS_CONTEXT *const pBSSCtx, 
 	uint8_t *const pBSSID
@@ -106,9 +117,10 @@ The BSSID string is copied into the BSS context.
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```pBSSCtx```	|	Pointer to a BSS context.|
 | ```pBSSID```		| Pointer to buffer containing the new BSSID.|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK			- The context has been configured.
@@ -117,7 +129,8 @@ The BSSID string is copied into the BSS context.
 
 -----------------------------------------------------------------------------------------------------------
  
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetChannel
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetChannel
 (
 	WDRV_PIC32MZW_BSS_CONTEXT *const pBSSCtx, 
 	WDRV_PIC32MZW_CHANNEL_ID channel
@@ -130,9 +143,10 @@ The supplied channel value is copied into the BSS context.
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```pBSSCtx```	|	Pointer to a BSS context.|
 | ```channel```	|	Channel number.|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK			- The context has been configured.
@@ -144,21 +158,24 @@ channel may be ```WDRV_PIC32MZW_ALL_CHANNELS``` to represent no fixed channel.
 
 -----------------------------------------------------------------------------------------------------------
 
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetSSIDVisibility
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSCtxSetSSIDVisibility
 (
 	WDRV_PIC32MZW_BSS_CONTEXT *const pBSSCtx, 
 	bool visible
 )
 ```
+
 #### Description:
 Specific to Soft-AP mode this flag defines if the BSS context will create a visible presence on air.
 
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```pBSSCtx``` |	Pointer to a BSS context.|
 | ```visible```	|	Boolean flag value indicating if the BSS will be visible or not.|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK			- The context has been configured.

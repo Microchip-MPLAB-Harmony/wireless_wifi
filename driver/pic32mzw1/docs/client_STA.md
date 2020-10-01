@@ -21,6 +21,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSConnect
     const WDRV_PIC32MZW_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
 )
 ```
+
 #### Description:
 Using the defined BSS and authentication contexts, this function requests the PIC32MZW1 connect to the BSS as an infrastructure station.
 
@@ -38,7 +39,7 @@ Using the defined BSS and authentication contexts, this function requests the PI
 | ```pBSSCtx```          |	Pointer to BSS context  									|
 | ```pAuthCtx```         | Pointer to authentication context 							|
 | ```pfNotifyCallback``` | Pointer to function of the following prototype:  ```void func ( DRV_HANDLE handle, WDRV_PIC32MZW_ASSOC_HANDLE assocH, WDRV_PIC32MZW_CONN_STATE state )``` |
- 
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK				- The request has been accepted.
@@ -49,7 +50,10 @@ Using the defined BSS and authentication contexts, this function requests the PI
 ###### WDRV_PIC32MZW_STATUS_CONNECT_FAIL		- The connection has failed.
 
 ---------------------------------------------------------------------------------------------------------
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSDisconnect(DRV_HANDLE handle)```
+
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSDisconnect(DRV_HANDLE handle)
+```
 
 #### Description:
 

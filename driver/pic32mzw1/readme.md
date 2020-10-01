@@ -24,5 +24,6 @@ family: PIC32MZW1
 | [Client Interface - Information ](docs/client_information.md)|
 | [Client Interface - Regulatory Domain ](docs/client_regulatory_domain.md)|
 | [Client Interface - Power save ](docs/client_powersave.md)|
+|
 
 ...

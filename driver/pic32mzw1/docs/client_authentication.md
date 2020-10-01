@@ -18,7 +18,9 @@ Each authentication type has at least one function which can be used to configur
 
 ### Available APIs are listed below
 
-```bool WDRV_PIC32MZW_AuthCtxIsValid(const WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx)```
+```
+bool WDRV_PIC32MZW_AuthCtxIsValid(const WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx)
+```
 
 #### Description:
 Tests the elements of the authentication context to judge if their values are legal.
@@ -26,8 +28,9 @@ Tests the elements of the authentication context to judge if their values are le
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 |```pAuthCtx``` |	Pointer to an authentication context. |
+|
 
 #### Returns:
 True or False indicating if context is valid.
@@ -35,18 +38,21 @@ True or False indicating if context is valid.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetDefaults
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetDefaults
 (
 	WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx
 )
 ```
-*** element of the structure is configured into a default state. ***
+
+**element of the structure is configured into a default state.**
   
 #### Parameters:
 
-|	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|	Parameter			 | 				Description								|
+|-------------------------|-----------------------------------------------------|
 | ```pAuthCtx``` |	Pointer to an authentication context. |
+|
 
 #### Returns:
 
@@ -58,7 +64,9 @@ A default context is not valid until it is configured.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetOpen
+
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetOpen
 (
 	WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx
 )
@@ -69,9 +77,9 @@ The type and state information are configured appropriately for Open authenticat
 
 #### Parameters:
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```pAuthCtx``` |	Pointer to an authentication context. |
-
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK			- The context has been configured.
@@ -79,7 +87,8 @@ The type and state information are configured appropriately for Open authenticat
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetWEP
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetWEP
 (
 	WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx, 
 	uint8_t idx, 
@@ -94,11 +103,12 @@ The type and state information are configured appropriately for WEP authenticati
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 |```pAuthCtx``` |	Pointer to an authentication context.|
 |```idx``` |	WEP index.|
 |```pKey``` |	Pointer to WEP key.|
 |```size``` |	Size of WEP key.|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK			- The context has been configured.
@@ -106,7 +116,8 @@ The type and state information are configured appropriately for WEP authenticati
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetPersonal
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetPersonal
 (
 	WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx, 
 	uint8_t *pPassword, 
@@ -121,11 +132,12 @@ The type and state information are configured appropriately for WPA-PSK authenti
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 |```pAuthCtx``` |	Pointer to an authentication context.|
 |```pPassword``` |	Pointer to password (or 64-character PSK).|
 |```size ```|	Size of password (or 64 for PSK).|
 |```authType``` |	Authentication type (or WDRV_PIC32MZW_AUTH_TYPE_DEFAULT).|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK - The context has been configured.

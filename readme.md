@@ -47,6 +47,7 @@ reference information.
 | drivers    | Driver/Firmware files for different products              |
 | system     | Application Service Architecture                          |
 | utilities  | Contains root certs, firmware programmer/downloader       |
+
 <br />
 <br />
 
@@ -55,6 +56,9 @@ reference information.
 The following applications are provided to demonstrate the typical or interesting usage models of one or more wireless drivers/libraries.
 
 ## PIC32MZW1
+
+##### Note: PIC32MZ W1 Software User’s Guide is available at https://www.microchip.com/PIC32MZW1
+
 
 | Name | Status|
 |:---------|:-----------|
@@ -71,6 +75,9 @@ The following applications are provided to demonstrate the typical or interestin
 | [Weather Client](apps\weather_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
 | [Wi-Fi Easy Config](apps\wifi_easy_config\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
 | [WiFi-Ethernet Dual Interface](apps\wifi_eth_dual_interface\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+
+<br />
+<br />
 
 ## WINC
 

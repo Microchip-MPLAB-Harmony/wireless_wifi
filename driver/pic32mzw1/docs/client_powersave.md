@@ -40,19 +40,19 @@ In case of WDRV_PIC32MZW_POWERSAVE_PIC_ASYNC_MODE(only mode supported),
 |-------------------------|--------------------------------------------------------------|
 |```handle```		|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |```pPowerSaveCfg ```	|	Pointer to power save configuration.|
-
+|
 
 
 
 #### Returns:
 
-###### WDRV_PIC32MZW_STATUS_OK			- The request has been accepted.
-###### WDRV_PIC32MZW_STATUS_NOT_OPEN		- The driver instance is not open.
-###### WDRV_PIC32MZW_STATUS_INVALID_ARG		- The parameters were incorrect.
-###### WDRV_PIC32MZW_STATUS_REQUEST_ERROR	- The request to the PIC32MZW was rejected.
-######    WDRV_PIC32MZW_STATUS_OK              - The request has been accepted.
-######    WDRV_PIC32MZW_STATUS_NOT_OPEN        - The driver instance is not open.
-######    WDRV_PIC32MZW_STATUS_INVALID_ARG     - The parameters were incorrect.
-######    WDRV_PIC32MZW_STATUS_REQUEST_ERROR   - The request to the PIC32MZW was rejected.
-######    WDRV_PIC32MZW_STATUS_NOT_CONNECTED	 - Not currently connected to an AP
-######	WDRV_PIC32MZW_STATUS_OPERATION_NOT_SUPPORTED -Request operation is not supported.
+###### WDRV_PIC32MZW_STATUS_OK			        - The request has been accepted.
+###### WDRV_PIC32MZW_STATUS_NOT_OPEN		        - The driver instance is not open.
+###### WDRV_PIC32MZW_STATUS_INVALID_ARG		        - The parameters were incorrect.
+###### WDRV_PIC32MZW_STATUS_REQUEST_ERROR	        - The request to the PIC32MZW was rejected.
+###### WDRV_PIC32MZW_STATUS_OK                          - The request has been accepted.
+###### WDRV_PIC32MZW_STATUS_NOT_OPEN                    - The driver instance is not open.
+###### WDRV_PIC32MZW_STATUS_INVALID_ARG                 - The parameters were incorrect.
+###### WDRV_PIC32MZW_STATUS_REQUEST_ERROR               - The request to the PIC32MZW was rejected.
+###### WDRV_PIC32MZW_STATUS_NOT_CONNECTED	        - Not currently connected to an AP
+###### WDRV_PIC32MZW_STATUS_OPERATION_NOT_SUPPORTED     - Request operation is not supported.

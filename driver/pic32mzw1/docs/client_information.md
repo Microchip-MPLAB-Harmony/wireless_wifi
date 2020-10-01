@@ -18,23 +18,25 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_InfoDeviceMACAddressGet
 (
 	DRV_HANDLE handle, uint8_t *const pMACAddress
 )
-
 ```
 
 #### Description:
 
 Retrieves the current working MAC address.
+
 #### Preconditions:
 
 ```WDRV_PIC32MZW_Initialize``` must have been called.
+
 ```WDRV_PIC32MZW_Open``` must have been called to obtain a valid handle.
 
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 |```handle```		|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |```pMACAddress```	|	Pointer to buffer (of at least 6 bytes in length) to receive the MAC address.|
+|
 
 #### Returns:
 
@@ -58,14 +60,16 @@ Retrieves the current operating channel.
 #### Preconditions:
 
 ```WDRV_PIC32MZW_Initialize``` must have been called.
+
 ```WDRV_PIC32MZW_Open``` must have been called to obtain a valid handle.
 
 #### Parameters:
 
 |	Parameter			 | 						Description								|
--------------------------|--------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | ```handle```		| Client handle obtained by a call to WDRV_PIC32MZW_Open.	|
 | ```pOpChan```	| Pointer to variable to receive the operating channel. |
+|
 
 #### Returns:
 

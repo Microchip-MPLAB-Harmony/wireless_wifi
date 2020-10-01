@@ -65,6 +65,7 @@ A scan is requested on the specified channels. An optional callback can be provi
 #### Preconditions:
 
 ```WDRV_PIC32MZW_Initialize``` must have been called.
+
 ```WDRV_PIC32MZW_Open``` must have been called to obtain a valid handle.
 
 #### Parameters:
@@ -75,6 +76,7 @@ A scan is requested on the specified channels. An optional callback can be provi
 |channel |	Channel to scan, can be WDRV_PIC32MZW_ALL_CHANNELS in which case all enabled channels are scanned.|
 |active |	Use active vs passive scanning.|
 |pfNotifyCallback |	Callback to receive notification of first BSS found. A pointer to a function of the following prototype: ```bool func (DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, WDRV_PIC32MZW_BSS_INFO *pBssInfo )``` |
+|
 
 #### Returns:
 
@@ -105,7 +107,9 @@ The information structure of the next BSS is requested from the PIC32MZW1.
 #### Preconditions:
 
 ```WDRV_PIC32MZW_Initialize``` must have been called.
+
 ```WDRV_PIC32MZW_Open``` must have been called to obtain a valid handle.
+
 ```WDRV_PIC32MZW_BSSFindFirst``` must have been called.
 
 #### Parameters:
@@ -114,6 +118,7 @@ The information structure of the next BSS is requested from the PIC32MZW1.
 -------------------------|--------------------------------------------------------------|
 |Handle		|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |pfNotifyCallback |	Callback to receive notification of first BSS found. A pointer to a function of the following prototype: ```bool func (DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, WDRV_PIC32MZW_BSS_INFO *pBssInfo )``` |
+|
 
 #### Returns:
 
@@ -139,7 +144,9 @@ The information structure of the first BSS is requested from the PIC32MZW1.
 
 #### Preconditions:
 ``` WDRV_PIC32MZW_Initialize```  must have been called.
+
 ``` WDRV_PIC32MZW_Open```  must have been called to obtain a valid handle.
+
 ``` WDRV_PIC32MZW_BSSFindFirst```  must have been called.
 
 #### Parameters:
@@ -148,6 +155,7 @@ The information structure of the first BSS is requested from the PIC32MZW1.
 -------------------------|--------------------------------------------------------------|
 |``` handle``` 		|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |``` pfNotifyCallback```  |	Callback to receive notification of first BSS found. A pointer to a function of the following prototype: ```bool func (DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, WDRV_PIC32MZW_BSS_INFO *pBssInfo )``` |
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK			- The request was accepted.
@@ -172,7 +180,9 @@ After each call to either WDRV_PIC32MZW_BSSFindFirst or WDRV_PIC32MZW_BSSFindNex
 
 #### Preconditions:
 ``` WDRV_PIC32MZW_Initialize```  must have been called.
+
 ``` WDRV_PIC32MZW_Open```  must have been called to obtain a valid handle.
+
 ``` WDRV_PIC32MZW_BSSFindFirst```  must have been called.
 
 #### Parameters:
@@ -181,6 +191,7 @@ After each call to either WDRV_PIC32MZW_BSSFindFirst or WDRV_PIC32MZW_BSSFindNex
 -------------------------|--------------------------------------------------------------|
 |``` handle``` 	|Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |``` pBSSInfo``` |	Pointer to structure to populate with the current BSS information. |
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK		- The request was accepted.
@@ -207,6 +218,7 @@ This function set various parameters to control the scan behavior.
 
 #### Preconditions:
 ``` WDRV_PIC32MZW_Initialize```  must have been called.
+
 ``` WDRV_PIC32MZW_Open```  must have been called to obtain a valid handle.
 
 #### Parameters:
@@ -216,6 +228,7 @@ This function set various parameters to control the scan behavior.
 |``` handle``` 	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |``` activeScanTime``` 	|	Time spent on each active channel probing for BSS's.|
 |``` passiveListenTime``` 	|	Time spent on each passive channel listening for beacons.|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK		- The request was accepted.
@@ -241,6 +254,7 @@ To comply with regulatory domains certain channels must not be scanned. This fun
 
 #### Preconditions:
 ``` WDRV_PIC32MZW_Initialize```  must have been called.
+
 ``` WDRV_PIC32MZW_Open```  must have been called to obtain a valid handle.
 
 #### Parameters:
@@ -249,6 +263,7 @@ To comply with regulatory domains certain channels must not be scanned. This fun
 -------------------------|--------------------------------------------------------------|
 |```handle```	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |```channelMask24```	|	A 2.4GHz channel mask detailing all the enabled channels.|
+|
 
 #### Returns:
 ###### WDRV_PIC32MZW_STATUS_OK		- The request was accepted.
@@ -260,14 +275,18 @@ To comply with regulatory domains certain channels must not be scanned. This fun
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-```uint8_t WDRV_PIC32MZW_BSSFindGetNumBSSResults(DRV_HANDLE handle)```
+```
+uint8_t WDRV_PIC32MZW_BSSFindGetNumBSSResults(DRV_HANDLE handle)
+```
 
 #### Description:
 Returns the number of BSS scan results found.
 
 #### Preconditions:
 ```WDRV_PIC32MZW_Initialize``` must have been called.
+
 ```WDRV_PIC32MZW_Open``` must have been called to obtain a valid handle.
+
 ```WDRV_PIC32MZW_BSSFindFirst``` must have been called to start a scan.
 
 #### Parameters:
@@ -275,6 +294,7 @@ Returns the number of BSS scan results found.
 |	Parameter			 | 						Description								|
 -------------------------|--------------------------------------------------------------|
 |```handle```	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
+|
 
 #### Returns:
 Number of BSS scan results available. Zero indicates no results or an error occurred.
@@ -283,7 +303,9 @@ Number of BSS scan results available. Zero indicates no results or an error occu
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-```bool WDRV_PIC32MZW_BSSFindInProgress(DRV_HANDLE handle)```
+```
+bool WDRV_PIC32MZW_BSSFindInProgress(DRV_HANDLE handle)
+```
 
 #### Description:
 Returns a flag indicating if a BSS scan operation is currently running.
@@ -291,6 +313,7 @@ Returns a flag indicating if a BSS scan operation is currently running.
 #### Preconditions:
 
 ```WDRV_PIC32MZW_Initialize``` must have been called.
+
 ```WDRV_PIC32MZW_Open``` must have been called to obtain a valid handle.
 
 #### Parameters:
@@ -298,6 +321,7 @@ Returns a flag indicating if a BSS scan operation is currently running.
 |	Parameter			 | 						Description								|
 -------------------------|--------------------------------------------------------------|
 |```handle```	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
+|
 
 #### Returns:
 Flag indicating if a scan is in progress. If an error occurs the result is false.

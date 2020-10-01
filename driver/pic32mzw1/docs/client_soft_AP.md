@@ -31,6 +31,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
     const WDRV_PIC32MZW_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
 )
 ```
+
 #### Description:
 Using the defined BSS and authentication contexts this function creates and starts a Soft-AP instance.
 
@@ -49,6 +50,7 @@ Using the defined BSS and authentication contexts this function creates and star
 | ```pBSSCtx``` |	Pointer to BSS context. |
 | ```pAuthCtx``` | Pointer to authentication context. |
 | ```pfNotifyCallback``` | Pointer to function of the following prototype:  ```void func ( DRV_HANDLE handle, WDRV_PIC32MZW_ASSOC_HANDLE assocH, WDRV_PIC32MZW_CONN_STATE state )``` |
+|
 
 #### Returns:
 
@@ -60,7 +62,9 @@ Using the defined BSS and authentication contexts this function creates and star
 
 -------------------------------------------------------------------------------------------------------------
 
-```WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStop(DRV_HANDLE handle)```
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStop(DRV_HANDLE handle)
+```
 
 #### Description:
 
@@ -76,6 +80,7 @@ Stops an instance of Soft-AP.
 |	Parameter			 | 						Description								|
 -------------------------|--------------------------------------------------------------|
 |```handle```  |	Client handle obtained by a call to WDRV_PIC32MZW_Open. |
+|
 
 #### Returns:
 
