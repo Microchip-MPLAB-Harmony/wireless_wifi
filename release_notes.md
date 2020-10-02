@@ -13,7 +13,7 @@
 - PIC32MZW1: Basic 802.11 Powersave implementation.
 - PIC32MZW1: New memory manager for improved stability.
 - PIC32MZW1: OTA Support.
-- PIC32MZW1: Support added for wireless Services.
+- PIC32MZW1: Support added for Wireless Services.
 
 ### Bug fixes
 - WINC: Updated documentation for WINC driver and application examples.
@@ -28,7 +28,6 @@
 
 ### Known Issues
 - PIC32MZW1: WPA3 is not supported in non-RTOS mode.
-- PIC32MZW1: STA mode connection problems when multiple APs are present with the same SSID but different security settings.
 - PIC32MZW1: QoS Data unsupported in transmit path.
 
 - WINC MISRA warnings/false positives:
