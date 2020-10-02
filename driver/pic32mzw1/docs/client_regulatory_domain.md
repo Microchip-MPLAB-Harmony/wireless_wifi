@@ -8,7 +8,7 @@ nav_order: 2
 
 # Regulatory Domain Selection APIs
 
-![note](images/Regulatory_Note_DS.png)
+NOTE: There are restrictions on use of this API especially related to any exposure of this functionality to an end user. Please refer to the Radio Performance section of the Datasheet”
 
 <br />
 <br />
