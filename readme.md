@@ -93,7 +93,6 @@ The following applications are provided to demonstrate the typical or interestin
 | [Wi-Fi Provisioning via WPS](apps\wifi_provisioning_via_wps\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
 | [Wi-Fi TCP Server in Soft-AP](apps\wifi_tcp_server_in_softap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
 | [Wi-Fi WINC STA Bypass](apps\wifi_winc_sta_bypass\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Create a custom Bypass mode application with WINC & Harmony TCP/IP](apps\wifi_winc_sta_bypass\Create-your-first-winc-bypass-application.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
 
 ____
 
