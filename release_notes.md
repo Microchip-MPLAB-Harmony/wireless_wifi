@@ -3,6 +3,13 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless Release v3.3.1
+### Dot Release Updates for v3.3.1:
+- PIC32MZW1: Include Paho MQTT dependency. 
+- Documentation URL updates for application examples.
+
+**Release notes for v3.3.0 apply**
+
 ## Wireless Release v3.3.0
 ### New Features
 - WINC: Adds support for WINC3400 FW v1.3.1.
@@ -49,6 +56,14 @@ Symbol 'ARP_HASH_ENTRY' (line 93, file ../project/src/config/pic32mz_w1_curiosit
 
 3. driver/ethmac/src/dynamic/drv_ethmac.c(455) 	530 	9.1
 Symbol 'DRV_ETHMAC_OTP_REC' (line 98) not initialized [MISRA 2012 Rule 9.1, mandatory]
+
+- PIC32MZW1 System Service
+
+1. RSA 4k certificate verification is not working with MQTT/NET Service as the System goes ‘Out of Memory’.
+
+2. WPA3 feature in wireless system service is un-tested.
+
+3. User should increase the UART Tx ring buffer size if output console data size is more than 1K
 
 ### Development Tools
 - WINC: [MPLAB X v5.4 ](https://www.microchip.com/mplab/mplab-x-ide)

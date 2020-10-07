@@ -1,4 +1,4 @@
- RUN_MODE---
+---
 grand_parent: WLAN API Guide
 parent: PIC32MZW1 WLAN API Guide
 title: Wi-Fi Driver Data Types

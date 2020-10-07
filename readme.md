@@ -62,19 +62,19 @@ The following applications are provided to demonstrate the typical or interestin
 
 | Name | Status|
 |:---------|:-----------|
-| [Wi-Fi STA](apps\wifi_sta\readme_driver_usage.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Wi-Fi Soft-AP](apps\wifi_ap\readme_driver_usage.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Wi-Fi STA - Wi-Fi Service Variant](apps\wifi_sta\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Wi-Fi Soft-AP - Wi-Fi Service Variant](apps\wifi_ap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Paho MQTT Client](apps\paho_mqtt_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Paho MQTT TLS Client](apps\paho_mqtt_tls_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [TCP Client](apps\tcp_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [TCP Server](apps\tcp_server\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [UDP Client](apps\udp_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [UDP Server](apps\udp_server\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Weather Client](apps\weather_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Wi-Fi Easy Config](apps\wifi_easy_config\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [WiFi-Ethernet Dual Interface](apps\wifi_eth_dual_interface\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
+| [Wi-Fi STA](apps/wifi_sta/config_driver_readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi Soft-AP](apps/wifi_ap/config_driver_readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi STA - Wi-Fi Service Variant](apps/wifi_sta/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi Soft-AP - Wi-Fi Service Variant](apps/wifi_ap/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Paho MQTT Client](apps/paho_mqtt_client/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Paho MQTT TLS Client](apps/paho_mqtt_tls_client/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [TCP Client](apps/tcp_client/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [TCP Server](apps/tcp_server/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [UDP Client](apps/udp_client/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [UDP Server](apps/udp_server/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Weather Client](apps/weather_client/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi Easy Config](apps/wifi_easy_config/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [WiFi-Ethernet Dual Interface](apps/wifi_eth_dual_interface/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
 
 <br />
 <br />
@@ -83,16 +83,15 @@ The following applications are provided to demonstrate the typical or interestin
 
 | Name | Status|
 |:---------|:-----------|
-| [AP Scan](apps\ap_scan\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Power Save Mode](apps/power_save_mode_example/readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Serial Bridge](apps\wifi_winc_sta_bypass\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [TCP Client](apps\tcp_client\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [TCP Server](apps\tcp_server\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic) |
-| [Wi-Fi Provisioning via BLE](apps\wifi_provision_via_ble\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Wi-Fi Provisioning via Soft-AP](apps\wifi_provisioning_via_softap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Wi-Fi Provisioning via WPS](apps\wifi_provisioning_via_wps\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Wi-Fi TCP Server in Soft-AP](apps\wifi_tcp_server_in_softap\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
-| [Wi-Fi WINC STA Bypass](apps\wifi_winc_sta_bypass\readme.md) | ![app-beta](https://img.shields.io/badge/application-beta-orange?style=plastic)|
+| [AP Scan](apps/ap_scan/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [Power Save Mode](apps/power_save_mode_example/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [Serial Bridge](apps/serial_bridge/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [TCP Client](apps/tcp_client/winc_readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi Provisioning via BLE](apps/wifi_provision_via_ble/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [Wi-Fi Provisioning via Soft-AP](apps/wifi_provisioning_via_softap/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [Wi-Fi Provisioning via WPS](apps/wifi_provisioning_via_wps/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [Wi-Fi TCP Server in Soft-AP](apps/wifi_tcp_server_in_softap/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
+| [Wi-Fi WINC STA Bypass](apps/wifi_winc_sta_bypass/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic)|
 
 ____
 

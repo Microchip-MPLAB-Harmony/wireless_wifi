@@ -76,6 +76,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetOpen
 The type and state information are configured appropriately for Open authentication.
 
 #### Parameters:
+
 |	Parameter			 | 						Description								|
 |-------------------------|--------------------------------------------------------------|
 | ```pAuthCtx``` |	Pointer to an authentication context. |
