@@ -23,7 +23,7 @@
 *******************************************************************************/
 -->
 <#if HarmonyCore.SELECT_RTOS == "BareMetal">
-    <#lt>WDRV_WINC_Tasks(sysObj.drvWifiWinc); 
+    <#lt>WDRV_WINC_Tasks(sysObj.drvWifiWinc);
 <#elseif HarmonyCore.SELECT_RTOS == "FreeRTOS">
     <#lt>    xTaskCreate( _WDRV_WINC_Tasks,
     <#lt>        "WDRV_WINC_Tasks",

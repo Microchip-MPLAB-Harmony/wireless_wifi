@@ -516,7 +516,7 @@ int8_t hif_send(uint8_t u8Gid, uint8_t u8Opcode, uint8_t *pu8CtrlBuf, uint16_t u
                 volatile uint32_t u32CurrAddr;
                 u32CurrAddr = dma_addr;
                 strHif.u16Length=NM_BSP_B_L_16(strHif.u16Length);
-                M2M_DBG("Writing into %lx %ld\r\n", dma_addr, strHif.u16Length);
+                M2M_DBG("Writing into %" PRIx32 " %d\r\n", dma_addr, strHif.u16Length);
                 ret = nm_write_block(u32CurrAddr, (uint8_t*)&strHif, M2M_HIF_HDR_OFFSET);
                 if(M2M_SUCCESS != ret) goto ERR1;
                 u32CurrAddr += M2M_HIF_HDR_OFFSET;
@@ -773,7 +773,7 @@ int8_t hif_receive(uint32_t u32Addr, uint8_t *pu8Buf, uint16_t u16Sz, uint8_t is
     if(u16Sz > gstrHifCxt.u32RxSize)
     {
         ret = M2M_ERR_FAIL;
-        M2M_ERR("APP Requested Size is larger than the received buffer size <%d><%d>\r\n", u16Sz, gstrHifCxt.u32RxSize);
+        M2M_ERR("APP Requested Size is larger than the received buffer size <%d><%" PRId32 ">\r\n", u16Sz, gstrHifCxt.u32RxSize);
         goto ERR1;
     }
     if((u32Addr < gstrHifCxt.u32RxAddr)||((u32Addr + u16Sz)>(gstrHifCxt.u32RxAddr+gstrHifCxt.u32RxSize)))

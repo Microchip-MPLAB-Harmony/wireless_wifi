@@ -461,8 +461,7 @@ void gapm_connection_cfm_handler ( uint8_t *pu8PeerBdAddr, uint8_t u8PeerAddrTyp
 
 uint8_t  gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* address);
 
-void gapm_adv_report_evt_handler(uint8_t* data,
-    at_ble_scan_info_t* param);
+void gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param);
 
 void gapm_dev_bdaddr_ind_handler(uint8_t* data,at_ble_rand_addr_changed_t* param);
 

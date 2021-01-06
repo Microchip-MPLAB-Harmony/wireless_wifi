@@ -116,14 +116,14 @@ int8_t m2m_ota_init(tpfOtaUpdateCb pfOtaUpdateCb)
                 The download firmware URL, you get it from device info.
 @return     The function returns @ref M2M_SUCCESS for success and a negative value otherwise.
 */
-int8_t m2m_ota_start_update(uint8_t * u8DownloadUrl)
+int8_t m2m_ota_start_update(unsigned char * pcDownloadUrl)
 {
     int8_t ret = M2M_SUCCESS;
-    uint16_t u16DurlSize = strlen((const char*)u8DownloadUrl) + 1;
+    uint16_t u16DurlSize = strlen((const char*)pcDownloadUrl) + 1;
     /*Todo: we may change it to data pkt but we need to give it higher priority
             but the priority is not implemented yet in data pkt
     */
-    ret = hif_send(M2M_REQ_GROUP_OTA,M2M_OTA_REQ_START_UPDATE,u8DownloadUrl,u16DurlSize,NULL,0,0);
+    ret = hif_send(M2M_REQ_GROUP_OTA,M2M_OTA_REQ_START_UPDATE,pcDownloadUrl,u16DurlSize,NULL,0,0);
     return ret;
 }
 

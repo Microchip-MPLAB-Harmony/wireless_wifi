@@ -314,8 +314,7 @@ uint8_t gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* a
     return u8Status;
 }
 
-void gapm_adv_report_evt_handler(uint8_t* data,
-    at_ble_scan_info_t* param)
+void gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param)
 {
     uint8_t evt_type;
     INTERFACE_UNPACK_INIT(data);
@@ -324,6 +323,10 @@ void gapm_adv_report_evt_handler(uint8_t* data,
     INTERFACE_UNPACK_BLOCK(param->dev_addr.addr, AT_BLE_ADDR_LEN);
     INTERFACE_UNPACK_UINT8(&(param->adv_data_len));
     INTERFACE_UNPACK_BLOCK(param->adv_data ,param->adv_data_len);
+#ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
+    INTERFACE_UNPACK_SKIP((AT_BLE_ADV_MAX_SIZE-param->adv_data_len));
+    INTERFACE_UNPACK_UINT8(&(param->rssi));
+#endif
     INTERFACE_UNPACK_DONE();
 
     param->dev_addr.type = gapm_get_address_type((uint8_t *)(&(param->dev_addr.addr)), param->dev_addr.type);

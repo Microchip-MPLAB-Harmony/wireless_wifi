@@ -94,16 +94,6 @@ void platform_cmd_cmpl_signal()
 
 bool platform_cmd_cmpl_wait(void)
 {
-#if (OSAL_USE_RTOS == 1 || OSAL_USE_RTOS == 9)
-    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, TIMEOUT_VALUE))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-#else
     SYS_TIME_HANDLE timer = SYS_TIME_HANDLE_INVALID;
 
     if (SYS_TIME_DelayMS(TIMEOUT_VALUE, &timer) != SYS_TIME_SUCCESS)
@@ -124,7 +114,6 @@ bool platform_cmd_cmpl_wait(void)
         }
     }
     return true;
-#endif
 }
 
 void platform_event_signal()
@@ -134,17 +123,6 @@ void platform_event_signal()
 
 uint8_t platform_event_wait(uint32_t timeout)
 {
-#if (OSAL_USE_RTOS == 1 || OSAL_USE_RTOS == 9)
-    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&eventSemaphore, timeout))
-    {
-    }
-    else
-    {
-        return AT_BLE_TIMEOUT;
-    }
-
-    return AT_BLE_SUCCESS;
-#else
     if (0 != timeout)
     {
         SYS_TIME_HANDLE timer = SYS_TIME_HANDLE_INVALID;
@@ -174,7 +152,7 @@ uint8_t platform_event_wait(uint32_t timeout)
             return AT_BLE_SUCCESS;
         }
     }
-#endif
+
     return AT_BLE_TIMEOUT;
 }
 

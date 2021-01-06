@@ -37,7 +37,11 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *
  *
  */
+#ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
+at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname, at_ble_auth_t lauthtype)
+#else
 at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
+#endif
 {
     //TODO: check on platform error
     uint8_t lname_len = 0;
@@ -50,6 +54,9 @@ at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
 
     at_ble_status_t status;
     INTERFACE_MSG_INIT(WIFIPROV_CONFIGURE_REQ, TASK_WIFIPROV);
+#ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
+    INTERFACE_PACK_ARG_UINT8(lauthtype);
+#endif    
     INTERFACE_PACK_ARG_UINT8(lname_len);
     INTERFACE_PACK_ARG_BLOCK(lname,lname_len);
     INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV);

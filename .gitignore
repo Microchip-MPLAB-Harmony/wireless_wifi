@@ -9,8 +9,11 @@
 **/*.X/debug
 **/*.X/dist
 **/*.X/build
+**/*.X/.generated_files
 **/*.IAR/Debug
 **/*.IAR/settings
 **/*.IAR/*.dep
 **/*.IAR/*.custom_argvars
-**/*.X/.generated_files
+**/firmware/src/config/*
+**/firmware/src/packs/*
+**/firmware/src/third_party/*

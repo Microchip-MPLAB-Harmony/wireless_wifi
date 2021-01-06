@@ -15,6 +15,9 @@
 </#if>
 <#if DRV_WIFI_WINC_DRIVER_MODE == "Ethernet Mode">
     <#lt>#define WDRV_WINC_NETWORK_MODE_ETHERNET
+    <#if DRV_WIFI_WINC_USE_TCPIP_STACK>
+        <#lt>#define WDRV_WINC_NETWORK_USE_HARMONY_TCPIP
+    </#if>
 <#else>
     <#lt>#define WDRV_WINC_NETWORK_MODE_SOCKET
 </#if>
@@ -22,7 +25,8 @@
     <#lt>#define WDRV_WINC_DEVICE_WINC1500
     <#if DRV_WIFI_WINC1500_VERSION == "19.5.4">
         <#lt>#define WDRV_WINC_DEVICE_DYNAMIC_BYPASS_MODE
-    <#elseif DRV_WIFI_WINC1500_VERSION == "19.6.1">
+        <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           uint8_t
+    <#else>
         <#lt>#define WDRV_WINC_DEVICE_SPLIT_INIT
         <#lt>#define WDRV_WINC_DEVICE_ENTERPRISE_CONNECT
         <#lt>#define WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
@@ -36,14 +40,23 @@
             <#lt>#define WDRV_WINC_DEVICE_SOFT_AP_EXT
         </#if>
         <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
+        <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
+        <#if DRV_WIFI_WINC1500_VERSION == "19.7.3">
+            <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
+        </#if>
     </#if>
+    <#if DRV_WIFI_WINC_DRIVER_MODE == "Socket Mode">
+        <#lt>#define WDRV_WINC_DEVICE_OTA_STATUS_EXTENDED
+    </#if>
+    <#lt>#define WDRV_WINC_DEVICE_SCAN_SSID_LIST
 <#elseif DRV_WIFI_WINC_DEVICE == "WINC3400">
     <#lt>#define WDRV_WINC_DEVICE_WINC3400
     <#lt>#define WDRV_WINC_DEVICE_SPLIT_INIT
     <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
     <#if DRV_WIFI_WINC3400_VERSION == "1.2.2">
         <#lt>#define WDRV_WINC_DEVICE_USE_FLASH_INIT
-    <#elseif DRV_WIFI_WINC3400_VERSION == "1.3.1">
+        <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           uint8_t
+    <#else>
         <#lt>#define WDRV_WINC_DEVICE_ENTERPRISE_CONNECT
         <#lt>#define WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
         <#lt>#define WDRV_WINC_DEVICE_BSS_ROAMING
@@ -51,13 +64,24 @@
         <#if DRV_WIFI_WINC_DRIVER_MODE == "Socket Mode">
             <#lt>#define WDRV_WINC_DEVICE_CONF_NTP_SERVER
             <#lt>#define WDRV_WINC_DEVICE_SOFT_AP_EXT
+            <#lt>#define WDRV_WINC_DEVICE_OTA_STATUS_EXTENDED
+        </#if>
+        <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
+        <#if DRV_WIFI_WINC3400_VERSION == "1.4.2">
+            <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
+            <#lt>#define WDRV_WINC_DEVICE_SCAN_SSID_LIST
+            <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>
+                <#lt>#define WDRV_WINC_DEVICE_BLE_API_REV_2
+            </#if>
         </#if>
     </#if>
     <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>
         <#lt>#define WDRV_WINC_ENABLE_BLE
     </#if>
 </#if>
-<#if DRV_WIFI_WINC_LOG_LEVEL == "None">
+<#if sys_debug?? && sys_debug.SYS_DEBUG_USE_CONSOLE?? && DRV_WIFI_WINC_USE_SYS_DEBUG && sys_debug.SYS_DEBUG_USE_CONSOLE>
+    <#lt>#define WDRV_WINC_DEVICE_USE_SYS_DEBUG
+<#elseif DRV_WIFI_WINC_LOG_LEVEL == "None">
     <#lt>#define WDRV_WINC_DEBUG_LEVEL               WDRV_WINC_DEBUG_TYPE_NONE
 <#elseif DRV_WIFI_WINC_LOG_LEVEL == "Error">
     <#lt>#define WDRV_WINC_DEBUG_LEVEL               WDRV_WINC_DEBUG_TYPE_ERROR
@@ -70,10 +94,13 @@
 </#if>
 <#if (HarmonyCore.SELECT_RTOS)?? && HarmonyCore.SELECT_RTOS != "BareMetal">
     <#lt>/*** WiFi WINC Driver RTOS Configuration ***/
-	<#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
+    <#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
         <#lt>#define DRV_WIFI_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE / 4}
     <#else>
         <#lt>#define DRV_WIFI_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
     </#if>
     <#lt>#define DRV_WIFI_WINC_RTOS_TASK_PRIORITY        ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY}
+</#if>
+<#if DRV_WIFI_WINC_LITE_DRIVER??>
+    <#lt>#define WDRV_WINC_DEVICE_LITE_DRIVER
 </#if>

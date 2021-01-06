@@ -46,8 +46,13 @@
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_ble.h"
 
+#ifdef WDRV_WINC_DEVICE_LITE_DRIVER
+#include "winc_ble_api.h"
+#include "winc_ble_platform.h"
+#else
 #include "at_ble_api.h"
 #include "platform.h"
+#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -64,6 +69,7 @@ static bool bleInitialized = false;
 // *****************************************************************************
 // *****************************************************************************
 
+#ifndef WDRV_WINC_DEVICE_LITE_DRIVER
 //*******************************************************************************
 /*
   Function:
@@ -95,18 +101,18 @@ static void _WDRV_WINC_BLEWaitCallback(DRV_HANDLE handle)
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
-    if (NULL == pDcpt)
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return;
     }
 
     /* Check M2M HIF semaphore and process any events. */
-    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->isrSemaphore, OSAL_WAIT_FOREVER))
+    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
     {
         m2m_wifi_handle_events();
     }
 }
-
+#endif
 // *****************************************************************************
 // *****************************************************************************
 // Section: WINC Driver BLE Implementation
@@ -134,7 +140,7 @@ bool WDRV_WINC_BLEIsStarted(DRV_HANDLE handle)
     const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
-    if (NULL == pDcpt)
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return false;
     }
@@ -145,7 +151,7 @@ bool WDRV_WINC_BLEIsStarted(DRV_HANDLE handle)
         return false;
     }
 
-    return pDcpt->bleActive;
+    return pDcpt->pCtrl->bleActive;
 }
 
 //*******************************************************************************
@@ -167,11 +173,9 @@ bool WDRV_WINC_BLEIsStarted(DRV_HANDLE handle)
 WDRV_WINC_STATUS WDRV_WINC_BLEStart(DRV_HANDLE handle)
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
-    plf_params_t plf_params;
-    tstrM2mRev info;
 
     /* Ensure the driver handle is valid. */
-    if (NULL == pDcpt)
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -183,35 +187,44 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStart(DRV_HANDLE handle)
     }
 
     /* Ensure the BLE is not currently active. */
-    if (true == pDcpt->bleActive)
+    if (true == pDcpt->pCtrl->bleActive)
     {
         return WDRV_WINC_STATUS_OK;
-    }
-
-    if (M2M_SUCCESS != m2m_wifi_get_firmware_version(&info))
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     /* Remove restriction on BLE use. */
     m2m_wifi_req_unrestrict_ble();
 
-    pDcpt->bleActive = true;
+    pDcpt->pCtrl->bleActive = true;
 
     if (false == bleInitialized)
     {
+#ifndef WDRV_WINC_DEVICE_LITE_DRIVER
+        plf_params_t plf_params;
+        tstrM2mRev info;
+
         /* If BLE has never been initialised, set up initialise it. */
         plf_params.drvHandle    = handle;
         plf_params.ble_write_cb = m2m_wifi_ble_api_send;
         plf_params.plf_wait_cb  = _WDRV_WINC_BLEWaitCallback;
 
+        if (M2M_SUCCESS != m2m_wifi_get_firmware_version(&info))
+        {
+            return WDRV_WINC_STATUS_REQUEST_ERROR;
+        }
+
         plf_params.fw_ver.major = info.u8FirmwareMajor;
         plf_params.fw_ver.minor = info.u8FirmwareMinor;
         plf_params.fw_ver.patch = info.u8FirmwarePatch;
+#endif
 
+#ifdef WDRV_WINC_DEVICE_LITE_DRIVER
+        if (AT_BLE_SUCCESS != at_ble_init(handle))
+#else
         if (AT_BLE_SUCCESS != at_ble_init(&plf_params))
+#endif
         {
-            pDcpt->bleActive = false;
+            pDcpt->pCtrl->bleActive = false;
 
             m2m_wifi_req_restrict_ble();
 
@@ -246,7 +259,7 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStop(DRV_HANDLE handle)
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
-    if (NULL == pDcpt)
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -258,12 +271,12 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStop(DRV_HANDLE handle)
     }
 
     /* Ensure the BLE is currently active. */
-    if (false == pDcpt->bleActive)
+    if (false == pDcpt->pCtrl->bleActive)
     {
         return WDRV_WINC_STATUS_OK;
     }
 
-    pDcpt->bleActive = false;
+    pDcpt->pCtrl->bleActive = false;
 
     /* Restrict BLE use. */
     m2m_wifi_req_restrict_ble();

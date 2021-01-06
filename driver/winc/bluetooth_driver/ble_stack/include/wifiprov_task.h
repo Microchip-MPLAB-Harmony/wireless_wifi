@@ -165,7 +165,11 @@ enum
  * @return @ref AT_BLE_FAILURE
  *
  */
+#ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
+at_ble_status_t wifiprov_configure_provisioning(uint8_t* localname, at_ble_auth_t lauthtype);
+#else
 at_ble_status_t wifiprov_configure_provisioning(uint8_t* localname);
+#endif
 
 /** @brief Create provisioning database.
  *
