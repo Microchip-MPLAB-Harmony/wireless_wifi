@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Package name="wireless">
     <Dependencies>
-        <Dependency name="csp" version="v3.8.0"/>
-        <Dependency name="core" version="v3.8.0"/>
-        <Dependency name="net" version="v3.6.2"/>
-        <Dependency name="bsp" version="v3.8.0"/>
+        <Dependency name="csp" version="v3.8.3"/>
+        <Dependency name="core" version="v3.8.1"/>
+        <Dependency name="net" version="v3.7.0"/>
+        <Dependency name="bsp" version="v3.8.2"/>
         <Dependency name="paho.mqtt.embedded-c" version="v1.2.1"/>
     </Dependencies>
 </Package>
