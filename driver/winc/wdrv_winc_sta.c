@@ -176,7 +176,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     /* Set the channel, translating the all channel identifier if needed. */
     channel = pBSSCtx->channel;
 
-    if (WDRV_WINC_ALL_CHANNELS == channel)
+    if ((WDRV_WINC_ALL_CHANNELS == channel) || (WDRV_WINC_CID_ANY == channel))
     {
         channel = M2M_WIFI_CH_ALL;
     }
@@ -200,7 +200,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
     networkID.pu8Ssid = (uint8_t*)pBSSCtx->ssid.name;
     networkID.u8SsidLen = pBSSCtx->ssid.length;
-    networkID.enuChannel = pBSSCtx->channel;
+    networkID.enuChannel = channel;
 #endif
 
     if ((NULL == pAuthCtx) || (WDRV_WINC_AUTH_TYPE_OPEN == pAuthCtx->authType))
