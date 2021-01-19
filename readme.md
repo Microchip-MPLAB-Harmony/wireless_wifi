@@ -1,4 +1,4 @@
-﻿---
+﻿ ---
 title: Harmony 3 Wireless Package
 nav_order: 1
 ---
@@ -75,6 +75,8 @@ The following applications are provided to demonstrate the typical or interestin
 | [Weather Client](apps/weather_client/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
 | [Wi-Fi Easy Config](apps/wifi_easy_config/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
 | [WiFi-Ethernet Dual Interface](apps/wifi_eth_dual_interface/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi Over The Air Upgrade](apps/wifi_ota_app_upgrade/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
+| [Wi-Fi Touch Demo](apps/wifi_touch_demo/readme.md) | ![app-production](https://img.shields.io/badge/application-production-brightgreen?style=plastic) |
 
 <br />
 <br />

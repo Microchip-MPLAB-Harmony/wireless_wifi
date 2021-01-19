@@ -925,20 +925,23 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 // *****************************************************************************
 /*
+    Summary:
+        WID for setting the scan region.
+    Description:
+        This wid is used for changing the bitmap of the 2.4GHz channels to be scanned,
+        when specifying all channels (255). Channel 1 corresponds to the right-most bit.
+        0 skip scanning on that channel
+        1 scan channel
+ */
+
+#define DRV_WIFI_WID_SCAN_CH_BITMAP_2GHZ                  0x208a
+
+// *****************************************************************************
+/*
                     String Type WIDs
 */
 // *****************************************************************************
 
-/*
-    Summary:
-        Wid for SSID.
-    Description:
-        DRV_WIFI_WID_SSID is valid in both AP/STA modes. This field contains the SSID of the network.
-        The maximum length of this field is 32 bytes.
-*/
-#define DRV_WIFI_WID_SSID                               0x3000
-
-// *****************************************************************************
 /*
     Summary:
         WID for operational rate set.
@@ -1004,15 +1007,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         The length of the field is 64 bytes. This WID is used to store the Pre-Shared key generated in STA (or AP) mode and restore the same key when the mode is switched to AP (or STA) mode.
 */
 #define DRV_WIFI_WID_11I_PSK_VALUE                          0x302a
-
-// *****************************************************************************
-/*
-    Summary:
-        WID for Scan ssid.
-    Description:
-        DRV_WIFI_WID_SCAN_SSID used for setting SCAN SSID.
-*/
-#define DRV_WIFI_WID_SCAN_SSID                              0x3032
 
 // *****************************************************************************
 /*
@@ -1108,6 +1102,25 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         The length of the field can vary from 0 to 63 bytes.
 */
 #define DRV_WIFI_WID_RSNA_PASSWORD                          0x4012
+       
+// *****************************************************************************
+/*
+    Summary:
+        Wid for SSID.
+    Description:
+        DRV_WIFI_WID_SSID is valid in both AP/STA modes. This field contains the SSID of the network.
+        The maximum length of this field is 32 bytes.
+*/
+#define DRV_WIFI_WID_SSID                                   0x4020
+        
+// *****************************************************************************
+/*
+    Summary:
+        WID for Scan ssid.
+    Description:
+        DRV_WIFI_WID_SCAN_SSID used for setting SCAN SSID.
+*/
+#define DRV_WIFI_WID_SCAN_SSID                              0x4021
 
 typedef enum
 {

@@ -130,6 +130,8 @@ void SYS_NET_ResetTimer(SYS_NET_Handle *hdl)
     hdl->timerInfo.startTime = 0;
 }
 
+#ifdef SYS_NET_CLICMD_ENABLED
+
 static void SysNet_Command_Process(int argc, char *argv[])
 {
     /* Check if Service is initialized  */
@@ -143,11 +145,13 @@ static void SysNet_Command_Process(int argc, char *argv[])
         if (((argv[2] == NULL)) || (!strcmp("?", argv[2])))
         {
             SYS_CONSOLE_PRINT("\n\rFollowing commands supported");
-            SYS_CONSOLE_PRINT("\n\r\t* sysnet open <mode> <ip_prot> <host_name> <port> <auto_reconnect> <tls_enable>");
+            SYS_CONSOLE_PRINT("\n\r\t* sysnet open <net_service_instance> <mode> <ip_prot> <host_name> <port> <intf> auto_reconnect <auto_reconnect> tls_enable <tls_enable>");
+            SYS_CONSOLE_PRINT("\n\r\t* net_service_instance\t- 0 or 1");
             SYS_CONSOLE_PRINT("\n\r\t* mode\t\t\t- 0 (client)/ 1(server)");
             SYS_CONSOLE_PRINT("\n\r\t* ip_prot\t\t- 0 (udp)/ 1(tcp)");
             SYS_CONSOLE_PRINT("\n\r\t* host_name\t\t- Host Name/ IP Address");
             SYS_CONSOLE_PRINT("\n\r\t* port\t\t\t- Server Port - 1:65535");
+            SYS_CONSOLE_PRINT("\n\r\t* intf\t\t- 0 (wifi)/1 (ethernet)");
             SYS_CONSOLE_PRINT("\n\r\t* auto_reconnect\t\t- 0/1 optional: Default 1");
             SYS_CONSOLE_PRINT("\n\r\t* tls_enable\t\t- 0/1 optional: Default 0");
             SYS_CONSOLE_PRINT("\n\r\t* Example: sysnet 0 1 google.com 443 tls_enable 1 auto_reconnect 1");
@@ -158,6 +162,20 @@ static void SysNet_Command_Process(int argc, char *argv[])
             SYS_NET_Config sCfg;
             SYS_NET_RESULT ret_val = SYS_NET_FAILURE;
             int i = 0;
+            uint8_t instance_id = 0;
+
+            if ((argc != 8) && (argc != 10) && (argc != 12))
+            {
+                SYS_CONSOLE_PRINT("\n\rInvalid number of arguments");
+                return;
+            }
+
+            instance_id = strtoul(argv[2], 0, 10);
+            if (instance_id > (SYS_NET_MAX_NUM_OF_SOCKETS - 1))
+            {
+                SYS_CONSOLE_PRINT("\n\rInvalid <net_service_instance");
+                return;
+            }
 
             memset(&sCfg, 0, sizeof (sCfg));
 
@@ -166,25 +184,27 @@ static void SysNet_Command_Process(int argc, char *argv[])
 
             sCfg.enable_reconnect = SYS_NET_DEFAULT_AUTO_RECONNECT;
 
-            sCfg.mode = strtoul(argv[2], 0, 10);
+            sCfg.mode = strtoul(argv[3], 0, 10);
             if (sCfg.mode > SYS_NET_MODE_SERVER)
             {
                 SYS_CONSOLE_PRINT("\n\rInvalid <mode>");
                 return;
             }
 
-            sCfg.ip_prot = strtoul(argv[3], 0, 10);
+            sCfg.ip_prot = strtoul(argv[4], 0, 10);
             if (sCfg.ip_prot > SYS_NET_IP_PROT_TCP)
             {
                 SYS_CONSOLE_PRINT("\n\rInvalid <ip_prot>");
                 return;
             }
 
-            strcpy(sCfg.host_name, argv[4]);
+            strcpy(sCfg.host_name, argv[5]);
 
-            sCfg.port = strtoul(argv[5], 0, 10);
+            sCfg.port = strtoul(argv[6], 0, 10);
 
-            for (i = 6; i < argc; i = i + 2)
+            sCfg.intf = strtoul(argv[7], 0, 10);
+
+            for (i = 8; i < argc; i = i + 2)
             {
                 if (argv[i] != NULL)
                 {
@@ -206,11 +226,16 @@ static void SysNet_Command_Process(int argc, char *argv[])
                             return;
                         }
                     }
+                    else
+                    {
+                        SYS_CONSOLE_PRINT("\n\rInvalid Argument");
+                        return;
+                    }
 
                 }
             }
 
-            ret_val = SYS_NET_CtrlMsg((SYS_MODULE_OBJ) (&g_asSysNetHandle[0]),
+            ret_val = SYS_NET_CtrlMsg((SYS_MODULE_OBJ) (&g_asSysNetHandle[instance_id]),
                                       SYS_NET_CTRL_MSG_RECONNECT,
                                       &sCfg,
                                       sizeof (sCfg));
@@ -242,7 +267,15 @@ static void SysNet_Command_Process(int argc, char *argv[])
         }
         else
         {
-            int temp = strtoul(argv[2], 0, 10);
+            int temp = 0;
+
+            if (argc != 4)
+            {
+                SYS_CONSOLE_PRINT("\n\rInvalid number of arguments");
+                return;
+            }
+
+            temp = strtoul(argv[2], 0, 10);
             if (temp >= SYS_NET_MAX_NUM_OF_SOCKETS)
             {
                 SYS_CONSOLE_PRINT("\n\rInvalid <net_service_instance>");
@@ -266,7 +299,15 @@ static void SysNet_Command_Process(int argc, char *argv[])
         }
         else
         {
-            int temp = strtoul(argv[2], 0, 10);
+            int temp = 0;
+
+            if (argc != 3)
+            {
+                SYS_CONSOLE_PRINT("\n\rInvalid number of arguments");
+                return;
+            }
+
+            temp = strtoul(argv[2], 0, 10);
             if (temp >= SYS_NET_MAX_NUM_OF_SOCKETS)
             {
                 SYS_CONSOLE_PRINT("\n\rInvalid <net_service_instance>");
@@ -300,6 +341,7 @@ static void SysNet_Command_Process(int argc, char *argv[])
                 SYS_CONSOLE_PRINT("\n\n\r*****************************************");
                 SYS_CONSOLE_PRINT("\n\rNET Service Instance: %d", i);
                 SYS_CONSOLE_PRINT("\n\rStatus: %s", SYS_NET_GET_STATUS_STR(g_asSysNetHandle[i].status));
+                SYS_CONSOLE_PRINT("\n\rIntf: %d", g_asSysNetHandle[i].cfg_info.intf);
                 SYS_CONSOLE_PRINT("\n\rMode: %s", SYS_NET_GET_MODE_STR(g_asSysNetHandle[i].cfg_info.mode));
                 SYS_CONSOLE_PRINT("\n\rSocket ID: %d", g_asSysNetHandle[i].socket);
                 SYS_CONSOLE_PRINT("\n\rHost: %s", g_asSysNetHandle[i].cfg_info.host_name);
@@ -434,6 +476,8 @@ static const SYS_CMD_DESCRIPTOR g_SysNetCmdTbl[] = {
     {"sysnethelp", (SYS_CMD_FNC) SysNetCMDHelp, ": SysNet commands help "},
 };
 
+#endif
+
 int32_t SYS_NET_Initialize()
 {
     memset(g_asSysNetHandle, 0, sizeof (g_asSysNetHandle));
@@ -445,12 +489,14 @@ int32_t SYS_NET_Initialize()
         return SYS_NET_FAILURE;
     }
 
+#ifdef SYS_NET_CLICMD_ENABLED	
     /* Add Sys NET Commands to System Command service */
     if (!SYS_CMD_ADDGRP(g_SysNetCmdTbl, sizeof (g_SysNetCmdTbl) / sizeof (*g_SysNetCmdTbl), "sysnet", ": Sys NET commands"))
     {
         SYS_CONSOLE_MESSAGE("NET_SRVC: Failed to Initialize Service as SysNet Commands NOT created\r\n");
         return SYS_NET_FAILURE;
     }
+#endif
 
     /* Set the initialization flag to 1  */
     g_u32SysNetInitDone = 1;
@@ -551,14 +597,14 @@ static void SYS_NET_SetSockType(SYS_NET_Handle *hdl)
 
 static bool SYS_NET_Ll_Status(SYS_NET_Handle *hdl)
 {
-    TCPIP_NET_HANDLE hNet = TCPIP_STACK_IndexToNet(SYS_NET_DEFAULT_NET_INTF);
+    TCPIP_NET_HANDLE hNet = TCPIP_STACK_IndexToNet(hdl->cfg_info.intf);
 
     /* Check if the Lower Interface is up or not */
     if (TCPIP_STACK_NetIsLinked(hNet) == false)
     {
         return false;
     }
-	
+
     /* Check if the IP Layer is Ready */
     if (TCPIP_STACK_NetIsReady(hNet) == false)
     {
@@ -570,7 +616,7 @@ static bool SYS_NET_Ll_Status(SYS_NET_Handle *hdl)
 
 static bool SYS_NET_Ll_Link_Status(SYS_NET_Handle *hdl)
 {
-    TCPIP_NET_HANDLE hNet = TCPIP_STACK_IndexToNet(SYS_NET_DEFAULT_NET_INTF);
+    TCPIP_NET_HANDLE hNet = TCPIP_STACK_IndexToNet(hdl->cfg_info.intf);
 
     /* We Do not Check Lower Layer Status in case of TCP 
             since KeepAlive takes care of it */
@@ -669,6 +715,40 @@ bool SYS_NET_Set_Sock_Option(SYS_NET_Handle *hdl)
     return ret;
 }
 
+bool SYS_NET_Socket_Bind_And_Connect(SYS_NET_Handle *hdl)
+{
+#ifdef SYS_NET_SUPP_INTF_WIFI_ETHERNET    
+    TCPIP_NET_HANDLE hNet = TCPIP_STACK_IndexToNet(hdl->cfg_info.intf);
+    IP_MULTI_ADDRESS localIp;
+
+    localIp.v4Add.Val = TCPIP_STACK_NetAddress(hNet);
+
+    if (hdl->cfg_info.mode == SYS_NET_MODE_CLIENT)
+    {
+        if (NET_PRES_SocketBind(hdl->socket, IP_ADDRESS_TYPE_IPV4,
+                                0, (NET_PRES_ADDRESS *) & localIp) == false)
+        {
+            SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Bind Failed\r\n");
+            return false;
+        }
+
+        return NET_PRES_SocketConnect(hdl->socket);
+    }
+    else
+    {
+        if (NET_PRES_SocketBind(hdl->socket, IP_ADDRESS_TYPE_IPV4,
+                                hdl->cfg_info.port, (NET_PRES_ADDRESS *) & localIp) == false)
+        {
+            SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Bind Failed\r\n");
+            return false;
+        }
+        return true;
+    }
+#else
+    return true;
+#endif //SYS_NET_SUPP_INTF_WIFI_ETHERNET
+}
+
 SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *cookie)
 {
     SYS_NET_Handle *hdl = NULL;
@@ -737,7 +817,13 @@ SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *
     /* Copy the config info and the fn ptr into the Handle */
     if (cfg == NULL)
     {
-        memcpy(&hdl->cfg_info, &g_sSysNetConfig, sizeof (SYS_NET_Config));
+#ifdef SYS_NET_VALID_INST1
+        SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SOCK_OPEN_FAILED);
+
+        return (SYS_MODULE_OBJ) hdl;
+#else
+        memcpy(&hdl->cfg_info, &g_sSysNetConfig0, sizeof (SYS_NET_Config));
+#endif
     }
     else
     {
@@ -747,6 +833,16 @@ SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *
     hdl->cookie = cookie;
 
     hdl->callback_fn = net_cb;
+
+#ifndef SYS_NET_SUPP_INTF_WIFI_ETHERNET
+    /* Validate for Interface */
+    if (hdl->cfg_info.intf != SYS_NET_INTF_WIFI)
+    {
+        SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Invalid Nw Interface: Initializing it to Wifi Interface\r\n");
+
+        hdl->cfg_info.intf = SYS_NET_INTF_WIFI;
+    }
+#endif
 
     /* Set Sock type based on Mode, IP Protocol, and TLS enabled or not */
     SYS_NET_SetSockType(hdl);
@@ -783,6 +879,11 @@ SYS_MODULE_OBJ SYS_NET_Open(SYS_NET_Config *cfg, SYS_NET_CALLBACK net_cb, void *
         SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SOCK_OPEN_FAILED);
 
         return (SYS_MODULE_OBJ) hdl;
+    }
+
+    if (SYS_NET_Socket_Bind_And_Connect(hdl) == false)
+    {
+        SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Net Intf Failed\r\n");
     }
 
     if (SYS_NET_Set_Sock_Option(hdl) == false)
@@ -903,6 +1004,12 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Could not create socket - aborting\r\n");
 
             return;
+        }
+
+        /* Bind the Socket to Network Interface */
+        if (SYS_NET_Socket_Bind_And_Connect(hdl) == false)
+        {
+            SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Net Intf Failed\r\n");
         }
 
         /* Set Socket option for KeepAlive Timer */
@@ -1067,7 +1174,7 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
             SYS_NET_TakeSemaphore(hdl);
 
             if (hdl->cfg_info.enable_reconnect)
-            {               
+            {
                 SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_LOWER_LAYER_DOWN);
             }
 
@@ -1192,6 +1299,12 @@ static void SYS_NET_Client_Task(SYS_NET_Handle *hdl)
                 SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Sock Option Failed\r\n");
             }
 
+            /* Bind the Socket to Network Interface */
+            if (SYS_NET_Socket_Bind_And_Connect(hdl) == false)
+            {
+                SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Net Intf Failed\r\n");
+            }
+
             /* Register the CB with NetPres */
             if (NET_PRES_SocketSignalHandlerRegister(hdl->socket, 0xffff, SYS_NET_NetPres_Signal, hdl) == NULL)
             {
@@ -1246,6 +1359,12 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             SYS_NET_GiveSemaphore(hdl);
 
             return;
+        }
+
+        /* Bind the Socket to Network Interface */
+        if (SYS_NET_Socket_Bind_And_Connect(hdl) == false)
+        {
+            SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Net Intf Failed\r\n");
         }
 
         if (SYS_NET_Set_Sock_Option(hdl) == false)
@@ -1418,6 +1537,12 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
                 else
                     SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SERVER_AWAITING_CONNECTION);
 
+                /* Bind the Socket to Network Interface */
+                if (SYS_NET_Socket_Bind_And_Connect(hdl) == false)
+                {
+                    SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Net Intf Failed\r\n");
+                }
+
                 if (SYS_NET_Set_Sock_Option(hdl) == false)
                 {
                     SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Sock Option Failed\r\n");
@@ -1496,6 +1621,12 @@ static void SYS_NET_Server_Task(SYS_NET_Handle *hdl)
             else
             {
                 SYS_NET_SetInstStatus(hdl, SYS_NET_STATUS_SERVER_AWAITING_CONNECTION);
+            }
+
+            /* Bind the Socket to Network Interface */
+            if (SYS_NET_Socket_Bind_And_Connect(hdl) == false)
+            {
+                SYS_NETDEBUG_INFO_PRINT(g_NetAppDbgHdl, NET_CFG, "Set Net Intf Failed\r\n");
             }
 
             if (SYS_NET_Set_Sock_Option(hdl) == false)
@@ -1613,6 +1744,20 @@ int32_t SYS_NET_CtrlMsg(SYS_MODULE_OBJ obj,
     {
     case SYS_NET_CTRL_MSG_RECONNECT:
     {
+        SYS_NET_Config *cfg = (SYS_NET_Config *) buffer;
+
+#ifndef SYS_NET_SUPP_INTF_WIFI_ETHERNET
+        if (buffer != NULL)
+        {
+            /* Validate for Interface */
+            if (cfg->intf != SYS_NET_INTF_WIFI)
+            {
+				SYS_NETDEBUG_ERR_PRINT(g_NetAppDbgHdl, NET_CFG, "Invalid Nw Interface: Initializing it to Wifi Interface\r\n");
+
+				cfg->intf = SYS_NET_INTF_WIFI;
+            }
+        }
+#endif
         if (hdl->status != SYS_NET_STATUS_DISCONNECTED)
         {
             /* Close socket */
@@ -1623,8 +1768,6 @@ int32_t SYS_NET_CtrlMsg(SYS_MODULE_OBJ obj,
 
         if (buffer != NULL)
         {
-            SYS_NET_Config *cfg = (SYS_NET_Config *) buffer;
-
             memcpy(&hdl->cfg_info, cfg, sizeof (SYS_NET_Config));
         }
 

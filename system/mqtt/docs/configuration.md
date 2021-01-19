@@ -27,7 +27,9 @@ The following figure shows the MHC configuration window for configuring the MQTT
 | Server Port |  | Port   number of the MQTT Broker at which the MQTT Client should connect |
 | Enable TLS | FALSE | If   TRUE, the MQTT connection should use TLS while connecting to the broker. If   FALSE, the MQTT connection should not use TLS.<br>Note: In case the TLS is enabled, the User needs to update the component 'Presentation Layer' with the CA Certificate format, location, name, and size. Other parameters can be updated as per the User's requirements. |
 | Client Id |  | MQTT   Client Id should be unique for the Broker. If left empty, the Id will be   generated randomly |
+| Network Interface |  | Network Interface - Wifi or Ethernet on which the MQTT Client should run. On choosing Ethernet, the MHC will add EthMAC, MIIM, and LAM8740 Components. The User needs to attach the EthMAC to the NetConfig (in System Component Window) via the MAC parameter in Instance 1 |
 
+![](./images/Net_service_netconfig.png)
 
 - Configure the various parameters of Presentation Layer if TLS enabled
 {:refdef: style="text-align: center;"}
@@ -57,6 +59,8 @@ The following figure shows the MHC configuration window for configuring the MQTT
 |-|-|-|
 | Subscription Topic | Disabled | Subscription configuration has 2 Parameters – <br>     1.	Topic and <br>     2.	Qos. (0 (Atmost Once), <br>                1 (Atleast Once),<br>                2 (Exactly Once))<br>     The User can configure these parameters to subscribe to a Topic to receive   messages. |
 | Publish to Topic | Disabled | Publishing a message to Topic has 3 Parameters –   <br>     1. Topic and <br>     2. Qos ( 0 (Atmost Once), 1 (Atleast Once), 2 (Exactly Once))<br>     3. Retain: If the Broker should retain the message<br>     The User can configure these parameters to and use them along with the   message to send it on a particular Topic. |
+| Enable CLI Commands | Enabled | Enabling this flag compiles in the CLI commands related to Mqtt Service. The user can use these CLI commands to connect/ disconnect, subscribe/ unsusbscribe, publish messages onto a topic.|
 | Enable Debug Logs | Disabled | Enabling this flag compiles in debug logs and user can enable them   at runtime. The user can use the following CLI commands to enable/ disable   levels and flows for the MQTT service:<br>     1.	sysmqtt debug level <value> <br>     2.	sysmqtt debug flow <value> <br>Note: In case the user enables debug logs, user needs to manually add the 'App Debug Service' component from Wireless-> System Service-> App Debug Service.|
+
 
 All of the required files are automatically added into the MPLAB X IDE project by the MHC when the MQTT Service is selected for use.

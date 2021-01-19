@@ -22,6 +22,8 @@ nav_order: 2
 
 | Name | Description |
 |-|-|
+| [SYS_NET_INTF_WIFI](#SYS_NET_INTF_WIFI) | Net Socket Intf - Wifi |
+| [SYS_NET_INTF_ETHERNET](#SYS_NET_INTF_ETHERNET) | Net Socket Intf - Ethernet |
 | [SYS_NET_MODE_CLIENT](#SYS_NET_MODE_CLIENT) | Net Socket Mode - Client |
 | [SYS_NET_MODE_SERVER](#SYS_NET_MODE_SERVER) | Net Socket Mode - Server |
 | [SYS_NET_MAX_HOSTNAME_LEN](#SYS_NET_MAX_HOSTNAME_LEN) | Max Host Name Length |
@@ -72,6 +74,35 @@ nav_order: 2
 
 ## Data Types and Constants
 
+
+### SYS_NET_INTF_WIFI
+
+**Summary**
+
+Net Socket Intf - Wifi  
+
+**Remarks**
+
+None. 
+
+```c
+#define SYS_NET_INTF_WIFI 0			// Wifi Intf Value
+```
+
+### SYS_NET_INTF_ETHERNET
+
+
+**Summary**
+
+Net Socket Intf - Ethernet  
+
+**Remarks**
+
+None. 
+
+```c
+#define SYS_NET_INTF_ETHERNET 1			// Ethernet Intf Value
+```
 
 ### SYS_NET_MODE_CLIENT
 

@@ -77,6 +77,9 @@ void SYS_MQTT_TcpClientCallback(uint32_t event, void *data, void* cookie)
         break;
 
     case SYS_NET_EVNT_DISCONNECTED:
+    case SYS_NET_EVNT_SOCK_OPEN_FAILED:
+    case SYS_NET_EVNT_SSL_FAILED:
+    case SYS_NET_EVNT_DNS_RESOLVE_FAILED:
     {
         /* TCP Socket got disconnected */
         SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_CFG, "Status DOWN\r\n");
@@ -254,6 +257,8 @@ void SYS_MQTT_Paho_Task(SYS_MODULE_OBJ obj)
         strcpy(sSysNetCfg.host_name, hdl->sCfgInfo.sBrokerConfig.brokerName);
 
         sSysNetCfg.port = hdl->sCfgInfo.sBrokerConfig.serverPort;
+
+        sSysNetCfg.intf = hdl->sCfgInfo.intf;
 
         SYS_MQTTDEBUG_DBG_PRINT(g_AppDebugHdl, MQTT_CFG, "Host Name = %s \r\n",
                                 hdl->sCfgInfo.sBrokerConfig.brokerName);
@@ -783,6 +788,8 @@ int32_t SYS_MQTT_Paho_CtrlMsg(SYS_MODULE_OBJ obj, SYS_MQTT_CtrlMsgType eCtrlMsgT
         strcpy(sSysNetCfg.host_name, hdl->sCfgInfo.sBrokerConfig.brokerName);
 
         sSysNetCfg.port = hdl->sCfgInfo.sBrokerConfig.serverPort;
+
+        sSysNetCfg.intf = hdl->sCfgInfo.intf;
 
         if ((rc = SYS_NET_CtrlMsg(hdl->netSrvcHdl,
                                   SYS_NET_CTRL_MSG_RECONNECT,

@@ -339,6 +339,9 @@ def instantiateComponent(syswifiComponent):
 
     #Set back active to root.
     Database.setActiveGroup(None)
+    if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_RESET") == False):
+        Database.clearSymbolValue("HarmonyCore", "ENABLE_SYS_RESET")
+        Database.setSymbolValue("HarmonyCore", "ENABLE_SYS_RESET", True)
 ############################################################################
 #### Dependency ####
 ############################################################################
@@ -382,6 +385,9 @@ def syswifishowRTOSMenu(symbol, event):
         #Database.setSymbolValue("core", "XC32_HEAP_SIZE", 160000)
         triggerDict = {}
         triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
+        if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_RESET") == False):
+            Database.clearSymbolValue("HarmonyCore", "ENABLE_SYS_RESET")
+            Database.setSymbolValue("HarmonyCore", "ENABLE_SYS_RESET", True)
 
         Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
     else:
@@ -403,6 +409,9 @@ def syswifishowRTOSMenu(symbol, event):
         triggerDict = {}
         triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
         Database.setSymbolValue("core", "WIFI_CLOCK_ENABLE", True)
+        if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_RESET") == False):
+            Database.clearSymbolValue("HarmonyCore", "ENABLE_SYS_RESET")
+            Database.setSymbolValue("HarmonyCore", "ENABLE_SYS_RESET", True)
 
 
 def syswifiRTOSStandaloneMenu(symbol, event):
@@ -602,11 +611,18 @@ def finalizeComponent(syswifiComponent):
         Database.setSymbolValue("core", "CRYPTO_CLOCK_ENABLE", True)
         Database.setSymbolValue("core", "RNG_CLOCK_ENABLE", True)
         Database.setSymbolValue("sys_console", "SYS_CONSOLE_PRINT_BUFFER_SIZE", 256)
+        if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_RESET") == False):
+            Database.clearSymbolValue("HarmonyCore", "ENABLE_SYS_RESET")
+            Database.setSymbolValue("HarmonyCore", "ENABLE_SYS_RESET", True)
     else:
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_MALLOC_FUNC", "malloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_FREE_FUNC", "free")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_CALLOC_FUNC", "calloc")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_DRAM_SIZE", 65000)
+        if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_RESET") == False):
+            Database.clearSymbolValue("HarmonyCore", "ENABLE_SYS_RESET")
+            Database.setSymbolValue("HarmonyCore", "ENABLE_SYS_RESET", True)
+
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_USER_NOTIFICATION", True)
         triggerDict = {}
         triggerDict = Database.sendMessage("core", "HEAP_SIZE", {"heap_size" : 160000})
@@ -623,6 +639,9 @@ def finalizeComponent(syswifiComponent):
         Database.setSymbolValue("sys_command", "SYS_COMMAND_RTOS_STACK_SIZE", 4096)
         Database.setSymbolValue("FreeRTOS", "FREERTOS_MEMORY_MANAGEMENT_CHOICE", "Heap_3")
         Database.setSymbolValue("tcpipStack", "TCPIP_STACK_USE_HEAP_CONFIG", "TCPIP_STACK_HEAP_TYPE_EXTERNAL_HEAP")
+        if (Database.getSymbolValue("HarmonyCore", "ENABLE_SYS_RESET") == False):
+            Database.clearSymbolValue("HarmonyCore", "ENABLE_SYS_RESET")
+            Database.setSymbolValue("HarmonyCore", "ENABLE_SYS_RESET", True)
 
     if(Database.getSymbolValue("sysWifiPic32mzw1", "SYS_WIFI_PROVISION_ENABLE") == True):
        res = Database.activateComponents(["sysWifiProvPic32mzw1"])

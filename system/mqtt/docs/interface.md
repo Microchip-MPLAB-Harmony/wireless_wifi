@@ -22,6 +22,8 @@ nav_order: 2
 
 | Name | Description |
 |-|-|
+| [SYS_MQTT_INTF_WIFI](#SYS_MQTT_INTF_WIFI) | Mqtt Socket Intf - Wifi |
+| [SYS_MQTT_INTF_ETHERNET](#SYS_MQTT_INTF_ETHERNET) | Mqtt Socket Intf - Ethernet |
 | [SYS_MQTT_STATUS](#SYS_MQTT_STATUS) | Identifies the current status of the Sys Mqtt Instance. |
 | [SYS_MQTT_RESULT](#SYS_MQTT_RESULT) | Identifies the return values for the Sys Mqtt APIs. |
 | [SYS_MQTT_BrokerConfig](#SYS_MQTT_BrokerConfig) | Used for passing on the configuration related to the MQTT Broker |
@@ -64,6 +66,35 @@ nav_order: 2
 ## Data Types and Constants
 
 
+### SYS_MQTT_INTF_WIFI
+
+**Summary**
+
+Mqtt Socket Intf - Wifi  
+
+**Remarks**
+
+None. 
+
+```c
+#define SYS_MQTT_INTF_WIFI SYS_NET_INTF_WIFI			// Wifi Intf Value
+```
+
+### SYS_MQTT_INTF_ETHERNET
+
+
+**Summary**
+
+Mqtt Socket Intf - Ethernet  
+
+**Remarks**
+
+None. 
+
+```c
+#define SYS_MQTT_INTF_ETHERNET SYS_NET_INTF_ETHERNET			// Ethernet Intf Value
+```
+
 ### SYS_MQTT_STATUS
 
 **Summary**
@@ -75,7 +106,8 @@ Identifies the current status of the Sys Mqtt Instance.
 None. 
 
 ```c
-typedef enum {
+typedef enum
+{
 // Idle
 SYS_MQTT_STATUS_IDLE = 0,
 
@@ -132,7 +164,8 @@ Identifies the return values for the Sys Mqtt APIs.
 None. 
 
 ```c
-typedef enum {
+typedef enum
+{
 // Success
 SYS_MQTT_SUCCESS = 0,
 
@@ -162,33 +195,34 @@ Used for passing on the configuration related to the MQTT Broker
 None. 
 
 ```c
-typedef struct {
+typedef struct
+{
 //to know which of the Configurations are valid
 SYS_MQTT_Vendor_Type eVendorType;
 
 // MQTT Broker/ Server Name
-char 		brokerName[SYS_MQTT_MAX_BROKER_NAME_LEN];
+char brokerName[SYS_MQTT_MAX_BROKER_NAME_LEN];
 
 // MQTT Server Port
-uint16_t	serverPort;
+uint16_t serverPort;
 
 // Keep Alive Interval for the Mqtt Session
 uint16_t keepAliveInterval;
 
 // MQTT Client ID
-char		clientId[SYS_MQTT_CLIENT_ID_MAX_LEN];
+char clientId[SYS_MQTT_CLIENT_ID_MAX_LEN];
 
 // MQTT Username
-char		username[SYS_MQTT_USER_NAME_MAX_LEN];
+char username[SYS_MQTT_USER_NAME_MAX_LEN];
 
 // MQTT password
-char		password[SYS_MQTT_PASSWORD_MAX_LEN];
+char password[SYS_MQTT_PASSWORD_MAX_LEN];
 
 // TLS is Enabled
-bool		tlsEnabled;
+bool tlsEnabled;
 
 // AutoConnect is Enabled
-bool		autoConnect;
+bool autoConnect;
 } SYS_MQTT_BrokerConfig;
 ```
 
@@ -204,14 +238,15 @@ Used for passing on the configuration related to the MQTT Subtopics the user wan
 This Configuration is passed via the SYS_MQTT_Connect() function or the SYS_MQTT_CtrlMsg() function 
 
 ```c
-typedef struct {
+typedef struct
+{
 uint8_t entryValid;
 
 //Qos (0/ 1/ 2)
-uint8_t	qos;
+uint8_t qos;
 
 //Name of the Topic Subscribing to
-char	topicName[SYS_MQTT_TOPIC_NAME_MAX_LEN];
+char topicName[SYS_MQTT_TOPIC_NAME_MAX_LEN];
 } SYS_MQTT_SubscribeConfig;
 ```
 
@@ -227,24 +262,25 @@ Used for Reading the message that has been received on a topic subscribed to. Th
 This Message is passed to the Application via the SYS_MQTT_CALLBACK() function 
 
 ```c
-typedef struct {
+typedef struct
+{
 //Qos (0/ 1/ 2)
-uint8_t	qos;
+uint8_t qos;
 
 //Retain (0/1) - Message needs to be retained by the Broker till every subscriber receives it
-uint8_t	retain;
+uint8_t retain;
 
 //Message to be Published
-uint8_t	message[SYS_MQTT_MSG_MAX_LEN];
+uint8_t message[SYS_MQTT_MSG_MAX_LEN];
 
 //Message Length
-uint16_t	messageLength;
+uint16_t messageLength;
 
 //Topic on which to Publish the message
-char	*topicName;
+char *topicName;
 
 //Topic Length
-uint16_t	topicLength;
+uint16_t topicLength;
 } SYS_MQTT_PublishConfig;
 ```
 
@@ -260,18 +296,19 @@ Used for publishing a message on a topic. It contains the config related to the 
 This Message is passed from the Application to the MQTT servuce via the SYS_MQTT_Publish() function 
 
 ```c
-typedef struct {
+typedef struct
+{
 //Qos (0/ 1/ 2)
-uint8_t	qos;
+uint8_t qos;
 
 //Retain (0/1) - Message needs to be retained by the Broker till every subscriber receives it
-uint8_t	retain;
+uint8_t retain;
 
 //Topic on which to Publish the message
-char	topicName[SYS_MQTT_TOPIC_NAME_MAX_LEN];
+char topicName[SYS_MQTT_TOPIC_NAME_MAX_LEN];
 
 //Topic Length
-uint16_t	topicLength;
+uint16_t topicLength;
 } SYS_MQTT_PublishTopicCfg;
 ```
 
@@ -287,7 +324,8 @@ Event Message Type which comes with the Callback SYS_MQTT_CALLBACK() informing t
 None. 
 
 ```c
-typedef enum {
+typedef enum
+{
 //Message received on a topic subscribed to
 SYS_MQTT_EVENT_MSG_RCVD = 0,
 
@@ -332,12 +370,13 @@ Used for passing on the configuration related to the either MQTT Broker, or the 
 None. 
 
 ```c
-typedef struct {
+typedef struct
+{
 //MQTT Broker Configuration
 SYS_MQTT_BrokerConfig sBrokerConfig;
 
 //Number of Topis Subscribed to (0-SYS_MQTT_MAX_TOPICS)
-uint8_t							subscribeCount;
+uint8_t subscribeCount;
 
 //Config for all the Topics Subscribed to
 SYS_MQTT_SubscribeConfig sSubscribeConfig[SYS_MQTT_SUB_MAX_TOPICS];
@@ -347,6 +386,9 @@ bool bLwtEnabled;
 
 // LWT Configuration
 SYS_MQTT_PublishConfig sLwtConfig;
+
+//Network Interface - Wifi or Ethernet
+uint8_t intf;
 } SYS_MQTT_Config;
 ```
 

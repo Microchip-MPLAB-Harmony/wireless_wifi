@@ -1,5 +1,7 @@
 /*** WiFi PIC32MZW1 Driver Configuration ***/
-<#if DRV_WIFI_PIC32MZW1_LOG_LEVEL == "None">
+<#if sys_debug?? && sys_debug.SYS_DEBUG_USE_CONSOLE?? && DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG && sys_debug.SYS_DEBUG_USE_CONSOLE>
+    <#lt>#define WDRV_PIC32MZW1_DEVICE_USE_SYS_DEBUG
+<#elseif DRV_WIFI_PIC32MZW1_LOG_LEVEL == "None">
     <#lt>#define WDRV_PIC32MZW_DEBUG_LEVEL               WDRV_PIC32MZW_DEBUG_TYPE_NONE
 <#elseif DRV_WIFI_PIC32MZW1_LOG_LEVEL == "Error">
     <#lt>#define WDRV_PIC32MZW_DEBUG_LEVEL               WDRV_PIC32MZW_DEBUG_TYPE_ERROR

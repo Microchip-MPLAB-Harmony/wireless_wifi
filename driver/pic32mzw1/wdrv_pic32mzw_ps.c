@@ -82,7 +82,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_PowerSaveModeSet
     OSAL_CRITSECT_DATA_TYPE critSect;
 
     /* Ensure the driver handle and powersave config pointer are valid. */
-    if ((NULL == pDcpt) || (NULL == pPowerSaveCfg))
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pPowerSaveCfg))
     {
         return WDRV_PIC32MZW_STATUS_INVALID_ARG;
     }

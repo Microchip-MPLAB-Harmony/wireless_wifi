@@ -6,6 +6,7 @@
 #define SYS_MQTT_INDEX0_RECONNECT        				${SYS_MQTT_RECONNECT?string('true', 'false')}
 #define SYS_MQTT_INDEX0_CLIENT_ID        				"${SYS_MQTT_CLIENT_ID}"
 #define SYS_MQTT_INDEX0_KEEPALIVE_INTERVAL 				${SYS_MQTT_KEEPALIVE_INTERVAL}
+#define SYS_MQTT_INDEX0_MQTT_INTF        				SYS_MQTT_INTF_${SYS_MQTT_SUPP_INTF}
 
 <#if SYS_MQTT_SUB_ENABLE == true>
 <#if SYS_MQTT_SUB_QOS == "At most once (0)">
@@ -23,6 +24,11 @@
 #define SYS_MQTT_INDEX0_TOPIC_NAME        				" "
 #define SYS_MQTT_INDEX0_SUB_QOS							0
 #define SYS_MQTT_INDEX0_ENTRY_VALID        				false
+</#if>
+
+<#if SYS_MQTT_ENABLE_DEBUG == true>
+<#if SYS_MQTT_ENABLE_CLICMD == true>
+#define SYS_MQTT_CLICMD_ENABLED
 </#if>
 
 <#if SYS_MQTT_APPDEBUG_ENABLE == true>
@@ -50,6 +56,7 @@
 </#if>
 <#if SYS_MQTT_APPDEBUG_PAHO_FLOW == true>
 #define SYS_MQTT_APPDEBUG_PAHO_FLOW_ENABLE						
+</#if>
 </#if>
 </#if>
 

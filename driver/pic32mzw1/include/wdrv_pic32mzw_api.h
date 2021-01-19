@@ -455,7 +455,6 @@ void WDRV_PIC32MZW_TasksRFTimer0ISR(void);
 
 void WDRV_PIC32MZW_TasksRFSMCISR(void);
 
-
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus
 }

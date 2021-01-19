@@ -13,8 +13,6 @@ function: MQTT System Service
 
 MQTT System Service Library provides an application programming interface (API) to manage MQTT functionalities. The MQTT System Service internally uses the third party Paho MQTT software for MQTT support.
 
-Note that currently MQTT System Service is supported with WiFi interface only.
-
 Key Features:
 - Supports MQTT Client 
 - Supports TLS for MQTT Connection

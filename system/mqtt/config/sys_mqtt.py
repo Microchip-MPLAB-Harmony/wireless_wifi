@@ -73,6 +73,12 @@ def instantiateComponent(mqttComponent):
     mqttClientId.setVisible(True)
     mqttClientId.setDescription("MQTT Client Id which should be unique for the MQTT Broker. If empty, the id will be randomly generated")
 
+    mqttSuppIntf = mqttComponent.createComboSymbol("SYS_MQTT_SUPP_INTF", sysMqttBasicMenu, ["WIFI", "ETHERNET"])
+    mqttSuppIntf.setLabel("Network Intferfaces")
+    mqttEnableTls.setDescription("For Setting the Network Interface")
+    mqttSuppIntf.setDefaultValue("WIFI")
+    mqttSuppIntf.setDependencies(mqttIntfAutoMenu, ["SYS_MQTT_SUPP_INTF"])
+	
     # Advanced Configuration
     sysMqttAdvMenu = mqttComponent.createMenuSymbol("SYS_MQTT_ADVANCED_CONFIG_MENU", None)
     sysMqttAdvMenu.setLabel("Advanced Configuration")
@@ -179,7 +185,16 @@ def instantiateComponent(mqttComponent):
     sysMqttPubRetain.setVisible(True)
     sysMqttPubRetain.setDefaultValue(False)
 	
-    sysMqttDebugLogEnable = mqttComponent.createBooleanSymbol("SYS_MQTT_APPDEBUG_ENABLE", None)
+    sysMqttDebugEnable = mqttComponent.createBooleanSymbol("SYS_MQTT_ENABLE_DEBUG", None)
+    sysMqttDebugEnable.setLabel("Debug")
+    sysMqttDebugEnable.setDescription("Debug - Logs and CLI commands")
+    sysMqttDebugEnable.setDefaultValue(True)
+	
+    sysMqttCliCmdEnable = mqttComponent.createBooleanSymbol("SYS_MQTT_ENABLE_CLICMD", sysMqttDebugEnable)
+    sysMqttCliCmdEnable.setLabel("Enable CLI Commands")
+    sysMqttCliCmdEnable.setDefaultValue(True)
+
+    sysMqttDebugLogEnable = mqttComponent.createBooleanSymbol("SYS_MQTT_APPDEBUG_ENABLE", sysMqttDebugEnable)
     sysMqttDebugLogEnable.setLabel("Enable Debug Logs")
     sysMqttDebugLogEnable.setDefaultValue(False)
     
@@ -331,6 +346,13 @@ def mqttTlsAutoMenu(symbol, event):
         Database.setSymbolValue("sysNetPic32mzw1", "SYS_NET_ENABLE_TLS", True)
     else:
         Database.setSymbolValue("sysNetPic32mzw1", "SYS_NET_ENABLE_TLS", False)
+
+def mqttIntfAutoMenu(symbol, event):
+    if (event["value"] == "ETHERNET"):
+        print("Mqtt Intf is Ethernet")
+        Database.setSymbolValue("sysNetPic32mzw1", "SYS_NET_SUPP_INTF", 1)
+    else:
+        print("Mqtt Intf is Wifi")
 
 def finalizeComponent(mqttComponent):
     res = Database.activateComponents(["sysNetPic32mzw1"])

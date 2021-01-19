@@ -108,6 +108,16 @@ def setIncPath(component, configName, incPathEntry):
     incPathSym.setEnabled(isEnabled)
     incPathSym.setDependencies(callback, dependencies)
 
+def onAttachmentConnected(source, target):
+    if source['id'] == 'sys_debug':
+        pic32mzw1UseSysDebug = source['component'].getSymbolByID('DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG')
+        pic32mzw1UseSysDebug.setValue(True)
+
+def onAttachmentDisconnected(source, target):
+    if source['id'] == 'sys_debug':
+        pic32mzw1UseSysDebug = source['component'].getSymbolByID('DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG')
+        pic32mzw1UseSysDebug.setValue(False)
+
 ################################################################################
 #### Component ####
 ################################################################################
@@ -120,6 +130,7 @@ def instantiateComponent(drvPic32mzw1Component):
 
     drvPic32mzw1Component.addDependency('Crypto_PIC32MZW1_Dependency', 'LIB_CRYPTO', True, True)
     drvPic32mzw1Component.addDependency('BA414E_Dependency', 'DRV_BA414E', False, True)
+    drvPic32mzw1Component.addDependency('sys_debug', 'SYS_DEBUG', True, False)
 
     drvPic32mzw1Component.setCapabilityEnabled('libdrvPic32mzw1Mac', True)
 
@@ -151,11 +162,16 @@ def instantiateComponent(drvPic32mzw1Component):
     if Database.getSymbolValue('lib_wolfcrypt', 'wolfcrypt_sha256') == False: 
         Database.setSymbolValue('lib_wolfcrypt', 'wolfcrypt_sha256', True)
 
+    pic32mzw1UseSysDebug = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG', None)
+    pic32mzw1UseSysDebug.setVisible(False)
+    pic32mzw1UseSysDebug.setDefaultValue(False)
+
     # Log Level
     pic32mzw1LogLevel = drvPic32mzw1Component.createComboSymbol('DRV_WIFI_PIC32MZW1_LOG_LEVEL', None, ['None', 'Error', 'Inform', 'Trace', 'Verbose'])
     pic32mzw1LogLevel.setLabel('Driver Log Level')
     pic32mzw1LogLevel.setVisible(True)
     pic32mzw1LogLevel.setDefaultValue('Trace')
+    pic32mzw1LogLevel.setDependencies(setEnableLogLevel, ['DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG', 'sys_debug.SYS_DEBUG_USE_CONSOLE'])
 
     # RTOS Configuration
     pic32mzw1RtosMenu = drvPic32mzw1Component.createMenuSymbol('DRV_WIFI_PIC32MZW1_RTOS_MENU', None)
@@ -191,10 +207,9 @@ def instantiateComponent(drvPic32mzw1Component):
     # Support WPA3?
     pic32mzw1SupportWpa3 = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_WPA3', None)
     pic32mzw1SupportWpa3.setLabel('Support WPA3?')
-    pic32mzw1SupportWpa3.setDescription('Support for WPA3 Security is available if an RTOS is used')
+    pic32mzw1SupportWpa3.setDescription('Support for WPA3 Security. Requires BA414E Cryptographic Accelerator from crypto release v3.6.2 or later.')
     pic32mzw1SupportWpa3.setVisible(True)
     pic32mzw1SupportWpa3.setDefaultValue(True)
-    pic32mzw1SupportWpa3.setDependencies(setSupportWpa3, ['HarmonyCore.SELECT_RTOS'])
 
     # Require BA414E hardware driver?
     pic32mzw1RequireBa414e = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_BA414E', None)
@@ -330,16 +345,6 @@ def setVisibilityRTOSTaskConfig(symbol, event):
         symbol.setVisible(False)
         print('WiFi Combined')
 
-def setSupportWpa3(symbol, event):
-    if ((event['value'] != 'BareMetal') and (event['value'] != None)):
-        symbol.setReadOnly(False)
-        symbol.setValue(True)
-        print('WPA3 support available')
-    else:
-        symbol.setReadOnly(True)
-        symbol.setValue(False)
-        print('WPA3 support unavailable')
-
 def setRequireBa414e(symbol, event):
     drvPic32mzw1Component = symbol.getComponent()
     if (event['value'] == True):
@@ -353,3 +358,9 @@ def setRequireBa414e(symbol, event):
 
 def setEnabledRTOSTask(symbol, event):
     symbol.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))
+
+def setEnableLogLevel(symbol, event):
+    if event['value'] == True:
+        symbol.setVisible(False)
+    else:
+        symbol.setVisible(True)

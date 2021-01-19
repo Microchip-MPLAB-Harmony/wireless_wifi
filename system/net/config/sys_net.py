@@ -35,36 +35,25 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 ################################################################################
 def instantiateComponent(netComponent):
 
-    netIpProt = netComponent.createComboSymbol("SYS_NET_IPPROT", None, ["UDP", "TCP"])
-    netIpProt.setLabel("Ip Protocol")
-    netIpProt.setDefaultValue("TCP")
-	
-    netMode = netComponent.createComboSymbol("SYS_NET_MODE", None, ["CLIENT", "SERVER"])
-    netMode.setLabel("Mode")
-    netMode.setDefaultValue("CLIENT")
+    netSuppIntf = netComponent.createKeyValueSetSymbol("SYS_NET_SUPP_INTF", None)
+    netSuppIntf.setLabel("Supported Interfaces")
+    netSuppIntf.addKey("WIFI_ONLY", "0", "Wifi Intf Supported")
+    netSuppIntf.addKey("WIFI_ETHERNET", "1", "Wifi and Ethernet Intf Supported")
+    netSuppIntf.setDisplayMode("Key")
+    netSuppIntf.setOutputMode("Key")
+    netSuppIntf.setDefaultValue(0)
+    netSuppIntf.setDependencies(netIntfAutoMenu, ["SYS_NET_SUPP_INTF"])
 
-    netReConnect = netComponent.createBooleanSymbol("SYS_NET_RECONNECT", None)
-    netReConnect.setLabel("Enable Auto Connect")
-    netReConnect.setDefaultValue(True)
+    netDebugEnable = netComponent.createBooleanSymbol("SYS_NET_ENABLE_DEBUG", None)
+    netDebugEnable.setLabel("Debug")
+    netDebugEnable.setDescription("Debug - Logs and CLI commands")
+    netDebugEnable.setDefaultValue(True)
 	
-    netEnableTls = netComponent.createBooleanSymbol("SYS_NET_ENABLE_TLS", None)
-    netEnableTls.setLabel("Enable TLS")
-    netEnableTls.setDefaultValue(False)
-    netEnableTls.setDependencies(netTLSautoMenu, ["SYS_NET_ENABLE_TLS"])
+    netCliCmdEnable = netComponent.createBooleanSymbol("SYS_NET_ENABLE_CLICMD", netDebugEnable)
+    netCliCmdEnable.setLabel("Enable CLI Commands")
+    netCliCmdEnable.setDefaultValue(True)
 
-	
-    netPort = netComponent.createIntegerSymbol("SYS_NET_PORT", None)
-    netPort.setLabel("Server Port")
-    netPort.setMin(1)
-    netPort.setMax(65535)
-	
-    netHostName = netComponent.createStringSymbol("SYS_NET_HOST_NAME", None)
-    netHostName.setLabel("Host Name/ IP Address")
-    netHostName.setVisible(True)
-    netHostName.setDescription("Host Name/ IP")
-    netHostName.setDefaultValue("192.168.1.1")
-	
-    netDebugLogEnable = netComponent.createBooleanSymbol("SYS_NET_APPDEBUG_ENABLE", None)
+    netDebugLogEnable = netComponent.createBooleanSymbol("SYS_NET_APPDEBUG_ENABLE", netDebugEnable)
     netDebugLogEnable.setLabel("Enable Debug Logs")
     netDebugLogEnable.setDefaultValue(False)
     
@@ -113,6 +102,95 @@ def instantiateComponent(netComponent):
     netDebugPreStr.setDefaultValue("NET_SRVC")
     netDebugPreStr.setDependencies(netDebugMenuVisible, ["SYS_NET_APPDEBUG_ENABLE"])
 
+    netInstance0 = netComponent.createBooleanSymbol("SYS_NET_IDX0", None)
+    netInstance0.setLabel("Instance 0")
+    netInstance0.setDescription("Debug - Logs and CLI commands")
+    netInstance0.setDefaultValue(True)
+
+    netIntf0 = netComponent.createComboSymbol("SYS_NET_INTF", netInstance0, ["WIFI", "ETHERNET"])
+    netIntf0.setLabel("Intf")
+    netIntf0.setDefaultValue("WIFI")
+
+    netIpProt0 = netComponent.createComboSymbol("SYS_NET_IPPROT", netInstance0, ["UDP", "TCP"])
+    netIpProt0.setLabel("Ip Protocol")
+    netIpProt0.setDefaultValue("TCP")
+	
+    netMode0 = netComponent.createComboSymbol("SYS_NET_MODE", netInstance0, ["CLIENT", "SERVER"])
+    netMode0.setLabel("Mode")
+    netMode0.setDefaultValue("CLIENT")
+
+    netReConnect0 = netComponent.createBooleanSymbol("SYS_NET_RECONNECT", netInstance0)
+    netReConnect0.setLabel("Enable Auto Connect")
+    netReConnect0.setDefaultValue(True)
+	
+    netEnableTls0 = netComponent.createBooleanSymbol("SYS_NET_ENABLE_TLS", netInstance0)
+    netEnableTls0.setLabel("Enable TLS")
+    netEnableTls0.setDefaultValue(False)
+    netEnableTls0.setDependencies(netTLSautoMenu, ["SYS_NET_ENABLE_TLS"])
+
+	
+    netPort0 = netComponent.createIntegerSymbol("SYS_NET_PORT", netInstance0)
+    netPort0.setLabel("Server Port")
+    netPort0.setMin(1)
+    netPort0.setMax(65535)
+	
+    netHostName0 = netComponent.createStringSymbol("SYS_NET_HOST_NAME", netInstance0)
+    netHostName0.setLabel("Host Name/ IP Address")
+    netHostName0.setVisible(True)
+    netHostName0.setDescription("Host Name/ IP")
+    netHostName0.setDefaultValue("192.168.1.1")
+	
+    netInstance1 = netComponent.createBooleanSymbol("SYS_NET_IDX1", None)
+    netInstance1.setLabel("Instance 1")
+    netInstance1.setDescription("Debug - Logs and CLI commands")
+    netInstance1.setDefaultValue(False)
+
+    netIntf1 = netComponent.createComboSymbol("SYS_NET_IDX1_INTF", netInstance1, ["WIFI", "ETHERNET"])
+    netIntf1.setLabel("Intf")
+    netIntf1.setDefaultValue("WIFI")
+    netIntf1.setVisible(False)
+    netIntf1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+
+    netIpProt1 = netComponent.createComboSymbol("SYS_NET_IDX1_IPPROT", netInstance1, ["UDP", "TCP"])
+    netIpProt1.setLabel("Ip Protocol")
+    netIpProt1.setDefaultValue("TCP")
+    netIpProt1.setVisible(False)
+    netIpProt1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+	
+    netMode1 = netComponent.createComboSymbol("SYS_NET_IDX1_MODE", netInstance1, ["CLIENT", "SERVER"])
+    netMode1.setLabel("Mode")
+    netMode1.setDefaultValue("CLIENT")
+    netMode1.setVisible(False)
+    netMode1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+
+    netReConnect1 = netComponent.createBooleanSymbol("SYS_NET_IDX1_RECONNECT", netInstance1)
+    netReConnect1.setLabel("Enable Auto Connect")
+    netReConnect1.setDefaultValue(True)
+    netReConnect1.setVisible(False)
+    netReConnect1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+	
+    netEnableTls1 = netComponent.createBooleanSymbol("SYS_NET_IDX1_ENABLE_TLS", netInstance1)
+    netEnableTls1.setLabel("Enable TLS")
+    netEnableTls1.setDefaultValue(False)
+    netEnableTls1.setDependencies(netTLSautoMenu, ["SYS_NET_IDX1_ENABLE_TLS"])
+    netEnableTls1.setVisible(False)
+    netEnableTls1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+
+    netPort1 = netComponent.createIntegerSymbol("SYS_NET_IDX1_PORT", netInstance1)
+    netPort1.setLabel("Server Port")
+    netPort1.setMin(1)
+    netPort1.setMax(65535)
+    netPort1.setVisible(False)
+    netPort1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+	
+    netHostName1 = netComponent.createStringSymbol("SYS_NET_IDX1_HOST_NAME", netInstance1)
+    netHostName1.setLabel("Host Name/ IP Address")
+    netHostName1.setVisible(True)
+    netHostName1.setDescription("Host Name/ IP")
+    netHostName1.setDefaultValue("192.168.1.1")
+    netHostName1.setVisible(False)
+    netHostName1.setDependencies(netInst1MenuVisible, ["SYS_NET_IDX1"])
+	
     ############################################################################
     #### Code Generation ####
     ############################################################################
@@ -178,6 +256,14 @@ def netDebugMenuVisible(symbol, event):
         print("Debug Log Menu Invisible")
         symbol.setVisible(False)
 
+def netInst1MenuVisible(symbol, event):
+    if (event["value"] == True):
+        print("Skt Instance 1 Menu Visible")
+        symbol.setVisible(True)
+    else:
+        print("Skt Instance 1 Menu Invisible")
+        symbol.setVisible(False)
+
 def onAttachmentConnected(source, target):
     localComponent = source["component"]
     remoteComponent = target["component"]
@@ -192,6 +278,18 @@ def onAttachmentDisconnected(source, target):
     remoteID = remoteComponent.getID()
     connectID = source["id"]
     targetID = target["id"]
+
+def netIntfAutoMenu(symbol, event):
+#    if (event["value"] == "WIFI_ETHERNET"):
+    if (event["value"] == 1):
+        res = Database.activateComponents(["drvPic32mEthmac"],"System Component", True)
+        res = Database.activateComponents(["drvMiim"],"System Component", True)
+        res = Database.activateComponents(["drvExtPhyLan8740"],"System Component", True)
+#        res = Database.activateComponents(["tcpipNetConfig"],"System Component", True)
+    else:
+        res = Database.deactivateComponents(["drvExtPhyLan8740"])
+        res = Database.deactivateComponents(["drvMiim"])
+        res = Database.deactivateComponents(["drvPic32mEthmac"])
 
 def netTLSautoMenu(symbol, event):
     if (event["value"] == True):
@@ -235,10 +333,13 @@ def netTLSautoMenu(symbol, event):
         Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_eccencrypt", True)
         Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_rsaPss", True)
         Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_dh", True)
-        Database.setSymbolValue("lib_wolfcrypt", "wolfSslRTOSSupport", "FreeRTOS")
         Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_keygen", False)
-        Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_errorstrings", True)
-        Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_debug", True)
+        # Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_errorstrings", True)
+        # Database.setSymbolValue("lib_wolfcrypt", "wolfcrypt_debug", True)
+        if (Database.getSymbolValue("HarmonyCore", "SELECT_RTOS") != "BareMetal"):
+            Database.setSymbolValue("lib_wolfcrypt", "wolfSslRTOSSupport", "FreeRTOS")
+        else:
+            Database.setSymbolValue("lib_wolfcrypt", "wolfSslRTOSSupport", "Single Threaded")
     else:
         Database.setSymbolValue("netPres_0", "NET_PRES_SUPPORT_ENCRYPTION0", False)
         Database.setSymbolValue("netPres_0", "NET_PRES_ENC_PROVIDE_IDX0", 0)

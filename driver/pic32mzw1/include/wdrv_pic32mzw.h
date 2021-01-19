@@ -58,14 +58,14 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-#include "system_config.h"
-#include "system_definitions.h"
+#include "configuration.h"
+#include "definitions.h"
 #include "drv_pic32mzw1.h"
-#include "tcpip/src/link_list.h"
 #include "wdrv_pic32mzw_bssfind.h"
 #include "wdrv_pic32mzw_assoc.h"
 #include "wdrv_pic32mzw_regdomain.h"
 #include "wdrv_pic32mzw_ps.h"
+#include "tcpip/src/link_list.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus // Provide C++ Compatibility
@@ -354,7 +354,7 @@ typedef struct _WDRV_PIC32MZW_MAC_MEM_STATISTICS
     struct
     {
         uint32_t gen;
-        uint32_t hprx;
+//        uint32_t hprx;
     } err;
 } WDRV_PIC32MZW_MAC_MEM_STATISTICS;
 
@@ -394,7 +394,11 @@ typedef struct _WDRV_PIC32MZW_MAC_MEM_STATISTICS
 
  */
 
+#ifndef WDRV_PIC32MZW1_DEVICE_USE_SYS_DEBUG
 void WDRV_PIC32MZW_DebugRegisterCallback(WDRV_PIC32MZW_DEBUG_PRINT_CALLBACK const pfDebugPrintCallback);
+#else
+#define WDRV_PIC32MZW_DebugRegisterCallback(...)
+#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -658,7 +662,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_GetStatistics
 );
 #endif
 
-    // DOM-IGNORE-BEGIN
+// DOM-IGNORE-BEGIN
 #ifdef __cplusplus
 }
 #endif

@@ -122,16 +122,25 @@ uint8_t wdrv_pic32mzw_qmu_get_tx_count(void);
 
 typedef struct
 {
+    /* SSID name, up to 32 characters long. */
+    uint8_t name[32];
+
+    /* Length of SSID name. */
+    uint8_t length;
+} ssid_t;
+
+typedef struct
+{
     /* Note this structure is sometimes used with single-byte alignment. In such
      * cases, any fields larger than 8 bits must be accessed byte-per-byte. */
     uint8_t index;
     uint8_t ofTotal;
     uint8_t bssid[6];
-    uint8_t ssid[32];
-    uint16_t dot11iInfo;
+    ssid_t ssid;
     int8_t  rssi;
     uint8_t bssType;
     uint8_t channel;
+    uint16_t dot11iInfo;
 } DRV_PIC32MZW_SCAN_RESULTS;
 
 void DRV_PIC32MZW_MACEthernetSendPacket(const uint8_t *const pEthMsg, uint16_t lengthEthMsg, uint8_t hdrOffset);
