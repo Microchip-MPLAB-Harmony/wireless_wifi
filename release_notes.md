@@ -8,8 +8,15 @@
 - PIC32MZW1: Adds Ethernet suppont in Net and MQTT services (only Wi-Fi and Wi-Fi + Ethernet modes are supported in this release).
 - PIC32MZW1: Adds OTA example application.
 - PIC32MZW1: Adds Touch + Wi-Fi example application.
+- WINC: Adds support for WINC3400 FW v1.4.2.
+- WINC: Adds support for WINC1500 FW v19.7.3.
+- WINC: Adds support for WINC3400 FW v1.4.2 lite driver.
+- WINC: Adds support for WINC1500 FW v19.7.3 lite driver.
 ### Bug fixes
 - PIC32MZW1: Fixes Wi-Fi provisioning code generation issues seen in MAC and Linux.
+- WINC: Updated documentation for WINC driver.
+- WINC: Fixed BLE startup issue in WINC3400.
+- WINC: Fixed FW update issue in Serial bridge with WINC1500/WINC3400.
 ### Known Issues
 - 
 
