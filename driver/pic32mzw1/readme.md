@@ -11,7 +11,7 @@ family: PIC32MZW1
 # PIC32MZW1 WLAN API Guide
 
 | **API Sections** |
-| --- | :---: |
+| --- | --- |
 | [Wi-Fi Driver Data Types](docs/driver_datatypes.md) |
 | [System Interface](docs/system_interface.md) |
 | [Client Interface - Open/Close ](docs/client_open_close.md)|

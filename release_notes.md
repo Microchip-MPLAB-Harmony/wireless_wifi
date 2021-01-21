@@ -5,7 +5,8 @@
 
 ## Wireless Release v3.4.0
 ### New Features
-- PIC32MZW1: Adds Ethernet suppont in Net and MQTT services (only Wi-Fi and Wi-Fi + Ethernet modes are supported in this release).
+- PIC32MZW1: WPA3 in non-RTOS mode(use of v3.6.2 of H3 crypto release mandatory for WPA3).
+- PIC32MZW1: Adds Ethernet support in Net and MQTT services (only Wi-Fi and Wi-Fi + Ethernet modes are supported in this release).
 - PIC32MZW1: Adds OTA example application.
 - PIC32MZW1: Adds Touch + Wi-Fi example application.
 - WINC: Adds support for WINC3400 FW v1.4.2.
@@ -13,12 +14,15 @@
 - WINC: Adds support for WINC3400 FW v1.4.2 lite driver.
 - WINC: Adds support for WINC1500 FW v19.7.3 lite driver.
 ### Bug fixes
+- PIC32MZW1: soft-AP mode throughput improvements.
+- PIC32MZW1: WEP shared key authentication failure with certain APs.
 - PIC32MZW1: Fixes Wi-Fi provisioning code generation issues seen in MAC and Linux.
 - WINC: Updated documentation for WINC driver.
 - WINC: Fixed BLE startup issue in WINC3400.
 - WINC: Fixed FW update issue in Serial bridge with WINC1500/WINC3400.
-### Known Issues
-- 
+### Known Issues/Limitations
+- PIC32MZW1: QoS Data unsupported in transmit path.
+- PIC32MZW1: RegDomain name used as part of WDRV_PIC32MZW_RegDomainSet() supports limited customization.
 
 ## Wireless Release v3.3.1
 ### Dot Release Updates for v3.3.1:
