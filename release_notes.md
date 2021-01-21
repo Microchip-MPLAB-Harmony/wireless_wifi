@@ -5,7 +5,7 @@
 
 ## Wireless Release v3.4.0
 ### New Features
-- PIC32MZW1: Adds Ethernet supponr int Net and MQTT services (only Wi-Fi and Wi-Fi + Ethernet modes are supported in this release).
+- PIC32MZW1: Adds Ethernet suppont in Net and MQTT services (only Wi-Fi and Wi-Fi + Ethernet modes are supported in this release).
 - PIC32MZW1: Adds OTA example application.
 - PIC32MZW1: Adds Touch + Wi-Fi example application.
 ### Bug fixes
