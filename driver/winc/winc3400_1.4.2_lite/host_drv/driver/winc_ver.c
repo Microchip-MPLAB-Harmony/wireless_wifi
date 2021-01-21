@@ -4,7 +4,7 @@
  *
  * \brief This module contains WINC Version APIs implementation.
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *

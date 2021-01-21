@@ -4,7 +4,7 @@
  *
  * \brief WINC Driver WINC3400 Hardware Registers.
  *
- * Copyright (c) 2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *

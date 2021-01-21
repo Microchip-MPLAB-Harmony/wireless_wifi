@@ -3,7 +3,7 @@
  *
  * \brief This module contains the SPI flash map
  *
- * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
