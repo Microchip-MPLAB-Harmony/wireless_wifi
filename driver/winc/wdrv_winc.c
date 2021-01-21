@@ -69,6 +69,8 @@
 #ifdef WDRV_WINC_ENABLE_BLE
 #ifdef WDRV_WINC_DEVICE_LITE_DRIVER
 #include "winc_ble_platform.h"
+#else
+#include "platform.h"
 #endif
 #endif
 #ifndef WDRV_WINC_NETWORK_MODE_SOCKET
@@ -857,10 +859,8 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
                 m2m_wifi_req_restrict_ble();
             }
 
-#ifdef WDRV_WINC_DEVICE_LITE_DRIVER
 #ifdef WDRV_WINC_ENABLE_BLE
             platform_interface_callback((uint8_t*)pBLEMsg->data, pBLEMsg->u16Len);
-#endif
 #endif
             break;
         }
