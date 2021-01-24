@@ -5,7 +5,7 @@
 
 ## Wireless Release v3.4.0
 ### New Features
-- PIC32MZW1: WPA3 in non-RTOS mode(use of v3.6.2 of H3 crypto release mandatory for WPA3).
+- PIC32MZW1: WPA3 in non-RTOS mode. WPA3 support (regardless of RTOS/non-RTOS mode) is now dependent on H3 crypto release v3.6.2 or later.
 - PIC32MZW1: Adds Ethernet support in Net and MQTT services (only Wi-Fi and Wi-Fi + Ethernet modes are supported in this release).
 - PIC32MZW1: Adds OTA example application.
 - PIC32MZW1: Adds Touch + Wi-Fi example application.
@@ -16,6 +16,7 @@
 ### Bug fixes
 - PIC32MZW1: soft-AP mode throughput improvements.
 - PIC32MZW1: WEP shared key authentication failure with certain APs.
+- PIC32MZW1: Wi-Fi connection behaviour is impacted if AP is on a channel that was not enabled in the last scan request.
 - PIC32MZW1: Fixes Wi-Fi provisioning code generation issues seen in MAC and Linux.
 - WINC: Updated documentation for WINC driver.
 - WINC: Fixed BLE startup issue in WINC3400.
