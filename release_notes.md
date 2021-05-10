@@ -3,6 +3,15 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.4.1
+### New Features
+- PIC32MZW1: Bifurcation of repo components (Firmware, Host Driver etc) from Example applications.
+- WINC: Bifurcation of repo components (Firmware, Host Driver etc) from Example applications.
+### Bug fixes
+- Not Applicable for this release
+### Known Issues/Limitations
+- Not Applicable for this release
+
 ## Wireless Release v3.4.0
 ### New Features
 - PIC32MZW1: WPA3 in non-RTOS mode. WPA3 support (regardless of RTOS/non-RTOS mode) is now dependent on H3 crypto release v3.6.2 or later.

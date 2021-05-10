@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Package name="wireless">
+<Package name="wireless_wifi">
     <Dependencies>
         <Dependency name="csp" version="v3.8.3"/>
         <Dependency name="core" version="v3.8.1"/>
