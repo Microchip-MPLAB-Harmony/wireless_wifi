@@ -5,8 +5,18 @@
 
 ## Wireless_wifi Release v3.4.1
 ### New Features
+- Note: 'Wireless' repository renamed as 'Wireless_wifi'
 - PIC32MZW1: Bifurcation of repo components (Firmware, Host Driver etc) from Example applications.
 - WINC: Bifurcation of repo components (Firmware, Host Driver etc) from Example applications.
+- Going Forward, example applications and system services for wireless_wifi products wil reside in separate repositories.
+| Repository | Product family |
+| ---------- | -------------- |
+| [wireless_wifi](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi) | Core wireless_wifi products repository |
+| [wireless_apps_winc1500](https://github.com/Microchip-MPLAB-Harmony/wireless_apps_winc1500) | Application examples for WINC1500 |
+| [wireless_apps_winc3400](https://github.com/Microchip-MPLAB-Harmony/wireless_apps_winc3400) | Application examples for WINC3400 |
+| [wireless_apps_pic32mzw1_wfi32e01](https://github.com/Microchip-MPLAB-Harmony/wireless_apps_pic32mzw1_wfi32e01) | Application examples for PIC32MZW1 |
+| [wireless_system_pic32mzw1_wfi32e01](https://github.com/Microchip-MPLAB-Harmony/wireless_system_pic32mzw1_wfi32e01) | Wireless system Services for PIC32MZW1 |
+
 ### Bug fixes
 - Not Applicable for this release
 ### Known Issues/Limitations
