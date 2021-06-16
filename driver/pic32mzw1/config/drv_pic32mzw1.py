@@ -1,5 +1,5 @@
 """*****************************************************************************
-* Copyright (C) 2020 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2021 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -125,7 +125,7 @@ def onAttachmentDisconnected(source, target):
 def instantiateComponent(drvPic32mzw1Component):
     print('PIC32MZW1 Driver Component')
     configName = Variables.get('__CONFIGURATION_NAME')
-    
+
     Database.activateComponents(['HarmonyCore', 'lib_crypto', 'lib_wolfcrypt', 'tcpipNetConfig', 'tcpipStack'])
 
     drvPic32mzw1Component.addDependency('Crypto_PIC32MZW1_Dependency', 'LIB_CRYPTO', True, True)
@@ -141,25 +141,25 @@ def instantiateComponent(drvPic32mzw1Component):
     Database.setSymbolValue('core', 'RFTM0_INTERRUPT_ENABLE', True, 1)
     Database.setSymbolValue('core', 'RFTM0_INTERRUPT_HANDLER_LOCK', True, 1)
     Database.setSymbolValue('core', 'RFTM0_INTERRUPT_HANDLER', 'WDRV_PIC32MZW_TasksRFTimer0ISR', 1)
-	
+
     Database.setSymbolValue('core', 'RFSMC_INTERRUPT_ENABLE', True, 1)
     Database.setSymbolValue('core', 'RFSMC_INTERRUPT_HANDLER_LOCK', True, 1)
     Database.setSymbolValue('core', 'RFSMC_INTERRUPT_HANDLER', 'WDRV_PIC32MZW_TasksRFSMCISR', 1)
 
     # Enable dependent Harmony core components
-    if Database.getSymbolValue('HarmonyCore', 'ENABLE_DRV_COMMON') == False: 
+    if Database.getSymbolValue('HarmonyCore', 'ENABLE_DRV_COMMON') == False:
         Database.setSymbolValue('HarmonyCore', 'ENABLE_DRV_COMMON', True)
 
-    if Database.getSymbolValue('HarmonyCore', 'ENABLE_SYS_COMMON') == False: 
+    if Database.getSymbolValue('HarmonyCore', 'ENABLE_SYS_COMMON') == False:
         Database.setSymbolValue('HarmonyCore', 'ENABLE_SYS_COMMON', True)
 
-    if Database.getSymbolValue('HarmonyCore', 'ENABLE_SYS_INT') == False: 
+    if Database.getSymbolValue('HarmonyCore', 'ENABLE_SYS_INT') == False:
         Database.setSymbolValue('HarmonyCore', 'ENABLE_SYS_INT', True)
 
-    if Database.getSymbolValue('HarmonyCore', 'ENABLE_OSAL') == False: 
+    if Database.getSymbolValue('HarmonyCore', 'ENABLE_OSAL') == False:
         Database.setSymbolValue('HarmonyCore', 'ENABLE_OSAL', True)
 
-    if Database.getSymbolValue('lib_wolfcrypt', 'wolfcrypt_sha256') == False: 
+    if Database.getSymbolValue('lib_wolfcrypt', 'wolfcrypt_sha256') == False:
         Database.setSymbolValue('lib_wolfcrypt', 'wolfcrypt_sha256', True)
 
     pic32mzw1UseSysDebug = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG', None)
@@ -216,8 +216,8 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1RequireBa414e.setVisible(False)
     pic32mzw1RequireBa414e.setDefaultValue(True)
     pic32mzw1RequireBa414e.setDependencies(setRequireBa414e, ['DRV_WIFI_PIC32MZW1_SUPPORT_WPA3'])
-	
-	# WiFi Regulatory Domain name
+
+    # WiFi Regulatory Domain name
     pic32mzw1RegDomain = drvPic32mzw1Component.createComboSymbol('DRV_WIFI_PIC32MZW1_REG_DOMAIN', None, ['None', 'GEN', 'USA', 'EMEA', 'CUST1', 'CUST2'])
     pic32mzw1RegDomain.setLabel('Regulatory Domain')
     pic32mzw1RegDomain.setVisible(True)
@@ -246,7 +246,7 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_regdomain.h',   condAlways],
         ['wdrv_pic32mzw_softap.h',      condAlways],
         ['wdrv_pic32mzw_sta.h',         condAlways],
-		['wdrv_pic32mzw_ps.h',			condAlways]
+        ['wdrv_pic32mzw_ps.h',          condAlways]
     ]
 
     for incFileEntry in wdrvIncFiles:
@@ -264,7 +264,7 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_regdomain.c',   condAlways],
         ['wdrv_pic32mzw_softap.c',      condAlways],
         ['wdrv_pic32mzw_sta.c',         condAlways],
-		['wdrv_pic32mzw_ps.c',			condAlways]
+        ['wdrv_pic32mzw_ps.c',          condAlways]
     ]
 
     for srcFileEntry in wdrvSrcFiles:

@@ -31,10 +31,18 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define DRV_PIC32MZW_MIN_SCAN_TIME                  10
 #define DRV_PIC32MZW_DEFAULT_ACTIVE_SCAN_TIME       20
 #define DRV_PIC32MZW_DEFAULT_PASSIVE_SCAN_TIME      120
+#define DRV_PIC32MZW_DEFAULT_SCAN_NUM_SLOT          1
+#define DRV_PIC32MZW_DEFAULT_SCAN_NUM_PROBE         1
+#define DRV_PIC32MZW_SCAN_MIN_NUM_SLOT              1
+#define DRV_PIC32MZW_SCAN_MIN_NUM_PROBE             1
+#define DRV_PIC32MZW_SCAN_MAX_NUM_PROBE             2
 #define DRV_PIC32MZW_AP_NUM_STA_SUPPORTED           8
 #define DRV_PIC32MZW_REGDOMAIN_MAX_NAME_LEN         6
 #define DRV_PIC32MZW_REGDOMAIN_RES_LEN              14
 #define DRV_PIC32MZW_PS_LISTEN_INTERVAL				8
+#define DRV_PIC32MZW_MAX_HIDDEN_SITES               4
+#define DRV_PIC32MZW_AP_REKEY_MIN_PERIOD            60
+//#define DRV_PIC32MZW_TRACK_MEMORY_ALLOC
 
 #define DRV_PIC32MZW_POWER_ON_CAL_CONFIG 0x01
 #define DRV_PIC32MZW_FACTORY_CAL_CONFIG  0x02
@@ -108,7 +116,9 @@ typedef enum
 
 typedef int (*DRV_PIC32MZW_WLAN_EVENT_FPTR)(DRV_PIC32MZW_WLAN_EVENT_ID eventID, void *pEventDataPtr);
 
+void wdrv_pic32mzw_init(void);
 void wdrv_pic32mzw_user_main(void);
+void wdrv_pic32mzw_user_stop(void);
 void wdrv_pic32mzw_process_cfg_message(uint8_t* cfgmsg);
 void wdrv_pic32mzw_wlan_send_packet(uint8_t* pBuf, uint16_t pktlen, uint32_t tos, uint8_t offset);
 void wdrv_pic32mzw_mac_controller_task(void);
@@ -143,12 +153,22 @@ typedef struct
     uint16_t dot11iInfo;
 } DRV_PIC32MZW_SCAN_RESULTS;
 
+#ifdef DRV_PIC32MZW_TRACK_MEMORY_ALLOC
+#define DRV_PIC32MZW_ALLOC_OPT_ARGS  const char *pFuncName, uint32_t line, 
+#define DRV_PIC32MZW_ALLOC_OPT_PARAMS __FUNCTION__, __LINE__, 
+#define DRV_PIC32MZW_ALLOC_OPT_PARAMS_V pFuncName, line, 
+#else
+#define DRV_PIC32MZW_ALLOC_OPT_ARGS
+#define DRV_PIC32MZW_ALLOC_OPT_PARAMS
+#define DRV_PIC32MZW_ALLOC_OPT_PARAMS_V
+#endif
+
 void DRV_PIC32MZW_MACEthernetSendPacket(const uint8_t *const pEthMsg, uint16_t lengthEthMsg, uint8_t hdrOffset);
-void* DRV_PIC32MZW_MemAlloc(uint16_t size);
-int8_t DRV_PIC32MZW_MemAddUsers(void *pBufferAddr, int count);
-int8_t DRV_PIC32MZW_MemFree(void *pBufferAddr);
-void* DRV_PIC32MZW_PacketMemAlloc(uint16_t size, MEM_PRIORITY_LEVEL_T priLevel);
-void DRV_PIC32MZW_PacketMemFree(void *pPktBuff);
+void* DRV_PIC32MZW_MemAlloc(DRV_PIC32MZW_ALLOC_OPT_ARGS uint16_t size);
+int8_t DRV_PIC32MZW_MemAddUsers(DRV_PIC32MZW_ALLOC_OPT_ARGS void *pBufferAddr, int count);
+int8_t DRV_PIC32MZW_MemFree(DRV_PIC32MZW_ALLOC_OPT_ARGS void *pBufferAddr);
+void* DRV_PIC32MZW_PacketMemAlloc(DRV_PIC32MZW_ALLOC_OPT_ARGS uint16_t size, MEM_PRIORITY_LEVEL_T priLevel);
+void DRV_PIC32MZW_PacketMemFree(DRV_PIC32MZW_ALLOC_OPT_ARGS void *pPktBuff);
 void DRV_PIC32MZW_WIDRxQueuePush(void *pPktBuff);
 
 void DRV_PIC32MZW_MACTimer0Disable();

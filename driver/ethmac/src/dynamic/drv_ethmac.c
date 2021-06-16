@@ -3,7 +3,7 @@
 *******************************************************************************/
 
 /*****************************************************************************
- Copyright (C) 2012-2020 Microchip Technology Inc. and its subsidiaries.
+ Copyright (C) 2012-2021 Microchip Technology Inc. and its subsidiaries.
 
 Microchip Technology Inc. and its subsidiaries.
 
@@ -886,7 +886,6 @@ void DRV_ETHMAC_PIC32MACTasks(SYS_MODULE_OBJ object)
             {
                 _MACDeinit(pMacD);
                 // keep the error status though
-                pMacD->mData._macFlags._init = 1;
                 pMacD->mData.sysStat = SYS_STATUS_ERROR; 
                 SYS_ERROR_PRINT(SYS_ERROR_ERROR, "DRV PHY init failed: %d\r\n", phyInitRes);
                 break;

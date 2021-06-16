@@ -12,7 +12,7 @@
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (C) 2020 released Microchip Technology Inc.  All rights reserved.
+Copyright (C) 2020-21 released Microchip Technology Inc.  All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -114,7 +114,7 @@ void DRV_PIC32MZW_ProcessHostRsp(uint8_t *pHostRsp)
         }
     }
 
-    DRV_PIC32MZW_PacketMemFree(pHostRsp);
+    DRV_PIC32MZW_PacketMemFree(DRV_PIC32MZW_ALLOC_OPT_PARAMS pHostRsp);
 }
 
 bool DRV_PIC32MZW_MultiWIDInit(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t bufferLen)
@@ -123,8 +123,8 @@ bool DRV_PIC32MZW_MultiWIDInit(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t bufferLen)
     {
         return false;
     }
-    
-    pCtx->buffer = DRV_PIC32MZW_MemAlloc(bufferLen);
+
+    pCtx->buffer = DRV_PIC32MZW_MemAlloc(DRV_PIC32MZW_ALLOC_OPT_PARAMS bufferLen);
 
     if (NULL == pCtx->buffer)
     {
@@ -152,7 +152,7 @@ bool DRV_PIC32MZW_MultiWIDAddValue(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid, uint
     {
         return false;
     }
-    
+
     if ((true == pCtx->error) || (NULL == pCtx->buffer) || (NULL == pCtx->pInPtr))
     {
         return false;
@@ -216,7 +216,7 @@ bool DRV_PIC32MZW_MultiWIDAddData(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid, const
     {
         return false;
     }
-    
+
     if ((true == pCtx->error) || (NULL == pCtx->buffer) || (NULL == pCtx->pInPtr))
     {
         return false;
@@ -272,7 +272,7 @@ bool DRV_PIC32MZW_MultiWIDAddString(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid, con
     {
         return false;
     }
-    
+
     return DRV_PIC32MZW_MultiWIDAddData(pCtx, wid, (uint8_t*)pStr, strlen(pStr));
 }
 
@@ -282,7 +282,7 @@ bool DRV_PIC32MZW_MultiWIDAddQuery(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid)
     {
         return false;
     }
-    
+
     if ((true == pCtx->error) || (NULL == pCtx->buffer) || (NULL == pCtx->pInPtr))
     {
         return false;
@@ -316,45 +316,53 @@ bool DRV_PIC32MZW_MultiWid_Write(DRV_PIC32MZW_WIDCTX *pCtx)
     {
         return false;
     }
-    
+
     if ((NULL == pCtx->buffer) || (NULL == pCtx->pInPtr))
     {
         return false;
     }
 
-    switch (pCtx->opType)
-    {
-        case DRV_PIC32MZW_WIDOPTYPE_WRITE:
-        {
-            pCtx->buffer[0] = 'W';
-            break;
-        }
-
-        case DRV_PIC32MZW_WIDOPTYPE_QUERY:
-        {
-            pCtx->buffer[0] = 'Q';
-            break;
-        }
-
-        default:
-        {
-            pCtx->error = true;
-            break;
-        }
-    }
-
-    if (true == pCtx->error)
-    {
-        DRV_PIC32MZW_MemFree(pCtx->buffer);
-        return false;
-    }
-
     length = pCtx->pInPtr - pCtx->buffer;
 
-    pCtx->buffer[2] = (length & 0xff);
-    pCtx->buffer[3] = ((length >> 8) & 0xff);
+    if ((length > 4) || (true == pCtx->error))
+    {
+        switch (pCtx->opType)
+        {
+            case DRV_PIC32MZW_WIDOPTYPE_WRITE:
+            {
+                pCtx->buffer[0] = 'W';
+                break;
+            }
 
-    DRV_PIC32MZW_WIDTxQueuePush(pCtx->buffer);
+            case DRV_PIC32MZW_WIDOPTYPE_QUERY:
+            {
+                pCtx->buffer[0] = 'Q';
+                break;
+            }
+
+            default:
+            {
+                pCtx->error = true;
+                break;
+            }
+        }
+
+        if (true == pCtx->error)
+        {
+            DRV_PIC32MZW_MemFree(DRV_PIC32MZW_ALLOC_OPT_PARAMS pCtx->buffer);
+            pCtx->buffer = NULL;
+            return false;
+        }
+
+        pCtx->buffer[2] = (length & 0xff);
+        pCtx->buffer[3] = ((length >> 8) & 0xff);
+
+        DRV_PIC32MZW_WIDTxQueuePush(pCtx->buffer);
+    }
+    else
+    {
+        DRV_PIC32MZW_MemFree(DRV_PIC32MZW_ALLOC_OPT_PARAMS pCtx->buffer);
+    }
 
     pCtx->buffer = NULL;
 

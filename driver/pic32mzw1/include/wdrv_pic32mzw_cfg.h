@@ -13,7 +13,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (C) 2020 released Microchip Technology Inc. All rights reserved.
+Copyright (C) 2020-21 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -204,12 +204,12 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
     Description:
         DRV_WIFI_WID_POWER_MANAGEMENT is used for power management.
 
-		Powersave/sleep modes						Value
-        Run/Active mode(No powersave)				0
-        WSM mode									1
-        WDS mode									2
-		WXDS mode									3
-        WOFF mode									4
+        Powersave/sleep modes                       Value
+        Run/Active mode(No powersave)               0
+        WSM mode                                    1
+        WDS mode                                    2
+        WXDS mode                                   3
+        WOFF mode                                   4
 
 */
 #define DRV_WIFI_WID_POWER_MANAGEMENT                0x000B
@@ -397,7 +397,34 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
     Description:
         DRV_WIFI_WID_RF_MAC_CONFIG_STATUS provides the status of various records available in NVM.
 */
-#define DRV_WIFI_WID_RF_MAC_CONFIG_STATUS 0x005a
+#define DRV_WIFI_WID_RF_MAC_CONFIG_STATUS           0x005a
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for number of slots for scanning
+    Description:
+        DRV_WIFI_WID_SCAN_NUM_SLOTS is used to set the number of slots for scanning
+*/
+#define DRV_WIFI_WID_SCAN_NUM_SLOTS                 0x005b
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for number of probes for scanning
+    Description:
+        DRV_WIFI_WID_SCAN_NUM_PROBES is used to set the number of probes in a slot for scanning
+*/
+#define DRV_WIFI_WID_SCAN_NUM_PROBES                0x005c
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for Stop scan on first.
+    Description:
+        DRV_WIFI_WID_SCAN_STOP_ON_FIRST used to stop scan immediately after first SSID is found.
+*/
+#define DRV_WIFI_WID_SCAN_STOP_ON_FIRST             0x005d
 
 
 // *****************************************************************************
@@ -512,7 +539,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         DRV_WIFI_WID_PS_CORRELATION is used to set the powersave correlation with PIC.
         The possible values are 0 for ASYNC mode and 1 for SYNC mode.
 */
-#define DRV_WIFI_WID_PS_CORRELATION                  	0x0212
+#define DRV_WIFI_WID_PS_CORRELATION                     0x0212
 
 // *****************************************************************************
 /*
@@ -523,7 +550,15 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         during powersave by waking up at every DTIM interval
         The values are 1 for Enable, 0 for Disable
 */
-#define DRV_WIFI_WID_PS_BCAST_ENABLE                  	0x0213
+#define DRV_WIFI_WID_PS_BCAST_ENABLE                    0x0213
+/*
+    Summary:
+        WID to flush the PMK cache.
+    Description:
+        DRV_WIFI_WID_PMK_CACHE_FLUSH is used to flush the local PMK cache.
+        The value is 1 for Flush.
+*/
+#define DRV_WIFI_WID_PMK_CACHE_FLUSH                    0x0214
 
 // *****************************************************************************
 /*
@@ -833,6 +868,16 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 /*
     Summary:
+        WID for rekey period.
+    Description:
+        DRV_WIFI_WID_REKEY_PERIOD is valid in AP mode.
+        This field indicates the period in seconds after which a group rekey will be initiated, starting from the last group handshake.
+*/
+#define DRV_WIFI_WID_REKEY_PERIOD                             0x2010
+
+// *****************************************************************************
+/*
+    Summary:
         WID for hardware Rx count.
     Description:
         DRV_WIFI_WID_HW_RX_COUNT is valid in both AP/STA modes.
@@ -1102,7 +1147,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         The length of the field can vary from 0 to 63 bytes.
 */
 #define DRV_WIFI_WID_RSNA_PASSWORD                          0x4012
-       
+
 // *****************************************************************************
 /*
     Summary:
@@ -1112,7 +1157,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         The maximum length of this field is 32 bytes.
 */
 #define DRV_WIFI_WID_SSID                                   0x4020
-        
+
 // *****************************************************************************
 /*
     Summary:
@@ -1121,6 +1166,15 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         DRV_WIFI_WID_SCAN_SSID used for setting SCAN SSID.
 */
 #define DRV_WIFI_WID_SCAN_SSID                              0x4021
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for Scan ssid list.
+    Description:
+        DRV_WIFI_WID_SCAN_SSID_LIST used for setting SCAN SSID list.
+*/
+#define DRV_WIFI_WID_SCAN_SSID_LIST                         0x4022
 
 typedef enum
 {

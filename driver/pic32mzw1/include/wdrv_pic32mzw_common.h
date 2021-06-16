@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (C) 2020 released Microchip Technology Inc. All rights reserved.
+Copyright (C) 2020-21 released Microchip Technology Inc. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -307,6 +307,30 @@ typedef struct _WDRV_PIC32MZW_SSID
     /* Length of SSID name. */
     uint8_t length;
 } WDRV_PIC32MZW_SSID;
+
+// *****************************************************************************
+/*  SSID Linked List
+
+  Summary:
+    Structure to hold an SSID linked list element.
+
+  Description:
+    An element structure which can form part of an SSID linked list.
+
+  Remarks:
+    None.
+
+*/
+
+typedef struct _WDRV_PIC32MZW_SSID_LIST
+{
+    /* Pointer to next SSID element in list. */
+    struct _WDRV_PIC32MZW_SSID_LIST *pNext;
+
+    /* SSID structure. */
+    WDRV_PIC32MZW_SSID ssid;
+} WDRV_PIC32MZW_SSID_LIST;
+
 
 // *****************************************************************************
 /*  MAC Address
