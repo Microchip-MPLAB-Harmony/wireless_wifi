@@ -144,3 +144,62 @@ The type and state information are configured appropriately for WPA-PSK authenti
 ###### WDRV_PIC32MZW_STATUS_OK - The context has been configured.
 ###### WDRV_PIC32MZW_STATUS_INVALID_ARG - The parameters were incorrect.
  
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxConfigureMfp
+(
+    WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx,
+    WDRV_PIC32MZW_AUTH_MFP_CONFIG config
+)
+```
+
+#### Description:
+
+The authentication context is updated with the Management Frame Protection
+configuration specified in the config parameter.
+
+#### Precondition:
+
+None.
+
+#### Parameters:
+
+pAuthCtx    - Pointer to an authentication context.
+config      - The required Management Frame Protection configuration.
+
+#### Returns:
+###### WDRV_PIC32MZW_STATUS_OK - The context has been configured.
+###### WDRV_PIC32MZW_STATUS_INVALID_ARG - The parameters were incorrect.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSharedKey
+(
+    WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx,
+    bool enable
+)
+```
+
+#### Description:
+
+The authentication context is updated to enable or disable Shared Key
+authentication.
+
+#### Precondition:
+
+None.
+
+#### Parameters:
+
+pAuthCtx    - Pointer to an authentication context.
+enable      - True to enable Shared Key authentication, false to disable.
+
+#### Returns:
+
+###### WDRV_PIC32MZW_STATUS_OK - The context has been configured.
+###### WDRV_PIC32MZW_STATUS_INVALID_ARG - The parameters were incorrect.

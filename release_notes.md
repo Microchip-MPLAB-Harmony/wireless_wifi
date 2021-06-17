@@ -3,6 +3,29 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.5.0
+This release includes additions and improvements to
+the **PIC32MZW1 device only**.
+
+**Devtools Note: PIC32MZW1 supports MPLABX IDE v5.50 & XC32 v2.50 version of the compiler with this release(not XC32 v3.00 yet).**
+
+### New Features
+- PIC32MZW1: Improved Scanning.
+- PIC32MZW1: Configurable group rekey timeout API in softAP mode.
+- PIC32MZW1: API to disconnect an associated STA associated with softAP based on the input association handle.
+
+##### `Recommendation for UDP Rx usage: Applications which use the Harmony implementation of UDP Rx should update the UDP Rx Queue limit to 16 (up from the default value of 7). In Microchip Harmony Configurator, this setting is in: UDP -> Advanced Settings -> RX Queue Limit. `
+
+### Bug fixes
+- PIC32MZW1: Assert in call to WDRV_PIC32MZW_BSSConnect() if configUSE_TIMERS is enabled.
+- PIC32MZW1: Data frames are sent as 'Data' not 'QOSData'
+- PIC32MZW1: Ethernet driver double de-init causes crash on RTOS.
+- PIC32MZW1: Handle scenario in TPC while packets with TSSI 0 are transmitted.
+
+### Known Issues/Limitations
+- PIC32MZW1: RegDomain name used as part of WDRV_PIC32MZW_RegDomainSet() supports limited customization.
+- PIC32MZW1: AP SSID leaks as 'wifi' when starting Soft-AP.
+
 ## Wireless_wifi Release v3.4.1
 ### New Features
 - Note: 'Wireless' repository renamed as 'Wireless_wifi'

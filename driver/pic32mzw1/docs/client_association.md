@@ -94,3 +94,35 @@ A peer device needs to be connected and associated.
 ###### WDRV_PIC32MZW_STATUS_NOT_CONNECTED	- Not currently connected.
 
  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AssocDisconnect
+(
+	WDRV_PIC32MZW_ASSOC_HANDLE assocHandle);
+)
+```
+
+#### Description:
+
+This API disconnects the STA associated with softAP based on the input association handle. Association handle is updated to the application whenever a new STA is connected to the softAP.
+This API can also be used in STA mode to disconnect PIC32MZW1 STA from an AP.
+
+#### Preconditions:
+
+```WDRV_PIC32MZW_Initialize``` should have been called.
+
+```WDRV_PIC32MZW_Open``` should have been called to obtain a valid handle.
+
+```WDRV_PIC32MZW_APStart``` should have been called to start PIC32MZW1 in softAP mode.
+
+#### Parameters:
+
+```assocHandle``` - WDRV_PIC32MZW_ASSOC_HANDLE obtained when STA joins an AP or an association is done.
+
+#### Returns:
+
+###### WDRV_PIC32MZW_STATUS_OK			- The request was accepted.
+###### WDRV_PIC32MZW_STATUS_NOT_OPEN		- The driver instance is not open.
+###### WDRV_PIC32MZW_STATUS_INVALID_ARG		- The parameters were incorrect.
+###### WDRV_PIC32MZW_STATUS_REQUEST_ERROR	- PIC32MZW1 was unable to accept request.

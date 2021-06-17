@@ -54,7 +54,8 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindFirst
 (
 	DRV_HANDLE handle, 
 	WDRV_PIC32MZW_CHANNEL_ID channel, 
-	bool active, 
+	bool active,
+	const WDRV_PIC32MZW_SSID_LIST *const pSSIDList, 
 	const WDRV_PIC32MZW_BSSFIND_NOTIFY_CALLBACK pfNotifyCallback
 )
 ```
@@ -75,6 +76,7 @@ A scan is requested on the specified channels. An optional callback can be provi
 |handle	| Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |channel |	Channel to scan, can be WDRV_PIC32MZW_ALL_CHANNELS in which case all enabled channels are scanned.|
 |active |	Use active vs passive scanning.|
+|pSSIDList| Pointer to list of SSIDs to match on.|
 |pfNotifyCallback |	Callback to receive notification of first BSS found. A pointer to a function of the following prototype: ```bool func (DRV_HANDLE handle, uint8_t index, uint8_t ofTotal, WDRV_PIC32MZW_BSS_INFO *pBssInfo )``` |
 |
 
@@ -88,7 +90,8 @@ A scan is requested on the specified channels. An optional callback can be provi
 
 #### Remarks:
 
-If channel is ```WDRV_PIC32MZW_ALL_CHANNELS``` then all enabled channels are scanned. The enabled channels can be configured using ```WDRV_PIC32MZW_BSSFindSetEnabledChannels```. How the scan is performed can be configured using ```WDRV_PIC32MZW_BSSFindSetScanParameters```.
+If channel is ```WDRV_PIC32MZW_CID_ANY``` then all enabled channels are
+scanned. The enabled channels can be configured using ```WDRV_PIC32MZW_BSSFindSetEnabledChannels```. How the scan is performed can be configured using ```WDRV_PIC32MZW_BSSFindSetScanParameters```.
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -208,13 +211,16 @@ This function may be polled after calling ```WDRV_PIC32MZW_BSSFindFirst``` or ``
 WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
 (
 	DRV_HANDLE handle, 
-	uint16_t activeScanTime, 
-	uint16_t passiveListenTime
+	uint8_t numSlots,
+    uint16_t activeSlotTime,
+    uint16_t passiveSlotTime,
+    uint8_t numProbes
 )
 ```
 
 #### Description:
-This function set various parameters to control the scan behavior.
+This function sets parameters to control the scan behavior.
+Configures the time periods of active and passive scanning operations.
 
 #### Preconditions:
 ``` WDRV_PIC32MZW_Initialize```  must have been called.
@@ -226,8 +232,10 @@ This function set various parameters to control the scan behavior.
 |	Parameter			 | 						Description								|
 -------------------------|--------------------------------------------------------------|
 |``` handle``` 	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
+|```numSlots```|	Number of slots (minimum is 2).|
 |``` activeScanTime``` 	|	Time spent on each active channel probing for BSS's.|
 |``` passiveListenTime``` 	|	Time spent on each passive channel listening for beacons.|
+|``` numProbes```	|	Number of probes per slot.|
 |
 
 #### Returns:
@@ -263,6 +271,38 @@ To comply with regulatory domains certain channels must not be scanned. This fun
 -------------------------|--------------------------------------------------------------|
 |```handle```	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
 |```channelMask24```	|	A 2.4GHz channel mask detailing all the enabled channels.|
+|
+
+#### Returns:
+###### WDRV_PIC32MZW_STATUS_OK		- The request was accepted.
+###### WDRV_PIC32MZW_STATUS_NOT_OPEN	- The driver instance is not open.
+###### WDRV_PIC32MZW_STATUS_INVALID_ARG	- The parameters were incorrect.
+###### WDRV_PIC32MZW_STATUS_REQUEST_ERROR - The PIC32MZW1 was unable to accept this request.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+```
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanMatchMode
+(
+	DRV_HANDLE handle, 
+	WDRV_PIC32MZW_SCAN_MATCH_MODE matchMode
+)
+```
+
+#### Description:
+This function configures the matching mode, either stop on first or match all, used when scanning for SSIDs.
+
+#### Preconditions:
+``` WDRV_PIC32MZW_Initialize```  must have been called.
+
+``` WDRV_PIC32MZW_Open```  must have been called to obtain a valid handle.
+
+#### Parameters:
+
+|	Parameter			 | 						Description								|
+-------------------------|--------------------------------------------------------------|
+|```handle```	|	Client handle obtained by a call to WDRV_PIC32MZW_Open.|
+|```matchMode```	|	Required scan matching mode.|
 |
 
 #### Returns:
