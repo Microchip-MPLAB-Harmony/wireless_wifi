@@ -99,10 +99,12 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_PMKCacheFlush
 ```
 
 #### Description:
-This function provides the extended system status of the PIC32MZW driver module.
+Removes all entries from the local PMK cache.
 
 #### Preconditions:
-WDRV_PIC32MZW_Initialize must have been called.
+ ```WDRV_PIC32MZW_Initialize``` should have been called.
+
+ ```WDRV_PIC32MZW_Open``` should have been called to obtain a valid handle.
 
 #### Parameters:
 handle	 Client handle obtained by a call to ```WDRV_PIC32MZW_Open```.
@@ -116,4 +118,8 @@ WDRV_PIC32MZW_STATUS_NOT_OPEN        - The driver instance is not open.
 WDRV_PIC32MZW_STATUS_INVALID_ARG     - The parameters were incorrect.
 
 WDRV_PIC32MZW_STATUS_REQUEST_ERROR   - The request to the PIC32MZW was rejected.
+
+#### Remarks:
+
+Every SAE (i.e. WPA3) or 802.1X (Enterprise) authentication as either STA or AP results in a PMK being generated with the peer, and cached locally. The cache stores the most recent 4 entries, for 12 hours, or until flushed.
 
