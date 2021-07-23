@@ -16,7 +16,7 @@ This document explains the WINC Firmware Upgrade Process.
 The ATWINC1500 and ATWINC3400 WiFi devices require firmware to be loaded into flash memory to operate. These devices will come shipped with firmware preloaded, however it may become necessary to update this firmware to take advantage of fixes and new or expanded features. MPLAB Harmony 3 and later include the WINC Firmware Update utilities required to update the flash firmware of the WINC devices. These utilities can be found in the <install-dir>/utilities/wifi/winc directory.
 
 User has to follow below steps to update the WINC module firmware
-•	From application repo wireless_apps_winc1500\apps\serial_bridge or wireless_apps_winc3400\apps\serial_bridge program the serial bridge application.
+•	From the 'wireless_wifi' repo, at 'wireless_wifi\apps\serial_bridge' program the serial bridge application.
 •	The application will put host device in serial bridge mode, where it will take the WINC module image from laptop utility and program into WINC module.
 •	Below example show SAMD21 Xplained connected to WINC1500 Xplained on EXT1 for upgrading the WINC15x0 module firmware.
 

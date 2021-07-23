@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2019-21 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -85,6 +85,14 @@
 
 // *****************************************************************************
 // *****************************************************************************
+// Section: WINC Driver Defines
+// *****************************************************************************
+// *****************************************************************************
+
+#define ETHERNET_HDR_LEN                    14
+
+// *****************************************************************************
+// *****************************************************************************
 // Section: Global Data
 // *****************************************************************************
 // *****************************************************************************
@@ -127,8 +135,13 @@ const TCPIP_MAC_OBJECT WDRV_WINC_MACObject =
 #endif
     .macName                                = "WINC",
     .TCPIP_MAC_Initialize                   = WDRV_WINC_Initialize,
+#if (TCPIP_STACK_MAC_DOWN_OPERATION != false)
     .TCPIP_MAC_Deinitialize                 = WDRV_WINC_Deinitialize,
     .TCPIP_MAC_Reinitialize                 = WDRV_WINC_Reinitialize,
+#else
+    .TCPIP_MAC_Deinitialize                 = 0,
+    .TCPIP_MAC_Reinitialize                 = 0,
+#endif  // (TCPIP_STACK_DOWN_OPERATION != 0)
     .TCPIP_MAC_Status                       = WDRV_WINC_Status,
     .TCPIP_MAC_Tasks                        = WDRV_WINC_MACTasks,
     .TCPIP_MAC_Open                         = WDRV_WINC_Open,
@@ -303,7 +316,7 @@ static void _WDRV_WINC_MACEthernetMsgRecvCallback
         ptrPacket->ackFunc  = _WDRV_WINC_MACEthernetMsgStackCallback;
         ptrPacket->ackParam = NULL;
 
-        ptrPacket->pDSeg->segLen = lengthEthMsg;
+        ptrPacket->pDSeg->segLen = lengthEthMsg - ETHERNET_HDR_LEN;
         ptrPacket->pDSeg->segSize = lengthEthMsg;
         ptrPacket->pktFlags = TCPIP_MAC_PKT_FLAG_QUEUED;
         ptrPacket->tStamp = SYS_TMR_TickCountGet();
@@ -858,10 +871,13 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
                 WDRV_DBG_INFORM_PRINT("BLE Init\r\n");
                 m2m_wifi_req_restrict_ble();
             }
-
+            else
+            {
 #ifdef WDRV_WINC_ENABLE_BLE
-            platform_interface_callback((uint8_t*)pBLEMsg->data, pBLEMsg->u16Len);
+                platform_interface_callback((uint8_t*)pBLEMsg->data, pBLEMsg->u16Len);
 #endif
+            }
+
             break;
         }
 #endif
@@ -1248,7 +1264,7 @@ static void _WDRV_WINC_HostFileGetCallback
     void _WDRV_WINC_HostFileReadHIFCallback
     (
         uint8_t status,
-        void *pBuffer,
+        uint8_t *pBuffer,
         uint32_t size
     )
 
@@ -1278,7 +1294,7 @@ static void _WDRV_WINC_HostFileGetCallback
 static void _WDRV_WINC_HostFileReadHIFCallback
 (
     uint8_t status,
-    void *pBuffer,
+    uint8_t *pBuffer,
     uint32_t size
 )
 {
@@ -1709,9 +1725,6 @@ void WDRV_WINC_Deinitialize(SYS_MODULE_OBJ object)
 
     if (pDcpt == &wincDescriptor[0])
     {
-        /* De-initialise the interrupts. */
-        WDRV_WINC_INTDeinitialize();
-
         OSAL_SEM_Post(&pDcpt->pCtrl->drvEventSemaphore);
 #ifdef WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
         OSAL_SEM_Post(&pDcpt->pCtrl->hostFileDcpt.hfdSemaphore);
@@ -1770,30 +1783,6 @@ void WDRV_WINC_Reinitialize
     const SYS_MODULE_INIT *const init
 )
 {
-    if ((WDRV_WINC_DCPT *const)object == &wincDescriptor[0])
-    {
-        WDRV_WINC_Deinitialize(object);
-
-        while(SYS_STATUS_UNINITIALIZED != WDRV_WINC_Status(sysObj.drvWifiWinc))
-        {
-#ifndef DRV_WIFI_WINC_RTOS_STACK_SIZE
-            WDRV_WINC_Tasks(sysObj.drvWifiWinc);
-#else
-            WDRV_MSDelay(1);
-#endif
-        }
-
-        WDRV_WINC_Initialize(0, init);
-
-        while(SYS_STATUS_READY != WDRV_WINC_Status(sysObj.drvWifiWinc))
-        {
-#ifndef DRV_WIFI_WINC_RTOS_STACK_SIZE
-            WDRV_WINC_Tasks(sysObj.drvWifiWinc);
-#else
-            WDRV_MSDelay(1);
-#endif
-        }
-    }
 }
 
 //*******************************************************************************
@@ -1945,8 +1934,15 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 #endif
                 m2m_wifi_deinit(NULL);
 
+#ifdef WDRV_WINC_NETWORK_MODE_SOCKET
+                socketDeinit();
+#endif
+
                 /* De-initialise SPI handling. */
                 WDRV_WINC_SPIDeinitialize();
+
+                /* De-initialise the interrupts. */
+                WDRV_WINC_INTDeinitialize();
 
                 pDcpt->isInit = false;
             }
@@ -2107,6 +2103,11 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                 if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
                 {
                     if (SYS_STATUS_READY != pDcpt->sysStat)
+                    {
+                        break;
+                    }
+
+                    if (0 != (pDcpt->pCtrl->intent & DRV_IO_INTENT_EXCLUSIVE))
                     {
                         break;
                     }
@@ -2529,7 +2530,6 @@ TCPIP_MAC_RES WDRV_WINC_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptrPack
     {
         WDRV_DBG_TRACE_PRINT("Link down or packet too large (%d)\r\n", ptrPacket->pDSeg->segLen);
 
-        pDcpt->pMac->pktAckF(ptrPacket, TCPIP_MAC_PKT_ACK_MAC_REJECT_ERR, TCPIP_THIS_MODULE_ID);
         return TCPIP_MAC_RES_PACKET_ERR;
     }
 
@@ -2561,8 +2561,6 @@ TCPIP_MAC_RES WDRV_WINC_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptrPack
 
         if (pktLen > MAX_RX_PACKET_SIZE)
         {
-            pDcpt->pMac->pktAckF(ptrPacket, TCPIP_MAC_PKT_ACK_MAC_REJECT_ERR, TCPIP_THIS_MODULE_ID);
-
             WDRV_DBG_TRACE_PRINT("MAC TX: payload too big (%d)\r\n", pktLen);
 
             return TCPIP_MAC_RES_OP_ERR;
@@ -2572,8 +2570,6 @@ TCPIP_MAC_RES WDRV_WINC_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptrPack
 
         if (NULL == pktbuf)
         {
-            pDcpt->pMac->pktAckF(ptrPacket, TCPIP_MAC_PKT_ACK_MAC_REJECT_ERR, TCPIP_THIS_MODULE_ID);
-
             WDRV_DBG_TRACE_PRINT("MAC TX: malloc fail\r\n");
 
             return TCPIP_MAC_RES_OP_ERR;

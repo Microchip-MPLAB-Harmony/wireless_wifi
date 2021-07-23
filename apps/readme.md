@@ -1,4 +1,6 @@
-Microchip MPLAB Harmony Wireless provides several application examples for various peripherals and device families. See the following repositories under [Microchip-MPLAB-Harmony](https://github.com/Microchip-MPLAB-Harmony) Github project for specific applications examples:
+Microchip MPLAB Harmony Wireless_wifi provides several application examples for various peripherals and device families. 
+The Serial bridge application which can be used for programming the WINC firmware is provided here.
+See the following repositories under [Microchip-MPLAB-Harmony](https://github.com/Microchip-MPLAB-Harmony) Github project for other applications examples:
 
 | Repository | Product family |
 | ---------- | -------------- |

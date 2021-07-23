@@ -13,28 +13,27 @@
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-Copyright (c) 2017 released Microchip Technology Inc.  All rights reserved.
-
-Microchip licenses to you the right to use, modify, copy and distribute
-Software only when embedded on a Microchip microcontroller or digital signal
-controller that is integrated into your product or third party product
-(pursuant to the sublicense terms in the accompanying license agreement).
-
-You should refer to the license agreement accompanying this Software for
-additional information regarding your rights and obligations.
-
-SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
-EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
-MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
-IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
-CONTRACT, NEGLIGENCE, STRICT LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR
-OTHER LEGAL EQUITABLE THEORY ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES
-INCLUDING BUT NOT LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR
-CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
-SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
-(INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
- *******************************************************************************/
-
+* Copyright (C) 2017-21 Microchip Technology Inc. and its subsidiaries.
+*
+* Subject to your compliance with these terms, you may use Microchip software
+* and any derivatives exclusively with Microchip products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may
+* accompany Microchip software.
+*
+* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+* PARTICULAR PURPOSE.
+*
+* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+*******************************************************************************/
 #include "configuration.h"
 #include "definitions.h"
 
@@ -84,7 +83,9 @@ at_ble_status_t platform_init(plf_params_t* platform_params)
 void platform_interface_send(uint8_t* data, uint32_t len)
 {
     if (NULL != plf_params.ble_write_cb)
+    {
         plf_params.ble_write_cb(data, len);
+    }
 }
 
 void platform_cmd_cmpl_signal()
@@ -94,25 +95,36 @@ void platform_cmd_cmpl_signal()
 
 bool platform_cmd_cmpl_wait(void)
 {
+#ifndef DRV_WIFI_WINC_RTOS_STACK_SIZE
     SYS_TIME_HANDLE timer = SYS_TIME_HANDLE_INVALID;
 
     if (SYS_TIME_DelayMS(TIMEOUT_VALUE, &timer) != SYS_TIME_SUCCESS)
     {
         // Handle error
     }
-    else if(SYS_TIME_DelayIsComplete(timer) != true)
+    else if (SYS_TIME_DelayIsComplete(timer) != true)
     {
-        // Wait till the delay has not expired
+        // Wait while the delay has not expired
         while (SYS_TIME_DelayIsComplete(timer) == false)
         {
             if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, 1))
             {
+                SYS_TIME_TimerDestroy(timer);
                 return false;
-            } 
+            }
+
             if (NULL != plf_params.plf_wait_cb)
+            {
                 plf_params.plf_wait_cb(plf_params.drvHandle);
+            }
         }
     }
+#else
+    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, TIMEOUT_VALUE))
+    {
+        return false;
+    }
+#endif
     return true;
 }
 
@@ -123,6 +135,7 @@ void platform_event_signal()
 
 uint8_t platform_event_wait(uint32_t timeout)
 {
+#ifndef DRV_WIFI_WINC_RTOS_STACK_SIZE
     if (0 != timeout)
     {
         SYS_TIME_HANDLE timer = SYS_TIME_HANDLE_INVALID;
@@ -131,28 +144,37 @@ uint8_t platform_event_wait(uint32_t timeout)
         {
         // Handle error
         }
-        else if(SYS_TIME_DelayIsComplete(timer) != true)
+        else if (SYS_TIME_DelayIsComplete(timer) != true)
         {
-            // Wait till the delay has not expired
+            // Wait while the delay has not expired
             while (SYS_TIME_DelayIsComplete(timer) == false)
             {
-                if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, 1))
+                if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&eventSemaphore, 1))
                 {
+                    SYS_TIME_TimerDestroy(timer);
                     return AT_BLE_SUCCESS;
-                } 
+                }
+
                 if (NULL != plf_params.plf_wait_cb)
-                plf_params.plf_wait_cb(plf_params.drvHandle);
+                {
+                    plf_params.plf_wait_cb(plf_params.drvHandle);
+                }
             }
         }
     }
     else
     {
-        if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, 0))
+        if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&eventSemaphore, 0))
         {
             return AT_BLE_SUCCESS;
         }
     }
-
+#else
+    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&eventSemaphore, timeout))
+    {
+        return AT_BLE_SUCCESS;
+    }
+#endif
     return AT_BLE_TIMEOUT;
 }
 

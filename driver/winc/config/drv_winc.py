@@ -31,7 +31,7 @@ def checkPrefix(symbol):
     else:
         return True
 
-def importIncFile(component, configName, incFileEntry, firmwarePath = None):
+def importIncFile(component, devVerEnabled, configName, incFileEntry, firmwarePath = None):
     incFilePath  = incFileEntry[0]
     isEnabled    = incFileEntry[1][0]
     callback     = incFileEntry[1][1]
@@ -75,12 +75,16 @@ def importIncFile(component, configName, incFileEntry, firmwarePath = None):
     incFileSym.setType('HEADER')
     incFileSym.setOverwrite(True)
     incFileSym.setMarkup(markup)
-    incFileSym.setEnabled(isEnabled)
+
+    if devVerEnabled:
+        incFileSym.setEnabled(isEnabled)
+    else:
+        incFileSym.setEnabled(False)
 
     if callback and dependencies:
         incFileSym.setDependencies(callback, dependencies)
 
-def importSrcFile(component, configName, srcFileEntry, firmwarePath = None):
+def importSrcFile(component, devVerEnabled, configName, srcFileEntry, firmwarePath = None):
     srcFilePath  = srcFileEntry[0]
     isEnabled    = srcFileEntry[1][0]
     callback     = srcFileEntry[1][1]
@@ -125,7 +129,11 @@ def importSrcFile(component, configName, srcFileEntry, firmwarePath = None):
     srcFileSym.setProjectPath('config/' + configName + '/driver/winc/' + secDName)
     srcFileSym.setType('SOURCE')
     srcFileSym.setMarkup(markup)
-    srcFileSym.setEnabled(isEnabled)
+
+    if devVerEnabled:
+        srcFileSym.setEnabled(isEnabled)
+    else:
+        srcFileSym.setEnabled(False)
 
     if callback and dependencies:
         srcFileSym.setDependencies(callback, dependencies)
@@ -381,14 +389,6 @@ def instantiateComponent(drvWincComponent):
     wincUseTaskDelay.setDefaultValue(True)
     wincUseTaskDelay.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_WINC_RTOS'])
 
-    # WiFi Driver Task Delay
-    wincDrvTaskDelay = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_RTOS_DELAY', wincRtosMenu)
-    wincDrvTaskDelay.setLabel('Task Delay')
-    wincDrvTaskDelay.setVisible(True)
-    wincDrvTaskDelay.setDescription('WiFi Driver Task Delay')
-    wincDrvTaskDelay.setDefaultValue(1)
-    wincDrvTaskDelay.setDependencies(setVisibilityRTOSTaskDelay, ['DRV_WIFI_WINC_RTOS', 'DRV_WIFI_WINC_RTOS_USE_DELAY'])
-
     ############################################################################
     #### Code Generation ####
     ############################################################################
@@ -500,25 +500,25 @@ def instantiateComponent(drvWincComponent):
     ]
 
     for incFileEntry in wdrvIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry)
+        importIncFile(drvWincComponent, True, configName, incFileEntry)
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc1500_19.6.1')
+        importIncFile(drvWincComponent, flagWinc1500_19_6_1, configName, incFileEntry, 'winc1500_19.6.1')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc1500_19.7.3')
+        importIncFile(drvWincComponent, flagWinc1500_19_7_3, configName, incFileEntry, 'winc1500_19.7.3')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.2.2')
+        importIncFile(drvWincComponent, flagWinc3400_1_2_2, configName, incFileEntry, 'winc3400_1.2.2')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.3.1')
+        importIncFile(drvWincComponent, flagWinc3400_1_3_1, configName, incFileEntry, 'winc3400_1.3.1')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'winc3400_1.4.2')
+        importIncFile(drvWincComponent, flagWinc3400_1_4_2, configName, incFileEntry, 'winc3400_1.4.2')
 
     for incFileEntry in bledrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, configName, incFileEntry, 'bluetooth_driver')
+        importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'bluetooth_driver')
 
     wdrvSrcFiles = [
         ['wdrv_winc.c',                         condAlways],
@@ -585,25 +585,25 @@ def instantiateComponent(drvWincComponent):
     ]
 
     for srcFileEntry in wdrvSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry)
+        importSrcFile(drvWincComponent, True, configName, srcFileEntry)
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc1500_19.6.1')
+        importSrcFile(drvWincComponent, flagWinc1500_19_6_1, configName, srcFileEntry, 'winc1500_19.6.1')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc1500_19.7.3')
+        importSrcFile(drvWincComponent, flagWinc1500_19_7_3, configName, srcFileEntry, 'winc1500_19.7.3')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.2.2')
+        importSrcFile(drvWincComponent, flagWinc3400_1_2_2, configName, srcFileEntry, 'winc3400_1.2.2')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.3.1')
+        importSrcFile(drvWincComponent, flagWinc3400_1_3_1, configName, srcFileEntry, 'winc3400_1.3.1')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'winc3400_1.4.2')
+        importSrcFile(drvWincComponent, flagWinc3400_1_4_2, configName, srcFileEntry, 'winc3400_1.4.2')
 
     for srcFileEntry in bledrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, configName, srcFileEntry, 'bluetooth_driver')
+        importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'bluetooth_driver')
 
     wdrvIncPaths = [
         ['/',                                   condAlways],
@@ -715,13 +715,6 @@ def setVisibilityRTOSTaskConfig(symbol, event):
     else:
         symbol.setVisible(False)
         print('WiFi Combined')
-
-def setVisibilityRTOSTaskDelay(symbol, event):
-    drvWifiRtos = symbol.getComponent().getSymbolByID(event['id'])
-    if(drvWifiRtos.getValue() == True):
-        symbol.setVisible(True)
-    else:
-        symbol.setVisible(False)
 
 def setEnabledRTOSTask(symbol, event):
     symbol.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))

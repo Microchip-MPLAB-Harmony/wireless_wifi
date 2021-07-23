@@ -999,6 +999,7 @@ int8_t m2m_wifi_1x_set_option(tenu1xOption enuOptionName, const void *pOptionVal
                 case 0:
                     gu321xTlsHsFlags &= (uint32_t)(~WIFI_1X_TLS_HS_FLAGS_SPECIFY_ROOTCERT);
                     memset(gau81xRootSha1, 0, sizeof(gau81xRootSha1));
+                    break;
 
                 default:
                     return M2M_ERR_INVALID_ARG;
