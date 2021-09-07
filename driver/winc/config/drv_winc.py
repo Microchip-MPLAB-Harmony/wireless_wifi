@@ -542,7 +542,6 @@ def instantiateComponent(drvWincComponent):
         ['dev/gpio/wdrv_winc_eint.c',           condAlways],
         ['dev/gpio/wdrv_winc_gpio.c',           condAlways],
         ['dev/spi/wdrv_winc_spi.c',             condAlways],
-        ['osal/wdrv_winc_osal.c',               condAlways]
     ]
 
     wdrvFirmwareDriverSrcFiles = [
@@ -663,6 +662,15 @@ def instantiateComponent(drvWincComponent):
     drvwincSystemTaskFile.setOutputName('core.LIST_SYSTEM_TASKS_C_CALL_DRIVER_TASKS')
     drvwincSystemTaskFile.setSourcePath('driver/winc/templates/system/system_tasks.c.ftl')
     drvwincSystemTaskFile.setMarkup(True)
+
+    drvwincOsalFile = drvWincComponent.createFileSymbol('WDRV_WINC_OSAL_SRC', None)
+    drvwincOsalFile.setSourcePath("driver/winc/templates/osal/wdrv_winc_osal.c.ftl")
+    drvwincOsalFile.setOutputName('wdrv_winc_osal.c')
+    drvwincOsalFile.setDestPath('/driver/winc/osal')
+    drvwincOsalFile.setProjectPath('config/' + configName + "/driver/winc/osal")
+    drvwincOsalFile.setType('SOURCE')
+    drvwincOsalFile.setMarkup(True)
+    drvwincOsalFile.setOverwrite(True)
 
     drvwincSystemRtosTasksFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYS_RTOS_TASK', None)
     drvwincSystemRtosTasksFile.setType('STRING')

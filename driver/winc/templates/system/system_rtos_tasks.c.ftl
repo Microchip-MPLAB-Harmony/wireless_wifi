@@ -1,5 +1,13 @@
+<#if HarmonyCore.SELECT_RTOS == "ThreadX">
+TX_THREAD   _WDRV_WINC_Task_TCB;
+uint8_t*    _WDRV_WINC_Task_Stk_Ptr;
+
+</#if>
 <#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
-static void _WDRV_WINC_Tasks(  void *pvParameters  )
+static void _WDRV_WINC_Tasks(void *pvParameters)
+<#elseif HarmonyCore.SELECT_RTOS == "ThreadX">
+static void _WDRV_WINC_Tasks(ULONG thread_input)
+</#if>
 {
     while(1)
     {
@@ -11,8 +19,11 @@ static void _WDRV_WINC_Tasks(  void *pvParameters  )
 
         if ((SYS_STATUS_ERROR == status) || (SYS_STATUS_UNINITIALIZED == status))
         {
+<#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
             vTaskDelay(50 / portTICK_PERIOD_MS);
+<#elseif HarmonyCore.SELECT_RTOS == "ThreadX">
+            tx_thread_sleep((ULONG)(50 / (TX_TICK_PERIOD_MS)));
+</#if>
         }
     }
 }
-</#if>

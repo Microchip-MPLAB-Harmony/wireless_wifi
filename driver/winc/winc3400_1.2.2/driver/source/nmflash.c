@@ -443,7 +443,7 @@ int8_t recover_backup(void)
         int8_t status = spi_flash_read((uint8_t*)&strBackup, u32BackupAddr, sizeof(tstrBackup));
         if ((status == M2M_SUCCESS) && (strBackup.enuTransferStatus == BACKUP_STATUS_ACTIVE))
         {
-            uint8_t *pu8Buff = malloc(strBackup.u32Size);
+            uint8_t *pu8Buff = OSAL_Malloc(strBackup.u32Size);
             if (pu8Buff == NULL)
             {
                 ret = FLASH_ERR_INTERNAL;
@@ -463,7 +463,7 @@ int8_t recover_backup(void)
                     }
                 }
             }
-            free(pu8Buff);
+            OSAL_Free(pu8Buff);
         }
         if (status != M2M_SUCCESS)
         {
@@ -755,11 +755,11 @@ int8_t transfer_run(tstrFlashAccess *pstrFlashAccess)
     if (u32BytesRemaining > 0)
     {
         if (u32BytesRemaining > FLASH_SECTOR_SIZE)
-            pu8Buff = malloc(FLASH_SECTOR_SIZE);
+            pu8Buff = OSAL_Malloc(FLASH_SECTOR_SIZE);
         else if (write_init_params.u32AlignmentSize > 1)
-            pu8Buff = malloc(write_init_params.u32AlignmentSize);
+            pu8Buff = OSAL_Malloc(write_init_params.u32AlignmentSize);
         else
-            pu8Buff = malloc(u32BytesRemaining);
+            pu8Buff = OSAL_Malloc(u32BytesRemaining);
         if (pu8Buff == NULL)
         {
             ret = FLASH_ERR_INTERNAL;
@@ -865,7 +865,7 @@ TERMINATE:
     gu8Success = 1;
 ERR:
     if (pu8Buff != NULL)
-        free(pu8Buff);
+        OSAL_Free(pu8Buff);
     access_control_sector(CS_DEINITIALIZE, NULL);
     return ret;
 }

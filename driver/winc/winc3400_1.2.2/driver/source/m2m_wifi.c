@@ -177,7 +177,7 @@ static void m2m_wifi_cb(uint8_t u8OpCode, uint16_t u16DataSize, uint32_t u32Addr
         if (hif_receive(u32Addr, rx_buf, 2, 0) == M2M_SUCCESS)
         {
             uint16_t u16BleMsgLen = (rx_buf[1] << 8) + rx_buf[0];
-            tstrM2mBleApiMsg *bleRx = (tstrM2mBleApiMsg*)malloc(u16BleMsgLen + sizeof(tstrM2mBleApiMsg));
+            tstrM2mBleApiMsg *bleRx = (tstrM2mBleApiMsg*)OSAL_Malloc(u16BleMsgLen + sizeof(tstrM2mBleApiMsg));
 
             if (bleRx != NULL)
             {
@@ -189,7 +189,7 @@ static void m2m_wifi_cb(uint8_t u8OpCode, uint16_t u16DataSize, uint32_t u32Addr
                     if (gpfAppWifiCb)
                         gpfAppWifiCb(M2M_WIFI_RESP_BLE_API_RECV, bleRx);
                 }
-                free(bleRx);
+                OSAL_Free(bleRx);
             }
         }
     }

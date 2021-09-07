@@ -354,7 +354,7 @@ static int8_t m2m_flash_rootcert_access(tenuFlashAccessItemMode enuMode, uint8_t
     if (ret == FLASH_RETURN_OK)
     {
         /* Now we can access the items in flash. */
-        uint8_t   *pu8Buff = malloc(M2M_TLS_ROOTCER_FLASH_SZ);
+        uint8_t   *pu8Buff = OSAL_Malloc(M2M_TLS_ROOTCER_FLASH_SZ);
         uint32_t  u32Offset = 0;
         if (pu8Buff == NULL)
         {
@@ -428,7 +428,7 @@ static int8_t m2m_flash_rootcert_access(tenuFlashAccessItemMode enuMode, uint8_t
                     pfFn(FLASH_DATA_FN_COMPLETE, NULL);
             }
         }
-        free(pu8Buff);
+        OSAL_Free(pu8Buff);
     }
 ERR:
     M2M_INFO("FAState:%d\n", ret);

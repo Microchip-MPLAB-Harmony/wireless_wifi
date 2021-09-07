@@ -94,6 +94,10 @@
 /* Define if _Static_assert/static_assert is not supported on this tool chain */
 //#define CONF_WINC_HIF_STRUCT_SIZE_CHECK(STRUCTNAME)
 
+/* Map malloc/free onto OSAL */
+#define CONF_WINC_LARGE_MEMORY_ALLOC_FUNC           OSAL_Malloc
+#define CONF_WINC_LARGE_MEMORY_FREE_FUNC            OSAL_Free
+
 <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>
 /* Define to include support for BLE */
 #define CONF_WINC_BLE_INCLUDE
