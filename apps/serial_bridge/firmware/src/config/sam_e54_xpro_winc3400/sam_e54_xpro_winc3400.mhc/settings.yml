@@ -5,10 +5,10 @@ frameworkPath: ../../..
 processor: ATSAME54P20A
 projectName: ''
 settings:
-  PackageFilter: bsp;core;crypto;cryptoauthlib;csp;net;wireless;wsg_dev;
+  PackageFilter: bsp;core;crypto;csp;net;wireless_apps_pic32mzw1_wfi32e01;wireless_apps_winc1500;wireless_apps_winc3400;wireless_wifi
   FORCE_OPTIMIZATION: 'false'
   GENERATE_BACKUP: 'true'
   TRUSTZONE: 'false'
-  CMSISPath: .\dev_packs\arm\CMSIS\5.7.0
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
   MERGE_STRATEGY: USER_ALL
-  DFPPath: .\dev_packs\Microchip\SAME54_DFP\3.4.70\atdf\ATSAME54P20A.atdf
+  DFPPath: .\dev_packs\Microchip\SAME54_DFP\3.6.95\atdf\ATSAME54P20A.atdf

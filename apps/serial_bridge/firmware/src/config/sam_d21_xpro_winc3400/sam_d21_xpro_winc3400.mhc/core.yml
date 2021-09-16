@@ -81,7 +81,7 @@ children:
       - type: Dynamic
         attributes: {id: core, value: '0'}
   - type: KeyValueSet
-    attributes: {id: DEVICE_SECURITY}
+    attributes: {id: DEVICE_SECURITY_CMD}
     children:
     - type: Values
       children:
@@ -844,15 +844,6 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: 'true'}
-  - type: Comment
-    attributes: {id: DMAC_INTERRUPT_ENABLE_COMMENT}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
   - type: Boolean
     attributes: {id: DMAC_INTERRUPT_ENABLE_UPDATE}
     children:
@@ -1840,6 +1831,48 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: '0x1'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_0_PIN_22_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_0_PIN_23_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_0_PIN_4_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_0_PIN_5_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_0_PIN_6_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_0_PIN_7_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
   - type: String
     attributes: {id: PORT_GROUP_0_PMUX11}
     children:
@@ -1952,6 +1985,41 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: '0x0'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_1_PIN_1_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_1_PIN_4_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_1_PIN_5_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_1_PIN_6_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'false'}
+  - type: Boolean
+    attributes: {id: PORT_GROUP_1_PIN_7_USED}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
   - type: String
     attributes: {id: PORT_GROUP_1_PMUX0}
     children:
@@ -2084,7 +2152,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '0xbb80'}
+        attributes: {id: core, value: '0xBB80'}
   - type: Float
     attributes: {id: SYSTICK_PERIOD_MS}
     children:

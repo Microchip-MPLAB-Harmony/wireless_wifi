@@ -3,6 +3,18 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.6.0
+This release includes additions and improvements to
+the **PIC32MZW1 and WINC**.
+
+### New Features
+- WINC: Support update for NET v3.7.3, ThreadX, Harmony TCP/IP stack dependency and OSAL heap use
+
+### Bug fixes
+
+
+### Known Issues/Limitations
+
 ## Wireless_wifi Release v3.5.1
 
 ### Dot Release Update for v3.5.1:
