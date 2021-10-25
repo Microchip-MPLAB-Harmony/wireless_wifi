@@ -10,7 +10,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: 19.7.3}
+        attributes: {value: 19.7.5}
   - type: Combo
     attributes: {id: DRV_WIFI_WINC_DRIVER_MODE}
     children:
@@ -175,78 +175,6 @@ children:
       children:
       - type: Dynamic
         attributes: {id: drvWifiWinc, value: 'false'}
-  - type: File
-    attributes: {id: WIFI_WINC1500_19_6_1_FLEXIBLE_FLASH_C}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC1500_19_6_1_FLEXIBLE_FLASH_H}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC3400_1_2_2_FLEXIBLE_FLASH_C}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC3400_1_2_2_FLEXIBLE_FLASH_H}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC3400_1_3_1_FLEXIBLE_FLASH_C}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC3400_1_3_1_FLEXIBLE_FLASH_H}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC3400_1_4_2_FLEXIBLE_FLASH_C}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: WIFI_WINC3400_1_4_2_FLEXIBLE_FLASH_H}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'true'}
 - type: Attachments
   children:
   - type: DirectDependency

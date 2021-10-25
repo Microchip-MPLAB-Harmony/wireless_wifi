@@ -312,10 +312,10 @@ def instantiateComponent(drvWincComponent):
         wincPioIntSrc.setLabel("***Above selected pins must be configured as PIO Output in Pin Manager***")
 
     # WINC1500 Version
-    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1', '19.7.3'])
+    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1', '19.7.5'])
     winc1500Version.setLabel('Firmware Version')
     winc1500Version.setVisible(True)
-    winc1500Version.setDefaultValue('19.7.3')
+    winc1500Version.setDefaultValue('19.7.5')
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 Version
@@ -398,15 +398,15 @@ def instantiateComponent(drvWincComponent):
     flagTcpipStackPresent   = (flagEthernetMode and (wincUseTcpipStack.getValue() == 'True'))
     flagBlePresent          = (winc3400UseBle.getValue() == 'True')
     flagWinc1500_19_6_1     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.6.1'))
-    flagWinc1500_19_7_3     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.7.3'))
+    flagWinc1500_19_7_5     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.7.5'))
     flagWinc1500            = ((wincDevice.getValue() == 'WINC1500'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
     flagWinc3400_1_3_1      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.1'))
     flagWinc3400_1_4_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.4.2'))
     flagWinc3400            = ((wincDevice.getValue() == 'WINC3400'))
 
-    flagHostFileSupport     = (flagSocketMode and (flagWinc1500_19_6_1 or flagWinc1500_19_7_3))
-    flagFlexFlashMapSupport = (flagWinc1500_19_6_1 or flagWinc1500_19_7_3)
+    flagHostFileSupport     = (flagSocketMode and (flagWinc1500_19_6_1 or flagWinc1500_19_7_5))
+    flagFlexFlashMapSupport = (flagWinc1500_19_6_1 or flagWinc1500_19_7_5)
 
     condAlways              = [True,                    None,                           []]
     condSocketMode          = [flagSocketMode,          setEnableSocketMode,            ['DRV_WIFI_WINC_DRIVER_MODE']]
@@ -416,7 +416,7 @@ def instantiateComponent(drvWincComponent):
     condTcpipStackPresent   = [flagTcpipStackPresent,   setEnableTcpipStackPresent,     ['DRV_WIFI_WINC_USE_TCPIP_STACK', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condBle                 = [flagBlePresent,          setEnableBlePresent,            ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400']]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,       ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
-    condWinc1500_19_7_3     = [flagWinc1500_19_7_3,     setEnableWinc1500_19_7_3,       ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc1500_19_7_5     = [flagWinc1500_19_7_5,     setEnableWinc1500_19_7_5,       ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc1500            = [flagWinc1500,            setEnableWinc1500,              ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_3_1      = [flagWinc3400_1_3_1,      setEnableWinc3400_1_3_1,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
@@ -506,7 +506,7 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc1500_19_6_1, configName, incFileEntry, 'winc1500_19.6.1')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, flagWinc1500_19_7_3, configName, incFileEntry, 'winc1500_19.7.3')
+        importIncFile(drvWincComponent, flagWinc1500_19_7_5, configName, incFileEntry, 'winc1500_19.7.5')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, flagWinc3400_1_2_2, configName, incFileEntry, 'winc3400_1.2.2')
@@ -590,7 +590,7 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, flagWinc1500_19_6_1, configName, srcFileEntry, 'winc1500_19.6.1')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, flagWinc1500_19_7_3, configName, srcFileEntry, 'winc1500_19.7.3')
+        importSrcFile(drvWincComponent, flagWinc1500_19_7_5, configName, srcFileEntry, 'winc1500_19.7.5')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, flagWinc3400_1_2_2, configName, srcFileEntry, 'winc3400_1.2.2')
@@ -765,20 +765,6 @@ def setValueEicSource(symbol, event):
 
         eicCurSel.setValue(-1)
 
-def setValueWincPrefix(symbol, event):
-    component = symbol.getComponent()
-
-    wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
-    winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
-    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
-
-    if wincDevice == 'WINC1500':
-        symbol.setValue(wincDevice + '_' + winc1500Ver.replace('.', '_'))
-    elif wincDevice == 'WINC3400':
-        symbol.setValue(wincDevice + '_' + winc3400Ver.replace('.', '_'))
-    else:
-        symbol.setValue('')
-
 def setEnableSocketMode(symbol, event):
     component = symbol.getComponent()
 
@@ -815,7 +801,7 @@ def setEnableTcpipStackPresent(symbol, event):
     useTcpipStack = component.getSymbolValue('DRV_WIFI_WINC_USE_TCPIP_STACK')
     wincMacActive = component.getCapabilityEnabled("libdrvWincMac")
 
-    if ((wincDrvMode == 'Ethernet Mode') and (useTcpipStack == True)):
+    if ((wincDrvMode == 'Ethernet Mode') and (useTcpipStack == True) and (checkPrefix(symbol))):
         symbol.setEnabled(True)
         if (wincMacActive == False):
             component.setCapabilityEnabled("libdrvWincMac", True)
@@ -823,17 +809,6 @@ def setEnableTcpipStackPresent(symbol, event):
         symbol.setEnabled(False)
         if (wincMacActive == True):
             component.setCapabilityEnabled("libdrvWincMac", False)
-
-def setEnableIwprivIntfPresent(symbol, event):
-    component = symbol.getComponent()
-
-    wincDrvMode   = component.getSymbolValue('DRV_WIFI_WINC_DRIVER_MODE')
-    useIwprivIntf = component.getSymbolValue('DRV_WIFI_WINC_USE_IWPRIV_INTF')
-
-    if ((wincDrvMode == 'Ethernet Mode') and (useIwprivIntf == True)):
-        symbol.setEnabled(True)
-    else:
-        symbol.setEnabled(False)
 
 def setEnableWinc1500_19_6_1(symbol, event):
     component = symbol.getComponent()
@@ -846,13 +821,13 @@ def setEnableWinc1500_19_6_1(symbol, event):
     else:
         symbol.setEnabled(False)
 
-def setEnableWinc1500_19_7_3(symbol, event):
+def setEnableWinc1500_19_7_5(symbol, event):
     component = symbol.getComponent()
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
 
-    if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.7.3') and (checkPrefix(symbol))):
+    if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.7.5') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)
@@ -918,7 +893,7 @@ def setEnableHostFileSupport(symbol, event):
     winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
     wincDrvMode = component.getSymbolValue('DRV_WIFI_WINC_DRIVER_MODE')
 
-    if ((wincDevice == 'WINC1500') and (winc1500Ver != '19.5.4') and (wincDrvMode == 'Socket Mode')):
+    if ((wincDevice == 'WINC1500') and (winc1500Ver != '19.5.4') and (wincDrvMode == 'Socket Mode') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)
@@ -930,7 +905,7 @@ def setEnableFlexFlashMapSupport(symbol, event):
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
 
-    if ((wincDevice == 'WINC1500') and (winc1500Ver != '19.5.4')):
+    if ((wincDevice == 'WINC1500') and (winc1500Ver != '19.5.4') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)
