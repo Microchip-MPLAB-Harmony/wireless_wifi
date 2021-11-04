@@ -307,13 +307,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 1C250277649C756DDA1BF1A3DFF46C83
-- generatedChecksum: E17A5533170340AAD26EEBDF6E22A73F
+- generatedChecksum: F693A78C00C9813FA76E142C59EA9B90
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc
   name: wdrv_winc_authctx.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: E17A5533170340AAD26EEBDF6E22A73F
+  userChecksum: F693A78C00C9813FA76E142C59EA9B90
 - generatedChecksum: 23D94F4BD1C11F40C9C2EBF80D6B216C
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc
   name: wdrv_winc_bssctx.c
@@ -384,13 +384,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 4DBAFA0ED6522507AB21F9CD4B9D9513
-- generatedChecksum: 3DD10B2F76B33E5992BFBD2414CA0356
+- generatedChecksum: C55DE3FF63F2631DB47C9F5ABA0AF975
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc
   name: wdrv_winc_softap.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 3DD10B2F76B33E5992BFBD2414CA0356
+  userChecksum: C55DE3FF63F2631DB47C9F5ABA0AF975
 - generatedChecksum: BBD7FECCBFCB49AE5B15DCA0B9F182D2
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc/dev/spi
   name: wdrv_winc_spi.c
@@ -405,13 +405,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: C10080B1E0B43C51F7553E8985831817
-- generatedChecksum: C73AE3969B43B0E5A001DC9D791481FC
+- generatedChecksum: 721C3EC3C8A9BD4819D1C3C3C458641B
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc
   name: wdrv_winc_sta.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: C73AE3969B43B0E5A001DC9D791481FC
+  userChecksum: 721C3EC3C8A9BD4819D1C3C3C458641B
 - generatedChecksum: 0E05FA2D3237381C3C0217A9C86A7003
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc
   name: wdrv_winc_systime.c
@@ -1651,13 +1651,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 71C4C16E628224292602C3194BEFFC5D
-- generatedChecksum: null
+- generatedChecksum: 4B3C3EF8A318908A22B78500515C3288
   logicalPath: config/sam_e54_xpro_winc3400
   name: user.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: null
+  userChecksum: 4B3C3EF8A318908A22B78500515C3288
 - generatedChecksum: E078DB5A068FC94AC501021A8AAED412
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc/include
   name: wdrv_winc.h
@@ -1679,13 +1679,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: E59D88313B67DE2CEA6F7D0BEE5F61A9
-- generatedChecksum: C075415B0DB869ED1617FA1E40EE4161
+- generatedChecksum: 422C113E1DC55B034A044101F51E0A6A
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc/include
   name: wdrv_winc_authctx.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: C075415B0DB869ED1617FA1E40EE4161
+  userChecksum: 422C113E1DC55B034A044101F51E0A6A
 - generatedChecksum: 9CB4C8148FBEC1422E85410A1754935E
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc/include
   name: wdrv_winc_bssctx.h
@@ -1707,13 +1707,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: B117332A9D5A92CB9D3A57B30921F9E0
-- generatedChecksum: FCC216979BC4F8E0696D2A1C7CF15C21
+- generatedChecksum: B647336EEF00889171B455CC9D8E4B3A
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc/include
   name: wdrv_winc_common.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: FCC216979BC4F8E0696D2A1C7CF15C21
+  userChecksum: B647336EEF00889171B455CC9D8E4B3A
 - generatedChecksum: ADB81872B1C02AAA29834AF1452AEA03
   logicalPath: config/sam_e54_xpro_winc3400/driver/winc/include
   name: wdrv_winc_custie.h

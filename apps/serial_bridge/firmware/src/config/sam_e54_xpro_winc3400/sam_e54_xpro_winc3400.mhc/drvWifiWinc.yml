@@ -229,7 +229,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_ECC_TYPES_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_ECC_TYPES_H}
     children:
     - type: Attributes
       children:
@@ -238,7 +238,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_FLEXIBLE_FLASH_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_FLEXIBLE_FLASH_C}
     children:
     - type: Attributes
       children:
@@ -247,7 +247,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_FLEXIBLE_FLASH_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_FLEXIBLE_FLASH_H}
     children:
     - type: Attributes
       children:
@@ -256,7 +256,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_INET_ADDR_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_INET_ADDR_C}
     children:
     - type: Attributes
       children:
@@ -265,7 +265,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_INET_NTOP_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_INET_NTOP_C}
     children:
     - type: Attributes
       children:
@@ -274,7 +274,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_HIF_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_HIF_C}
     children:
     - type: Attributes
       children:
@@ -283,7 +283,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_HIF_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_HIF_H}
     children:
     - type: Attributes
       children:
@@ -292,7 +292,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_OTA_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_OTA_C}
     children:
     - type: Attributes
       children:
@@ -301,7 +301,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_OTA_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_OTA_H}
     children:
     - type: Attributes
       children:
@@ -310,7 +310,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_PERIPH_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_PERIPH_C}
     children:
     - type: Attributes
       children:
@@ -319,7 +319,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_PERIPH_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_PERIPH_H}
     children:
     - type: Attributes
       children:
@@ -328,7 +328,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_SOCKET_HOST_IF_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_SOCKET_HOST_IF_H}
     children:
     - type: Attributes
       children:
@@ -337,7 +337,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_SSL_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_SSL_C}
     children:
     - type: Attributes
       children:
@@ -346,7 +346,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_SSL_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_SSL_H}
     children:
     - type: Attributes
       children:
@@ -355,7 +355,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_TYPES_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_TYPES_H}
     children:
     - type: Attributes
       children:
@@ -364,7 +364,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_WIFI_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_WIFI_C}
     children:
     - type: Attributes
       children:
@@ -373,7 +373,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_M2M_WIFI_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_M2M_WIFI_H}
     children:
     - type: Attributes
       children:
@@ -382,7 +382,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NETINET_IN_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NETINET_IN_H}
     children:
     - type: Attributes
       children:
@@ -391,7 +391,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMASIC_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMASIC_C}
     children:
     - type: Attributes
       children:
@@ -400,7 +400,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMASIC_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMASIC_H}
     children:
     - type: Attributes
       children:
@@ -409,7 +409,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMBUS_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMBUS_C}
     children:
     - type: Attributes
       children:
@@ -418,7 +418,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMBUS_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMBUS_H}
     children:
     - type: Attributes
       children:
@@ -427,7 +427,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMDRV_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMDRV_C}
     children:
     - type: Attributes
       children:
@@ -436,7 +436,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMDRV_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMDRV_H}
     children:
     - type: Attributes
       children:
@@ -445,7 +445,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMSPI_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMSPI_C}
     children:
     - type: Attributes
       children:
@@ -454,7 +454,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NMSPI_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NMSPI_H}
     children:
     - type: Attributes
       children:
@@ -463,7 +463,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NM_BSP_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NM_BSP_H}
     children:
     - type: Attributes
       children:
@@ -472,7 +472,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NM_COMMON_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_NM_COMMON_C}
     children:
     - type: Attributes
       children:
@@ -481,7 +481,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NM_COMMON_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NM_COMMON_H}
     children:
     - type: Attributes
       children:
@@ -490,7 +490,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_NM_DEBUG_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_NM_DEBUG_H}
     children:
     - type: Attributes
       children:
@@ -499,7 +499,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_SOCKET_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_SOCKET_C}
     children:
     - type: Attributes
       children:
@@ -508,7 +508,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_SOCKET_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_SOCKET_H}
     children:
     - type: Attributes
       children:
@@ -517,7 +517,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_SPI_FLASH_C}
+    attributes: {id: WIFI_WINC1500_19_7_6_SPI_FLASH_C}
     children:
     - type: Attributes
       children:
@@ -526,7 +526,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_SPI_FLASH_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_SPI_FLASH_H}
     children:
     - type: Attributes
       children:
@@ -535,7 +535,7 @@ children:
         children:
         - {type: Value, value: 'false'}
   - type: File
-    attributes: {id: WIFI_WINC1500_19_7_5_SPI_FLASH_MAP_H}
+    attributes: {id: WIFI_WINC1500_19_7_6_SPI_FLASH_MAP_H}
     children:
     - type: Attributes
       children:

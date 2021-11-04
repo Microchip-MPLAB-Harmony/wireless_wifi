@@ -1,42 +1,49 @@
-/**
- *
- * \file
- *
- * \brief WINC Application Interface Types.
- *
- * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
- *
- * \asf_license_start
- *
- * \page License
- *
- * Subject to your compliance with these terms, you may use Microchip
- * software and any derivatives exclusively with Microchip products.
- * It is your responsibility to comply with third party license terms applicable
- * to your use of third party software (including open source software) that
- * may accompany Microchip software.
- *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
- * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
- * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
- * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
- * LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL
- * LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE
- * SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE
- * POSSIBILITY OR THE DAMAGES ARE FORESEEABLE.  TO THE FULLEST EXTENT
- * ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY
- * RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
- * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *
- * \asf_license_stop
- *
- */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
- */
+/*******************************************************************************
+  File Name:
+    m2m_types.h
 
-#ifndef _M2M_TYPES_H_
-#define _M2M_TYPES_H_
+  Summary:
+    WINC1500 Application Interface Internal Types
+
+  Description:
+    WINC1500 Application Interface Internal Types
+ *******************************************************************************/
+
+//DOM-IGNORE-BEGIN
+/*******************************************************************************
+* Copyright (C) 2021 Microchip Technology Inc. and its subsidiaries.
+*
+* Subject to your compliance with these terms, you may use Microchip software
+* and any derivatives exclusively with Microchip products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may
+* accompany Microchip software.
+*
+* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+* PARTICULAR PURPOSE.
+*
+* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+*******************************************************************************/
+// DOM-IGNORE-END
+
+#ifndef __M2M_WIFI_TYPES_H__
+#define __M2M_WIFI_TYPES_H__
+
+
+/*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+INCLUDES
+*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
+
+#include "nm_common.h"
+
 
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
 MACROS
@@ -76,58 +83,100 @@ MACROS
     ( ((uint32_t)M2M_MAKE_VERSION((fw_major),  (fw_minor),  (fw_patch)))  << M2M_FW_VERSION_SHIFT) | \
     ( ((uint32_t)M2M_MAKE_VERSION((drv_major), (drv_minor), (drv_patch))) << M2M_DRV_VERSION_SHIFT))
 
+#define REL_19_7_6_VER          M2M_MAKE_VERSION_INFO(19,7,6,19,3,0)
+#define REL_19_7_5_VER          M2M_MAKE_VERSION_INFO(19,7,5,19,3,0)
+#define REL_19_7_0_VER          M2M_MAKE_VERSION_INFO(19,7,0,19,3,0)
+#define REL_19_6_4_VER          M2M_MAKE_VERSION_INFO(19,6,4,19,3,0)
+#define REL_19_6_0_VER          M2M_MAKE_VERSION_INFO(19,6,0,19,3,0)
+#define REL_19_5_3_VER          M2M_MAKE_VERSION_INFO(19,5,3,19,3,0)
+#define REL_19_5_2_VER          M2M_MAKE_VERSION_INFO(19,5,2,19,3,0)
+#define REL_19_5_1_VER          M2M_MAKE_VERSION_INFO(19,5,1,19,3,0)
+#define REL_19_5_0_VER          M2M_MAKE_VERSION_INFO(19,5,0,19,3,0)
+#define REL_19_4_6_VER          M2M_MAKE_VERSION_INFO(19,4,6,19,3,0)
+#define REL_19_4_5_VER          M2M_MAKE_VERSION_INFO(19,4,5,19,3,0)
+#define REL_19_4_4_VER          M2M_MAKE_VERSION_INFO(19,4,4,19,3,0)
+#define REL_19_4_3_VER          M2M_MAKE_VERSION_INFO(19,4,3,19,3,0)
+#define REL_19_4_2_VER          M2M_MAKE_VERSION_INFO(19,4,2,19,3,0)
+#define REL_19_4_1_VER          M2M_MAKE_VERSION_INFO(19,4,1,19,3,0)
+#define REL_19_4_0_VER          M2M_MAKE_VERSION_INFO(19,4,0,19,3,0)
+#define REL_19_3_1_VER          M2M_MAKE_VERSION_INFO(19,3,1,19,3,0)
+#define REL_19_3_0_VER          M2M_MAKE_VERSION_INFO(19,3,0,19,3,0)
+#define REL_19_2_2_VER          M2M_MAKE_VERSION_INFO(19,2,2,19,2,0)
+#define REL_19_2_1_VER          M2M_MAKE_VERSION_INFO(19,2,1,19,2,0)
+#define REL_19_2_0_VER          M2M_MAKE_VERSION_INFO(19,2,0,19,2,0)
+#define REL_19_1_0_VER          M2M_MAKE_VERSION_INFO(19,1,0,18,2,0)
+#define REL_19_0_0_VER          M2M_MAKE_VERSION_INFO(19,0,0,18,1,1)
+
 /*======*======*======*======*
         FIRMWARE VERSION NO INFO
  *======*======*======*======*/
 
 #define M2M_RELEASE_VERSION_MAJOR_NO                        (19)
-/*!< Firmware Major release version number. */
+/*!< Firmware Major release version number.
+*/
 
 #define M2M_RELEASE_VERSION_MINOR_NO                        (7)
-/*!< Firmware Minor release version number. */
+/*!< Firmware Minor release version number.
+*/
 
-#define M2M_RELEASE_VERSION_PATCH_NO                        (5)
-/*!< Firmware patch release version number. */
+#define M2M_RELEASE_VERSION_PATCH_NO                        (6)
+/*!< Firmware patch release version number.
+*/
 
 /*======*======*======*======*
   SUPPORTED DRIVER VERSION NO INFO
  *======*======*======*======*/
 
 #define M2M_MIN_REQ_DRV_VERSION_MAJOR_NO                        (19)
-/*!< Driver Major release version number. */
+/*!< Driver Major release version number.
+*/
+
 
 #define M2M_MIN_REQ_DRV_VERSION_MINOR_NO                        (3)
-/*!< Driver Minor release version number. */
+/*!< Driver Minor release version number.
+*/
 
 #define M2M_MIN_REQ_DRV_VERSION_PATCH_NO                        (0)
-/*!< Driver patch release version number. */
+/*!< Driver patch release version number.
+*/
+
+#define M2M_MIN_REQ_DRV_SVN_VERSION                             (0)
+/*!< Driver svn version.
+*/
 
 #if !defined(M2M_RELEASE_VERSION_MAJOR_NO) || !defined(M2M_RELEASE_VERSION_MINOR_NO)
 #error Undefined version number
 #endif
 
-/**@}*/     // VERSIONDEF
+/**@}*/     //VERSIONDEF
 
-/**@addtogroup  WLANDefines
+/**@addtogroup  WlanDefines
  * @{
  */
 
 #define M2M_BUFFER_MAX_SIZE                             (1600UL - 4)
-/*!< Maximum size for the shared packet buffer. */
+/*!< Maximum size for the shared packet buffer.
+ */
 
-#define M2M_MAC_ADDRES_LEN                              6
-/*!< The size of the 802 MAC address. */
+#define M2M_MAC_ADDRES_LEN                               6
+/*!< The size of the 802 MAC address.
+ */
 
 #define M2M_ETHERNET_HDR_OFFSET                         34
-/*!< The offset of the Ethernet header within the WLAN Tx Buffer. */
+/*!< The offset of the Ethernet header within the WLAN Tx Buffer.
+ */
+
 
 #define M2M_ETHERNET_HDR_LEN                            14
-/*!< Length of the Ethernet header in bytes. */
+/*!< Length of the Ethernet header in bytes.
+*/
+
 
 #define M2M_MAX_SSID_LEN                                33
 /*!< 1 more than the max SSID length.
     This matches the size of SSID buffers (max SSID length + 1-byte length field).
  */
+
 
 #define M2M_MAX_PSK_LEN                                 65
 /*!< 1 more than the WPA PSK length (in ASCII format).
@@ -141,10 +190,12 @@ MACROS
  */
 
 #define M2M_DEVICE_NAME_MAX                             48
-/*!< Maximum Size for the device name including the NULL termination. */
+/*!< Maximum Size for the device name including the NULL termination.
+ */
 
 #define M2M_NTP_MAX_SERVER_NAME_LENGTH                  32
-/*!< Maximum NTP server name length */
+/*!< Maximum NTP server name length
+*/
 
 #define M2M_LISTEN_INTERVAL                             1
 /*!< The STA uses the Listen Interval parameter to indicate to the AP how
@@ -153,30 +204,33 @@ MACROS
 */
 
 #define MAX_HIDDEN_SITES                                4
-/*!< Max number of hidden SSID supported by scan request */
+/*!<
+    max number of hidden SSID supported by scan request
+*/
 
 #define M2M_CUST_IE_LEN_MAX                             252
-/*!< The maximum size of IE (Information Element). */
+/*!< The maximum size of IE (Information Element).
+*/
 
 #define M2M_CRED_STORE_FLAG                             0x01
-/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that WiFi connection
+/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that Wi-Fi connection
     credentials should be stored in WINC flash.
 */
 #define M2M_CRED_ENCRYPT_FLAG                           0x02
-/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that WiFi connection
+/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that Wi-Fi connection
     credentials should be encrypted when stored in WINC flash.
 */
 #define M2M_CRED_IS_STORED_FLAG                         0x10
-/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that WiFi connection
+/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that Wi-Fi connection
     credentials are stored in WINC flash. May only be set by WINC firmware.
 */
 #define M2M_CRED_IS_ENCRYPTED_FLAG                      0x20
-/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that WiFi connection
+/*!< Flag used in @ref tstrM2mConnCredHdr to indicate that Wi-Fi connection
     credentials are encrypted in WINC flash. May only be set by WINC firmware.
 */
 
 #define M2M_WIFI_CONN_BSSID_FLAG                        0x01
-/*!< Flag used in @ref tstrM2mConnCredCmn to indicate that WiFi connection
+/*!< Flag used in @ref tstrM2mConnCredCmn to indicate that Wi-Fi connection
     must be restricted to an AP with a certain BSSID.
 */
 
@@ -185,14 +239,15 @@ MACROS
     for authentication with Enterprise methods.
 */
 #define M2M_AUTH_1X_PASSWORD_LEN_MAX                    256
-/*!< The maximum length (in ASCII characters) of password for authentication with Enterprise MSCHAPv2 methods. */
+/*!< The maximum length (in ASCII characters) of password for authentication with Enterprise MSCHAPv2 methods.
+*/
 #define M2M_AUTH_1X_PRIVATEKEY_LEN_MAX                  256
 /*!< The maximum length (in bytes) of private key modulus for authentication with Enterprise TLS methods.
     Private key exponent must be the same length as modulus, pre-padded with 0s if necessary.
 */
 #define M2M_AUTH_1X_CERT_LEN_MAX                        1584
-/*!< The maximum length (in bytes) of certificate for authentication with Enterprise TLS methods. */
-
+/*!< The maximum length (in bytes) of certificate for authentication with Enterprise TLS methods.
+*/
 #define M2M_802_1X_UNENCRYPTED_USERNAME_FLAG            0x80
 /*!< Flag to indicate that the 802.1x user-name should be sent (unencrypted) in the initial EAP
     identity response. Intended for use with EAP-TLS only.
@@ -203,12 +258,14 @@ MACROS
     "Username@Domain". (Note that the '@' or '\' must be included in the domain name.)
 */
 #define M2M_802_1X_MSCHAP2_FLAG                         0x01
-/*!< Flag to indicate 802.1x MsChapV2 credentials: domain/user-name/password. */
+/*!< Flag to indicate 802.1x MsChapV2 credentials: domain/user-name/password.
+*/
 #define M2M_802_1X_TLS_FLAG                             0x02
-/*!< Flag to indicate 802.1x TLS credentials: domain/user-name/private-key/certificate. */
-
+/*!< Flag to indicate 802.1x TLS credentials: domain/user-name/private-key/certificate.
+*/
 #define M2M_802_1X_TLS_CLIENT_CERTIFICATE               1
-/*!< Info type used in @ref tstrM2mWifiAuthInfoHdr to indicate Enterprise TLS client certificate. */
+/*!< Info type used in @ref tstrM2mWifiAuthInfoHdr to indicate Enterprise TLS client certificate.
+*/
 
 #define PSK_CALC_LEN                                    40
 /*!< PSK is 32 bytes generated either:
@@ -217,21 +274,34 @@ MACROS
     40 byte array is required during SHA1 operations, so we define PSK_CALC_LEN as 40.
 */
 
+#define PWR_DEFAULT                                        PWR_HIGH
 /*********************
  *
  * WIFI GROUP requests
  */
 
 #define M2M_CONFIG_CMD_BASE                                 1
-/*!< The base value of all the host configuration commands opcodes. */
+/*!< The base value of all the host configuration commands opcodes.
+*/
 #define M2M_STA_CMD_BASE                                    40
-/*!< The base value of all the station mode host commands opcodes. */
+/*!< The base value of all the station mode host commands opcodes.
+*/
 #define M2M_AP_CMD_BASE                                     70
-/*!< The base value of all the Access Point mode host commands opcodes. */
+/*!< The base value of all the Access Point mode host commands opcodes.
+*/
+
+/**@cond P2P_DOC
+ */
+#define M2M_P2P_CMD_BASE                                    90
+/*!< The base value of all the P2P mode host commands opcodes.
+*/
+/**@endcond*/ //P2P_DOC
+
 #define M2M_SERVER_CMD_BASE                                 100
-/*!< The base value of all the power save mode host commands codes. */
+/*!< The base value of all the power save mode host commands codes.
+*/
 #define M2M_GEN_CMD_BASE                                    105
-/*!< The base value of additional host WiFi command opcodes.
+/*!< The base value of additional host wifi command opcodes.
  * Usage restrictions (eg STA mode only) should always be made clear at the API layer in any case.
 */
 /**********************
@@ -251,44 +321,58 @@ MACROS
 */
 
 #define M2M_MAX_GRP_NUM_REQ                                 (127)
-/*!< Max number of request in one group equal to 127 as the last bit reserved for config or data pkt */
+/*!< max number of request in one group equal to 127 as the last bit reserved for config or data pkt
+*/
 
-#define WEP_40_KEY_SIZE                                     (5)
-/*!< The size in bytes of a 40-bit wep key. */
-#define WEP_104_KEY_SIZE                                    (13)
-/*!< The size in bytes of a 104-bit wep key. */
+#define WEP_40_KEY_SIZE                                     ((uint8_t)5)
+/*!< The size in bytes of a 40-bit wep key.
+*/
+#define WEP_104_KEY_SIZE                                    ((uint8_t)13)
+/*!< The size in bytes of a 104-bit wep key.
+*/
 
-#define WEP_40_KEY_STRING_SIZE                              (10)
-/*!< The string length of a 40-bit wep key. */
-#define WEP_104_KEY_STRING_SIZE                             (26)
-/*!< The string length of a 104-bit wep key. */
+#define WEP_40_KEY_STRING_SIZE                              ((uint8_t)10)
+/*!< The string length of a 40-bit wep key.
+*/
+#define WEP_104_KEY_STRING_SIZE                             ((uint8_t)26)
+/*!< The string length of a 104-bit wep key.
+*/
 
-#define WEP_KEY_MAX_INDEX                                   (4)
+#define WEP_KEY_MAX_INDEX                                   ((uint8_t)4)
 /*!< WEP key index is in the range 1 to 4 inclusive. (This is decremented to
  * result in an index in the range 0 to 3 on air.)
 */
 #define M2M_SHA256_CONTEXT_BUFF_LEN                         (128)
-/*!< SHA256 context size */
+/*!< sha256 context size
+*/
 #define M2M_SCAN_DEFAULT_NUM_SLOTS                          (2)
-/*!< The default number of scan slots used by the WINC board. */
+/*!< The default number of scan slots used by the WINC board.
+*/
 #define M2M_SCAN_DEFAULT_SLOT_TIME                          (30)
-/*!< The default duration in milliseconds of an active scan slot used by the WINC board. */
+/*!< The default duration in milliseconds of an active scan slot used by the WINC board.
+*/
 #define M2M_SCAN_DEFAULT_PASSIVE_SLOT_TIME                  (300)
-/*!< The passive scan slot default duration in ms. */
+/*!< The passive scan slot default duration in ms.
+*/
 #define M2M_SCAN_DEFAULT_NUM_PROBE                          (2)
-/*!< The default number of probes per scan slot. */
+/*!< The default number of probes per scan slot.
+*/
 #define M2M_FASTCONNECT_DEFAULT_RSSI_THRESH                 (-45)
-/*!< The default threshold RSSI for fast reconnection to an AP. */
+/*!< The default threshold RSSI for fast reconnection to an AP.
+*/
 
 /*======*======*======*======*
     TLS DEFINITIONS
  *======*======*======*======*/
 #define TLS_FILE_NAME_MAX                               48
-/*!< Maximum length for each TLS certificate file name including null terminator. */
+/*!<  Maximum length for each TLS certificate file name including null terminator.
+*/
 #define TLS_SRV_SEC_MAX_FILES                           8
-/*!< Maximum number of certificates allowed in TLS_SRV section. */
+/*!<  Maximum number of certificates allowed in TLS_SRV section.
+*/
 #define TLS_SRV_SEC_START_PATTERN_LEN                   8
-/*!< Length of certificate struct start pattern. */
+/*!<  Length of certificate struct start pattern.
+*/
 
 /*======*======*======*======*
     SSL DEFINITIONS
@@ -311,6 +395,8 @@ MACROS
 /*<!
     CRL contains certificate hashes
 */
+
+#define TLS_CERTS_CHUNKED_SIG_VALUE 0x6ec8
 
 /* Commonly used initializers for rate lists for B, G, N or mixed modes for iteration on rates. */
 #define WLAN_11B_RATES_INITIALIZER { \
@@ -349,22 +435,32 @@ MACROS
 
 #define DEFAULT_CONF_AR_INITIALIZER { 5, 1, TX_RATE_AUTO, TX_RATE_AUTO, 10, 5, 3 }
 
-/**@}*/     // WLANDefines
+/**@}*/     //WlanDefines
 
 /**@addtogroup OTADEFINE
  * @{
  */
-
 /*======*======*======*======*
     OTA DEFINITIONS
  *======*======*======*======*/
 
 #define OTA_STATUS_VALID                    (0x12526285)
-/*!< Magic value in the control structure for a valid image after ROLLBACK. */
+/*!<
+    Magic value updated in the Control structure in case of ROLLBACK image Valid
+*/
 #define OTA_STATUS_INVALID                  (0x23987718)
-/*!< Magic value in the control structure for a invalid image after ROLLBACK. */
+/*!<
+    Magic value updated in the Control structure in case of ROLLBACK image InValid
+*/
 #define OTA_MAGIC_VALUE                     (0x1ABCDEF9)
-/*!< Magic value set at the beginning of the OTA image header. */
+/*!<
+    Magic value set at the beginning of the OTA image header
+*/
+#define M2M_MAGIC_APP                       (0xef522f61UL)
+/*!<
+    Magic value set at the beginning of the Cortus OTA image header
+*/
+
 #define OTA_FORMAT_VER_0                    (0)
 /*!<
     Control structure format version 0.\n
@@ -382,25 +478,30 @@ MACROS
 */
 #define OTA_SHA256_DIGEST_SIZE              (32)
 /*!<
-    SHA256 digest size in the OTA image.
-    The SHA256 digest is set at the beginning of image before the OTA header.
+ Sha256 digest size in the OTA image,
+ the sha256 digest is set at the beginning of image before the OTA header
  */
 
-#define MAX_FILE_READ_STEP                  128
-/*!< Max amount of bytes to read a file via HIF messages. */
+#define MAX_FILE_READ_STEP               128
+/*!<
+ Max amount of bytes to read a file via HIF messages.
+ */
 
 #define HFD_INVALID_HANDLER                 (0xff)
-/*!< Defines an ID which symbolizes an invalid handler. */
-/**@}*/     // OTADEFINE
+/*!<
+ Defines an ID which symbolizes an invalid handler.
+ */
+/**@}*/     //OTADEFINE
 
 #define tstrM2MSNTPConfig_PAD (4 - ((M2M_NTP_MAX_SERVER_NAME_LENGTH + 1 + 1) % 4))
 
-/**@addtogroup WLANEnums
+/**@addtogroup WlanEnums
  * @{
  */
-
-typedef enum
-{
+/*======*======*======*======*
+ *   FLASH ID DEFINITIONS    *
+ *======*======*======*======*/
+typedef enum {
     ENTRY_ID_FW         = 0x0011,
     ENTRY_ID_PLLGAIN    = 0x0021,
     ENTRY_ID_TLSROOT    = 0x0031,
@@ -412,69 +513,81 @@ typedef enum
     ENTRY_ID_HOSTFILE   = 0x0041
 } tenuFlashLUTEntryID;
 
-/*!
-@enum       tenuM2mDefaultConnErrcode
-
-@brief
-
-*/
-typedef enum
-{
-    M2M_DEFAULT_CONN_INPROGRESS = (-23),
-    /*!< Failure response due to another connection being already in progress */
+/*======*======*======*======*
+    CONNECTION ERROR DEFINITIONS
+ *======*======*======*======*/
+typedef enum {
+    M2M_DEFAULT_CONN_INPROGRESS = ((int8_t)-23),
+    /*!<
+    A failure that indicates that a default connection or forced connection is in progress
+    */
     M2M_DEFAULT_CONN_FAIL,
-    /*!< Failure to connect to the cached network */
+    /*!<
+    A failure response that indicates that the winc failed to connect to the cached network
+    */
     M2M_DEFAULT_CONN_SCAN_MISMATCH,
-    /*!< Failure to find any of the cached networks in the scan results. */
+    /*!<
+    A failure response that indicates that no one of the cached networks
+    was found in the scan results, as a result to the function call m2m_default_connect.
+    */
     M2M_DEFAULT_CONN_EMPTY_LIST
-    /*!< Failure due to empty network list. */
+    /*!<
+    A failure response that indicates an empty network list as
+    a result to the function call m2m_default_connect.
+    */
+
 } tenuM2mDefaultConnErrcode;
 
 /*!
-@enum       tenuM2mConnChangedErrcode
+@enum   \
+    tenuM2mConnChangedErrcode
 
 @brief
+
 */
-typedef enum
-{
-    M2M_ERR_SCAN_FAIL = (1),
-    /*!< Failure to perform the scan operation. */
+typedef enum {
+     M2M_ERR_SCAN_FAIL = ((uint8_t)1),
+    /*!< Indicate that the WINC board has failed to perform the scan operation.
+    */
     M2M_ERR_JOIN_FAIL,
-    /*!< Failure to join the BSS. */
+    /*!< Indicate that the WINC board has failed to join the BSS .
+    */
     M2M_ERR_AUTH_FAIL,
-    /*!< Failure to authenticate with the AP. */
+    /*!< Indicate that the WINC board has failed to authenticate with the AP.
+    */
     M2M_ERR_ASSOC_FAIL,
-    /*!< Failure to associate with the AP. */
+    /*!< Indicate that the WINC board has failed to associate with the AP.
+    */
     M2M_ERR_CONN_INPROGRESS
-    /*!< Failure due to another connection being in progress. */
+    /*!< Indicate that the WINC board has another connection request in progress.
+    */
 } tenuM2mConnChangedErrcode;
-
 /*!
-@enum       tenuM2mWepKeyIndex
+@enum   \
+    tenuM2mWepKeyIndex
 
 @brief
+
 */
-typedef enum
-{
-    M2M_WIFI_WEP_KEY_INDEX_1 = (1),
-    /*!< Index 1 for WEP key Authentication */
+typedef enum {
+    M2M_WIFI_WEP_KEY_INDEX_1 = ((uint8_t) 1),
     M2M_WIFI_WEP_KEY_INDEX_2,
-    /*!< Index 2 for WEP key Authentication */
     M2M_WIFI_WEP_KEY_INDEX_3,
-    /*!< Index 3 for WEP key Authentication */
     M2M_WIFI_WEP_KEY_INDEX_4
-    /*!< Index 4 for WEP key Authentication */
+    /*!< Index for WEP key Authentication
+    */
 } tenuM2mWepKeyIndex;
 
 /*!
-@enum       tenuM2mPwrMode
+@enum   \
+    tenuM2mPwrMode
 
 @brief
+
 */
-typedef enum
-{
-    PWR_AUTO = (1),
-    /*!< Firmware will decide the best power mode to use internally. */
+typedef enum {
+    PWR_AUTO = ((uint8_t) 1),
+    /*!< FW will decide the best power mode to use internally. */
     PWR_LOW1,
     /*!< Low power mode #1 */
     PWR_LOW2,
@@ -484,27 +597,29 @@ typedef enum
 } tenuM2mPwrMode;
 
 /*!
-@struct     tstrM2mPwrMode
+@struct \
+    tstrM2mPwrMode
 
 @brief
-            This struct stores the Power Save modes.
+    Power Mode
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8PwrMode;
-    /*!< Power Save Mode */
+    /*!< power Save Mode
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mPwrMode;
-
 /*!
-@enum       tenuM2mTxPwrLevel
+@enum   \
+    tenuM2mTxPwrLevel
 
 @brief
+
 */
-typedef enum
-{
-    TX_PWR_HIGH = (1),
+typedef enum {
+    TX_PWR_HIGH = ((uint8_t) 1),
     /*!< PPA Gain 6dbm  PA Gain 18dbm */
     TX_PWR_MED,
     /*!< PPA Gain 6dbm  PA Gain 12dbm */
@@ -513,99 +628,112 @@ typedef enum
 } tenuM2mTxPwrLevel;
 
 /*!
-@struct     tstrM2mTxPwrLevel
+@struct \
+    tstrM2mTxPwrLevel
 
 @brief
-            This struct stores the Tx Power levels.
+    Tx power level
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8TxPwrLevel;
-    /*!< Tx power level */
+    /*!< Tx power level
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mTxPwrLevel;
 
 /*!
-@struct     tstrM2mWiFiGainIdx
+@struct \
+    tstrM2mWiFiGainIdx
 
 @brief
-            Gain Table index selection corresponding to specific WiFi region.
+    Gain Table index selection corresponding to specific WiFi region.
 */
-typedef struct
-{
-    uint8_t u8GainTableIdx;
-    /*!< Gain table index */
-    uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+typedef struct {
+    uint8_t   u8GainTableIdx;
+    /*!< Gain table index
+    */
+    uint8_t   __PAD24__[3];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mWiFiGainIdx;
 
 /*!
-@struct     tstrM2mEnableLogs
+@struct \
+    tstrM2mEnableLogs
 
 @brief
-            This struct stores logging information.
+    Enable Firmware logs
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8Enable;
-    /*!< Enable/disable firmware logs */
+    /*!< Enable/Disable firmware logs
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mEnableLogs;
 
 /*!
-@struct     tstrM2mBatteryVoltage
+@struct \
+    tstrM2mBatteryVoltage
 
 @brief
-            This struct stores the battery voltage.
+    Battery Voltage
 */
-typedef struct
-{
+typedef struct {
     //Note: on SAMD D21 the size of double is 8 Bytes
-    uint16_t u16BattVolt;
-    /*!< Battery Voltage */
-    uint8_t  __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    uint16_t    u16BattVolt;
+    /*!< Battery Voltage
+    */
+    uint8_t __PAD16__[2];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mBatteryVoltage;
 
 /*!
-@struct     tstrM2mWiFiRoaming
+@struct \
+    tstrM2mWiFiRoaming
 
 @brief
-            Roaming related information.
+    Roaming related information .
 */
-typedef struct
-{
-    uint8_t u8EnableRoaming;
-    /*!< Enable/Disable Roaming */
-    uint8_t u8EnableDhcp;
-    /*!< Enable/Disable DHCP client when u8EnableRoaming is true */
-    uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+typedef struct {
+    uint8_t   u8EnableRoaming;
+    /*!< Enable/Disable Roaming
+    */
+    uint8_t   u8EnableDhcp;
+    /*!< Enable/Disable DHCP client when u8EnableRoaming is true
+    */
+    uint8_t   __PAD16__[2];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mWiFiRoaming;
 
 /*!
-@struct     tstrM2mWiFiXOSleepEnable
+@struct \
+    tstrM2mWiFiXOSleepEnable
 
 @brief
-            Choose to keep the XO on or off over deep sleep.
+    Choose to keep the XO on or off over deep sleep.
 */
-typedef struct
-{
-    uint8_t u8EnableXODuringSleep;
-    /*!< Enable/Disable XO during deep sleep */
-    uint8_t __PAD16__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+typedef struct {
+    uint8_t   u8EnableXODuringSleep;
+    /*!< Enable/Disable XO during deep sleep
+    */
+    uint8_t   __PAD16__[3];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mWiFiXOSleepEnable;
 
 /*!
-@enum       tenuM2mReqGroup
+@enum   \
+    tenuM2mReqGroup
 
 @brief
 */
-typedef enum
-{
+typedef enum {
     M2M_REQ_GROUP_MAIN = 0,
     M2M_REQ_GROUP_WIFI,
     M2M_REQ_GROUP_IP,
@@ -618,222 +746,290 @@ typedef enum
 } tenuM2mReqGroup;
 
 /*!
-@enum       tenuM2mReqpkt
+@enum   \
+    tenuM2mReqpkt
 
 @brief
 */
-typedef enum
-{
+typedef enum {
     M2M_REQ_CONFIG_PKT,
     M2M_REQ_DATA_PKT = 0x80 /*BIT7*/
 } tenuM2mReqpkt;
-
 /*!
-@enum       tenuM2mConfigCmd
+@enum   \
+    tenuM2mConfigCmd
 
 @brief
-            This enum contains host commands used to configure the WINC board.
+    This enum contains host commands used to configure the WINC board.
 
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_REQ_RESTART = M2M_CONFIG_CMD_BASE,
-    /*!< Restart the WINC MAC layer, it's doesn't restart the IP layer. */
+    /*!<
+        Restart the WINC MAC layer, it's doesn't restart the IP layer.
+    */
     M2M_WIFI_REQ_SET_MAC_ADDRESS,
-    /*!< Set the WINC mac address (not possible for production effused boards). */
+    /*!<
+        Set the WINC mac address (not possible for production effused boards).
+    */
     M2M_WIFI_REQ_CURRENT_RSSI,
-    /*!< Request the current connected AP RSSI. */
+    /*!<
+        Request the current connected AP RSSI.
+    */
     M2M_WIFI_RESP_CURRENT_RSSI,
-    /*!< Response to M2M_WIFI_REQ_CURRENT_RSSI with the RSSI value. */
+    /*!<
+        Response to M2M_WIFI_REQ_CURRENT_RSSI with the RSSI value.
+    */
     M2M_WIFI_REQ_GET_CONN_INFO,
-    /*!< Request connection information. */
+    /*!< Request connection information command.
+    */
     M2M_WIFI_RESP_CONN_INFO,
-    /*!< Response to M2M_WIFI_REQ_GET_CONN_INFO with the connection information. */
+
+    /*!< Connect with default AP response.
+    */
     M2M_WIFI_REQ_SET_DEVICE_NAME,
-    /*!< Request to set WINC device name property. */
+    /*!<
+        Set the WINC device name property.
+    */
     M2M_WIFI_REQ_START_PROVISION_MODE,
-    /*!< Request to start provisioning mode. */
+    /*!<
+        Start the provisioning mode for the M2M Device.
+    */
     M2M_WIFI_RESP_PROVISION_INFO,
-    /*!< Response to the host with the provisioning information.*/
+    /*!<
+        Send the provisioning information to the host.
+    */
     M2M_WIFI_REQ_STOP_PROVISION_MODE,
-    /*!< Request to stop provision mode. */
+    /*!<
+        Stop the current running provision mode.
+    */
     M2M_WIFI_REQ_SET_SYS_TIME,
-    /*!< Request to set system time. */
+    /*!<
+        Set time of day from host.
+    */
     M2M_WIFI_REQ_ENABLE_SNTP_CLIENT,
     /*!<
-        Request to enable the simple network time protocol to get the
-        time from the Internet. This is required for security purposes.
+        Enable the simple network time protocol to get the
+        time from the Internet. this is required for security purposes.
     */
     M2M_WIFI_REQ_DISABLE_SNTP_CLIENT,
     /*!<
-        Request to disable the simple network time protocol for applications that
+        Disable the simple network time protocol for applications that
         do not need it.
     */
     M2M_WIFI_RESP_MEMORY_RECOVER,
-    /*!< Reserved for debugging */
+    /*!<
+     * Reserved for debugging
+     * */
     M2M_WIFI_REQ_CUST_INFO_ELEMENT,
-    /*!< Request to add custom information to the Beacons IE. */
+    /*!< Add Custom Element to Beacon Management Frame.
+    */
     M2M_WIFI_REQ_SCAN,
-    /*!< Request scan command. */
+    /*!< Request scan command.
+    */
     M2M_WIFI_RESP_SCAN_DONE,
-    /*!< Response to notify scan complete. */
+    /*!< Scan complete notification response.
+    */
     M2M_WIFI_REQ_SCAN_RESULT,
-    /*!< Request for scan results. */
+    /*!< Request Scan results command.
+    */
     M2M_WIFI_RESP_SCAN_RESULT,
-    /*!< Response to provide the scan results.  */
+    /*!< Request Scan results response.
+    */
     M2M_WIFI_REQ_SET_SCAN_OPTION,
-    /*!< Request to set scan options "slot time, slot number .. etc".   */
+    /*!< Set Scan options "slot time, slot number .. etc" .
+    */
     M2M_WIFI_REQ_SET_SCAN_REGION,
-    /*!< Request to set scan region. */
+    /*!< Set scan region.
+    */
     M2M_WIFI_REQ_SET_POWER_PROFILE,
-    /*!< Request to set the Power Profile. */
+    /*!< The API shall set power mode to one of 3 modes
+    */
     M2M_WIFI_REQ_SET_TX_POWER,
-    /*!< Request to set the TX Power. */
+    /*!<  API to set TX power.
+    */
     M2M_WIFI_REQ_SET_BATTERY_VOLTAGE,
-    /*!< Request to set the Battery Voltage. */
+    /*!<  API to set Battery Voltage.
+    */
     M2M_WIFI_REQ_SET_ENABLE_LOGS,
-    /*!< Request to enable logs. */
+    /*!<  API to set Battery Voltage.
+    */
     M2M_WIFI_REQ_GET_SYS_TIME,
-    /*!< Request to get system time. */
+    /*!<
+        REQ GET time of day from WINC.
+    */
     M2M_WIFI_RESP_GET_SYS_TIME,
-    /*!< Response to retrieve the system time. */
+    /*!<
+        RESP time of day from host.
+    */
     M2M_WIFI_REQ_SEND_ETHERNET_PACKET,
-    /*!< Request to send Ethernet packet in bypass mode. */
+    /*!< Send Ethernet packet in bypass mode.
+    */
     M2M_WIFI_RESP_ETHERNET_RX_PACKET,
-    /*!< Response to receive an Ethernet packet in bypass mode. */
+    /*!< Receive Ethernet packet in bypass mode.
+    */
     M2M_WIFI_REQ_SET_MAC_MCAST,
-    /*!< Request to set multicast filters. */
+    /*!< Set the WINC multicast filters.
+    */
     M2M_WIFI_REQ_GET_PRNG,
-    /*!< Request PRNG. */
+    /*!< Request PRNG.
+    */
     M2M_WIFI_RESP_GET_PRNG,
-    /*!< Response for PRNG. */
+    /*!< Response for PRNG.
+    */
     M2M_WIFI_REQ_SCAN_SSID_LIST,
-    /*!< Request scan with list of hidden SSID plus the broadcast scan. */
+    /*!< Request scan with list of hidden SSID plus the broadcast scan.
+    */
     M2M_WIFI_REQ_SET_GAINS,
-    /*!< Request to set the PPA gain */
+    /*!< Request to set the PPA gain
+    */
     M2M_WIFI_REQ_PASSIVE_SCAN,
-    /*!< Request a passive scan. */
+    /*!< Request a passive scan.
+    */
     M2M_WIFI_REQ_CONG_AUTO_RATE,
-    /*!< Configure auto TX rate selection algorithm. */
+    /*!< Configure auto TX rate selection algorithm.
+    */
     M2M_WIFI_REQ_CONFIG_SNTP,
-    /*!< Configure NTP servers. */
+    /*!< Configure NTP servers.
+    */
     M2M_WIFI_REQ_SET_GAIN_TABLE_IDX,
-    /*!< API to set Gain table index. */
+    /*!<  API to set Gain table index.
+    */
     M2M_WIFI_REQRSP_DELETE_APID,
-    /*!< Request/response to delete AP security credentials from WINC flash. */
+    /*!< Request/response to delete AP security credentials from WINC flash.
+    */
     /* This enum is now 'full' in the sense that (M2M_WIFI_REQRSP_DELETE_APID+1) == M2M_STA_CMD_BASE.
      * Any new config values should be placed in tenuM2mGenCmd. */
     M2M_WIFI_MAX_CONFIG_ALL
 } tenuM2mConfigCmd;
 
 /*!
-@enum       tenuM2mStaCmd
+@enum   \
+    tenuM2mStaCmd
 
 @brief
-            This enum contains WINC commands while in Station mode.
+    This enum contains WINC commands while in Station mode.
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_REQ_CONNECT = M2M_STA_CMD_BASE,
-    /*!< Request to connect with a specified AP. This command is deprecated in favour of @ref M2M_WIFI_REQ_CONN. */
+    /*!< Connect with AP command. This command is deprecated in favor of @ref M2M_WIFI_REQ_CONN.
+    */
     M2M_WIFI_REQ_DEFAULT_CONNECT,
-    /*!< Request to connect with a cached AP. */
+    /*!< Connect with default AP command.
+    */
     M2M_WIFI_RESP_DEFAULT_CONNECT,
-    /*!< Response for the default connect.*/
+    /*!< Request connection information response.
+    */
     M2M_WIFI_REQ_DISCONNECT,
-    /*!< Request to disconnect from the AP. */
+    /*!< Request to disconnect from AP command.
+    */
     M2M_WIFI_RESP_CON_STATE_CHANGED,
-    /*!< Response to indicate a change in the connection state. */
+    /*!< Connection state changed response.
+    */
     M2M_WIFI_REQ_SLEEP,
-    /*!< Request to sleep. */
+    /*!< Set PS mode command.
+    */
     M2M_WIFI_REQ_WPS_SCAN,
-    /*!< Request to WPS scan. */
+    /*!< Request WPS scan command.
+    */
     M2M_WIFI_REQ_WPS,
-    /*!< Request to start WPS. */
+    /*!< Request WPS start command.
+    */
     M2M_WIFI_REQ_START_WPS,
     /*!< This command is for internal use by the WINC and
         should not be used by the host driver.
     */
     M2M_WIFI_REQ_DISABLE_WPS,
-    /*!< Request to disable WPS. */
+    /*!< Request to disable WPS command.
+    */
     M2M_WIFI_REQ_DHCP_CONF,
-    /*!< Response to indicate the obtained IP address.*/
+    /*!< Response indicating that IP address was obtained.
+    */
     M2M_WIFI_RESP_IP_CONFIGURED,
     /*!< This command is for internal use by the WINC and
         should not be used by the host driver.
     */
     M2M_WIFI_RESP_IP_CONFLICT,
-    /*!< Response to indicate a conflict in obtained IP address.
+    /*!< Response indicating a conflict in obtained IP address.
         The user should re attempt the DHCP request.
     */
     M2M_WIFI_REQ_ENABLE_MONITORING,
-    /*!< Request to enable monitor mode. */
+    /*!< Request to enable monitor mode  command.
+    */
     M2M_WIFI_REQ_DISABLE_MONITORING,
-    /*!< Request to disable monitor mode. */
+    /*!< Request to disable monitor mode  command.
+    */
     M2M_WIFI_RESP_WIFI_RX_PACKET,
-    /*!< Response to indicate a packet was received in monitor mode. */
+    /*!< Indicate that a packet was received in monitor mode.
+    */
     M2M_WIFI_REQ_SEND_WIFI_PACKET,
-    /*!< Request to send a packet in monitor mode. */
+    /*!< Send packet in monitor mode.
+    */
     M2M_WIFI_REQ_LSN_INT,
-    /*!< Request to set the listen interval. */
+    /*!< Set WiFi listen interval.
+    */
     M2M_WIFI_REQ_DOZE,
-    /*!< Request to doze */
+    /*!< Used to force the WINC to sleep in manual PS mode.
+    */
     M2M_WIFI_REQ_CONN,
     /*!< New command to connect with AP.
         This replaces M2M_WIFI_REQ_CONNECT. (Firmware continues to handle
         M2M_WIFI_REQ_CONNECT for backwards compatibility purposes.)
     */
     M2M_WIFI_IND_CONN_PARAM,
-    /*!< Provide extra information (such as Enterprise client certificate) required for connection. */
+    /*!< Provide extra information (such as Enterprise client certificate) required for connection.
+    */
     M2M_WIFI_REQ_DHCP_FAILURE,
-    /*!< Response indicating that IP address could not be obtained or renewed. If the IP could not be renewed then the previous IP will continue to be used. */
+    /*!< Response indicating that IP address could not be obtained or renewed. If the IP could not be renewed then the previous IP will continue to be used.
+    */
     M2M_WIFI_MAX_STA_ALL
 } tenuM2mStaCmd;
 
 /*!
-@enum       tenuM2mApCmd
+@enum   \
+    tenuM2mApCmd
 
 @brief
-            This enum contains WINC commands while in AP mode.
+    This enum contains WINC commands while in AP mode.
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_REQ_ENABLE_AP = M2M_AP_CMD_BASE,
-    /*!< Request to enable AP mode. */
+    /*!< Enable AP mode command.
+    */
     M2M_WIFI_REQ_DISABLE_AP,
-    /*!< Request to disable AP mode. */
+    /*!< Disable AP mode command.
+    */
     M2M_WIFI_REQ_RESTART_AP,
-    /*!<  */
+    /*!<
+    */
     M2M_WIFI_MAX_AP_ALL
 } tenuM2mApCmd;
 
 /*!
-@enum       tenuM2mServerCmd
+@enum   \
+    tenuM2mServerCmd
 
 @brief
-            These commands are currently not supported.
+    This enum contains WINC commands while in PS mode.
+    These command are currently not supported.
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_REQ_CLIENT_CTRL = M2M_SERVER_CMD_BASE,
-    /*!< Currently not supported.*/
     M2M_WIFI_RESP_CLIENT_INFO,
-    /*!< Currently not supported.*/
     M2M_WIFI_REQ_SERVER_INIT,
-    /*!< Currently not supported.*/
     M2M_WIFI_MAX_SERVER_ALL
 } tenuM2mServerCmd;
 
 /*!
-@enum       tenuM2mGenCmd
+@enum   \
+    tenuM2mGenCmd
 
 @brief
-            This enum contains additional WINC commands (overflow of previous enums).
+    This enum contains additional WINC commands (overflow of previous enums).
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_REQ_ROAMING = M2M_GEN_CMD_BASE,
-    /*!< Request to enable/disable WiFi roaming.
+    /*!< Request to enable/disable wifi roaming.
         (Processing matches @ref tenuM2mConfigCmd.)
     */
     M2M_WIFI_REQ_XO_SLEEP_ENABLE,
@@ -848,12 +1044,13 @@ typedef enum
 } tenuM2mGenCmd;
 
 /*!
-@enum       tenuM2mCryptoCmd
+@enum   \
+    tenuM2mCryptoCmd
 
 @brief
+
 */
-typedef enum
-{
+typedef enum {
     M2M_CRYPTO_REQ_SHA256_INIT = M2M_CRYPTO_CMD_BASE,
     M2M_CRYPTO_RESP_SHA256_INIT,
     M2M_CRYPTO_REQ_SHA256_UPDATE,
@@ -868,205 +1065,183 @@ typedef enum
 } tenuM2mCryptoCmd;
 
 /*!
-@enum       tenuM2mIpCmd
+@enum   \
+    tenuM2mIpCmd
 
 @brief
-            This enum contains all the WINC commands related to IP.
+
 */
-typedef enum
-{
-    M2M_IP_REQ_STATIC_IP_CONF = (10),
-    /*!< Request to set static IP.*/
+typedef enum {
+    /* Request IDs corresponding to the IP GROUP. */
+    M2M_IP_REQ_STATIC_IP_CONF = ((uint8_t) 10),
     M2M_IP_REQ_ENABLE_DHCP,
-    /*!< Request to enable DHCP.*/
     M2M_IP_REQ_DISABLE_DHCP
-    /*!< Request to disable DHCP.*/
 } tenuM2mIpCmd;
 
 /*!
-@enum       tenuM2mSigmaCmd
+@enum   \
+    tenuM2mSigmaCmd
 
 @brief
-            This enum contains all the WINC commands related to Sigma.
+
 */
-typedef enum
-{
-    M2M_SIGMA_ENABLE = (3),
-    /*!< Enable Sigma.*/
+typedef enum {
+    /* Request IDs corresponding to the IP GROUP. */
+    M2M_SIGMA_ENABLE = ((uint8_t) 3),
     M2M_SIGMA_TA_START,
-    /*!< Start the traffic agent.*/
     M2M_SIGMA_TA_STATS,
-    /*!< Get traffic statistics.*/
     M2M_SIGMA_TA_RECEIVE_STOP,
-    /*!< Stop receiving from the traffic agent.*/
     M2M_SIGMA_ICMP_ARP,
-    /*!< Send ARP.*/
     M2M_SIGMA_ICMP_RX,
-    /*!< Receive ICMP.*/
     M2M_SIGMA_ICMP_TX,
-    /*!< Transmit ICMP.*/
     M2M_SIGMA_UDP_TX,
-    /*!< Transmit UDP.*/
     M2M_SIGMA_UDP_TX_DEFER,
-    /*!< Transmit UDP defer.*/
     M2M_SIGMA_SECURITY_POLICY,
-    /*!< Set security policy.*/
     M2M_SIGMA_SET_SYSTIME
-    /*!< Set system time.*/
 } tenuM2mSigmaCmd;
 
 /*!
-@enum       tenuM2mConnState
+@enum   \
+    tenuM2mConnState
 
 @brief
-            This enum contains all the WiFi connection states.
+    Wi-Fi Connection State.
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_DISCONNECTED = 0,
-    /*!< WiFi state is disconnected. */
+    /*!< Wi-Fi state is disconnected.
+    */
     M2M_WIFI_CONNECTED,
-    /*!< WiFi state is connected. */
+    /*!< Wi-Fi state is connected.
+    */
     M2M_WIFI_ROAMED,
-    /*!< WiFi state is roamed to new AP. */
+    /*!< Wi-Fi state is roamed to new AP.
+    */
     M2M_WIFI_UNDEF = 0xff
-                     /*!< Undefined WiFi State. */
+    /*!< Undefined Wi-Fi State.
+    */
 } tenuM2mConnState;
 
 /*!
-@enum       tenuM2mSecType
+@enum   \
+    tenuM2mSecType
 
 @brief
-            This enum contains all the supported WiFi security types.
+    Wi-Fi Supported Security types.
 */
-typedef enum
-{
+typedef enum {
     M2M_WIFI_SEC_INVALID = 0,
-    /*!< Invalid security type. */
+    /*!< Invalid security type.
+    */
     M2M_WIFI_SEC_OPEN,
-    /*!< WiFi network is not secured. */
+    /*!< Wi-Fi network is not secured.
+    */
     M2M_WIFI_SEC_WPA_PSK,
-    /*!< WiFi network is secured with WPA/WPA2 personal(PSK). */
+    /*!< Wi-Fi network is secured with WPA/WPA2 personal(PSK).
+    */
     M2M_WIFI_SEC_WEP,
-    /*!< WEP is deprecated as of 19.7.5. */
+    /*!< WEP is deprecated as of 19.7.5. 
+    */
     M2M_WIFI_SEC_802_1X,
-    /*!< WiFi network is secured with WPA/WPA2 Enterprise.IEEE802.1x. */
+    /*!< Wi-Fi network is secured with WPA/WPA2 Enterprise.IEEE802.1x.
+     */
     M2M_WIFI_NUM_AUTH_TYPES
-    /*!< Upper limit for enum value. */
+    /*!< Upper limit for enum value.
+     */
 } tenuM2mSecType;
 
+
 /*!
-@enum       tenuM2mSecType
+@enum   \
+    tenuM2mSecType
 
 @brief
-            This enum contains all the supported WiFi SSID types.
+    Wi-Fi Supported SSID types.
 */
-typedef enum
-{
+typedef enum {
     SSID_MODE_VISIBLE = 0,
-    /*!< SSID is visible to others. */
+    /*!< SSID is visible to others.
+    */
     SSID_MODE_HIDDEN
-    /*!< SSID is hidden. */
+    /*!< SSID is hidden.
+    */
 } tenuM2mSsidMode;
 
 /*!
-@enum       tenuM2mScanCh
+@enum   \
+    tenuM2mScanCh
 
 @brief
-            This enum contains all the WiFi RF channels.
+    Wi-Fi RF Channels.
 @sa
-            tstrM2MScan
-            tstrM2MScanOption
+    tstrM2MScan
+    tstrM2MScanOption
 */
-typedef enum
-{
-    M2M_WIFI_CH_1 = (1),
-    /*!< Channel 1. */
+typedef enum {
+    M2M_WIFI_CH_1 = ((uint8_t) 1),
     M2M_WIFI_CH_2,
-    /*!< Channel 2. */
     M2M_WIFI_CH_3,
-    /*!< Channel 3. */
     M2M_WIFI_CH_4,
-    /*!< Channel 4. */
     M2M_WIFI_CH_5,
-    /*!< Channel 5. */
     M2M_WIFI_CH_6,
-    /*!< Channel 6. */
     M2M_WIFI_CH_7,
-    /*!< Channel 7. */
     M2M_WIFI_CH_8,
-    /*!< Channel 8. */
     M2M_WIFI_CH_9,
-    /*!< Channel 9. */
     M2M_WIFI_CH_10,
-    /*!< Channel 10. */
     M2M_WIFI_CH_11,
-    /*!< Channel 11. */
     M2M_WIFI_CH_12,
-    /*!< Channel 12. */
     M2M_WIFI_CH_13,
-    /*!< Channel 13. */
     M2M_WIFI_CH_14,
-    /*!< Channel 14. */
-    M2M_WIFI_CH_ALL = (255)
+    M2M_WIFI_CH_ALL = ((uint8_t) 255)
 } tenuM2mScanCh;
 
 /*!
-@enum       tenuM2mScanRegion
+@enum   \
+    tenuM2mScanRegion
 
 @brief
-            This enum contains all the WiFi channel regions.
+    Wi-Fi RF Channels.
 */
-typedef enum
-{
+typedef enum {
+
     REG_CH_1 = ((uint16_t) 1 << 0),
-    /*!< Region channel 1. */
     REG_CH_2 = ((uint16_t) 1 << 1),
-    /*!< Region channel 2. */
     REG_CH_3 = ((uint16_t) 1 << 2),
-    /*!< Region channel 3. */
     REG_CH_4 = ((uint16_t) 1 << 3),
-    /*!< Region channel 4. */
     REG_CH_5 = ((uint16_t) 1 << 4),
-    /*!< Region channel 5. */
     REG_CH_6 = ((uint16_t) 1 << 5),
-    /*!< Region channel 6. */
     REG_CH_7 = ((uint16_t) 1 << 6),
-    /*!< Region channel 7. */
     REG_CH_8 = ((uint16_t) 1 << 7),
-    /*!< Region channel 8. */
     REG_CH_9 = ((uint16_t) 1 << 8),
-    /*!< Region channel 9. */
     REG_CH_10 = ((uint16_t) 1 << 9),
-    /*!< Region channel 10. */
     REG_CH_11 = ((uint16_t) 1 << 10),
-    /*!< Region channel 11. */
     REG_CH_12 = ((uint16_t) 1 << 11),
-    /*!< Region channel 12. */
     REG_CH_13 = ((uint16_t) 1 << 12),
-    /*!< Region channel 13. */
     REG_CH_14 = ((uint16_t) 1 << 13),
-    /*!< Region channel 14. */
     REG_CH_ALL = ((uint16_t) 0x3FFF),
-    /*!< Region for all channels. */
     NORTH_AMERICA = ((uint16_t) 0x7FF),
-    /*!< North America region with 11 channels. */
-    EUROPE      = ((uint16_t) 0x1FFF),
-    /*!<Europe region with 13 channels */
-    ASIA        = ((uint16_t) 0x3FFF)
-                  /*!<Asia region with 14 channels */
+    /** 11 channel
+    */
+    EUROPE      =   ((uint16_t) 0x1FFF),
+    /** 13 channel
+    */
+    ASIA        =   ((uint16_t) 0x3FFF)
+    /* 14 channel
+    */
 } tenuM2mScanRegion;
 
+
 /*!
-@enum       tenuPowerSaveModes
+@enum   \
+    tenuPowerSaveModes
 
 @brief
-            This enum contains all the supported WiFi Power Save modes.
+    Power Save Modes.
 */
-typedef enum
-{
+typedef enum {
     M2M_NO_PS,
-    /*!< Power save is disabled. */
+    /*!< Power save is disabled.
+    */
     M2M_PS_AUTOMATIC,
     /*!< Power save is done automatically by the WINC.
         This mode doesn't disable all of the WINC modules and
@@ -1080,68 +1255,77 @@ typedef enum
     */
     M2M_PS_DEEP_AUTOMATIC,
     /*!< Power save is done automatically by the WINC.
-        Achieves the highest possible power save.
+        Achieve the highest possible power save.
     */
     M2M_PS_MANUAL
-    /*!< Power save is done manually by the user. */
+    /*!< Power save is done manually by the user.
+    */
 } tenuPowerSaveModes;
 
 /*!
-@enum       tenuM2mWifiMode
+@enum   \
+    tenuM2mWifiMode
 
 @brief
-            This enum contains all the supported WiFi Operation Modes.
+    Wi-Fi Operation Mode.
 */
-typedef enum
-{
-    M2M_WIFI_MODE_NORMAL = (1),
-    /*!< Normal Mode means to run customer firmware version. */
+typedef enum {
+    M2M_WIFI_MODE_NORMAL = ((uint8_t) 1),
+    /*!< Normal Mode means to run customer firmware version.
+     */
     M2M_WIFI_MODE_ATE_HIGH,
-    /*!< Config Mode in HIGH POWER means to run production test firmware version which is known as ATE (Burst) firmware. */
+    /*!< Config Mode in HIGH POWER means to run production test firmware version which is known as ATE (Burst) firmware.
+     */
     M2M_WIFI_MODE_ATE_LOW,
-    /*!< Config Mode in LOW POWER means to run production test firmware version which is known as ATE (Burst) firmware. */
+    /*!< Config Mode in LOW POWER means to run production test firmware version which is known as ATE (Burst) firmware.
+     */
     M2M_WIFI_MODE_ETHERNET,
-    /*!< Ethernet Mode */
+    /*!< ethernet Mode
+     */
     M2M_WIFI_MODE_MAX
 } tenuM2mWifiMode;
 
 /*!
-@enum       tenuWPSTrigger
+@enum   \
+    tenuWPSTrigger
 
 @brief
-            This enum contains the WPS triggering methods.
+    WPS Triggering Methods.
 */
-typedef enum
-{
+typedef enum {
     WPS_PIN_TRIGGER = 0,
-    /*!< WPS is triggered in PIN method. */
+    /*!< WPS is triggered in PIN method.
+    */
     WPS_PBC_TRIGGER = 4
-                      /*!< WPS is triggered via push button. */
+    /*!< WPS is triggered via push button.
+    */
 } tenuWPSTrigger;
 
 /*!
-@enum       tenuSNTPUseDHCP
+@enum   \
+    tenuSNTPUseDHCP
 
 @brief
-            Use NTP server provided by the DHCP server.
+    Use NTP server provided by the DHCP server.
 */
-typedef enum
-{
+typedef enum {
     SNTP_DISABLE_DHCP = 0,
-    /*!< Don't use the NTP server provided by the DHCP server when falling back. */
+    /*!< Don't use the NTP server provided by the DHCP server when falling back.
+    */
     SNTP_ENABLE_DHCP = 1
-                       /*!< Use the NTP server provided by the DHCP server when falling back. */
+    /*!< Use the NTP server provided by the DHCP server when falling back.
+    */
 } tenuSNTPUseDHCP;
 
 /*!
-@struct     tstrM2mWifiGainsParams
+@struct \
+    tstrM2mWifiGainsParams
 
 @brief
-            Gain Values
+    Gain Values
 */
-typedef struct
-{
-    uint16_t u8PPAGFor11B;
+typedef struct {
+    uint16_t    u8PPAGFor11B;
     /*!< PPA gain for 11B (as the RF document representation)
     PPA_AGC<0:2> Every bit have 3dB gain control each.
     for example:
@@ -1149,7 +1333,7 @@ typedef struct
     3 ->6db
     7 ->9db
     */
-    uint16_t u8PPAGFor11GN;
+    uint16_t    u8PPAGFor11GN;
     /*!< PPA gain for 11GN (as the RF document represented)
     PPA_AGC<0:2> Every bit have 3dB gain control each.
         for example:
@@ -1160,174 +1344,174 @@ typedef struct
 } tstrM2mWifiGainsParams;
 
 /*!
-@struct     tstrM2mConnCredHdr
+@struct \
+    tstrM2mConnCredHdr
 
 @brief
-            WiFi Connect Credentials Header
+    Wi-Fi Connect Credentials Header
 */
-typedef struct
-{
-    uint16_t u16CredSize;
+typedef struct {
+    uint16_t  u16CredSize;
     /*!< Total size of connect credentials, not including tstrM2mConnCredHdr:
             tstrM2mConnCredCmn
             Auth details (variable size)
     */
-    uint8_t u8CredStoreFlags;
+    uint8_t   u8CredStoreFlags;
     /*!< Credential storage options represented with flags:
             @ref M2M_CRED_STORE_FLAG
             @ref M2M_CRED_ENCRYPT_FLAG
             @ref M2M_CRED_IS_STORED_FLAG
             @ref M2M_CRED_IS_ENCRYPTED_FLAG
     */
-    uint8_t u8Channel;
-    /*!< WiFi channel(s) on which to attempt connection. */
+    uint8_t   u8Channel;
+    /*!< Wi-Fi channel(s) on which to attempt connection. */
 } tstrM2mConnCredHdr;
 
 /*!
-@struct     tstrM2mConnCredCmn
+@struct \
+    tstrM2mConnCredCmn
 
 @brief
-            WiFi Connect Credentials Common section
-*/
-typedef struct
-{
-    uint8_t u8SsidLen;
+    Wi-Fi Connect Credentials Common section
+    */
+typedef struct {
+    uint8_t   u8SsidLen;
     /*!< SSID length. */
-    uint8_t au8Ssid[M2M_MAX_SSID_LEN - 1];
+    uint8_t   au8Ssid[M2M_MAX_SSID_LEN-1];
     /*!< SSID. */
-    uint8_t u8Options;
+    uint8_t   u8Options;
     /*!< Common flags:
             @ref M2M_WIFI_CONN_BSSID_FLAG
     */
-    uint8_t au8Bssid[M2M_MAC_ADDRES_LEN];
-    /*!< BSSID to restrict on, or all 0 if @ref M2M_WIFI_CONN_BSSID_FLAG is not set in u8Options. */
-    uint8_t u8AuthType;
+    uint8_t   au8Bssid[M2M_MAC_ADDRES_LEN];
+    /*!< BSSID to restrict on, or all 0 if M2M_WIFI_CONN_BSSID_FLAG is not set in u8Options. */
+    uint8_t   u8AuthType;
     /*!< Connection auth type. See @ref tenuM2mSecType. */
-    uint8_t au8Rsv[3];
+    uint8_t   au8Rsv[3];
     /*!< Reserved for future use. Set to 0. */
 } tstrM2mConnCredCmn;
 
 /*!
-@struct     tstrM2mWifiWep
+@struct \
+    tstrM2mWifiWep
 
 @brief
-            WEP security key header.
+    WEP security key header.
 */
-typedef struct
-{
-    uint8_t u8KeyIndex;
+typedef struct {
+    uint8_t   u8KeyIndex;
     /*!< WEP Key Index. */
-    uint8_t u8KeyLen;
+    uint8_t   u8KeyLen;
     /*!< WEP Key Size. */
-    uint8_t au8WepKey[WEP_104_KEY_SIZE];
+    uint8_t   au8WepKey[WEP_104_KEY_SIZE];
     /*!< WEP Key represented in bytes (padded with 0's if WEP-40). */
-    uint8_t u8Rsv;
+    uint8_t   u8Rsv;
     /*!< Reserved for future use. Set to 0. */
 } tstrM2mWifiWep;
 
 /*!
-@struct     tstrM2mWifiPsk
+@struct \
+    tstrM2mWifiPsk
 
 @brief
-            Passphrase and PSK for WPA(2) PSK.
+    Passphrase and PSK for WPA(2) PSK.
 */
-typedef struct
-{
-    uint8_t u8PassphraseLen;
+typedef struct {
+    uint8_t   u8PassphraseLen;
     /*!< Length of passphrase (8 to 63) or 64 if au8Passphrase contains ASCII representation of PSK. */
-    uint8_t au8Passphrase[M2M_MAX_PSK_LEN - 1];
+    uint8_t   au8Passphrase[M2M_MAX_PSK_LEN-1];
     /*!< Passphrase, or ASCII representation of PSK if u8PassphraseLen is 64. */
-    uint8_t au8Psk[PSK_CALC_LEN];
+    uint8_t   au8Psk[PSK_CALC_LEN];
     /*!< PSK calculated by firmware. Driver sets this to 0. */
-    uint8_t u8PskCalculated;
+    uint8_t   u8PskCalculated;
     /*!< Flag used by firmware to avoid unnecessary recalculation of PSK. Driver sets this to 0. */
-    uint8_t au8Rsv[2];
+    uint8_t   au8Rsv[2];
     /*!< Reserved for future use. Set to 0. */
 } tstrM2mWifiPsk;
 
 /*!
-@struct     tstrM2mWifi1xHdr
+@struct \
+    tstrM2mWifi1xHdr
 
 @brief
-            WiFi Authentication 802.1x header for parameters.
-            The parameters (Domain, UserName, PrivateKey/Password) are appended to this structure.
+    Wi-Fi Authentication 802.1x header for parameters.
+    The parameters (Domain, UserName, PrivateKey/Password) are appended to this structure.
 */
-typedef struct
-{
-    uint8_t u8Flags;
+typedef struct {
+    uint8_t   u8Flags;
     /*!< 802.1x-specific flags:
             @ref M2M_802_1X_MSCHAP2_FLAG
             @ref M2M_802_1X_TLS_FLAG
             @ref M2M_802_1X_UNENCRYPTED_USERNAME_FLAG
             @ref M2M_802_1X_PREPEND_DOMAIN_FLAG
     */
-    uint8_t u8DomainLength;
+    uint8_t   u8DomainLength;
     /*!< Length of Domain. (Offset of Domain, within au81xAuthDetails, understood to be 0.) */
-    uint8_t u8UserNameLength;
+    uint8_t   u8UserNameLength;
     /*!< Length of UserName. (Offset of UserName, within au81xAuthDetails, understood to be u8DomainLength.) */
-    uint8_t u8HdrLength;
+    uint8_t   u8HdrLength;
     /*!< Length of header (offset of au81xAuthDetails within tstrM2mWifi1xHdr).
         Legacy implementations may have 0 here, in which case header is 12 bytes.
         The unusual placing of this field is in order to hit a zero in legacy implementations. */
-    uint16_t u16PrivateKeyOffset;
+    uint16_t  u16PrivateKeyOffset;
     /*!< Offset within au81xAuthDetails of PrivateKey/Password. */
-    uint16_t u16PrivateKeyLength;
+    uint16_t  u16PrivateKeyLength;
     /*!< Length of PrivateKey/Password. In the case of PrivateKey, this is the length of the modulus. */
-    uint16_t u16CertificateOffset;
+    uint16_t  u16CertificateOffset;
     /*!< Offset within au81xAuthDetails of Certificate. */
-    uint16_t u16CertificateLength;
+    uint16_t  u16CertificateLength;
     /*!< Length of Certificate. */
-    uint8_t au8TlsSpecificRootNameSha1[20];
+    uint8_t   au8TlsSpecificRootNameSha1[20];
     /*!< SHA1 digest of subject name to identify specific root certificate for phase 1 server verification. */
-    uint32_t u32Rsv1;
+    uint32_t  u32Rsv1;
     /*!< Reserved, set to 0. */
-    uint32_t u32TlsHsFlags;
+    uint32_t  u32TlsHsFlags;
     /*!< TLS handshake flags for phase 1. */
-    uint32_t u32Rsv2;
+    uint32_t  u32Rsv2;
     /*!< Reserved, set to 0. */
-    uint8_t au81xAuthDetails[];
+    uint8_t   au81xAuthDetails[];
     /*!< Placeholder for concatenation of Domain, UserName, PrivateKey/Password, Certificate.
             Certificate (for 1x Tls only) is sent over HIF separately from the other parameters. */
 } tstrM2mWifi1xHdr;
 
 /*!
-@struct     tstrM2mWifiAuthInfoHdr
+@struct \
+    tstrM2mWifiAuthInfoHdr
 
 @brief
-            Generic WiFi authentication information to be sent in a separate HIF message of type
-            @ref M2M_WIFI_IND_CONN_PARAM (preceding @ref M2M_WIFI_REQ_CONN).
+    Generic Wi-Fi authentication information to be sent in a separate HIF message of type
+    @ref M2M_WIFI_IND_CONN_PARAM (preceding @ref M2M_WIFI_REQ_CONN).
 */
-typedef struct
-{
-    uint8_t u8Type;
+typedef struct {
+    uint8_t   u8Type;
     /*!< Type of info:
             @ref M2M_802_1X_TLS_CLIENT_CERTIFICATE
     */
-    uint8_t au8Rsv[3];
+    uint8_t   au8Rsv[3];
     /*!< Reserved for future use. Set to 0. */
-    uint16_t u16InfoPos;
+    uint16_t  u16InfoPos;
     /*!< Information about positioning of the Info. The interpretation depends on u8Type. */
-    uint16_t u16InfoLen;
+    uint16_t  u16InfoLen;
     /*!< Info length (not including this header). */
-    uint8_t au8Info[];
+    uint8_t   au8Info[];
     /*!< Placeholder for info. */
 } tstrM2mWifiAuthInfoHdr;
 
 /*!
-@struct     tstrM2mWifiConnHdr
+@struct \
+    tstrM2mWifiConnHdr
 
 @brief
-            WiFi Connect Request (new format) for use with @ref M2M_WIFI_REQ_CONN.
-            This structure is sent across the HIF along with the relevant auth details. One of:
-            @ref tstrM2mWifiPsk
-            @ref tstrM2mWifiWep
-            @ref tstrM2mWifi1xHdr
-            If further authentication details need to be sent (such as client certificate for 1x TLS), they
-            are sent with header @ref tstrM2mWifiAuthInfoHdr in a preceding HIF message of type
-            @ref M2M_WIFI_IND_CONN_PARAM
+    Wi-Fi Connect Request (new format) for use with @ref M2M_WIFI_REQ_CONN.
+    This structure is sent across the HIF along with the relevant auth details. One of:
+        @ref tstrM2mWifiPsk
+        @ref tstrM2mWifiWep
+        @ref tstrM2mWifi1xHdr
+    If further authentication details need to be sent (such as client certificate for 1x TLS), they
+    are sent with header @ref tstrM2mWifiAuthInfoHdr in a preceding HIF message of type
+    @ref M2M_WIFI_IND_CONN_PARAM
 */
-typedef struct
-{
+typedef struct {
     tstrM2mConnCredHdr  strConnCredHdr;
     /*!< Credentials header. */
     tstrM2mConnCredCmn  strConnCredCmn;
@@ -1335,95 +1519,104 @@ typedef struct
 } tstrM2mWifiConnHdr;
 
 /*!
-@struct     tstrM2mWifiApId
+@struct \
+    tstrM2mWifiApId
 
 @brief
-            Specify an access point (by SSID)
+    Specify an access point (by SSID)
 */
-typedef struct
-{
-    uint8_t au8SSID[M2M_MAX_SSID_LEN];
+typedef struct {
+    uint8_t   au8SSID[M2M_MAX_SSID_LEN];
     /*!<
         SSID of the desired AP, prefixed by length byte.
         First byte 0xFF used to mean all access points.
     */
-    uint8_t __PAD__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+	uint8_t	__PAD__[3];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mWifiApId;
 
 /*!
-@struct     tstrM2MGenericResp
+@struct \
+    tstrM2MGenericResp
 
 @brief
-            Generic success/error response
+    Generic success/error response
 */
-typedef struct
-{
-    int8_t      s8ErrorCode;
+typedef struct {
+    int8_t       s8ErrorCode;
     /*!<
         Generic success/error code. Possible values are:
         - @ref M2M_SUCCESS
         - @ref M2M_ERR_FAIL
     */
-    uint8_t __PAD24__[3];
+    uint8_t   __PAD24__[3];
 } tstrM2MGenericResp;
 
 /*!
-@struct     tstrM2MWPSConnect
+@struct \
+    tstrM2MWPSConnect
 
 @brief
-            This struct stores the WPS configuration parameters.
+    WPS Configuration parameters
 
 @sa
-            tenuWPSTrigger
+    tenuWPSTrigger
 */
-typedef struct
-{
-    uint8_t u8TriggerType;
-    /*!< WPS triggering method (Push button or PIN) */
+typedef struct {
+    uint8_t     u8TriggerType;
+    /*!< WPS triggering method (Push button or PIN)
+    */
     char         acPinNumber[8];
-    /*!< WPS PIN No (for PIN method) */
+    /*!< WPS PIN No (for PIN method)
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2MWPSConnect;
 
 /*!
-@struct     tstrM2MWPSInfo
+@struct \
+    tstrM2MWPSInfo
 
-@brief      WPS Result
+@brief  WPS Result
 
-            This structure is passed to the application in response to a WPS request. If the WPS session is completed successfully, the
-            structure will have non-zero authentication type. If the WPS Session fails (due to error or timeout) the authentication type
-            is set to zero.
+    This structure is passed to the application in response to a WPS request. If the WPS session is completed successfully, the
+    structure will have Non-ZERO authentication type. If the WPS Session fails (due to error or timeout) the authentication type
+    is set to ZERO.
 
 @sa
-            tenuM2mSecType
+    tenuM2mSecType
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8AuthType;
-    /*!< Network authentication type. */
+    /*!< Network authentication type.
+    */
     uint8_t u8Ch;
-    /*!< RF Channel for the AP. */
+    /*!< RF Channel for the AP.
+    */
     uint8_t au8SSID[M2M_MAX_SSID_LEN];
-    /*!< SSID obtained from WPS. */
+    /*!< SSID obtained from WPS.
+    */
     uint8_t au8PSK[M2M_MAX_PSK_LEN];
-    /*!< PSK for the network obtained from WPS. */
+    /*!< PSK for the network obtained from WPS.
+    */
 } tstrM2MWPSInfo;
 
+
 /*!
-@struct     tstrM2MDefaultConnResp
+@struct \
+    tstrM2MDefaultConnResp
 
 @brief
-            This struct contains the response error of m2m_default_connect.
+    Response error of the m2m_default_connect
 
 @sa
-            M2M_DEFAULT_CONN_SCAN_MISMATCH
-            M2M_DEFAULT_CONN_EMPTY_LIST
+    M2M_DEFAULT_CONN_SCAN_MISMATCH
+    M2M_DEFAULT_CONN_EMPTY_LIST
 */
-typedef struct
-{
-    int8_t  s8ErrorCode;
+typedef struct {
+    int8_t      s8ErrorCode;
     /*!<
         Default connect error code. possible values are:
         - M2M_DEFAULT_CONN_EMPTY_LIST
@@ -1433,36 +1626,36 @@ typedef struct
 } tstrM2MDefaultConnResp;
 
 /*!
-@struct     tstrM2MScanOption
+@struct \
+    tstrM2MScanOption
 
 @brief
-            This struct contains the configuration options for WiFi scan.
+    This struct contains the configuration options for Wi-Fi scan.
 
 @sa
-            tenuM2mScanCh
-            tstrM2MScan
+    tenuM2mScanCh
+    tstrM2MScan
 */
-typedef struct
-{
-    uint8_t u8NumOfSlot;
+typedef struct {
+    uint8_t   u8NumOfSlot;
     /*!< The number of scan slots per channel. Refers to both active and passive scan.
          Valid settings are in the range 0<Slots<=255.
          Default setting is @ref M2M_SCAN_DEFAULT_NUM_SLOTS.
     */
-    uint8_t u8SlotTime;
+    uint8_t   u8SlotTime;
     /*!< The length of each scan slot in milliseconds. Refers to active scan only.
          The device listens for probe responses and beacons during this time.
          Valid settings are in the range 10<=SlotTime<=250.
          Default setting is @ref M2M_SCAN_DEFAULT_SLOT_TIME.
     */
-    uint8_t u8ProbesPerSlot;
+    uint8_t  u8ProbesPerSlot;
     /*!< Number of probe requests to be sent for each scan slot (when not specifying network to scan).
          Number of probe requests to be sent for each ssid to scan in each scan slot (when specifying network to scan).
          Refers to active scan only.
          Valid settings are in the range 0<Probes<=2.
          Default setting is @ref M2M_SCAN_DEFAULT_NUM_PROBE.
     */
-    int8_t  s8RssiThresh;
+    int8_t   s8RssiThresh;
     /*!< The Received Signal Strength Indicator threshold required for (fast) reconnection to an AP without scanning all channels first.
          Refers to active scan as part of reconnection to a previously connected AP.
          The device connects to the target AP immediately if it receives a sufficiently strong probe response on the expected channel.
@@ -1470,41 +1663,43 @@ typedef struct
          Valid settings are in the range -128<=Thresh<0.
          Default setting is @ref M2M_FASTCONNECT_DEFAULT_RSSI_THRESH.
     */
+
 } tstrM2MScanOption;
 
 /*!
-@struct     tstrM2MStopScanOption
+@struct \
+    tstrM2MStopScanOption
 
-@brief      This struct holds additional configuration options for WiFi scan.
+@brief  This struct holds additional configuration options for Wi-Fi scan.
 
-            These scan options should be set by the application prior to issuing the scan request, and once configured,
-            WINC will keep the settings until the scan options are set again, via the same API, or until the device is
-            either reset or power cycled.
+        These scan options should be set by the application prior to issuing the scan request, and once configured,
+        WINC will keep the settings until the scan options are set again, via the same API, or until the device is
+        either reset or power cycled.
 */
-typedef struct
-{
-    uint8_t u8StopOnFirstResult;
+typedef struct {
+    uint8_t                       u8StopOnFirstResult;
     /*!<
         Stop scan as soon as an SSID is detected.
         1 = Enabled, 0 = Disabled (default)
     */
 
-    uint8_t au8Rsv[3];
+    uint8_t                       au8Rsv[3];
     /*!< Reserved for future use. Set to 0. */
+
 } tstrM2MStopScanOption;
 
 /*!
-@struct     tstrM2MScanRegion
+@struct \
+    tstrM2MScanRegion
 
 @brief
-            This struct contains the WiFi information for the channel regions.
+    Wi-Fi channel regulation region information.
 
 @sa
-            tenuM2mScanRegion
+    tenuM2mScanRegion
 */
-typedef struct
-{
-    uint16_t u16ScanRegion;
+typedef struct {
+    uint16_t   u16ScanRegion;
     /*|< Specifies the number of channels allowed in the region (e.g. North America = 11 ... etc.).
     */
     uint8_t __PAD16__[2];
@@ -1512,22 +1707,24 @@ typedef struct
 } tstrM2MScanRegion;
 
 /*!
-@struct     tstrM2MScan
+@struct \
+    tstrM2MScan
 
 @brief
-            This struct contains the WiFi scan request.
+    Wi-Fi Scan Request
 
 @sa
-            tenuM2mScanCh
-            tstrM2MScanOption
+    tenuM2mScanCh
+    tstrM2MScanOption
 */
-typedef struct
-{
-    uint8_t u8ChNum;
-    /*!< The WiFi RF channel number */
-    uint8_t __RSVD8__[1];
-    /*!< Reserved for future use. */
-    uint16_t u16PassiveScanTime;
+typedef struct {
+    uint8_t     u8ChNum;
+    /*!< The Wi-Fi RF Channel number
+    */
+    uint8_t     __RSVD8__[1];
+    /*!< Reserved for future use.
+    */
+    uint16_t    u16PassiveScanTime;
     /*!< The length of each scan slot in milliseconds. Refers to passive scan only.
          The device listens for beacons during this time.
          Valid settings are in the range 10<=PassiveScanTime<=1200.
@@ -1536,13 +1733,13 @@ typedef struct
 } tstrM2MScan;
 
 /*!
-@struct     tstrCyptoResp
+@struct \
+    tstrCyptoResp
 
 @brief
-            crypto response
+    crypto response
 */
-typedef struct
-{
+typedef struct {
     int8_t s8Resp;
     /***/
     uint8_t __PAD24__[3];
@@ -1551,141 +1748,169 @@ typedef struct
 } tstrCyptoResp;
 
 /*!
-@struct     tstrM2mScanDone
+@struct \
+    tstrM2mScanDone
 
 @brief
-            This struct contains the WiFi scan result.
+    Wi-Fi Scan Result
 */
-typedef struct
-{
-    uint8_t u8NumofCh;
-    /*!< Number of found APs */
+typedef struct {
+    uint8_t     u8NumofCh;
+    /*!< Number of found APs
+    */
     int8_t  s8ScanState;
-    /*!< Scan status */
+    /*!< Scan status
+    */
     uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mScanDone;
 
 /*!
-@struct     tstrM2mReqScanResult
+@struct \
+    tstrM2mReqScanResult
 
-@brief
-            The WiFi Scan results list is stored in firmware. This struct contains the index by which the application can request a certain scan result.
+@brief  Scan Result Request
+
+    The Wi-Fi Scan results list is stored in Firmware. The application can request a certain scan result by its index.
 */
-typedef struct
-{
-    uint8_t u8Index;
-    /*!< Index of the desired scan result */
+typedef struct {
+    uint8_t     u8Index;
+    /*!< Index of the desired scan result
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mReqScanResult;
 
 /*!
-@struct     tstrM2mWifiscanResult
+@struct \
+    tstrM2mWifiscanResult
 
-@brief
-            This struct contains the information corresponding to an AP in the scan result list identified by its order (index) in the list.
+@brief  Wi-Fi Scan Result
+
+    Information corresponding to an AP in the Scan Result list identified by its order (index) in the list.
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8index;
-    /*!< AP index in the scan result list. */
+    /*!< AP index in the scan result list.
+    */
     int8_t  s8rssi;
-    /*!< AP signal strength. */
+    /*!< AP signal strength.
+    */
     uint8_t u8AuthType;
-    /*!< AP authentication type. */
+    /*!< AP authentication type.
+    */
     uint8_t u8ch;
-    /*!< AP RF channel. */
+    /*!< AP RF channel.
+    */
     uint8_t au8BSSID[6];
-    /*!< BSSID of the AP. */
+    /*!< BSSID of the AP.
+    */
     uint8_t au8SSID[M2M_MAX_SSID_LEN];
-    /*!< AP SSID. */
+    /*!< AP ssid.
+    */
     uint8_t _PAD8_;
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mWifiscanResult;
 
 /*!
-@struct     tstrM2mWifiStateChanged
+@struct \
+    tstrM2mWifiStateChanged
 
 @brief
-            This struct contains the WiFi connection state
+    Wi-Fi Connection State
 
 @sa
-            M2M_WIFI_DISCONNECTED, M2M_WIFI_CONNECTED, M2M_WIFI_REQ_CON_STATE_CHANGED, tenuM2mConnChangedErrcode
+    M2M_WIFI_DISCONNECTED, M2M_WIFI_CONNECTED, M2M_WIFI_REQ_CON_STATE_CHANGED,tenuM2mConnChangedErrcode
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8CurrState;
-    /*!< Current WiFi connection state */
-    uint8_t u8ErrCode;
-    /*!< Error type, see tenuM2mConnChangedErrcode */
+    /*!< Current Wi-Fi connection state
+    */
+    uint8_t  u8ErrCode;
+    /*!< Error type review tenuM2mConnChangedErrcode
+    */
     uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mWifiStateChanged;
 
 /*!
-@struct     tstrM2mPsType
+@struct \
+    tstrM2mPsType
 
 @brief
-            This struct contains the Power Save configuration.
+    Power Save Configuration
 
 @sa
-            tenuPowerSaveModes
+    tenuPowerSaveModes
 */
-typedef struct
-{
-    uint8_t u8PsType;
-    /*!< Power save operating mode */
-    uint8_t u8BcastEn;
-    /*!< Broadcast Enable/Disable */
+typedef struct {
+    uint8_t     u8PsType;
+    /*!< Power save operating mode
+    */
+    uint8_t     u8BcastEn;
+    /*!<
+    */
     uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mPsType;
 
 /*!
-@struct     tstrM2mSlpReqTime
+@struct \
+    tstrM2mSlpReqTime
 
 @brief
-            This struct contains the sleep time for the Power Save request.
+    Manual power save request sleep time
 
 */
-typedef struct
-{
+typedef struct {
+    /*!< Sleep time in ms
+    */
     uint32_t u32SleepTime;
-    /*!< Sleep time in ms */
+
 } tstrM2mSlpReqTime;
 
 /*!
-@struct     tstrM2mLsnInt
+@struct \
+    tstrM2mLsnInt
 
-@brief
-            This struct contains the Listen Interval. It is the value of the WiFi STA Listen Interval when power save is enabled. It is given in units of Beacon period.
-            It is the number of Beacon periods the WINC can sleep before it wakes up to receive data buffered for it in the AP.
+@brief  Listen interval
+
+    It is the value of the Wi-Fi STA listen interval for power saving. It is given in units of Beacon period.
+    Periodically after the listen interval fires, the WINC is wakeup and listen to the beacon and check for any buffered frames for it from the AP.
 */
-typedef struct
-{
-    uint16_t u16LsnInt;
-    /*!< Listen interval in Beacon period counts. */
+typedef struct {
+    uint16_t    u16LsnInt;
+    /*!< Listen interval in Beacon period count.
+    */
     uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mLsnInt;
 
 /*!
-@struct     tstrM2MWifiMonitorModeCtrl
+@struct \
+    tstrM2MWifiMonitorModeCtrl
 
-@brief      WiFi Monitor Mode Filter
+@brief  Wi-Fi Monitor Mode Filter
 
-            This structure sets the filtering criteria for WLAN packets when monitoring mode is enable.
-            The received packets matching the filtering parameters, are passed directly to the application.
+    This structure sets the filtering criteria for WLAN packets when monitoring mode is enable.
+    The received packets matching the filtering parameters, are passed directly to the application.
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8ChannelID;
-    /*!< RF Channel ID. It must use values from tenuM2mScanCh */
+    /* !< RF Channel ID. It must use values from tenuM2mScanCh
+    */
     uint8_t u8FrameType;
-    /*!< It must use values from tenuWifiFrameType. */
+    /*!< It must use values from tenuWifiFrameType.
+    */
     uint8_t u8FrameSubtype;
-    /*!< It must use values from tenuSubTypes. */
+    /*!< It must use values from tenuSubTypes.
+    */
     uint8_t au8SrcMacAddress[6];
     /* ZERO means DO NOT FILTER Source address.
     */
@@ -1700,31 +1925,38 @@ typedef struct
      Enable receive the full header before the payload
     */
     uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2MWifiMonitorModeCtrl;
 
 /*!
-@struct     tstrM2MWifiRxPacketInfo
+@struct \
+    tstrM2MWifiRxPacketInfo
 
-@brief      WiFi RX Frame Header
+@brief  Wi-Fi RX Frame Header
 
-            The M2M application has the ability to allow WiFi monitoring mode for receiving all WiFi Raw frames matching a well defined filtering criteria.
-            When a target WiFi packet is received, the header information are extracted and assigned in this structure.
+    The M2M application has the ability to allow Wi-Fi monitoring mode for receiving all Wi-Fi Raw frames matching a well defined filtering criteria.
+    When a target Wi-Fi packet is received, the header information are extracted and assigned in this structure.
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8FrameType;
-    /*!< It must use values from tenuWifiFrameType. */
+    /*!< It must use values from tenuWifiFrameType.
+    */
     uint8_t u8FrameSubtype;
-    /*!< It must use values from tenuSubTypes. */
+    /*!< It must use values from tenuSubTypes.
+    */
     uint8_t u8ServiceClass;
-    /*!< Service class from WiFi header. */
+    /*!< Service class from Wi-Fi header.
+    */
     uint8_t u8Priority;
-    /*!< Priority from WiFi header. */
+    /*!< Priority from Wi-Fi header.
+    */
     uint8_t u8HeaderLength;
-    /*!< Frame Header length. */
+    /*!< Frame Header length.
+    */
     uint8_t u8CipherType;
-    /*!< Encryption type for the rx packet. */
+    /*!< Encryption type for the rx packet.
+    */
     uint8_t au8SrcMacAddress[6];
     /* ZERO means DO NOT FILTER Source address.
     */
@@ -1734,269 +1966,328 @@ typedef struct
     uint8_t au8BSSID[6];
     /* ZERO means DO NOT FILTER BSSID.
     */
-    uint16_t u16DataLength;
-    /*!< Data payload length (Header excluded). */
-    uint16_t u16FrameLength;
-    /*!< Total frame length (Header + Data). */
-    uint32_t u32DataRateKbps;
-    /*!< Data Rate in Kbps. */
+    uint16_t    u16DataLength;
+    /*!< Data payload length (Header excluded).
+    */
+    uint16_t    u16FrameLength;
+    /*!< Total frame length (Header + Data).
+    */
+    uint32_t    u32DataRateKbps;
+    /*!< Data Rate in Kbps.
+    */
     int8_t      s8RSSI;
-    /*!< RSSI. */
+    /*!< RSSI.
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2MWifiRxPacketInfo;
 
 /*!
-@struct     tstrM2MWifiTxPacketInfo
+@struct \
+    tstrM2MWifiTxPacketInfo
 
-@brief
-            This struct contains the WiFi TX Packet Info. The M2M Application has the ability to compose raw WiFi frames (under the application responsibility).
-            When transmitting a WiFi packet, the application must supply the firmware with this structure for sending the target frame.
+@brief  Wi-Fi TX Packet Info
+
+    The M2M Application has the ability to compose a RAW Wi-Fi frames (under the application responsibility).
+    When transmitting a Wi-Fi packet, the application must supply the firmware with this structure for sending the target frame.
 */
-typedef struct
-{
-    uint16_t u16PacketSize;
-    /*!< WLAN frame length. */
-    uint16_t u16HeaderLength;
-    /*!< WLAN frame header length. */
+typedef struct {
+    uint16_t    u16PacketSize;
+    /*!< Wlan frame length.
+    */
+    uint16_t    u16HeaderLength;
+    /*!< Wlan frame header length.
+    */
 } tstrM2MWifiTxPacketInfo;
 
 /*!
-@struct     tstrM2MAPConfig
+@struct \
+    tstrM2MAPConfig
 
-@brief
-            This structure holds the configuration parameters for the AP mode. It should be set by the application when
-            it requests to enable the AP operation mode. This mode supports either open, WEP or WPA/WPA2 mixed mode security types.
+@brief  AP Configuration
+
+    This structure holds the configuration parameters for the M2M AP mode. It should be set by the application when
+    it requests to enable the M2M AP operation mode. This mode supports either open, WEP or WPA/WPA2 mixed mode security types.
 */
-typedef struct
-{
-    uint8_t au8SSID[M2M_MAX_SSID_LEN];
-    /*!< AP SSID */
-    uint8_t u8ListenChannel;
-    /*!< WiFi RF Channel which the AP will operate on */
+typedef struct {
+    /*!<
+        Configuration parameters for the WiFi AP.
+    */
+    uint8_t     au8SSID[M2M_MAX_SSID_LEN];
+    /*!< AP SSID
+    */
+    uint8_t     u8ListenChannel;
+    /*!< Wi-Fi RF Channel which the AP will operate on
+    */
     uint8_t u8KeyIndx;
-    /*!< WEP key index */
+    /*!< Wep key Index
+    */
     uint8_t u8KeySz;
-    /*!< WEP/WPA key Size */
+    /*!< Wep/WPA key Size
+    */
     uint8_t au8WepKey[WEP_104_KEY_STRING_SIZE + 1];
-    /*!< WEP key */
-    uint8_t u8SecType;
-    /*!< Security type: Open, WEP or WPA/WPA2 mixed mode */
-    uint8_t u8SsidHide;
-    /*!< SSID Status "Hidden(1)/Visible(0)" */
+    /*!< Wep key
+    */
+    uint8_t     u8SecType;
+    /*!< Security type: Open, WEP or WPA/WPA2 mixed mode
+    */
+    uint8_t     u8SsidHide;
+    /*!< SSID Status "Hidden(1)/Visible(0)"
+    */
     uint8_t au8DHCPServerIP[4];
-    /*!< AP DHCP server address */
+    /*!< Ap IP server address
+    */
     uint8_t au8Key[M2M_MAX_PSK_LEN];
-    /*!< WPA key */
-    uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing alignment */
+    /*!< WPA key
+    */
+    uint8_t __PAD24__[2];
+    /*!< Padding bytes for forcing alignment
+    */
 } tstrM2MAPConfig;
 
 /*!
-@struct     tstrM2MAPConfigExt
+@struct \
+    tstrM2MAPConfigExt
 
-@brief      AP Configuration Extension
+@brief  AP Configuration Extension
 
-            This structure holds additional configuration parameters for the M2M AP mode. If modification of the extended parameters
-            in AP mode is desired then @ref tstrM2MAPModeConfig should be set by the application, which contains the main AP configuration
-            structure as well as this extended parameters structure.
-            When configuring provisioning mode then @ref tstrM2MProvisionModeConfig should be used, which also contains the main AP configuration
-            structure, this extended parameters structure and additional provisioning parameters.
+    This structure holds additional configuration parameters for the M2M AP mode. If modification of the extended parameters
+    in AP mode is desired then @ref tstrM2MAPModeConfig should be set by the application, which contains the main AP configuration
+    structure as well as this extended parameters structure.
+    When configuring provisioning mode then @ref tstrM2MProvisionModeConfig should be used, which also contains the main AP configuration
+    structure, this extended parameters structure and additional provisioning parameters.
 */
-typedef struct
-{
-    uint8_t au8DefRouterIP[4];
-    /*!< AP Default Router address */
-    uint8_t au8DNSServerIP[4];
-    /*!< AP DNS server address */
-    uint8_t au8SubnetMask[4];
-    /*!< Network Subnet Mask */
+typedef struct {
+    uint8_t   au8DefRouterIP[4];
+    /*!< Ap Default Router address
+    */
+    uint8_t   au8DNSServerIP[4];
+    /*!< Ap DNS server address
+    */
+    uint8_t   au8SubnetMask[4];
+    /*!< Network Subnet Mask
+    */
 } tstrM2MAPConfigExt;
 
 /*!
-@struct     tstrM2MAPModeConfig
+@struct \
+    tstrM2MAPModeConfig
 
-@brief      AP Configuration
+@brief  AP Configuration
 
-            This structure holds the AP configuration parameters plus the extended AP configuration parameters for the AP mode.
-            It should be set by the application when it requests to enable the AP operation mode. This mode supports
-            either open, WEP or WPA/WPA2 mixed mode security types.
+    This structure holds the AP configuration parameters plus the extended AP configuration parameters for M2M AP mode.
+    It should be set by the application when it requests to enable M2M AP operation mode. This mode supports 
+    either open, WEP or WPA/WPA2 mixed mode security types.
 */
-typedef struct
-{
+typedef struct {
     tstrM2MAPConfig     strApConfig;
-    /*!< Configuration parameters for the WiFi AP. */
+    /*!<
+        Configuration parameters for the WiFi AP.
+    */
     tstrM2MAPConfigExt      strApConfigExt;
-    /*!< Additional configuration parameters for the WiFi AP. */
+    /*!<
+        Additional configuration parameters for the WiFi AP.
+    */
 } tstrM2MAPModeConfig;
 
 /*!
-@struct     tstrM2mServerInit
+@struct \
+    tstrM2mServerInit
 
 @brief
-            This struct contains the information for the PS Server initialization.
+    PS Server initialization.
 */
-typedef struct
-{
-    uint8_t u8Channel;
-    /*!< Server Listen channel */
+typedef struct {
+    uint8_t     u8Channel;
+    /*!< Server Listen channel
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mServerInit;
 
 /*!
-@struct     tstrM2mClientState
+@struct \
+    tstrM2mClientState
 
 @brief
-            This struct contains the information for the PS Client state.
+    PS Client State.
 */
-typedef struct
-{
-    uint8_t u8State;
-    /*!< PS Client State */
+typedef struct {
+    uint8_t     u8State;
+    /*!< PS Client State
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mClientState;
 
 /*!
-@struct     tstrM2Mservercmd
+@struct \
+    tstrM2Mservercmd
 
 @brief
-            This struct contains the information for the PS Server command.
+    PS Server CMD
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8cmd;
-    /*!< PS Server Cmd */
+    /*!< PS Server Cmd
+    */
     uint8_t __PAD24__[3];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2Mservercmd;
 
 /*!
-@struct     tstrM2mSetMacAddress
+@struct \
+    tstrM2mSetMacAddress
 
 @brief
-            This struct contains the MAC address to be used. The WINC loads the mac address from the efuse by default to the WINC configuration memory,
-            however, the application can overwrite the configuration memory with the mac address indicated from the Host.
+    Sets the MAC address from application. The WINC load the mac address from the effuse by default to the WINC configuration memory,
+    but that function is used to let the application overwrite the configuration memory with the mac address from the host.
 
 @note
-            It's recommended to call this only once before calling connect request and after the m2m_wifi_init
+    It's recommended to call this only once before calling connect request and after the m2m_wifi_init
 */
-typedef struct
-{
-    uint8_t au8Mac[6];
-    /*!< MAC address */
+typedef struct {
+    uint8_t     au8Mac[6];
+    /*!< MAC address array
+    */
     uint8_t __PAD16__[2];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2mSetMacAddress;
 
 /*!
-@struct     tstrM2MDeviceNameConfig
+@struct \
+    tstrM2MDeviceNameConfig
 
-@brief
-            This struct contains the Device Name of the WINC. It is used mainly for WiFi Direct device discovery and WPS device information.
+@brief  Device name
+
+    It is assigned by the application. It is used mainly for Wi-Fi Direct device
+    discovery and WPS device information.
 */
-typedef struct
-{
-    uint8_t au8DeviceName[M2M_DEVICE_NAME_MAX];
-    /*!< NULL terminated device name */
+typedef struct {
+    uint8_t     au8DeviceName[M2M_DEVICE_NAME_MAX];
+    /*!< NULL terminated device name
+    */
 } tstrM2MDeviceNameConfig;
 
+
 /*!
-@struct     tstrM2MIPConfig
+@struct \
+    tstrM2MIPConfig
 
 @brief
-            This struct contains the static IP configuration.
+    IP configuration (static/DHCP). The same structure is used for DCHP callback as well as static IP configuration.
 
 @note
-            All member IP addresses are expressed in Network Byte Order (eg. "192.168.10.1" will be expressed as 0x010AA8C0).
-*/
-typedef struct
-{
-    uint32_t u32StaticIP;
-    /*!< The static IP assigned to the device. */
-    uint32_t u32Gateway;
-    /*!< IP of the default internet gateway. */
-    uint32_t u32DNS;
-    /*!< IP for the DNS server. */
-    uint32_t u32AlternateDNS;
-    /*!< IP for the secondary DNS server (if any). Must set to zero if not provided in static IP configuration from the application. */
-    uint32_t u32SubnetMask;
-    /*!< Subnet mask for the local area network. */
+    All member IP addresses are expressed in Network Byte Order (eg. "192.168.10.1" will be expressed as 0x010AA8C0).
+ */
+typedef struct {
+    uint32_t    u32StaticIP;
+    /*!< If DHCP callback, this is the IP address obtained from the DHCP. In static IP config, this is the assigned to the device from the application.
+    */
+    uint32_t    u32Gateway;
+    /*!< IP of the default internet gateway.
+    */
+    uint32_t    u32DNS;
+    /*!< IP for the DNS server.
+    */
+    uint32_t    u32AlternateDNS;
+    /*!< IP for the secondary DNS server (if any). Must set to zero if not provided in static IP configuration from the application.
+    */
+    uint32_t    u32SubnetMask;
+    /*!< Subnet mask for the local area network.
+    */
     uint32_t u32DhcpLeaseTime;
-    /*!< DHCP Lease Time in sec. This field is is ignored in static IP configuration. */
+    /*!< DHCP Lease Time in sec. This field is is ignored in static IP configuration.
+    */
 } tstrM2MIPConfig;
 
 /*!
-@struct     tstrM2mIpRsvdPkt
+@struct \
+    tstrM2mIpRsvdPkt
 
 @brief
-            This struct contains the size and data offset for the received packet.
+    Received Packet Size and Data Offset
 
-*/
-typedef struct
-{
-    uint16_t u16PktSz;
-    /*<! Packet Size */
-    uint16_t u16PktOffset;
-    /*<! Packet offset */
+ */
+typedef struct {
+    uint16_t    u16PktSz;
+    uint16_t    u16PktOffset;
 } tstrM2mIpRsvdPkt;
 
+
 /*!
-@struct     tstrM2MProvisionModeConfig
+@struct \
+    tstrM2MProvisionModeConfig
 
 @brief
-            This struct contains the provisioning mode configuration.
-*/
+    M2M Provisioning Mode Configuration
+ */
 
-typedef struct
-{
+typedef struct {
     tstrM2MAPConfig     strApConfig;
-    /*!< Configuration parameters for the WiFi AP. */
+    /*!<
+        Configuration parameters for the WiFi AP.
+    */
     char                acHttpServerDomainName[64];
-    /*!< The device domain name for HTTP provisioning. */
+    /*!<
+        The device domain name for HTTP provisioning.
+    */
     uint8_t             u8EnableRedirect;
     /*!<
-        A flag to enable/disable HTTP redirect feature for the HTTP provisioning server. If the redirect is enabled,
-        all HTTP traffic (http://URL) from the device associated with WINC AP will be redirected to the HTTP Provisioning web page.
+        A flag to enable/disable HTTP redirect feature for the HTTP Provisioning server. If the Redirect is enabled,
+        all HTTP traffic (http://URL) from the device associated with WINC AP will be redirected to the HTTP Provisioning Web page.
         - 0 : Disable HTTP Redirect.
         - 1 : Enable HTTP Redirect.
     */
     tstrM2MAPConfigExt      strApConfigExt;
-    /*!< Additional configuration parameters for the WiFi AP. */
+    /*!<
+        Additional configuration parameters for the WiFi AP.
+    */
     uint8_t         __PAD24__[3];
 } tstrM2MProvisionModeConfig;
 
 /*!
-@struct     tstrM2MProvisionInfo
+@struct \
+    tstrM2MProvisionInfo
 
 @brief
-            This struct contains the provisioning information obtained from the HTTP Provisioning server.
-*/
-typedef struct
-{
+    M2M Provisioning Information obtained from the HTTP Provisioning server.
+ */
+typedef struct {
     uint8_t au8SSID[M2M_MAX_SSID_LEN];
-    /*!< Provisioned SSID. */
+    /*!<
+        Provisioned SSID.
+    */
     uint8_t au8Password[M2M_MAX_PSK_LEN];
-    /*!< Provisioned Password. */
+    /*!<
+        Provisioned Password.
+    */
     uint8_t u8SecType;
-    /*!< WiFi Security type. */
+    /*!<
+        Wifi Security type.
+    */
     uint8_t u8Status;
     /*!<
-        Provisioning status. To be checked before reading the provisioning information. It may be
+        Provisioning status. It must be checked before reading the provisioning information. It may be
         - M2M_SUCCESS   : Provision successful.
         - M2M_FAIL      : Provision Failed.
     */
 } tstrM2MProvisionInfo;
 
+
 /*!
-@struct     tstrM2MConnInfo
+@struct \
+    tstrM2MConnInfo
 
 @brief
-            This struct contains the connection information.
-*/
-typedef struct
-{
+    M2M Provisioning Information obtained from the HTTP Provisioning server.
+ */
+typedef struct {
     char    acSSID[M2M_MAX_SSID_LEN];
     /*!< AP connection SSID name  */
     uint8_t u8SecType;
@@ -2004,82 +2295,151 @@ typedef struct
     uint8_t au8IPAddr[4];
     /*!< Connection IP address */
     uint8_t au8MACAddress[6];
-    /*!< MAC address of the peer WiFi station */
+    /*!< MAC address of the peer Wi-Fi station */
     int8_t  s8RSSI;
     /*!< Connection RSSI signal */
     uint8_t u8CurrChannel;
-    /*!< WiFi RF channel number  1,2,... 14.  */
+    /*!< Wi-Fi RF channel number  1,2,... 14.  */
     uint8_t __PAD16__[2];
     /*!< Padding bytes for forcing 4-byte alignment */
 } tstrM2MConnInfo;
 
+/**@cond P2P_DOC
+ */
 /*!
-@struct     tstrM2MSNTPConfig
+@enum   \
+    tenuM2mP2pCmd
 
-@brief      SNTP Client Configuration
-
-            Configuration structure for the SNTP client.
+@brief
+    This enum contains WINC commands while in P2P mode.
 */
-typedef struct
-{
-    /*!< Configuration parameters for the NTP Client. */
-    char                acNTPServer[M2M_NTP_MAX_SERVER_NAME_LENGTH + 1];
-    /*!< Custom NTP server name. */
-    uint8_t             enuUseDHCP;
-    /*!< Use NTP server provided by the DHCP server when falling back */
+typedef enum {
+    M2M_WIFI_REQ_P2P_INT_CONNECT = M2M_P2P_CMD_BASE,
+    /*!< This command is for internal use by the WINC and
+        should not be used by the host driver.
+    */
+    M2M_WIFI_REQ_ENABLE_P2P,
+    /*!< Enable P2P mode command.
+    */
+    M2M_WIFI_REQ_DISABLE_P2P,
+    /*!< Disable P2P mode command.
+    */
+    M2M_WIFI_REQ_P2P_REPOST,
+    /*!< This command is for internal use by the WINC and
+        should not be used by the host driver.
+    */
+    M2M_WIFI_MAX_P2P_ALL
+} tenuM2mP2pCmd;
+
+/*!
+ @struct    \
+    tstrM2MP2PConnect
+
+ @brief
+    Set the device to operate in the Wi-Fi Direct (P2P) mode.
+*/
+typedef struct {
+    uint8_t   u8ListenChannel;
+    /*!< P2P Listen Channel (1, 6 or 11)
+    */
+    uint8_t   __PAD24__[3];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
+} tstrM2MP2PConnect;
+/**@endcond*/ //P2P_DOC
+
+/*!
+@struct \
+    tstrM2MSNTPConfig
+
+@brief  SNTP Client Configuration
+
+    Configuration structure for the SNTP client.
+*/
+typedef struct {
+    /*!<
+        Configuration parameters for the NTP Client.
+    */
+    char                    acNTPServer[M2M_NTP_MAX_SERVER_NAME_LENGTH + 1];
+    /*!< Custom NTP server name.
+    */
+    tenuSNTPUseDHCP         enuUseDHCP;
+    /*!< Use NTP server provided by the DHCP server when falling back
+    */
 #if tstrM2MSNTPConfig_PAD != 4
-    uint8_t             __PAD8__[tstrM2MSNTPConfig_PAD];
-    /*!< Padding bytes for forcing 4-byte alignment */
+    uint8_t                 __PAD8__[tstrM2MSNTPConfig_PAD];
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 #endif
 } tstrM2MSNTPConfig;
 
 /*!
-@struct     tstrSystemTime
+@struct \
+    tstrSystemTime
 
 @brief
-            This struct contains the system time.
+    Used for time storage.
 */
-typedef struct
-{
-    uint16_t    u16Year;
-    /*!< Year */
-    uint8_t     u8Month;
-    /*!< Month */
-    uint8_t     u8Day;
-    /*!< Day */
-    uint8_t     u8Hour;
-    /*!< Hour */
-    uint8_t     u8Minute;
-    /*!< Minutes */
-    uint8_t     u8Second;
-    /*!< Seconds */
+typedef struct {
+    uint16_t  u16Year;
+    uint8_t   u8Month;
+    uint8_t   u8Day;
+    uint8_t   u8Hour;
+    uint8_t   u8Minute;
+    uint8_t   u8Second;
     uint8_t   __PAD8__;
-    /*!< Structure padding. */
 } tstrSystemTime;
 
 /*!
-@struct     tstrM2MMulticastMac
+@struct \
+    tstrM2MMulticastMac
 
 @brief
-            This struct contains the information from the Multicast filter.
-*/
-typedef struct
-{
+    M2M add/remove multi-cast mac address
+ */
+typedef struct {
     uint8_t au8macaddress[M2M_MAC_ADDRES_LEN];
-    /*!< Mac address needed to be added or removed from filter. */
+    /*!<
+        Mac address needed to be added or removed from filter.
+    */
     uint8_t u8AddRemove;
-    /*!< Set by 1 to add or 0 to remove from filter. */
+    /*!<
+        set by 1 to add or 0 to remove from filter.
+    */
     uint8_t __PAD8__;
-    /*!< Padding bytes for forcing 4-byte alignment */
+    /*!< Padding bytes for forcing 4-byte alignment
+    */
 } tstrM2MMulticastMac;
 
 /*!
-@enum       tenuWlanTxRate
+@struct \
+    tstrPrng
 
-@brief      All possible supported 802.11 WLAN TX rates.
+@brief
+    M2M Request PRNG
+ */
+typedef struct {
+    /*!<
+    return buffer address
+    */
+    uint8_t *pu8RngBuff;
+    /*!<
+    PRNG size requested
+    */
+    uint16_t    u16PrngSize;
+    /*!<
+        PRNG pads
+    */
+    uint8_t __PAD16__[2];
+} tstrPrng;
+
+/*!
+@enum\
+    tenuWlanTxRate
+
+@brief  All possible supported 802.11 WLAN TX rates.
 */
-typedef enum
-{
+typedef enum {
     TX_RATE_AUTO  = 0xFF, /*!<  Automatic rate selection */
     TX_RATE_LOWEST  = 0xFE, /*!< Force the lowest possible data rate for longest range. */
     TX_RATE_1     = 0x00, /* 1 Mbps  */
@@ -2105,13 +2465,13 @@ typedef enum
 } tenuWlanTxRate;
 
 /*!
-@struct     tstrConfAutoRate
+@struct \
+    tstrConfAutoRate
 
 @brief
-            Auto TX rate selection parameters passed to m2m_wifi_conf_auto_rate.
+    Auto TX rate selection parameters passed to m2m_wifi_conf_auto_rate.
 */
-typedef struct
-{
+typedef struct {
     uint16_t u16ArMaxRecoveryFailThreshold;
     /*!<
         To stabilize the TX rate and avoid oscillation, the algorithm will not attempt to
@@ -2144,7 +2504,7 @@ typedef struct
         Default is 1 second.
     */
 
-    uint8_t enuWlanTxRate;
+    tenuWlanTxRate enuWlanTxRate;
     /*!<
         The TX data rate selected as enumerated in tenuWlanTxRate
         Default is TX_RATE_AUTO.
@@ -2153,7 +2513,7 @@ typedef struct
         For instance, if the TX_RATE_MCS_0 is requested while the connection is to a BG only AP, WINC shall
         elect the nearest BG data rate to the requested rate. In this example, it will be TX_RATE_9.
     */
-    uint8_t enuArInitialRateSel;
+    tenuWlanTxRate enuArInitialRateSel;
     /*!<
         Configures the initial WLAN TX rate used right after association.
         This is the starting point for auto rate algorithm.
@@ -2189,21 +2549,15 @@ typedef struct
         moves the WLAN TX rate down. Default value is 3.
     */
     uint8_t __PAD24__[3];
-    /*!< Pad bytes for forcing 4-byte alignment */
+    /*!< Pad bytes for forcing 4-byte alignment
+    */
 } tstrConfAutoRate;
+/**@}*/     //WlanEnums
 
-/**@}*/     // WLANEnums
 /**@addtogroup  SSLEnums
  * @{
  */
-/*!
-@enum       tenuM2mSslCmd
-
-@brief
-            This enum contains WINC commands related to TLS handshake.
-*/
-typedef enum
-{
+typedef enum {
     M2M_SSL_REQ_CERT_VERIF,
     /*!< For internal use only during RSA signature verification. */
     M2M_SSL_REQ_ECC,
@@ -2224,17 +2578,17 @@ typedef enum
 
 /*
  * TLS certificate revocation list
- * Typedefs common between firmware and host
+ * Typedefs common between fw and host
  */
 
 /*!
-@struct     tstrTlsCrlEntry
+@struct \
+    tstrTlsCrlEntry
 
 @brief
-            Certificate data for inclusion in a revocation list (CRL)
+    Certificate data for inclusion in a revocation list (CRL)
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8DataLen;
     /*!< Length of certificate data (maximum possible is @ref TLS_CRL_DATA_MAX_LEN) */
     uint8_t au8Data[TLS_CRL_DATA_MAX_LEN];
@@ -2244,13 +2598,13 @@ typedef struct
 } tstrTlsCrlEntry;
 
 /*!
-@struct     tstrTlsCrlInfo
+@struct \
+    tstrTlsCrlInfo
 
 @brief
-            Certificate revocation list details
+    Certificate revocation list details
 */
-typedef struct
-{
+typedef struct {
     uint8_t         u8CrlType;
     /*!< Type of certificate data contained in list */
     uint8_t         u8Rsv1;
@@ -2264,12 +2618,12 @@ typedef struct
 } tstrTlsCrlInfo;
 
 /*!
-@enum       tenuSslCertExpSettings
+@enum\
+tenuSslCertExpSettings
 
-@brief      SSL Certificate Expiry Validation Options
+@brief  SSL Certificate Expiry Validation Options
 */
-typedef enum
-{
+typedef enum {
     SSL_CERT_EXP_CHECK_DISABLE,
     /*!<
         ALWAYS OFF.
@@ -2292,29 +2646,29 @@ typedef enum
 } tenuSslCertExpSettings;
 
 /*!
-@struct     tstrTlsSrvSecFileEntry
+@struct \
+    tstrTlsSrvSecFileEntry
 
 @brief
-            This struct contains a TLS certificate.
-*/
-typedef struct
-{
+    This struct contains a TLS certificate.
+ */
+typedef struct {
     char    acFileName[TLS_FILE_NAME_MAX];
     /*!< Name of the certificate.   */
-    uint32_t u32FileSize;
+    uint32_t    u32FileSize;
     /*!< Size of the certificate.   */
-    uint32_t u32FileAddr;
+    uint32_t    u32FileAddr;
     /*!< Error Code.    */
 } tstrTlsSrvSecFileEntry;
 
 /*!
-@struct     tstrTlsSrvSecHdr
+@struct \
+    tstrTlsSrvSecHdr
 
 @brief
-            This struct contains a set of TLS certificates.
-*/
-typedef struct
-{
+    This struct contains a set of TLS certificates.
+ */
+typedef struct {
     uint8_t                 au8SecStartPattern[TLS_SRV_SEC_START_PATTERN_LEN];
     /*!< Start pattern. */
     uint32_t                u32nEntries;
@@ -2324,11 +2678,10 @@ typedef struct
     tstrTlsSrvSecFileEntry  astrEntries[TLS_SRV_SEC_MAX_FILES];
     /*!< TLS Certificate headers.   */
     uint32_t                u32CRC;
-    /*!< CRC32 of entire cert block, only the cert writer computes this, the firmware just does a compare with replacement blocks.    */
+    /*!< CRC32 of entire cert block, only the cert writer computes this, the FW just does a compare with replacement blocks.    */
 } tstrTlsSrvSecHdr;
 
-typedef enum
-{
+typedef enum {
     TLS_FLASH_OK,
     /*!< Operation succeeded. Flash modified. */
     TLS_FLASH_OK_NO_CHANGE,
@@ -2341,70 +2694,61 @@ typedef enum
     /*!< Operation failed. Flash status unknown. */
 } tenuTlsFlashStatus;
 
-typedef struct
-{
-    uint16_t u16Sig;
-    uint16_t u16TotalSize32;
-    uint16_t u16Offset32;
-    uint16_t u16Size32;
+typedef struct {
+    uint16_t  u16Sig;
+    uint16_t  u16TotalSize32;
+    uint16_t  u16Offset32;
+    uint16_t  u16Size32;
 } tstrTlsSrvChunkHdr;
 
-typedef struct
-{
-    uint32_t u32CsBMP;
+typedef struct {
+    uint32_t    u32CsBMP;
 } tstrSslSetActiveCsList;
-
-/**@}*/     // SSLEnums
-
-/**@addtogroup TLSDefines
- * @{
- */
-#define TLS_CERTS_CHUNKED_SIG_VALUE 0x6ec8
-/**@}*/     // TLSDefines
+/**@}*/     //SSLEnums
 
 /**@addtogroup OTATYPEDEF
  * @{
  */
 /*!
-@enum       tenuOtaError
+@enum   \
+    tenuOtaError
 
 @brief
-            OTA Error codes.
+    OTA Error codes.
 */
-typedef enum
-{
+typedef enum {
     OTA_SUCCESS = (0),
     /*!< OTA Success status */
-    OTA_ERR_WORKING_IMAGE_LOAD_FAIL = (-1),
+    OTA_ERR_WORKING_IMAGE_LOAD_FAIL = ((int8_t) -1),
     /*!< Failure to load the firmware image */
-    OTA_ERR_INVALID_CONTROL_SEC = (-2),
+    OTA_ERR_INVALID_CONTROL_SEC = ((int8_t) -2),
     /*!< Control structure is corrupted */
-    M2M_ERR_OTA_SWITCH_FAIL = (-3),
+    M2M_ERR_OTA_SWITCH_FAIL = ((int8_t) -3),
     /*!< Switching to the updated image failed as may be the image is invalid */
-    M2M_ERR_OTA_START_UPDATE_FAIL = (-4),
+    M2M_ERR_OTA_START_UPDATE_FAIL = ((int8_t) -4),
     /*!<
      OTA update fail due to multiple reasons:
      - Connection failure
      - Image integrity fail
      */
-    M2M_ERR_OTA_ROLLBACK_FAIL = (-5),
+    M2M_ERR_OTA_ROLLBACK_FAIL = ((int8_t) -5),
     /*!< Roll-back failed due to Roll-back image is not valid */
-    M2M_ERR_OTA_INVALID_FLASH_SIZE = (-6),
+    M2M_ERR_OTA_INVALID_FLASH_SIZE = ((int8_t) -6),
     /*!< The OTA Support at least 4MB flash size, this error code will appear if the current flash is less than 4M */
-    M2M_ERR_OTA_INVALID_ARG = (-7),
-    /*!< Invalid argument in any OTA Function */
-    M2M_ERR_OTA_INPROGRESS = (-8)
-    /*!< OTA still in progress */
+    M2M_ERR_OTA_INVALID_ARG = ((int8_t) -7),
+    /*!< Ota still in progress */
+    M2M_ERR_OTA_INPROGRESS = ((int8_t) -8)
+                             /*!< Invalid argument in any OTA Function */
 } tenuOtaError;
 
 /*!
-@enum       tenuM2mOtaCmd
+@enum   \
+    tenuM2mOtaCmd
 
 @brief
-            This enum contains all the WINC commands used for OTA operation.
+    This enum contains all the WINC commands used for OTA operation.
 */
-typedef enum
-{
+typedef enum {
     M2M_OTA_REQ_NOTIF_SET_URL = M2M_OTA_CMD_BASE,
     M2M_OTA_REQ_NOTIF_CHECK_FOR_UPDATE,
     M2M_OTA_REQ_NOTIF_SCHED,
@@ -2435,14 +2779,14 @@ typedef enum
 } tenuM2mOtaCmd;
 
 /*!
-@enum       tenuOtaUpdateStatus
+@enum   \
+    tenuOtaUpdateStatus
 
 @brief
-            This struct contains the OTA return status.
+    This struct contains the OTA return status.
 */
-typedef enum
-{
-    OTA_STATUS_SUCCESS            = 0,
+typedef enum {
+    OTA_STATUS_SUCCESS        = 0,
     /*!< OTA Success with no errors. */
     OTA_STATUS_FAIL               = 1,
     /*!< OTA generic fail. */
@@ -2461,21 +2805,21 @@ typedef enum
     OTA_STATUS_CONNECTION_ERROR   = 8,
     /*!< OTA connection error. */
     OTA_STATUS_SERVER_ERROR       = 9,
-    /*!< OTA server Error (file not found or else ...) */
-    OTA_STATUS_ABORTED            = 10
-                                    /*!< OTA download has been aborted by the application. */
+    /*!< OTA server Error (file not found or else...) */
+    OTA_STATUS_ABORTED            = 10,
+                                /*!< OTA download has been aborted by the application. */
 } tenuOtaUpdateStatus;
 
 /*!
-@enum       tenuOtaUpdateStatusType
+@enum   \
+    tenuOtaUpdateStatusType
 
 @brief
-            This struct contains the OTA update status type.
+    This struct contains the OTA update status type.
 */
-typedef enum
-{
+typedef enum {
     DL_STATUS        = 1,
-    /*!< Download OTA file status */
+    /*!< Download WINC OTA file status */
     SW_STATUS        = 2,
     /*!< Switching to the upgrade firmware status */
     RB_STATUS        = 3,
@@ -2487,29 +2831,29 @@ typedef enum
 } tenuOtaUpdateStatusType;
 
 /*!
-@struct     tstrOtaInitHdr
+@struct \
+    tstrOtaInitHdr
 
 @brief
-            This struct contains the OTA image header.
-*/
-typedef struct
-{
+    This struct contains the OTA image header.
+ */
+typedef struct {
     uint32_t u32OtaMagicValue;
     /*!< Magic value kept in the OTA image after the
-    SHA256 Digest buffer to define the Start of OTA Header. */
+    sha256 Digest buffer to define the Start of OTA Header. */
     uint32_t u32OtaPayloadSize;
-    /*!< The Total OTA image payload size, include the SHA256 key size. */
+    /*!< The Total OTA image payload size, include the sha256 key size. */
 } tstrOtaInitHdr;
 
 /*!
-@struct     tstrOtaControlSec
+@struct \
+    tstrOtaControlSec
 
 @brief
-            Control Section Structure. The Control Section is used to define the working image and the validity
-            of the roll-back image and its offset, also both firmware versions are kept in this structure.
-*/
-typedef struct
-{
+    Control Section Structure. The Control Section is used to define the working image and the validity
+    of the roll-back image and its offset, also both firmware versions are kept in this structure.
+ */
+typedef struct {
     uint32_t u32OtaMagicValue;
     /*!< Magic value used to ensure the structure is valid or not. */
     uint32_t u32OtaFormatVersion;
@@ -2524,10 +2868,12 @@ typedef struct
     /*!< Last time OTA check for update. */
     uint32_t u32OtaCurrentWorkingImagOffset;
     /*!< Current working offset in flash. */
-    uint32_t u32OtaCurrentWorkingImagFirmwareVer;
+    uint32_t u32OtaCurrentworkingImagFirmwareVer;
     /*!< Current working image version ex 18.0.1. */
     uint32_t u32OtaRollbackImageOffset;
-    /*!< Roll-back image offset in flash */
+    /*!<
+        Roll-back image offset in flash
+    */
     uint32_t u32OtaRollbackImageValidStatus;
     /*!< Roll-back image valid status. */
     uint32_t u32OtaRollbackImagFirmwareVer;
@@ -2567,16 +2913,16 @@ typedef struct
 } tstrOtaControlSec;
 
 /*!
-@struct     tstrOtaUpdateStatusResp
+@struct \
+    tstrOtaUpdateStatusResp
 
 @brief
-            This struct contains the OTA update status.
+    This struct contains the OTA update status.
 
 @sa
-            tenuWPSTrigger
+    tenuWPSTrigger
 */
-typedef struct
-{
+typedef struct {
     uint8_t u8OtaUpdateStatusType;
     /*!< Status type, see @ref tenuOtaUpdateStatusType. */
     uint8_t u8OtaUpdateStatus;
@@ -2585,80 +2931,82 @@ typedef struct
 } tstrOtaUpdateStatusResp;
 
 /*!
-@struct     tstrOtaUpdateInfo
+@struct \
+    tstrOtaUpdateInfo
 
 @brief
-            This struct contains the OTA update information.
+    This struct contains the OTA update information.
 
 @sa
-            tenuWPSTrigger
+    tenuWPSTrigger
 */
-typedef struct
-{
-    uint32_t u8NcfUpgradeVersion;
+typedef struct {
+    uint32_t    u8NcfUpgradeVersion;
     /*!< NCF OTA Upgrade Version */
-    uint32_t u8NcfCurrentVersion;
+    uint32_t    u8NcfCurrentVersion;
     /*!< NCF OTA Current firmware version */
-    uint32_t u8NcdUpgradeVersion;
+    uint32_t    u8NcdUpgradeVersion;
     /*!< NCD (host) upgraded version (if the u8NcdRequiredUpgrade == true) */
-    uint8_t  u8NcdRequiredUpgrade;
+    uint8_t u8NcdRequiredUpgrade;
     /*!< NCD Required upgrade to the above version */
-    uint8_t  u8DownloadUrlOffset;
+    uint8_t     u8DownloadUrlOffset;
     /*!< Download URL offset in the received packet */
-    uint8_t  u8DownloadUrlSize;
+    uint8_t     u8DownloadUrlSize;
     /*!< Download URL size in the received packet */
-    uint8_t  __PAD8__;
+    uint8_t __PAD8__;
     /*!< Padding bytes for forcing 4-byte alignment */
 } tstrOtaUpdateInfo;
 
 /*!
-@struct     tstrOtaHostFileGetStatusResp
+@struct \
+    tstrOtaHostFileGetStatusResp
 
 @brief
-            Host File OTA Information
+    Host File OTA Information
 */
-typedef struct
-{
-    uint32_t u32OtaFileSize;
+typedef struct {
+    uint32_t  u32OtaFileSize;
     /*!<
     Reports the size of the downloaded file.
     Valid if u8OtaFileGetStatus=OTA_STATUS_SUCCESS.
     */
-    uint8_t u8OtaFileGetStatus;
+    uint8_t   u8OtaFileGetStatus;
     /*!<
     The status of the File Get operation.
     See @ref tenuOtaUpdateStatus.
     */
-    uint8_t u8CFHandler;
+    uint8_t   u8CFHandler;
     /*!<
     The file handler stored in the WINC for a valid file.
     Valid if u8OtaFileGetStatus=OTA_STATUS_SUCCESS.
      */
-    uint8_t __PAD16__[2];
+    uint8_t   __PAD16__[2];
     /*!< Padding byte for forcing 4-byte alignment */
 } tstrOtaHostFileGetStatusResp;
 
 /*!
-@struct     tstrOtaHostFileReadStatusResp
+@struct \
+    tstrOtaHostFileReadStatusResp
 
 @brief
-            Host File OTA Information
+    Host File OTA Information
 */
-typedef struct
-{
-    uint16_t u16FileBlockSz;
+typedef struct {
+    uint16_t  u16FileBlockSz;
     /*!<
     Reports the size of the block of data read via HIF.
     Valid if u8OtaFileReadStatus=OTA_STATUS_SUCCESS .
     */
-    uint8_t u8OtaFileReadStatus;
+
+    uint8_t   u8OtaFileReadStatus;
     /*!<
     The status of the File Read operation.
     See @ref tenuOtaUpdateStatus.
     */
-    uint8_t __PAD8__;
+
+    uint8_t   __PAD8__;
     /*!< Padding byte for forcing 4-byte alignment */
-    uint8_t pFileBuf[MAX_FILE_READ_STEP];
+    uint8_t   pFileBuf[MAX_FILE_READ_STEP];
     /*!<
     Pointer to the temporary buffer containing the data just read.
     Max size is @ref MAX_FILE_READ_STEP
@@ -2666,61 +3014,22 @@ typedef struct
 } tstrOtaHostFileReadStatusResp;
 
 /*!
-@struct     tstrOtaHostFileEraseStatusResp
+@struct \
+    tstrOtaHostFileEraseStatusResp
 
 @brief
-            Host File OTA Information
+    Host File OTA Information
 */
-typedef struct
-{
-    uint8_t u8OtaFileEraseStatus;
+typedef struct {
+    uint8_t   u8OtaFileEraseStatus;
     /*!<
     The status of the File Erase operation.
     See @ref tenuOtaUpdateStatus.
     */
-    uint8_t __PAD24__[3];
+    uint8_t   __PAD24__[3];
     /*!< Padding byte for forcing 4-byte alignment */
 } tstrOtaHostFileEraseStatusResp;
 
-/**@}*/     // OTATYPEDEF
-
-/*!
-@struct     tstrPrng
-
-@brief
-            M2M Request PRNG
-*/
-typedef struct
-{
-    /*!< Return buffer address */
-    uint8_t *pu8RngBuff;
-#ifdef __AVR_ARCH__
-    uint16_t __PAD_8BIT__;
-#endif
-    /*!< PRNG size requested */
-    uint16_t u16PrngSize;
-    /*!< PRNG pads */
-    uint8_t __PAD16__[2];
-} tstrPrng;
-
-/*!
-@struct     tstrM2mRev
-@brief      Structure holding firmware version parameters and build date/time
-*/
-typedef struct
-{
-    uint32_t u32Chipid; /* HW revision which will be basically the chip ID */
-    uint8_t u8FirmwareMajor; /* Version Major Number which represents the official release base */
-    uint8_t u8FirmwareMinor; /* Version Minor Number which represents the engineering release base */
-    uint8_t u8FirmwarePatch;  /* Version patch Number which represents the patches release base */
-    uint8_t u8DriverMajor; /* Version Major Number which represents the official release base */
-    uint8_t u8DriverMinor; /* Version Minor Number which represents the engineering release base */
-    uint8_t u8DriverPatch; /* Version Patch Number which represents the patches release base */
-    uint8_t BuildDate[sizeof(__DATE__)];
-    uint8_t BuildTime[sizeof(__TIME__)];
-    uint8_t _PAD8_;
-    uint16_t u16FirmwareSvnNum;
-    uint16_t _PAD16_[2];
-} tstrM2mRev;
+/**@}*/     //OTATYPEDEF
 
 #endif

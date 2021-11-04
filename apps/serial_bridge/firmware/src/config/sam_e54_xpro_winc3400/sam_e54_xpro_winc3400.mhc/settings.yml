@@ -5,7 +5,7 @@ frameworkPath: ../../..
 processor: ATSAME54P20A
 projectName: ''
 settings:
-  PackageFilter: bsp;core;crypto;csp;net;wireless_apps_pic32mzw1_wfi32e01;wireless_apps_winc1500;wireless_apps_winc3400;wireless_wifi
+  PackageFilter: azure-rtos-threadx;bsp;core;crypto;cryptoauthlib;csp;dev_packs;net;wireless;wsg_dev
   FORCE_OPTIMIZATION: 'false'
   GENERATE_BACKUP: 'true'
   TRUSTZONE: 'false'

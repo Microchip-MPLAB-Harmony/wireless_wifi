@@ -10,7 +10,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: 19.7.5}
+        attributes: {value: 19.7.6}
   - type: Combo
     attributes: {id: DRV_WIFI_WINC_DRIVER_MODE}
     children:
