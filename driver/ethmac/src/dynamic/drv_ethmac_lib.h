@@ -706,9 +706,6 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxBuffersAppend (DRV_ETHMAC_INSTANCE_DCPT* pMacD
     pPktBuff    - Pointer to the currently acknowledged transmitted or received
                   buffer.
 
-    buffIx      - The 0-based buffer index for a packet that spans multiple
-                  buffers.
-
     param       - extra parameter that will be used by the function call
 
 
@@ -716,12 +713,15 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxBuffersAppend (DRV_ETHMAC_INSTANCE_DCPT* pMacD
     None.
 
   Remarks:
-    This function is meant to be used for both RX and TX packets acknowledge.
+    This function is meant to be used for TX packets acknowledge.
     It allows the caller to pass an extra parameter that will be used in the
     function call.
+
+    For packets spanning multiple buffers, the ack function will be called just for the first buffer!
+
 */
 
-typedef void ( *DRV_ETHMAC_BUFF_AckF ) ( void *pPktBuff, int buffIx, void* param );
+typedef void ( *DRV_ETHMAC_BUFF_AckF ) ( void *pPktBuff, void* param );
 
 
 /*******************************************************************************
@@ -927,10 +927,14 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibTxGetBufferStatus (DRV_ETHMAC_INSTANCE_DCPT* pMa
     <p>Replaces:<p><c><b>DRV_ETHMAC_RESULT EthTxGetPacketStatus(const DRV_ETHMAC_PKT_DCPT* pPkt, const DRV_ETHMAC_PKT_STAT_TX** pTxStat)</b></c>
  *****************************************************************************/
 
+// DRV_ETHMAC_RESULT DRV_ETHMAC_LibTxGetPacketStatus(DRV_ETHMAC_INSTANCE_DCPT* pMacD, const DRV_ETHMAC_PKT_DCPT* pPkt, const DRV_ETHMAC_PKT_STAT_TX** pTxStat);
+
+// DOM-IGNORE-BEGIN
 static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_LibTxGetPacketStatus(DRV_ETHMAC_INSTANCE_DCPT* pMacD, const DRV_ETHMAC_PKT_DCPT* pPkt, const DRV_ETHMAC_PKT_STAT_TX** pTxStat)
 {
     return  DRV_ETHMAC_LibTxGetBufferStatus(pMacD, pPkt?pPkt->pBuff:0, pTxStat);
 }
+// DOM-IGNORE-END
 
 
 // *****************************************************************************
@@ -978,7 +982,7 @@ static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_Li
     <code>
     ethRes=EthTxAcknowledgeBuffer(pTxBuff, myAckFnc, &myInstanceData);
 
-    void myAckFnc(void* pBuff, int buffIx, void* param)
+    void myAckFnc(void* pBuff, void* param)
     {
         myInstanceType* pType=(myInstanceType*)param;
         // Handle each buffer acknowledgement
@@ -1060,15 +1064,19 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibTxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* p
     <p>Replaces:<p><c><b>DRV_ETHMAC_RESULT EthTxAcknowledgePacket(const DRV_ETHMAC_PKT_DCPT* pPkt, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )</b></c>
  *****************************************************************************/
 
+// DRV_ETHMAC_RESULT DRV_ETHMAC_LibTxAcknowledgePacket(DRV_ETHMAC_INSTANCE_DCPT* pMacD, const DRV_ETHMAC_PKT_DCPT* pPkt, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam );
+
+// DOM-IGNORE-BEGIN
 static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_LibTxAcknowledgePacket(DRV_ETHMAC_INSTANCE_DCPT* pMacD, const DRV_ETHMAC_PKT_DCPT* pPkt, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )
 {
-    return  DRV_ETHMAC_LibTxAcknowledgeBuffer(pMacD, pPkt?pPkt->pBuff:0, ackFnc, fParam);
+    return  DRV_ETHMAC_LibTxAcknowledgeBuffer(pMacD, pPkt ? pPkt->pBuff : 0, ackFnc, fParam);
 }
+// DOM-IGNORE-END
 
 
 /*******************************************************************************
   Function:
-    DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const void *pBuff, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )
+    DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const void *pBuff)
 
   Summary:
     Acknowledges a received buffer/packet.
@@ -1077,7 +1085,6 @@ static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_Li
     This function acknowledges a received buffer/packet.  The supplied packet
     has to have been previously received otherwise the call will fail.
     When pBuff==NULL, all currently received packets will be acknowledged.
-    The ackFnc, if !NULL, will be called for each buffer within the packet in turn.
 
   Precondition:
     DRV_ETHMAC_LibRxSetBufferSize, DRV_ETHMAC_LibRxBuffersAppend, DRV_ETHMAC_LibRxGetPacket should have been
@@ -1086,10 +1093,6 @@ static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_Li
   Parameters:
     pMacD       - driver instance.
     pBuff       - Buffer/packet to be acknowledged or NULL
-
-    ackFnc      - Function to be called for the acknowledged buffers or NULL
-
-    fParam      - Parameter to be used in the ackFnc callback
 
   Returns:
     DRV_ETHMAC_RES_OK              - Success
@@ -1122,17 +1125,17 @@ static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_Li
     pBuff must be the pointer to the first buffer in the packet, if the packet
     spans multiple buffers.
 
-    ackFnc is just a helper that allows the application to call an acknowledge
-    function for each received buffer in turn.
-    <p>Replaces:<p><c><b>DRV_ETHMAC_RESULT EthRxAcknowledgeBuffer ( const void *pBuff, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )</b></c>
+    When the MAC driver gets back the control of thee RX allocated packet
+    no other ackFnc is neede.
+    <p>Replaces:<p><c><b>DRV_ETHMAC_RESULT EthRxAcknowledgeBuffer ( const void *pBuff)</b></c>
  *****************************************************************************/
 
-DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const void *pBuff, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam );
+DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const void *pBuff);
 
 
 /*******************************************************************************
   Function:
-    DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgePacket (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const DRV_ETHMAC_PKT_DCPT* pPkt, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )
+    DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgePacket (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const DRV_ETHMAC_PKT_DCPT* pPkt)
 
   Summary:
     Acknowledges a received packet.
@@ -1151,10 +1154,6 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* p
     pMacD       - driver instance.
     pPkt        - Packet to be acknowledged or NULL
 
-    ackFnc      - Function to be called for the each buffer within the packet or NULL
-
-    fParam      - Parameter to be used in the ackFnc callback
-
   Returns:
     DRV_ETHMAC_RES_OK              - Success
 
@@ -1166,7 +1165,7 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* p
 
   Example:
     <code>
-    ethRes = DRV_ETHMAC_LibRxAcknowledgePacket(pMacD, pRxPkt, NULL, 0);
+    ethRes = DRV_ETHMAC_LibRxAcknowledgePacket(pMacD, pRxPkt);
     if ( ethRes != DRV_ETHMAC_RES_OK )
     {
         // Handle packet not acknowledged
@@ -1182,10 +1181,14 @@ DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgeBuffer (DRV_ETHMAC_INSTANCE_DCPT* p
     <p>Replaces:<p><c><b>DRV_ETHMAC_RESULT EthRxAcknowledgePacket ( const DRV_ETHMAC_PKT_DCPT* pPkt, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )</b></c>
  *****************************************************************************/
 
-static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_LibRxAcknowledgePacket(DRV_ETHMAC_INSTANCE_DCPT* pMacD, const DRV_ETHMAC_PKT_DCPT* pPkt, DRV_ETHMAC_BUFF_AckF ackFnc, void* fParam )
+// DRV_ETHMAC_RESULT DRV_ETHMAC_LibRxAcknowledgePacket (DRV_ETHMAC_INSTANCE_DCPT* pMacD,  const DRV_ETHMAC_PKT_DCPT* pPkt);
+
+// DOM-IGNORE-BEGIN
+static __inline__ DRV_ETHMAC_RESULT __attribute__((always_inline)) DRV_ETHMAC_LibRxAcknowledgePacket(DRV_ETHMAC_INSTANCE_DCPT* pMacD, const DRV_ETHMAC_PKT_DCPT* pPkt)
 {
-    return DRV_ETHMAC_LibRxAcknowledgeBuffer(pMacD, pPkt?pPkt->pBuff:0, ackFnc, fParam);
+    return DRV_ETHMAC_LibRxAcknowledgeBuffer(pMacD, pPkt ? pPkt->pBuff : 0);
 }
+// DOM-IGNORE-END
 
 
 // *****************************************************************************

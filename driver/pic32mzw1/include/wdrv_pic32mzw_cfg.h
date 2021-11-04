@@ -1175,6 +1175,19 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         DRV_WIFI_WID_SCAN_SSID_LIST used for setting SCAN SSID list.
 */
 #define DRV_WIFI_WID_SCAN_SSID_LIST                         0x4022
+        
+// *****************************************************************************
+/*
+    Summary:
+        WID for adding custom IE.
+    Description:
+        Applications can provide custom IE tag. This WID sets the global IE Tx
+        buffer in WLAN firmware which is used while preparing Tx frames.
+        For example: beacon frames in Soft-AP mode.
+*/
+#define DRV_WIFI_WID_VSIE_TX_DATA                           0x4085
+        
+        
 
 typedef enum
 {

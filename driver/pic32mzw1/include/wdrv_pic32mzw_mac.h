@@ -187,7 +187,7 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptr
     (
         DRV_HANDLE handle,
         TCPIP_MAC_RES* pRes,
-        const TCPIP_MAC_PACKET_RX_STAT** ppPktStat
+        TCPIP_MAC_PACKET_RX_STAT* pPktStat
     )
 
   Summary:
@@ -201,9 +201,9 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptr
     WDRV_PIC32MZW_Open should have been called to obtain a valid handle.
 
   Parameters:
-    handle      - Client handle obtained by a call to WDRV_PIC32MZW_Open.
+    handle    - Client handle obtained by a call to WDRV_PIC32MZW_Open.
     pRes      -
-    ppPktStat -
+    pPktStat  -
 
   Returns:
     Pointer to next received Ethernet frame.
@@ -217,7 +217,7 @@ TCPIP_MAC_PACKET* WDRV_PIC32MZW_MACPacketRx
 (
     DRV_HANDLE handle,
     TCPIP_MAC_RES* pRes,
-    const TCPIP_MAC_PACKET_RX_STAT** ppPktStat
+    TCPIP_MAC_PACKET_RX_STAT* pPktStat
 );
 
 //*******************************************************************************

@@ -44,10 +44,13 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define DRV_PIC32MZW_AP_REKEY_MIN_PERIOD            60
 //#define DRV_PIC32MZW_TRACK_MEMORY_ALLOC
 
-#define DRV_PIC32MZW_POWER_ON_CAL_CONFIG 0x01
-#define DRV_PIC32MZW_FACTORY_CAL_CONFIG  0x02
-#define DRV_PIC32MZW_GAIN_TABLE_CONFIG   0x04
-#define DRV_PIC32MZW_MAC_ADDRESS_CONFIG  0x08
+#define DRV_PIC32MZW_POWER_ON_CAL_CONFIG            0x01
+#define DRV_PIC32MZW_FACTORY_CAL_CONFIG             0x02
+#define DRV_PIC32MZW_GAIN_TABLE_CONFIG              0x04
+#define DRV_PIC32MZW_MAC_ADDRESS_CONFIG             0x08
+
+#define DRV_PIC32MZW_MAX_VSIE_DATA_LEN              1000
+#define DRV_PIC32MZW_VSIE_DATA_SIZE_FIELD_LEN       2
 
 #define DRV_PIC32MZW_LibraryInfo(NAME)  DRV_PIC32MZW_LibraryInfo_##NAME
 
@@ -112,11 +115,17 @@ typedef enum
     DRV_PIC32MZW_RSNA_MASK          = 0x1FF0,   // Mask of bits linked to RSNA's
 } DRV_PIC32MZW_11I_MASK;
 
+typedef struct
+{
+    int alarm_1ms;
+    int alarm_max;
+} DRV_PIC32MZW_INIT;
+
 /* Harmony to library calls */
 
 typedef int (*DRV_PIC32MZW_WLAN_EVENT_FPTR)(DRV_PIC32MZW_WLAN_EVENT_ID eventID, void *pEventDataPtr);
 
-void wdrv_pic32mzw_init(void);
+bool wdrv_pic32mzw_init(DRV_PIC32MZW_INIT *pInitData);
 void wdrv_pic32mzw_user_main(void);
 void wdrv_pic32mzw_user_stop(void);
 void wdrv_pic32mzw_process_cfg_message(uint8_t* cfgmsg);

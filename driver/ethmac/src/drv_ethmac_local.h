@@ -99,17 +99,27 @@ typedef struct
 
 // synchronization for the RX flow
 // The RX packets are allocated by the MAC and
-// passed to the stack in manager context but
-// acknowledged by the stack (user threads)
-// when contents is processed
-// Synchronization is needed
+// passed to the stack in manager thread context but
+// acknowledged by the stack modules (stack or user threads)
+// when content is processed
+// Synchronization is needed for access to the driver queues
 // If a semaphore is used then the packet RX flow (manager)
 // could be blocked waiting for user threads.
 // For better performance this should be avoided.
 // When not using a semaphore lock, a critical section
 // will be used.
 //#define   DRV_ETHMAC_USE_RX_SEMAPHORE_LOCK
-#define   DRV_ETHMAC_USE_TX_SEMAPHORE_LOCK
+
+
+// synchronization for the TX flow
+// The TX packets are allocated by the module threads and
+// passed to the MAC driver in their thread context
+// Once transmitted, packets are acknowledged by the MAC driver
+// on (other) user threads
+// Synchronization is needed for access to the driver queues
+// When not using a semaphore lock, a critical section
+// will be used (preferred).
+//#define   DRV_ETHMAC_USE_TX_SEMAPHORE_LOCK
 
 
 #define ETH_PIC32_INT_MAC_MIN_RX_SIZE           128     // minimum RX buffer size
@@ -169,12 +179,16 @@ typedef struct
             uint16_t    _open               : 1;    // the corresponding MAC is opened
             uint16_t    _linkPresent        : 1;    // lif connection to the PHY properly detected : on/off
             uint16_t    _linkNegotiation    : 1;    // if an auto-negotiation is in effect : on/off
-            uint16_t	_linkPrev           : 1;    // last value of the link status: on/off
-            uint16_t	_linkUpDone       : 1;      // the link up sequence done
+            uint16_t    _linkPrev           : 1;    // last value of the link status: on/off
+            uint16_t    _linkUpDone         : 1;    // the link up sequence done
             // add another flags here
         };
     }                   _macFlags;          // corresponding MAC flags
-    uint16_t            _segLoadOffset;     // segment allocation offset
+
+    uint16_t            _controlFlags;      // TCPIP_MAC_CONTROL_FLAGS value 
+    int16_t             _gapDcptOffset;     // gap descriptor offset
+    uint16_t            _gapDcptSize;       // gap size
+    uint32_t            _dataOffsetMask;    // the data offset mask, based on the TCPIP_MAC_CONTROL_PAYLOAD_OFFSET_2 flag
 
     TCPIP_MODULE_MAC_PIC32INT_CONFIG    macConfig;  // configuration parameters
     DRV_ETHERNET_REGISTERS*             pEthReg;    // pointer to Ethernet registers describing the peripheral
@@ -275,6 +289,123 @@ typedef struct
     DRV_ETHMAC_HW_REG_FUNC  regFunc;        // register access function
 } DRV_ETHMAC_HW_REG_DCPT;
 
+
+// RX lock functions
+#if defined(DRV_ETHMAC_USE_RX_SEMAPHORE_LOCK)
+static __inline__ bool __attribute__((always_inline)) _DRV_ETHMAC_RxCreate(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    return (pMacD->mData._synchF == 0) ? true : (*pMacD->mData._synchF)(&pMacD->mData._syncRxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_CREATE);
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_RxDelete(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncRxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_DELETE);
+    }
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_RxLock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncRxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_LOCK);
+    }
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_RxUnlock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncRxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_UNLOCK);
+    }
+}
+
+#else
+// use critical sections
+static __inline__ bool __attribute__((always_inline)) _DRV_ETHMAC_RxCreate(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    return true;
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_RxDelete(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_RxLock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncRxH, TCPIP_MAC_SYNCH_REQUEST_CRIT_ENTER);
+    }
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_RxUnlock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncRxH, TCPIP_MAC_SYNCH_REQUEST_CRIT_LEAVE);
+    }
+}
+#endif  // defined(DRV_ETHMAC_USE_RX_SEMAPHORE_LOCK)
+
+// TX lock functions
+#if defined(DRV_ETHMAC_USE_TX_SEMAPHORE_LOCK)
+static __inline__ bool __attribute__((always_inline)) _DRV_ETHMAC_TxCreate(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    return (pMacD->mData._synchF == 0) ? true : (*pMacD->mData._synchF)(&pMacD->mData._syncTxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_CREATE);
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_TxDelete(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncTxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_DELETE);
+    }
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_TxLock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncTxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_LOCK);
+    }
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_TxUnlock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncTxH, TCPIP_MAC_SYNCH_REQUEST_OBJ_UNLOCK);
+    }
+}
+#else
+// use critical sections
+static __inline__ bool __attribute__((always_inline)) _DRV_ETHMAC_TxCreate(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    return true;
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_TxDelete(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_TxLock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncTxH, TCPIP_MAC_SYNCH_REQUEST_CRIT_ENTER);
+    }
+}
+
+static __inline__ void __attribute__((always_inline)) _DRV_ETHMAC_TxUnlock(DRV_ETHMAC_INSTANCE_DCPT* pMacD)
+{
+    if(pMacD->mData._synchF != 0)
+    {
+        (*pMacD->mData._synchF)(&pMacD->mData._syncTxH, TCPIP_MAC_SYNCH_REQUEST_CRIT_LEAVE);
+    }
+}
+#endif  // defined(DRV_ETHMAC_USE_TX_SEMAPHORE_LOCK)
 
 
 

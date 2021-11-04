@@ -1005,6 +1005,7 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
     if (WDRV_PIC32MZW_SYS_IDX_0 == index)
     {
         const WDRV_PIC32MZW_SYS_INIT* const pInitData = (const WDRV_PIC32MZW_SYS_INIT* const)init;
+        DRV_PIC32MZW_INIT drvInitData;
 
 #ifdef DRV_PIC32MZW_TRACK_MEMORY_ALLOC
         _DRV_PIC32MZW_MemTrackerInit();
@@ -1047,8 +1048,10 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
         memset(&pic32mzMemStatistics, 0, sizeof(pic32mzMemStatistics));
         OSAL_MUTEX_Create(&pic32mzwMemStatsMutex);
 #endif
-
-        wdrv_pic32mzw_init();
+        drvInitData.alarm_1ms = WDRV_PIC32MZW_ALARM_PERIOD_1MS;
+        drvInitData.alarm_max = WDRV_PIC32MZW_ALARM_PERIOD_MAX;
+        
+        wdrv_pic32mzw_init(&drvInitData);
     }
     else if (TCPIP_MODULE_MAC_PIC32MZW1 == index)
     {
@@ -1076,11 +1079,6 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
 
         if (NULL != pStackInitData)
         {
-            if (TCPIP_MODULE_MAC_PIC32MZW1 != pStackInitData->moduleId)
-            {
-                return SYS_MODULE_OBJ_INVALID;
-            }
-
             TCPIP_Helper_ProtectedSingleListInitialize(&pic32mzwMACDescriptor.ethRxPktList);
 
             TCPIP_Helper_ProtectedSingleListInitialize(&pic32mzwDiscardQueue);
@@ -2028,64 +2026,49 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptr
     WDRV_PIC32MZW_MAC_TX_PKT_INSPECT_HOOK(ptrPacket);
 #endif
 
-    if ((NULL == ptrPacket->pDSeg->next) && (ptrPacket->pDSeg->segLoadOffset == ZERO_CP_MIN_MAC_FRAME_OFFSET))
+    uint8_t *pktbuf;
+    TCPIP_MAC_DATA_SEGMENT *pDSeg;
+
+    pDSeg = ptrPacket->pDSeg;
+
+    while (NULL != pDSeg)
     {
-        uint32_t* p = (uint32_t*)(ptrPacket->pDSeg->segLoad - ptrPacket->pDSeg->segLoadOffset);
+        pktLen += pDSeg->segLen;
 
-        *p++ = (uint32_t)ptrPacket;  //Save the packet pointer
-
-        payLoadPtr = (uint8_t*)p;
-
-        pktLen = ptrPacket->pDSeg->segLen;
-
-        ptrPacket->pktFlags |= TCPIP_MAC_PKT_FLAG_QUEUED;
+        pDSeg = pDSeg->next;
     }
-    else
+
+    if (pktLen > SHARED_PKT_MEM_BUFFER_SIZE)
     {
-        uint8_t *pktbuf;
-        TCPIP_MAC_DATA_SEGMENT *pDSeg;
+        WDRV_DBG_TRACE_PRINT("MAC TX: payload too big (%d)\r\n", pktLen);
 
-        pDSeg = ptrPacket->pDSeg;
-
-        while (NULL != pDSeg)
-        {
-            pktLen += pDSeg->segLen;
-
-            pDSeg = pDSeg->next;
-        }
-
-        if (pktLen > SHARED_PKT_MEM_BUFFER_SIZE)
-        {
-            WDRV_DBG_TRACE_PRINT("MAC TX: payload too big (%d)\r\n", pktLen);
-
-            return TCPIP_MAC_RES_OP_ERR;
-        }
-
-        pktbuf = payLoadPtr = DRV_PIC32MZW_PacketMemAlloc(DRV_PIC32MZW_ALLOC_OPT_PARAMS
-                ETH_ETHERNET_HDR_OFFSET + pktLen, MEM_PRI_TX);
-
-        if (NULL == pktbuf)
-        {
-            WDRV_DBG_TRACE_PRINT("MAC TX: malloc fail\r\n");
-
-            return TCPIP_MAC_RES_OP_ERR;
-        }
-
-        pktbuf += ETH_ETHERNET_HDR_OFFSET;
-
-        pDSeg = ptrPacket->pDSeg;
-
-        while (NULL != pDSeg)
-        {
-            memcpy(pktbuf, pDSeg->segLoad, pDSeg->segLen);
-
-            pktbuf += pDSeg->segLen;
-
-            pDSeg = pDSeg->next;
-        }
-
-        pDcpt->pMac->pktAckF(ptrPacket, TCPIP_MAC_PKT_ACK_TX_OK, TCPIP_THIS_MODULE_ID);
+        return TCPIP_MAC_RES_OP_ERR;
     }
+
+    pktbuf = payLoadPtr = DRV_PIC32MZW_PacketMemAlloc(DRV_PIC32MZW_ALLOC_OPT_PARAMS
+            ETH_ETHERNET_HDR_OFFSET + pktLen, MEM_PRI_TX);
+
+    if (NULL == pktbuf)
+    {
+        WDRV_DBG_TRACE_PRINT("MAC TX: malloc fail\r\n");
+
+        return TCPIP_MAC_RES_OP_ERR;
+    }
+
+    pktbuf += ETH_ETHERNET_HDR_OFFSET;
+
+    pDSeg = ptrPacket->pDSeg;
+
+    while (NULL != pDSeg)
+    {
+        memcpy(pktbuf, pDSeg->segLoad, pDSeg->segLen);
+
+        pktbuf += pDSeg->segLen;
+
+        pDSeg = pDSeg->next;
+    }
+
+    pDcpt->pMac->pktAckF(ptrPacket, TCPIP_MAC_PKT_ACK_TX_OK, TCPIP_THIS_MODULE_ID);
 
     if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pic32mzwCtrlDescriptor.drvAccessSemaphore, OSAL_WAIT_FOREVER))
     {
@@ -2116,7 +2099,7 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptr
     (
         DRV_HANDLE handle,
         TCPIP_MAC_RES* pRes,
-        const TCPIP_MAC_PACKET_RX_STAT** ppPktStat
+        TCPIP_MAC_PACKET_RX_STAT* pPktStat
     )
 
   Summary:
@@ -2134,7 +2117,7 @@ TCPIP_MAC_PACKET* WDRV_PIC32MZW_MACPacketRx
 (
     DRV_HANDLE handle,
     TCPIP_MAC_RES* pRes,
-    const TCPIP_MAC_PACKET_RX_STAT** ppPktStat
+    TCPIP_MAC_PACKET_RX_STAT* pPktStat
 )
 {
     WDRV_PIC32MZW_DCPT *const pDcpt = (WDRV_PIC32MZW_DCPT *const)handle;
@@ -3242,7 +3225,6 @@ void DRV_PIC32MZW_MACEthernetSendPacket
 
     pBufferAddr = (void*)&pEthMsg[-hdrOffset];
 
-#ifdef TCPIP_STACK_USE_MAC_BRIDGE
     if (NULL != pic32mzwMACDescriptor.pktAllocF)
     {
         ptrPacket = pic32mzwMACDescriptor.pktAllocF(sizeof(TCPIP_MAC_PACKET), lengthEthMsg-ETHERNET_HDR_LEN, 0);
@@ -3257,40 +3239,6 @@ void DRV_PIC32MZW_MACEthernetSendPacket
     memcpy(ptrPacket->pMacLayer, pEthMsg, lengthEthMsg);
 
     DRV_PIC32MZW_MemFree(pBufferAddr);
-#else
-    pAllocHdr = _DRV_PIC32MZW_MemHdr(pBufferAddr);
-
-    if (NULL == pAllocHdr)
-    {
-        return;
-    }
-
-    if (NULL == pAllocHdr->pAllocPtr)
-    {
-        if (NULL != pic32mzwMACDescriptor.pktAllocF)
-        {
-            ptrPacket = pic32mzwMACDescriptor.pktAllocF(sizeof(TCPIP_MAC_PACKET), 0, 0);
-        }
-
-        if (NULL == ptrPacket)
-        {
-            DRV_PIC32MZW_MemFree(DRV_PIC32MZW_ALLOC_OPT_PARAMS pBufferAddr);
-            return;
-        }
-    }
-    else
-    {
-        ptrPacket = pAllocHdr->pAllocPtr;
-    }
-
-    pAllocHdr->pAllocPtr = ptrPacket;
-
-    ptrPacket->pDSeg->segSize = lengthEthMsg;
-    ptrPacket->pDSeg->segLoad = (void*)pEthMsg;
-    ptrPacket->pDSeg->segLoadOffset = hdrOffset + sizeof(void*);
-    ptrPacket->pMacLayer = ptrPacket->pDSeg->segLoad;
-    ptrPacket->pNetLayer = ptrPacket->pMacLayer + ETHERNET_HDR_LEN;
-#endif
 
     ptrPacket->pDSeg->segLen = lengthEthMsg - ETHERNET_HDR_LEN;
     ptrPacket->pktFlags |= TCPIP_MAC_PKT_FLAG_QUEUED;

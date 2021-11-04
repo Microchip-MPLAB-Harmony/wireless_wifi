@@ -20,12 +20,14 @@
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *****************************************************************************"""
+interfaceNum = []
 def instantiateComponent(drvPic32mEthmacComponent):
     global tcpipEthmacInterruptVector
     global tcpipEthmacInterruptHandlerLock
     global tcpipEthmacInterruptHandler
     global tcpipEthmacInterruptVectorUpdate
     global tcpipEthmacInterruptEnable
+    global tcpipEthmacEthRmii
     
     print("PIC32M Internal Ethernet MAC Driver Component")
     configName = Variables.get("__CONFIGURATION_NAME")
@@ -39,12 +41,32 @@ def instantiateComponent(drvPic32mEthmacComponent):
     drvEthmac.setVisible(False)
     drvEthmac.setDescription("Use Internal Ethernet MAC Driver?")
     drvEthmac.setDefaultValue(True) 
-    if "PIC32MZ" in Variables.get("__PROCESSOR"):
+
+    drvEthmacConfigSummary = drvPic32mEthmacComponent.createMenuSymbol("DRV_ETHMAC_CONFIG_SUMMARY", None)
+    drvEthmacConfigSummary.setLabel("Configuration Summary")
+    drvEthmacConfigSummary.setVisible(False)
+    
+    # Internal Ethernet MAC Clock
+    processor =  Variables.get("__PROCESSOR")  
+    drvEthmacClock = drvPic32mEthmacComponent.createIntegerSymbol("DRV_ETHMAC_CLOCK", drvEthmacConfigSummary)
+    drvEthmacClock.setLabel("Internal Ethernet MAC Clock")
+    drvEthmacClock.setVisible(False)
+    if "PIC32MZ" in processor:
+        drvEthmacClock.setDefaultValue(Database.getSymbolValue("core", "ETH_CLOCK_FREQUENCY"))
+        drvEthmacClock.setDependencies(tcpipEthmacClockUpdate, ["core.ETH_CLOCK_FREQUENCY"])
+        setVal("tcpipStack", "TCPIP_STACK_MAC_CLOCK", Database.getSymbolValue("core", "ETH_CLOCK_FREQUENCY"))
+    elif "PIC32MX" in processor:
+        drvEthmacClock.setDefaultValue(int(Database.getSymbolValue("core", "CONFIG_SYS_CLK_PBCLK_FREQ")))
+        drvEthmacClock.setDependencies(tcpipEthmacClockUpdate, ["core.CONFIG_SYS_CLK_PBCLK_FREQ"])
+        setVal("tcpipStack", "TCPIP_STACK_MAC_CLOCK", int(Database.getSymbolValue("core", "CONFIG_SYS_CLK_PBCLK_FREQ")))
+        
+    
+    if "PIC32MZ" in processor:
         # Enable RMII mode
         Database.setSymbolValue("core", "CONFIG_FMIIEN", "OFF", 1)
         # Enable Alternate Pins for Ethernet MAC
         Database.setSymbolValue("core", "CONFIG_FETHIO", "ON", 1)
-    elif "PIC32MX" in Variables.get("__PROCESSOR"):
+    elif "PIC32MX" in processor:
         # Enable RMII mode
         Database.setSymbolValue("core", "CONFIG_FMIIEN", "OFF", 1)
         # Enable Default Pins for Ethernet MAC
@@ -173,7 +195,7 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacEthFilterCrcErrAccept.setVisible(True)
     tcpipEthmacEthFilterCrcErrAccept.setDescription("Accept Packets with Wrong CRC")
     tcpipEthmacEthFilterCrcErrAccept.setDefaultValue(False)
-    
+ 
     # Ethernet Connection Flags
     tcpipEthConnFlag = drvPic32mEthmacComponent.createMenuSymbol(None, None) 
     tcpipEthConnFlag.setLabel("Ethernet Connection Flags")
@@ -257,6 +279,7 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacEthRmii.setVisible(True)
     tcpipEthmacEthRmii.setDescription("RMII Connection")
     tcpipEthmacEthRmii.setDefaultValue(True)
+    tcpipEthmacEthRmii.setDependencies( tcpipEthMacMIIMode, ["TCPIP_EMAC_ETH_OF_RMII"] )
     # todo default y if FMIIEN = "OFF" 
     
     # Advanced Settings
@@ -285,7 +308,7 @@ def instantiateComponent(drvPic32mEthmacComponent):
         tcpipEthmacInterruptHandlerLock = "ETH_INTERRUPT_HANDLER_LOCK"
         tcpipEthmacInterruptVectorUpdate = "ETH_INTERRUPT_ENABLE_UPDATE"
         tcpipEthmacIrq_index = int(getIRQnumber("ETH"))
-    
+    setVal("tcpipStack", "TCPIP_STACK_INTERRUPT_EN_IDX0", True)         
     
     #Configures the library for interrupt mode operations
     tcpipEthmacInterruptEnable = drvPic32mEthmacComponent.createBooleanSymbol("INTERRUPT_ENABLE", tcpipEthmacAdvSettings)
@@ -322,14 +345,14 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacVectorNum = drvPic32mEthmacComponent.createIntegerSymbol("ETHERNET_VECTOR_NUMBER", None)
     tcpipEthmacVectorNum.setDefaultValue(tcpipEthmacIrq_index)
     tcpipEthmacVectorNum.setVisible(False)
-    
+        
     # Maximum Frame Size - Longer Frames Will Be Discarded
     tcpipEthmacMaxFrame = drvPic32mEthmacComponent.createIntegerSymbol("TCPIP_EMAC_MAX_FRAME", tcpipEthmacAdvSettings)
     tcpipEthmacMaxFrame.setLabel("Maximum Frame Size - Longer Frames Will Be Discarded")
     tcpipEthmacMaxFrame.setVisible(True)
     tcpipEthmacMaxFrame.setDescription("Maximum Frame Size - Longer Frames Will Be Discarded")
     tcpipEthmacMaxFrame.setDefaultValue(1536)
-    
+
     # Link Maximum Transmission Unit - (576 - 1500)
     tcpipEthmacLinkMTU = drvPic32mEthmacComponent.createIntegerSymbol("TCPIP_EMAC_LINK_MTU", tcpipEthmacAdvSettings)
     tcpipEthmacLinkMTU.setLabel("Link Maximum Transmission Unit - (576 - 1500)")
@@ -338,7 +361,7 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacLinkMTU.setVisible(True)
     tcpipEthmacLinkMTU.setDescription("Link Maximum Transmission Unit - (576 - 1500)")
     tcpipEthmacLinkMTU.setDefaultValue(1500)
-    
+
     # MAC Maximum Number of Supported RX Fragments
     tcpipEthmacRxFragMaxNum = drvPic32mEthmacComponent.createIntegerSymbol("TCPIP_EMAC_RX_FRAGMENTS", tcpipEthmacAdvSettings)
     tcpipEthmacRxFragMaxNum.setLabel("MAC Maximum Number of Supported RX Fragments")
@@ -420,7 +443,28 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacHeapSize.setVisible(False)
     tcpipEthmacHeapSize.setDefaultValue(tcpipEthmacHeapCalc())
     tcpipEthmacHeapSize.setReadOnly(True)
-    tcpipEthmacHeapSize.setDependencies(tcpipEthmacHeapUpdate, tcpipEthmacheapdependency)    
+    tcpipEthmacHeapSize.setDependencies(tcpipEthmacHeapUpdate, tcpipEthmacheapdependency)        
+        
+    #Add to definitions.h
+    tcpipEthmacSystemDefFile = drvPic32mEthmacComponent.createFileSymbol("ETHMAC_H_FILE", None)
+    tcpipEthmacSystemDefFile.setType("STRING")
+    tcpipEthmacSystemDefFile.setOutputName("core.LIST_SYSTEM_DEFINITIONS_H_INCLUDES")
+    tcpipEthmacSystemDefFile.setSourcePath("driver/ethmac/templates/system/system_definitions.h.ftl")
+    tcpipEthmacSystemDefFile.setMarkup(True)  
+    
+    #Add forward declaration to initialization.c
+    tcpipEthmacInitDataSourceFtl = drvPic32mEthmacComponent.createFileSymbol(None, None)
+    tcpipEthmacInitDataSourceFtl.setType("STRING")
+    tcpipEthmacInitDataSourceFtl.setOutputName("core.LIST_SYSTEM_INIT_C_DRIVER_INITIALIZATION_DATA")
+    tcpipEthmacInitDataSourceFtl.setSourcePath("driver/ethmac/templates/system/system_driver_initialize.c.ftl")
+    tcpipEthmacInitDataSourceFtl.setMarkup(True)
+    
+    #Add to initialization.c
+    tcpipEthmacSysInitDataSourceFtl = drvPic32mEthmacComponent.createFileSymbol(None, None)
+    tcpipEthmacSysInitDataSourceFtl.setType("STRING")
+    tcpipEthmacSysInitDataSourceFtl.setOutputName("core.LIST_SYSTEM_INIT_C_LIBRARY_INITIALIZATION_DATA")
+    tcpipEthmacSysInitDataSourceFtl.setSourcePath("driver/ethmac/templates/system/system_data_initialize.c.ftl")
+    tcpipEthmacSysInitDataSourceFtl.setMarkup(True)
     
     #Add to system_config.h
     tcpipEthmacHeaderFtl = drvPic32mEthmacComponent.createFileSymbol(None, None)
@@ -477,26 +521,16 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacPic32LibHeaderFile.setType("HEADER")
     tcpipEthmacPic32LibHeaderFile.setOverwrite(True)
     
-    # file TCPIP_MAC_DRV_C "$HARMONY_VERSION_PATH/framework/driver/ethmac/src/dynamic/drv_ethmac.c" to     "$PROJECT_SOURCE_FILES/framework/driver/ethmac/drv_ethmac.c"
-    # Add drv_ethmac.c/drv_ethmac.c file 
-    if "PIC32MZ1025W104132" in Variables.get("__PROCESSOR"):
-	    tcpipEthmacSourceFile = drvPic32mEthmacComponent.createFileSymbol(None, None)
-	    tcpipEthmacSourceFile.setSourcePath("driver/ethmac/src/dynamic/drv_ethmac.c")
-	    tcpipEthmacSourceFile.setOutputName("drv_ethmac.c")
-	    tcpipEthmacSourceFile.setOverwrite(True)
-	    tcpipEthmacSourceFile.setDestPath("driver/ethmac/src/dynamic/")
-	    tcpipEthmacSourceFile.setProjectPath("config/" + configName + "/driver/ethmac/src/dynamic/")
-	    tcpipEthmacSourceFile.setType("SOURCE")
-	    tcpipEthmacSourceFile.setEnabled(True)
-    elif "PIC32MZ" in Variables.get("__PROCESSOR"):
-	    tcpipEthmacSourceFile = drvPic32mEthmacComponent.createFileSymbol(None, None)
-	    tcpipEthmacSourceFile.setSourcePath("driver/ethmac/src/dynamic/drv_ethmac.c")
-	    tcpipEthmacSourceFile.setOutputName("drv_ethmac.c")
-	    tcpipEthmacSourceFile.setOverwrite(True)
-	    tcpipEthmacSourceFile.setDestPath("driver/ethmac/src/dynamic/")
-	    tcpipEthmacSourceFile.setProjectPath("config/" + configName + "/driver/ethmac/src/dynamic/")
-	    tcpipEthmacSourceFile.setType("SOURCE")
-	    tcpipEthmacSourceFile.setEnabled(True)
+    # file TCPIP_MAC_DRV_C "$HARMONY_VERSION_PATH/framework/driver/ethmac/src/dynamic/drv_ethmac.c" to         "$PROJECT_SOURCE_FILES/framework/driver/ethmac/drv_ethmac.c"
+    # Add drv_ethmac.c file
+    tcpipEthmacSourceFile = drvPic32mEthmacComponent.createFileSymbol(None, None)
+    tcpipEthmacSourceFile.setSourcePath("driver/ethmac/src/dynamic/drv_ethmac.c")
+    tcpipEthmacSourceFile.setOutputName("drv_ethmac.c")
+    tcpipEthmacSourceFile.setOverwrite(True)
+    tcpipEthmacSourceFile.setDestPath("driver/ethmac/src/dynamic/")
+    tcpipEthmacSourceFile.setProjectPath("config/" + configName + "/driver/ethmac/src/dynamic/")
+    tcpipEthmacSourceFile.setType("SOURCE")
+    tcpipEthmacSourceFile.setEnabled(True)
     
     # file TCPIP_MAC_LIB_C "$HARMONY_VERSION_PATH/framework/driver/ethmac/src/dynamic/drv_ethmac_lib.c" to     "$PROJECT_SOURCE_FILES/framework/driver/ethmac/drv_ethmac_lib.c"    
     tcpipEthmacLibSourceFile = drvPic32mEthmacComponent.createFileSymbol(None, None)
@@ -579,7 +613,7 @@ def tcpipEthmacRxBuffSizeCallBack(symbol, event):
         symbol.setValue(1536)
     else:
         symbol.setValue(1536)
-    
+                            
 def tcpipEthMacMenuVisibleSingle(symbol, event):
     if (event["value"] == True):
         print("EthMac Menu Visible.")       
@@ -587,7 +621,7 @@ def tcpipEthMacMenuVisibleSingle(symbol, event):
     else:
         print("EthMac Menu Invisible.")
         symbol.setVisible(False)
-
+            
 def tcpipEthMacMdixSwapVisible(symbol, event):
     tcpipEthMacAutoMdix = Database.getSymbolValue("drvPic32mEthmac","TCPIP_EMAC_ETH_OF_MDIX_AUTO")
     if (event["value"] == True):
@@ -598,7 +632,7 @@ def tcpipEthMacMdixSwapVisible(symbol, event):
 def setEthmacInterruptData(status):
 
     Database.setSymbolValue("core", tcpipEthmacInterruptVector, status, 1)
-    Database.setSymbolValue("core", tcpipEthmacInterruptHandlerLock, status, 1)
+    Database.setSymbolValue("core", tcpipEthmacInterruptHandlerLock, status, 1)    
     if status == True:
         Database.setSymbolValue("core", tcpipEthmacInterruptHandler, "ETHERNET_InterruptHandler", 1)
     else:
@@ -648,12 +682,28 @@ def getIRQnumber(string):
     return irq_index
     
 def onAttachmentConnected(source, target):
+    global tcpipEthmacEthRmii
     if (source["id"] == "ETHMAC_PHY_Dependency"): 
         Database.setSymbolValue("drvPic32mEthmac", "DRV_INTMAC_PHY_TYPE", target["component"].getDisplayName(),2)
+        extPhyComponent = "drvExtPhy" + target['component'].getDisplayName().capitalize()
+        setVal(extPhyComponent, "DRV_ETHPHY_MAC_NAME", "ETHMAC")
+    elif (target["id"] == "NETCONFIG_MAC_Dependency"):
+        interface_number = int(target["component"].getID().strip("tcpipNetConfig_"))
+        interfaceNum.append(interface_number)
+        setVal("tcpipStack", "TCPIP_STACK_INT_MAC_IDX" + str(interface_number), True)
+        setVal("tcpipStack", "TCPIP_STACK_MII_MODE_IDX" + str(interface_number), "RMII" if tcpipEthmacEthRmii.getValue() == True else "MII")
         
 def onAttachmentDisconnected(source, target):
     if (source["id"] == "ETHMAC_PHY_Dependency"): 
         Database.clearSymbolValue("drvPic32mEthmac", "DRV_INTMAC_PHY_TYPE")
+        extPhyComponent = "drvExtPhy" + target['component'].getDisplayName().capitalize()
+        setVal(extPhyComponent, "DRV_ETHPHY_MAC_NAME", "")
+    elif (target["id"] == "NETCONFIG_MAC_Dependency"):
+        interface_number = int(target["component"].getID().strip("tcpipNetConfig_"))
+        interfaceNum.remove(interface_number)
+        setVal("tcpipStack", "TCPIP_STACK_INT_MAC_IDX" + str(interface_number), False)
+        setVal("tcpipStack", "TCPIP_STACK_MII_MODE_IDX" + str(interface_number), "")
+       
 
 def tcpipEthmacHeapCalc(): 
     nTxDescriptors = Database.getSymbolValue("drvPic32mEthmac","TCPIP_EMAC_TX_DESCRIPTORS")
@@ -664,6 +714,13 @@ def tcpipEthmacHeapCalc():
     heap_size = ((nTxDescriptors + nRxDescriptors) * 24) + rxBuffSize * nRxDedicatedBuffers
     return heap_size    
     
+def tcpipEthmacClockUpdate(symbol, event): 
+    setVal("tcpipStack", "TCPIP_STACK_MAC_CLOCK", int(event["value"]))    
+    
+def tcpipEthMacMIIMode(symbol, event):  
+    for interface in range (0, len(interfaceNum)): 
+        setVal("tcpipStack", "TCPIP_STACK_MII_MODE_IDX" + str(interfaceNum[interface]), "RMII" if event["value"] == True else "MII")   
+        
 def tcpipEthmacHeapUpdate(symbol, event): 
     heap_size = tcpipEthmacHeapCalc()
     symbol.setValue(heap_size)
@@ -691,4 +748,6 @@ def handleMessage(messageID, args):
     return retDict
     
 def destroyComponent(drvPic32mEthmacComponent):
-    Database.setSymbolValue("drvPic32mEthmac", "TCPIP_USE_ETH_MAC", False, 2)
+    global tcpipEthmacInterruptVector
+    Database.setSymbolValue("drvPic32mEthmac", "TCPIP_USE_ETH_MAC", False, 2)    
+    setVal("core", tcpipEthmacInterruptVector, False)

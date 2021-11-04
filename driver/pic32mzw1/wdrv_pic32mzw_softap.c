@@ -154,15 +154,16 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
     /* Allocate memory for the WIDs. */
     DRV_PIC32MZW_MultiWIDInit(&wids, 512);
 
-    /* Switch to AP mode (1). */
-    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SWITCH_MODE, 1);
+    /* Enable or disable broadcast SSID based on cloaked flag. */
+    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_BCAST_SSID, pBSSCtx->cloaked ? 1 : 0);
 
-    /* Set Transmit Rate to Autorate */
+    /* Set transmit rate to auto-rate. */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_CURRENT_TX_RATE, 0);
 
-    /* Copy SSID and channel. */
+    /* Set SSID. */
     DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SSID, pBSSCtx->ssid.name, pBSSCtx->ssid.length);
 
+    /* Set channel. */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_USER_PREF_CHANNEL, pBSSCtx->channel);
 
     /* Set 11i info as derived above. */
@@ -195,11 +196,16 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
 
     /* Set 11g compatibility mode 1 (2). */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_11G_OPERATING_MODE, 2);
+    
     /* Set Ack policy: Normal Ack (0). */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_ACK_POLICY, 0);
+    
     /* Set 11n enabled (1). */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_11N_ENABLE, 1);
 
+    /* Switch to AP mode (1). */
+    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SWITCH_MODE, 1);
+    
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
     /* Write the wids. */
@@ -355,6 +361,67 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APRekeyIntervalSet(
         return WDRV_PIC32MZW_STATUS_REQUEST_ERROR;
     }
 
+    OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
+
+    return WDRV_PIC32MZW_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APSetCustIE
+    (
+        DRV_HANDLE handle,
+        const WDRV_PIC32MZW_CUST_IE_STORE_CONTEXT *const pCustIECtx
+    )
+
+  Summary:
+    Configures the custom IE.
+
+  Description:
+    Soft-AP beacons may contain a application provided custom IE. This function 
+    associates an custom IE store context with the Soft-AP instance.
+
+  Remarks:
+    See wdrv_pic32mzw_softap.h for usage information.
+
+*/
+
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APSetCustIE
+(
+    DRV_HANDLE handle,
+    const WDRV_PIC32MZW_CUST_IE_STORE_CONTEXT *const pCustIECtx
+)
+{
+    WDRV_PIC32MZW_DCPT *pDcpt = (WDRV_PIC32MZW_DCPT *)handle;
+    DRV_PIC32MZW_WIDCTX wids;
+    OSAL_CRITSECT_DATA_TYPE critSect;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pCustIECtx))
+    {
+        return WDRV_PIC32MZW_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_PIC32MZW_STATUS_NOT_OPEN;
+    }
+    
+    DRV_PIC32MZW_MultiWIDInit(&wids, 1024);
+    
+    DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_VSIE_TX_DATA, (uint8_t*)&pCustIECtx->ieData, pCustIECtx->curLength);
+
+    critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
+
+    /* Write the wids. */
+    if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
+    {
+        OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
+        return WDRV_PIC32MZW_STATUS_REQUEST_ERROR;
+    }
+    
     OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 
     return WDRV_PIC32MZW_STATUS_OK;

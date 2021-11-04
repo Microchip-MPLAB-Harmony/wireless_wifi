@@ -223,6 +223,16 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1RegDomain.setVisible(True)
     pic32mzw1RegDomain.setDefaultValue('GEN')
 
+    pic32mzw1AlarmPeroid1ms = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_ALARM_PERIOD_1MS', None)
+    pic32mzw1AlarmPeroid1ms.setVisible(False)
+    pic32mzw1AlarmPeroid1ms.setDefaultValue(0)
+    pic32mzw1AlarmPeroid1ms.setDependencies(updateAlarmPeriod1ms, ['core.CONFIG_SYS_CLK_PBCLK3_FREQ'])
+
+    pic32mzw1AlarmPeroidMax = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_ALARM_PERIOD_MAX', None)
+    pic32mzw1AlarmPeroidMax.setVisible(False)
+    pic32mzw1AlarmPeroidMax.setDefaultValue(0)
+    pic32mzw1AlarmPeroidMax.setDependencies(updateAlarmPeriodMax, ['core.CONFIG_SYS_CLK_PBCLK3_FREQ'])
+
     ############################################################################
     #### Code Generation ####
     ############################################################################
@@ -246,7 +256,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_regdomain.h',   condAlways],
         ['wdrv_pic32mzw_softap.h',      condAlways],
         ['wdrv_pic32mzw_sta.h',         condAlways],
-        ['wdrv_pic32mzw_ps.h',          condAlways]
+        ['wdrv_pic32mzw_ps.h',          condAlways],
+        ['wdrv_pic32mzw_custie.h',      condAlways]
     ]
 
     for incFileEntry in wdrvIncFiles:
@@ -264,7 +275,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_regdomain.c',   condAlways],
         ['wdrv_pic32mzw_softap.c',      condAlways],
         ['wdrv_pic32mzw_sta.c',         condAlways],
-        ['wdrv_pic32mzw_ps.c',          condAlways]
+        ['wdrv_pic32mzw_ps.c',          condAlways],
+        ['wdrv_pic32mzw_custie.c',      condAlways]
     ]
 
     for srcFileEntry in wdrvSrcFiles:
@@ -364,3 +376,11 @@ def setEnableLogLevel(symbol, event):
         symbol.setVisible(False)
     else:
         symbol.setVisible(True)
+
+def updateAlarmPeriod1ms(symbol, event):
+    rate = (int(event['value']) / 256) / 1000
+    symbol.setValue(rate)
+
+def updateAlarmPeriodMax(symbol, event):
+    max = 65536 / ((int(event['value']) / 256) / 1000)
+    symbol.setValue(max)
