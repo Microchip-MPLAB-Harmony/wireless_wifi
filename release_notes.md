@@ -5,15 +5,26 @@
 
 ## Wireless_wifi Release v3.6.0
 This release includes additions and improvements to
-the **PIC32MZW1 and WINC**.
+**PIC32MZW1 and WINC**.
 
 ### New Features
-- WINC: Support update for NET v3.7.3, ThreadX, Harmony TCP/IP stack dependency and OSAL heap use
+
+- WINC: Support update for NET v3.7.4, ThreadX, - Harmony TCP/IP stack dependency and OSAL heap use
+- WINC: Adds support for WINC1500 FW v19.7.6.
+- WINC: Improved Gain Tables and carrier supporession margin.
+- WINC & PIC32MZW1: Implement FragAttack Countermeasures.
+- PIC32MZW1: Add API for Vendor specific IE in Becaon frame(soft AP).
+- PIC32MZW1: Adapt WiFi firmware library alarm clock rate to PBCLK3 rate.
+
 
 ### Bug fixes
-
+- PIC32MZW1: AP SSID leaks as 'wifi' when starting Soft-AP
+- PIC32MZW1: Ethernet MAC driver unchecked pointer use
+- PIC32MZW1: STA mode interop issue with APs that reverse the byte order of IGTK key id.
+- PIC32MZW1: Fix rare Wake-up issue with Wireless powersave.
 
 ### Known Issues/Limitations
+- PIC32MZW1: RegDomain name used as part of WDRV_PIC32MZW_RegDomainSet() supports limited customization.
 
 ## Wireless_wifi Release v3.5.1
 

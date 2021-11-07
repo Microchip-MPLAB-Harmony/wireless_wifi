@@ -306,6 +306,31 @@ A structure containing information related to a discovered network (Basic Servic
 <br />
 
 ```
+WDRV_PIC32MZW_CUST_IE_STORE_CONTEXT
+{
+	uint16_t maxLength;
+    uint16_t curLength;
+    uint8_t ieData[];
+}
+```
+
+### Description:
+Custom IEs are passed to the Soft-AP via the custom IE store which packages
+the IEs together.
+
+### Fields:
+
+|	Field		 | 		Description					|
+|-------------------------|-----------------------------|
+|maxLength |	Maximum length of the IE store data |
+|curLength |	Current length of data in the store |
+|ieData[] |	 IE data in store |
+|
+
+<br />
+<br />
+
+```
 WDRV_PIC32MZW_AUTH_CONTEXT
 {
 	WDRV_PIC32MZW_AUTH_TYPE authType;
@@ -417,3 +442,4 @@ Please note: the following definitions are all prefixed with ```‘WDRV_PIC32MZW
 |PSK|	Network supports passphrase (WPA/WPA2 Personal) authentication|
 |SAE|	Network supports WPA3 (Simultaneous Authentication of Equals) authentication|
 |
+
