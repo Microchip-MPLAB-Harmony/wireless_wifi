@@ -5,7 +5,7 @@ frameworkPath: ../../..
 processor: ATSAMD21J18A
 projectName: ''
 settings:
-  PackageFilter: azure-rtos-threadx;bsp;core;crypto;cryptoauthlib;csp;dev_packs;net;wireless;wsg_dev
+  PackageFilter: azure-rtos-threadx;bsp;core;crypto;cryptoauthlib;csp;dev_packs;net;wireless_wifi;wsg_dev
   FORCE_OPTIMIZATION: 'false'
   GENERATE_BACKUP: 'true'
   CMSISPath: .\dev_packs\arm\CMSIS\5.8.0

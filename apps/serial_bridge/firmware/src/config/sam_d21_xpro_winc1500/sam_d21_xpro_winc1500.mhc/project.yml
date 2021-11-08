@@ -1,11 +1,4 @@
 files:
-- generatedChecksum: null
-  logicalPath: ''
-  name: app.c
-  physicalPath: ../..
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: null
 - generatedChecksum: 20EC657CE27B6AA7940F9E7C32673ABF
   logicalPath: config/sam_d21_xpro_winc1500/driver/spi
   name: drv_spi.c
@@ -104,13 +97,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 7A57A09EF9EDB4FBA6074CBC90CCE8F6
-- generatedChecksum: null
-  logicalPath: ''
-  name: main.c
-  physicalPath: ../..
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: null
 - generatedChecksum: 5BB451997FAC1DAD779E92B0F37B1C09
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/common
   name: nm_common.c
@@ -447,13 +433,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 35ABE5A146EF291395FAEFB4F1B44003
-- generatedChecksum: null
-  logicalPath: ''
-  name: app.h
-  physicalPath: ../..
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: null
 - generatedChecksum: 14F1AD56D242EFD0AF76849C6ADFECC4
   logicalPath: packs/CMSIS/CMSIS/Core/Include
   name: cachel1_armv7.h
@@ -1329,13 +1308,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 617E901C702EFD6FA46BC53B61865ACE
-- generatedChecksum: null
-  logicalPath: config/sam_d21_xpro_winc1500
-  name: user.h
-  physicalPath: ''
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: null
 - generatedChecksum: E078DB5A068FC94AC501021A8AAED412
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc.h

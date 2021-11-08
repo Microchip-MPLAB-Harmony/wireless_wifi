@@ -1,11 +1,4 @@
 files:
-- generatedChecksum: null
-  logicalPath: ''
-  name: app.c
-  physicalPath: ../..
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: null
 - generatedChecksum: 1A81761E8B71DEB8D8FBEA31DBFD4738
   logicalPath: config/sam_e54_xpro_winc1500/bsp
   name: bsp.c
@@ -111,13 +104,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 7A57A09EF9EDB4FBA6074CBC90CCE8F6
-- generatedChecksum: null
-  logicalPath: ''
-  name: main.c
-  physicalPath: ../..
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: null
 - generatedChecksum: 5BB451997FAC1DAD779E92B0F37B1C09
   logicalPath: config/sam_e54_xpro_winc1500/driver/winc/drv/common
   name: nm_common.c
@@ -489,13 +475,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 629924581C7130E0F4D89E73EC2F6006
-- generatedChecksum: null
-  logicalPath: ''
-  name: app.h
-  physicalPath: ../..
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: null
 - generatedChecksum: BEB9A13A97519CF2A5F78A99E0318FB5
   logicalPath: config/sam_e54_xpro_winc1500/bsp
   name: bsp.h
@@ -1658,13 +1637,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 71C4C16E628224292602C3194BEFFC5D
-- generatedChecksum: null
-  logicalPath: config/sam_e54_xpro_winc1500
-  name: user.h
-  physicalPath: ''
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: null
 - generatedChecksum: E078DB5A068FC94AC501021A8AAED412
   logicalPath: config/sam_e54_xpro_winc1500/driver/winc/include
   name: wdrv_winc.h
