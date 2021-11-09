@@ -7,6 +7,9 @@
 This release includes additions and improvements to
 **PIC32MZW1 and WINC**.
 
+## Note: This release does not include the older WINC1500 v19.7.3 driver/firmware.
+## Please make use of the Wireless_wifi release v3.5.1 if you have a strong reason to remain on v19.7.3
+
 ### New Features
 
 - WINC: Support update for NET v3.7.4, ThreadX, - Harmony TCP/IP stack dependency and OSAL heap use
@@ -25,6 +28,12 @@ This release includes additions and improvements to
 
 ### Known Issues/Limitations
 - PIC32MZW1: RegDomain name used as part of WDRV_PIC32MZW_RegDomainSet() supports limited customization.
+- WINC MISRA warnings/false positives(same as previous releases):
+    - driver/winc/drv/driver/m2m_wifi.c(1039) 	644 	9.1 	Variable 'strNetworkId' (line 1030) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/wdrv_winc_authctx.c(122) 	530 	9.1 	Symbol 'PKCS1_RSA_PRIVATE_KEY' (line 105) not initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/driver/nmspi.c(928) 	644 	9.1 	Variable 'tmpBuf' (line 905) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/socket/socket.c(574) 	644 	9.1 	Variable 'pstrSock' (line 535) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
 
 ## Wireless_wifi Release v3.5.1
 
