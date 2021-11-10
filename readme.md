@@ -44,6 +44,8 @@ reference information.
 | ---        | ---                                                                                 |
 | apps       | Redirects to Example applications repositories for Wireless library components      |
 | config     | Wireless module configuration file                                                  |
+| doc        | Wireless library help documentation (md)                                            |
+| docs       | Wireless library help documentation (pdf)                                           |
 | drivers    | Driver/Firmware files for different products                                        |
 | utilities  | Contains root certs, firmware programmer/downloader                                 |
 
