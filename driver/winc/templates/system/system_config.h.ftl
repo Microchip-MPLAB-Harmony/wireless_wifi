@@ -68,8 +68,9 @@
             <#lt>#define WDRV_WINC_DEVICE_OTA_STATUS_EXTENDED
         </#if>
         <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
-        <#if DRV_WIFI_WINC3400_VERSION == "1.4.2">
+        <#if DRV_WIFI_WINC3400_VERSION == "1.4.3">
             <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
+            <#lt>#define WDRV_WINC_DEVICE_DEPRECATE_WEP
             <#lt>#define WDRV_WINC_DEVICE_SCAN_SSID_LIST
             <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>
                 <#lt>#define WDRV_WINC_DEVICE_BLE_API_REV_2

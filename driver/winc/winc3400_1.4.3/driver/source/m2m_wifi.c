@@ -339,28 +339,9 @@ static int8_t m2m_validate_ap_parameters(const tstrM2MAPModeConfig *pstrM2MAPMod
     }
     else if (pstrM2MAPModeConfig->strApConfig.u8SecType == M2M_WIFI_SEC_WEP)
     {
-        /* Check for WEP Key index */
-        if ((pstrM2MAPModeConfig->strApConfig.u8KeyIndx == 0) || (pstrM2MAPModeConfig->strApConfig.u8KeyIndx > WEP_KEY_MAX_INDEX))
-        {
-            M2M_ERR("INVALID KEY INDEX\r\n");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
-        }
-        /* Check for WEP Key size */
-        if ((pstrM2MAPModeConfig->strApConfig.u8KeySz != WEP_40_KEY_STRING_SIZE) &&
-                (pstrM2MAPModeConfig->strApConfig.u8KeySz != WEP_104_KEY_STRING_SIZE))
-        {
-            M2M_ERR("INVALID KEY SIZE\r\n");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
-        }
-        /* Check for WEP Key */
-        if ((pstrM2MAPModeConfig->strApConfig.au8WepKey == NULL) || (strlen((const char*)pstrM2MAPModeConfig->strApConfig.au8WepKey) <= 0) || (strlen((const char*)pstrM2MAPModeConfig->strApConfig.au8WepKey) > WEP_104_KEY_STRING_SIZE))
-        {
-            M2M_ERR("INVALID WEP KEY\r\n");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
-        }
+       /* As of 1.4.3 the WEP protocol is deprecated */
+        s8Ret = M2M_ERR_FAIL;
+        goto ERR1; 
     }
     else
     {
@@ -692,57 +673,8 @@ int8_t m2m_wifi_connect_wep(
     tstrAuthWep         *pstrAuthWep
 )
 {
-    int8_t   ret = M2M_ERR_INVALID_ARG;
-
-    if (
-        (pstrAuthWep != NULL) && (pstrAuthWep->pu8WepKey != NULL)
-        && (pstrAuthWep->u8KeyIndx > 0) && (pstrAuthWep->u8KeyIndx <= WEP_KEY_MAX_INDEX)
-        && ((pstrAuthWep->u8KeySz == WEP_104_KEY_STRING_SIZE) || (pstrAuthWep->u8KeySz == WEP_40_KEY_STRING_SIZE))
-    )
-    {
-        tstrM2mWifiConnHdr  strConnHdr;
-
-        ret = m2m_wifi_connect_prepare_msg(enuCredStoreOption,
-                                           M2M_WIFI_SEC_WEP,
-                                           sizeof(tstrM2mWifiWep),
-                                           pstrNetworkId,
-                                           &strConnHdr);
-
-        if (ret == M2M_SUCCESS)
-        {
-            tstrM2mWifiWep  *pstrWep = (tstrM2mWifiWep *)OSAL_Malloc(sizeof(tstrM2mWifiWep));
-            if (pstrWep == NULL)
-                ret = M2M_ERR_MEM_ALLOC;
-            else
-            {
-                pstrWep->u8KeyIndex = pstrAuthWep->u8KeyIndx - 1;
-                pstrWep->u8KeyLen = pstrAuthWep->u8KeySz/2;
-                hexstr_2_bytes(pstrWep->au8WepKey, (pstrAuthWep->pu8WepKey), pstrWep->u8KeyLen);
-
-                ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONN | M2M_REQ_DATA_PKT,
-                               (uint8_t*)&strConnHdr, sizeof(tstrM2mWifiConnHdr),
-                               (uint8_t*)pstrWep, sizeof(tstrM2mWifiWep), sizeof(tstrM2mWifiConnHdr));
-                OSAL_Free(pstrWep);
-            }
-            if (ret != M2M_SUCCESS)
-            {
-                /* Might just be that we are talking to legacy firmware - try the legacy connect message instead. */
-                tstrM2mWifiConnectLegacy_1_2    strConnectLegacy;
-                ret = legacy_connect_prepare_msg(&strConnHdr, &strConnectLegacy);
-                if (ret ==  M2M_SUCCESS)
-                {
-                    tstrM2mWifiWepParamsLegacy_1_2  *pstrWepLegacy = &strConnectLegacy.strSec.uniAuth.strWepInfo;
-                    pstrWepLegacy->u8KeyIndx = pstrAuthWep->u8KeyIndx - 1;
-                    pstrWepLegacy->u8KeySz = pstrAuthWep->u8KeySz;
-                    memcpy(pstrWepLegacy->au8WepKey, pstrAuthWep->pu8WepKey, pstrAuthWep->u8KeySz);
-                    ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONNECT,
-                                   (uint8_t*)&strConnectLegacy, sizeof(tstrM2mWifiConnectLegacy_1_2),
-                                   NULL, 0, 0);
-                }
-            }
-        }
-    }
-    return ret;
+   /* As of 1.4.3 the WEP protocol is deprecated */
+    return M2M_ERR_INVALID; 
 }
 
 int8_t m2m_wifi_connect_psk(
@@ -801,22 +733,22 @@ int8_t m2m_wifi_connect_psk(
                     ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONN | M2M_REQ_DATA_PKT,
                                    (uint8_t*)&strConnHdr, sizeof(tstrM2mWifiConnHdr),
                                    (uint8_t*)pstrPsk, sizeof(tstrM2mWifiPsk), sizeof(tstrM2mWifiConnHdr));
+                    if (ret != M2M_SUCCESS)
+                    {
+                        /* Might just be that we are talking to legacy firmware - try the legacy connect message instead. */
+                        tstrM2mWifiConnectLegacy_1_2    strConnectLegacy;
+                        ret = legacy_connect_prepare_msg(&strConnHdr, &strConnectLegacy);
+                        if (ret ==  M2M_SUCCESS)
+                        {
+                            uint8_t   *pu8PskLegacy = strConnectLegacy.strSec.uniAuth.au8PSK;
+                            memcpy(pu8PskLegacy, pstrAuthPsk->pu8Passphrase, pstrAuthPsk->u8PassphraseLen);
+                            ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONNECT,
+                                           (uint8_t*)&strConnectLegacy, sizeof(tstrM2mWifiConnectLegacy_1_2),
+                                           NULL, 0, 0);
+                        }
+                    }
                 }
                 OSAL_Free(pstrPsk);
-            }
-            if (ret != M2M_SUCCESS)
-            {
-                /* Might just be that we are talking to legacy firmware - try the legacy connect message instead. */
-                tstrM2mWifiConnectLegacy_1_2    strConnectLegacy;
-                ret = legacy_connect_prepare_msg(&strConnHdr, &strConnectLegacy);
-                if (ret ==  M2M_SUCCESS)
-                {
-                    uint8_t   *pu8PskLegacy = strConnectLegacy.strSec.uniAuth.au8PSK;
-                    memcpy(pu8PskLegacy, pstrAuthPsk->pu8Passphrase, pstrAuthPsk->u8PassphraseLen);
-                    ret = hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONNECT,
-                                   (uint8_t*)&strConnectLegacy, sizeof(tstrM2mWifiConnectLegacy_1_2),
-                                   NULL, 0, 0);
-                }
             }
         }
     }

@@ -258,13 +258,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: B51F93A5873769DC9149F86C5BE8F2B2
-- generatedChecksum: 68A3E0078CA2FB09DAF4DB9152E42F8B
+- generatedChecksum: 3980F3E227FD5A2D9D9BDA8D32DE71D8
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 68A3E0078CA2FB09DAF4DB9152E42F8B
+  userChecksum: 3980F3E227FD5A2D9D9BDA8D32DE71D8
 - generatedChecksum: 1C250277649C756DDA1BF1A3DFF46C83
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_assoc.c
@@ -1308,20 +1308,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 617E901C702EFD6FA46BC53B61865ACE
-- generatedChecksum: E078DB5A068FC94AC501021A8AAED412
+- generatedChecksum: FA5ABBDF0598C0ED8B197B3E416FB369
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: E078DB5A068FC94AC501021A8AAED412
-- generatedChecksum: C3BE476E2A3338FC87BCC424CDB0FD27
+  userChecksum: FA5ABBDF0598C0ED8B197B3E416FB369
+- generatedChecksum: 1D5E007CD3B2796BF827A1941B39D40F
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_api.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: C3BE476E2A3338FC87BCC424CDB0FD27
+  userChecksum: 1D5E007CD3B2796BF827A1941B39D40F
 - generatedChecksum: E59D88313B67DE2CEA6F7D0BEE5F61A9
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_assoc.h
@@ -1399,13 +1399,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: C44FEE06CF9D7796C6736E1FE5018876
-- generatedChecksum: 6D8663694E91681409832090DCF4A883
+- generatedChecksum: A2B3320FAE5C8F8843F57650E319A4FE
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_nvm.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6D8663694E91681409832090DCF4A883
+  userChecksum: A2B3320FAE5C8F8843F57650E319A4FE
 - generatedChecksum: BB29E3755A067138F9A41BB5C23D4423
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_powersave.h

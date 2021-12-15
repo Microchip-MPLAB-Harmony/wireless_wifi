@@ -89,7 +89,7 @@ The MAC WINC Driver is utilized when the host MCU application is the combined wi
 
 ![Microchip-Technology](images/WINCDriver_pic2.png)
 
-#### Changes in WINC1500 19.7.3 and WINC3400 1.4.2
+#### Changes in WINC1500 19.7.6 and WINC3400 1.4.3
 
 The major change in the later WINC architecture is the removal of the ‘stack driver’. Previously there was an extra layer over the WINC driver API when the driver was used in bypass mode with the Harmony TCP/IP stack. The application had limited control of the driver through the WDRV_WINC_MAC* APIs. The APIs had to be wrapped in a WDRV_WINC_MAC version and there was no direct control of connection/disconnection.
 The driver now has two interfaces which can be opened, first the normal interface used in non-bypass mode (called the control interface) and a second interface used by the TCP/IP stack (the MAC interface). In a way, instead of being the MAC interface on top of the control interface as before they are now side by side. For the applications there is no change to how things work for non-bypass mode. However, now that same application control can be used in bypass mode with the TCP/IP stack, the only difference being that the WINC socket API is replaced with the Harmony stack API (and certain WINC APIs become unavailable as they are based on non-bypass firmware). The example wifi_winc_sta_bypass has been updated to reflect this change.

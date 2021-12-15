@@ -68,6 +68,7 @@
 #define M2M_ERR_FW_VER_MISMATCH     ((int8_t)-13)
 #define M2M_ERR_SCAN_IN_PROGRESS    ((int8_t)-14)
 #define M2M_ERR_INVALID_ARG         ((int8_t)-15)
+#define M2M_ERR_INVALID             ((int8_t)-16)
 
 #define NBIT31                      (0x80000000)
 #define NBIT30                      (0x40000000)

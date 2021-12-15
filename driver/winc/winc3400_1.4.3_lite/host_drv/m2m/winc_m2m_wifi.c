@@ -322,30 +322,25 @@ int8_t m2m_wifi_download_mode(void)
 
 static int8_t m2m_validate_ap_parameters(const tstrM2MAPModeConfig *pstrM2MAPModeConfig)
 {
-    int8_t s8Ret = M2M_SUCCESS;
-
     /* Check for incoming pointer */
     if (pstrM2MAPModeConfig == NULL)
     {
         WINC_LOG_ERROR("INVALID POINTER");
-        s8Ret = M2M_ERR_FAIL;
-        goto ERR1;
+        return M2M_ERR_FAIL;
     }
 
     /* Check for SSID */
     if ((strlen((const char *)pstrM2MAPModeConfig->strApConfig.au8SSID) <= 0) || (strlen((const char *)pstrM2MAPModeConfig->strApConfig.au8SSID) >= M2M_MAX_SSID_LEN))
     {
         WINC_LOG_ERROR("INVALID SSID");
-        s8Ret = M2M_ERR_FAIL;
-        goto ERR1;
+        return M2M_ERR_FAIL;
     }
 
     /* Check for Channel */
     if (pstrM2MAPModeConfig->strApConfig.u8ListenChannel > M2M_WIFI_CH_14 || pstrM2MAPModeConfig->strApConfig.u8ListenChannel < M2M_WIFI_CH_1)
     {
         WINC_LOG_ERROR("INVALID CH");
-        s8Ret = M2M_ERR_FAIL;
-        goto ERR1;
+        return M2M_ERR_FAIL;
     }
 
     /* Check for DHCP Server IP address */
@@ -354,53 +349,23 @@ static int8_t m2m_validate_ap_parameters(const tstrM2MAPModeConfig *pstrM2MAPMod
         if (!(pstrM2MAPModeConfig->strApConfig.au8DHCPServerIP[2]))
         {
             WINC_LOG_ERROR("INVALID DHCP SERVER IP");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
+            return M2M_ERR_FAIL;
         }
     }
 
     /* Check for Security */
     if (pstrM2MAPModeConfig->strApConfig.u8SecType == M2M_WIFI_SEC_OPEN)
     {
-        goto ERR1;
+        return M2M_SUCCESS;
     }
     else if (pstrM2MAPModeConfig->strApConfig.u8SecType == M2M_WIFI_SEC_WEP)
     {
-        /* Check for WEP Key index */
-        if ((pstrM2MAPModeConfig->strApConfig.u8KeyIndx == 0) || (pstrM2MAPModeConfig->strApConfig.u8KeyIndx > WEP_KEY_MAX_INDEX))
-        {
-            WINC_LOG_ERROR("INVALID KEY INDEX");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
-        }
-
-        /* Check for WEP Key size */
-        if ((pstrM2MAPModeConfig->strApConfig.u8KeySz != WEP_40_KEY_STRING_SIZE) &&
-                (pstrM2MAPModeConfig->strApConfig.u8KeySz != WEP_104_KEY_STRING_SIZE)
-           )
-        {
-            WINC_LOG_ERROR("INVALID KEY SIZE");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
-        }
-
-        /* Check for WEP Key */
-        if ((strlen((const char *)pstrM2MAPModeConfig->strApConfig.au8WepKey) <= 0) || (strlen((const char *)pstrM2MAPModeConfig->strApConfig.au8WepKey) > WEP_104_KEY_STRING_SIZE))
-        {
-            WINC_LOG_ERROR("INVALID WEP KEY");
-            s8Ret = M2M_ERR_FAIL;
-            goto ERR1;
-        }
-    }
-    else
-    {
-        WINC_LOG_ERROR("INVALID AUTHENTICATION MODE");
-        s8Ret = M2M_ERR_FAIL;
-        goto ERR1;
+       /* As of 1.4.3 the WEP protocol is deprecated */
+        return M2M_ERR_FAIL;
     }
 
-ERR1:
-    return s8Ret;
+    WINC_LOG_ERROR("INVALID AUTHENTICATION MODE");
+    return M2M_ERR_FAIL;
 }
 
 static int8_t m2m_validate_scan_options(tstrM2MScanOption *ptstrM2MScanOption)
@@ -773,54 +738,8 @@ int8_t m2m_wifi_connect_open(tenuCredStoreOption enuCredStoreOption, tstrNetwork
 
 int8_t m2m_wifi_connect_wep(tenuCredStoreOption enuCredStoreOption, tstrNetworkId *pstrNetworkId, tstrAuthWep *pstrAuthWep)
 {
-    int8_t  ret = M2M_ERR_INVALID_ARG;
-
-    if (
-        (pstrAuthWep != NULL) && (pstrAuthWep->pu8WepKey != NULL)
-        &&  (pstrAuthWep->u8KeyIndx > 0) && (pstrAuthWep->u8KeyIndx <= WEP_KEY_MAX_INDEX)
-        &&  ((pstrAuthWep->u8KeySz == WEP_104_KEY_STRING_SIZE) || (pstrAuthWep->u8KeySz == WEP_40_KEY_STRING_SIZE))
-    )
-    {
-        tstrM2mWifiConnHdr  strConnHdr;
-
-        ret = m2m_wifi_connect_prepare_msg( enuCredStoreOption,
-                                            M2M_WIFI_SEC_WEP,
-                                            sizeof(tstrM2mWifiWep),
-                                            pstrNetworkId,
-                                            &strConnHdr);
-
-        if (ret == M2M_SUCCESS)
-        {
-            tstrM2mWifiWep strWep;
-
-            strWep.u8KeyIndex = pstrAuthWep->u8KeyIndx - 1;
-            strWep.u8KeyLen = pstrAuthWep->u8KeySz / 2;
-            hexstr_2_bytes(strWep.au8WepKey, (pstrAuthWep->pu8WepKey), strWep.u8KeyLen);
-
-            ret = winc_hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONN | M2M_REQ_DATA_PKT,
-                                &strConnHdr, sizeof(tstrM2mWifiConnHdr),
-                                &strWep, sizeof(tstrM2mWifiWep), sizeof(tstrM2mWifiConnHdr));
-
-            if (ret != M2M_SUCCESS)
-            {
-                /* Might just be that we are talking to legacy firmware - try the legacy connect message instead. */
-                tstrM2mWifiConnectLegacy_1_2    strConnectLegacy;
-                ret = legacy_connect_prepare_msg(&strConnHdr, &strConnectLegacy);
-
-                if (ret ==  M2M_SUCCESS)
-                {
-                    tstrM2mWifiWepParamsLegacy_1_2  *pstrWepLegacy = &strConnectLegacy.strSec.uniAuth.strWepInfo;
-                    pstrWepLegacy->u8KeyIndx = pstrAuthWep->u8KeyIndx - 1;
-                    pstrWepLegacy->u8KeySz = pstrAuthWep->u8KeySz;
-                    memcpy(pstrWepLegacy->au8WepKey, pstrAuthWep->pu8WepKey, pstrAuthWep->u8KeySz);
-                    ret = winc_hif_send_no_data(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONNECT,
-                                                (uint8_t *)&strConnectLegacy, sizeof(tstrM2mWifiConnectLegacy_1_2));
-                }
-            }
-        }
-    }
-
-    return ret;
+   /* As of 1.4.3 the WEP protocol is deprecated */
+    return M2M_ERR_INVALID; 
 }
 
 int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkId *pstrNetworkId, tstrAuthPsk *pstrAuthPsk)
@@ -847,7 +766,7 @@ int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkI
             {
                 if (pstrAuthPsk->pu8Passphrase != NULL)
                 {
-                    ret = M2M_ERR_INVALID_ARG;
+                    return M2M_ERR_INVALID_ARG;
                 }
                 else
                 {
@@ -856,7 +775,7 @@ int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkI
                     /* Use hexstr_2_bytes to verify pu8Psk input. */
                     if (M2M_SUCCESS != hexstr_2_bytes(strPsk.au8Passphrase, pstrAuthPsk->pu8Psk, strPsk.u8PassphraseLen / 2))
                     {
-                        ret = M2M_ERR_INVALID_ARG;
+                        return M2M_ERR_INVALID_ARG;
                     }
 
                     memcpy(strPsk.au8Passphrase, pstrAuthPsk->pu8Psk, strPsk.u8PassphraseLen);
@@ -866,7 +785,7 @@ int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkI
             {
                 if (pstrAuthPsk->u8PassphraseLen > M2M_MAX_PSK_LEN - 1)
                 {
-                    ret = M2M_ERR_INVALID_ARG;
+                    return M2M_ERR_INVALID_ARG;
                 }
                 else
                 {
@@ -876,15 +795,12 @@ int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkI
             }
             else
             {
-                ret = M2M_ERR_INVALID_ARG;
+                return M2M_ERR_INVALID_ARG;
             }
 
-            if (ret == M2M_SUCCESS)
-            {
-                ret = winc_hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONN | M2M_REQ_DATA_PKT,
-                                    &strConnHdr, sizeof(tstrM2mWifiConnHdr),
-                                    &strPsk, sizeof(tstrM2mWifiPsk), sizeof(tstrM2mWifiConnHdr));
-            }
+            ret = winc_hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_CONN | M2M_REQ_DATA_PKT,
+                                &strConnHdr, sizeof(tstrM2mWifiConnHdr),
+                                &strPsk, sizeof(tstrM2mWifiPsk), sizeof(tstrM2mWifiConnHdr));
 
             if (ret != M2M_SUCCESS)
             {
