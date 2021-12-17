@@ -3,6 +3,14 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.6.1
+
+### Dot Release Update for v3.6.1:
+- WINC: Adds support for WINC3400 FW v1.4.3.
+    - Add FragAttack countermeasures and drop WEP support.
+
+**Other release notes for v3.6.0 apply here too**
+
 ## Wireless_wifi Release v3.6.0
 This release includes additions and improvements to
 **PIC32MZW1 and WINC**.
