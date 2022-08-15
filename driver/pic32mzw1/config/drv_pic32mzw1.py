@@ -126,11 +126,14 @@ def instantiateComponent(drvPic32mzw1Component):
     print('PIC32MZW1 Driver Component')
     configName = Variables.get('__CONFIGURATION_NAME')
 
-    Database.activateComponents(['HarmonyCore', 'lib_crypto', 'lib_wolfcrypt', 'tcpipNetConfig', 'tcpipStack'])
+    Database.activateComponents(['HarmonyCore', 'lib_crypto', 'lib_wolfcrypt', 'tcpipNetConfig', 'tcpipStack', 'lib_wolfssl'])
 
     drvPic32mzw1Component.addDependency('Crypto_PIC32MZW1_Dependency', 'LIB_CRYPTO', True, True)
     drvPic32mzw1Component.addDependency('BA414E_Dependency', 'DRV_BA414E', False, True)
+    drvPic32mzw1Component.addDependency('BigIntSw_Dependency', 'LIB_WOLFCRYPT', False, True)
     drvPic32mzw1Component.addDependency('sys_debug', 'SYS_DEBUG', True, False)
+    drvPic32mzw1Component.addDependency('Wolfssl_PIC32MZW1_Dependency', 'TLS Provider', False, False)
+    drvPic32mzw1Component.setDependencyEnabled('Wolfssl_PIC32MZW1_Dependency', False)
 
     drvPic32mzw1Component.setCapabilityEnabled('libdrvPic32mzw1Mac', True)
 
@@ -204,18 +207,37 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1TaskPriority.setDefaultValue(1)
     pic32mzw1TaskPriority.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
 
-    # Support WPA3?
-    pic32mzw1SupportWpa3 = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_WPA3', None)
-    pic32mzw1SupportWpa3.setLabel('Support WPA3?')
-    pic32mzw1SupportWpa3.setDescription('Support for WPA3 Security. Requires BA414E Cryptographic Accelerator from crypto release v3.6.2 or later.')
-    pic32mzw1SupportWpa3.setVisible(True)
-    pic32mzw1SupportWpa3.setDefaultValue(True)
+    # Support SAE (WPA3 Personal)?
+    pic32mzw1SupportSae = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_SAE', None)
+    pic32mzw1SupportSae.setLabel('Support WPA3 Personal?')
+    pic32mzw1SupportSae.setDescription('Support for WPA3 Personal security. Requires BA414E Cryptographic Accelerator from crypto release v3.6.2 or later. Also requires wolfCrypt support.')
+    pic32mzw1SupportSae.setVisible(True)
+    pic32mzw1SupportSae.setDefaultValue(True)
 
     # Require BA414E hardware driver?
     pic32mzw1RequireBa414e = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_BA414E', None)
     pic32mzw1RequireBa414e.setVisible(False)
     pic32mzw1RequireBa414e.setDefaultValue(True)
-    pic32mzw1RequireBa414e.setDependencies(setRequireBa414e, ['DRV_WIFI_PIC32MZW1_SUPPORT_WPA3'])
+    pic32mzw1RequireBa414e.setDependencies(setRequireBa414e, ['DRV_WIFI_PIC32MZW1_SUPPORT_SAE'])
+
+    # Require BigIntSw?
+    pic32mzw1RequireBigIntSw = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_BIGINTSW', None)
+    pic32mzw1RequireBigIntSw.setVisible(False)
+    pic32mzw1RequireBigIntSw.setDefaultValue(True)
+    pic32mzw1RequireBigIntSw.setDependencies(setRequireBigIntSw, ['DRV_WIFI_PIC32MZW1_SUPPORT_SAE'])
+
+    # Support Enterprise security?
+    pic32mzw1SupportEntSec = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE', None)
+    pic32mzw1SupportEntSec.setLabel('Support Enterprise?')
+    pic32mzw1SupportEntSec.setDescription('Support for WPA, WPA2 and WPA3 Enterprise security. Requires wolfSSL support.')
+    pic32mzw1SupportEntSec.setVisible(True)
+    pic32mzw1SupportEntSec.setDefaultValue(False)
+
+    # Require Wolfssl
+    pic32mzw1RequireWolfssl = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_WOLFSSL', None)
+    pic32mzw1RequireWolfssl.setVisible(False)
+    pic32mzw1RequireWolfssl.setDefaultValue(False)
+    pic32mzw1RequireWolfssl.setDependencies(setRequireWolfssl, ['DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE'])
 
     # WiFi Regulatory Domain name
     pic32mzw1RegDomain = drvPic32mzw1Component.createComboSymbol('DRV_WIFI_PIC32MZW1_REG_DOMAIN', None, ['None', 'GEN', 'USA', 'EMEA', 'CUST1', 'CUST2'])
@@ -242,6 +264,7 @@ def instantiateComponent(drvPic32mzw1Component):
     wdrvIncFiles = [
         ['drv_pic32mzw1.h',             condAlways],
         ['drv_pic32mzw1_crypto.h',      condAlways],
+        ['drv_pic32mzw1_tls.h',         condAlways],
         ['wdrv_pic32mzw.h',             condAlways],
         ['wdrv_pic32mzw_api.h',         condAlways],
         ['wdrv_pic32mzw_assoc.h',       condAlways],
@@ -257,7 +280,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_softap.h',      condAlways],
         ['wdrv_pic32mzw_sta.h',         condAlways],
         ['wdrv_pic32mzw_ps.h',          condAlways],
-        ['wdrv_pic32mzw_custie.h',      condAlways]
+        ['wdrv_pic32mzw_custie.h',      condAlways],
+        ['wdrv_pic32mzw_ie.h',          condAlways]
     ]
 
     for incFileEntry in wdrvIncFiles:
@@ -265,6 +289,7 @@ def instantiateComponent(drvPic32mzw1Component):
 
     wdrvSrcFiles = [
         ['drv_pic32mzw1_crypto.c',      condAlways],
+        ['drv_pic32mzw1_tls.c',         condAlways],
         ['wdrv_pic32mzw.c',             condAlways],
         ['wdrv_pic32mzw_assoc.c',       condAlways],
         ['wdrv_pic32mzw_authctx.c',     condAlways],
@@ -276,7 +301,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_softap.c',      condAlways],
         ['wdrv_pic32mzw_sta.c',         condAlways],
         ['wdrv_pic32mzw_ps.c',          condAlways],
-        ['wdrv_pic32mzw_custie.c',      condAlways]
+        ['wdrv_pic32mzw_custie.c',      condAlways],
+        ['wdrv_pic32mzw_ie.c',          condAlways]
     ]
 
     for srcFileEntry in wdrvSrcFiles:
@@ -367,6 +393,28 @@ def setRequireBa414e(symbol, event):
         symbol.setValue(False)
         drvPic32mzw1Component.setDependencyEnabled('BA414E_Dependency', False)
         print('BA414E not required')
+
+def setRequireBigIntSw(symbol, event):
+    drvPic32mzw1Component = symbol.getComponent()
+    if (event['value'] == True):
+        symbol.setValue(True)
+        drvPic32mzw1Component.setDependencyEnabled('BigIntSw_Dependency', True)
+        print('BigIntSw required')
+    else:
+        symbol.setValue(False)
+        drvPic32mzw1Component.setDependencyEnabled('BigIntSw_Dependency', False)
+        print('BigIntSw not required')
+
+def setRequireWolfssl(symbol, event):
+    drvPic32mzw1Component = symbol.getComponent()
+    if (event['value'] == True):
+        symbol.setValue(True)
+        drvPic32mzw1Component.setDependencyEnabled('Wolfssl_PIC32MZW1_Dependency', True)
+        print('WolfSSL required')
+    else:
+        symbol.setValue(False)
+        drvPic32mzw1Component.setDependencyEnabled('Wolfssl_PIC32MZW1_Dependency', False)
+        print('WolfSSL not required')
 
 def setEnabledRTOSTask(symbol, event):
     symbol.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))

@@ -12,11 +12,24 @@
 <#elseif DRV_WIFI_PIC32MZW1_LOG_LEVEL == "Verbose">
     <#lt>#define WDRV_PIC32MZW_DEBUG_LEVEL               WDRV_PIC32MZW_DEBUG_TYPE_VERBOSE
 </#if>
-<#if DRV_WIFI_PIC32MZW1_SUPPORT_WPA3 == true>
-#define WDRV_PIC32MZW_WPA3_SUPPORT
+<#if DRV_WIFI_PIC32MZW1_SUPPORT_SAE == true>
+#define WDRV_PIC32MZW_WPA3_PERSONAL_SUPPORT
 </#if>
 <#if DRV_WIFI_PIC32MZW1_REQUIRE_BA414E == true>
 #define WDRV_PIC32MZW_BA414E_SUPPORT
+</#if>
+<#if DRV_WIFI_PIC32MZW1_REQUIRE_BIGINTSW == true>
+#define WDRV_PIC32MZW_BIGINTSW_SUPPORT
+</#if>
+<#if DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE == true>
+#define WDRV_PIC32MZW_ENTERPRISE_SUPPORT
+/* Wolfssl : Support openssl based server certs having 'basic constraint' extension value as non-boolean. */
+#define WOLFSSL_X509_BASICCONS_INT
+/* Wolfssl : Don't validate key-usage extension of the certificate */
+#define IGNORE_KEY_EXTENSIONS
+</#if>
+<#if DRV_WIFI_PIC32MZW1_REQUIRE_WOLFSSL == true>
+#define WDRV_PIC32MZW_WOLFSSL_SUPPORT
 </#if>
 #define WDRV_PIC32MZW_ALARM_PERIOD_1MS          ${DRV_WIFI_PIC32MZW1_ALARM_PERIOD_1MS}
 #define WDRV_PIC32MZW_ALARM_PERIOD_MAX          ${DRV_WIFI_PIC32MZW1_ALARM_PERIOD_MAX}
