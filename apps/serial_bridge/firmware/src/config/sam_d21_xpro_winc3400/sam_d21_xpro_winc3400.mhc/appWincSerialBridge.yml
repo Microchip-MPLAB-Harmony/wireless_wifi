@@ -4,6 +4,224 @@ attributes: {id: appWincSerialBridge}
 children:
 - type: Symbols
   children:
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_0}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_1}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_10}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_11}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_12}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_13}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_14}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+      - type: User
+        attributes: {value: 'true'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_15}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_2}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_3}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_4}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_5}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_6}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_7}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_8}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Boolean
+    attributes: {id: APP_EIC_SRC_9}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'false'}
+  - type: Integer
+    attributes: {id: APP_EIC_SRC_SELECT}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: '14'}
+  - type: Boolean
+    attributes: {id: APP_ENABLE_SEC_CONN}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
+  - type: String
+    attributes: {id: APP_PLIB}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: SERCOM1}
+  - type: Integer
+    attributes: {id: APP_RX_DMA_CHANNEL}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: '3'}
+  - type: Menu
+    attributes: {id: APP_SEC_CONN_MENU}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Menu
+    attributes: {id: APP_SPI_MENU}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Boolean
+    attributes: {id: APP_SYS_DMA_ENABLE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'true'}
+  - type: Integer
+    attributes: {id: APP_TX_DMA_CHANNEL}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: '2'}
+  - type: Boolean
+    attributes: {id: APP_TX_RX_DMA}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: readOnly}
+        children:
+        - {type: Value, value: 'false'}
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
+  - type: Boolean
+    attributes: {id: APP_TX_RX_DMA_EN}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: appWincSerialBridge, value: 'true'}
   - type: String
     attributes: {id: APP_USART_PLIB}
     children:
@@ -13,6 +231,23 @@ children:
         attributes: {id: appWincSerialBridge, value: SERCOM3}
 - type: Attachments
   children:
+  - type: DirectDependency
+    attributes: {id: spi_dependency}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: targetComponentID}
+        children:
+        - {type: Value, value: sercom1}
+      - type: String
+        attributes: {id: targetAttachmentID}
+        children:
+        - {type: Value, value: SERCOM1_SPI}
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
   - type: DirectDependency
     attributes: {id: uart}
     children:
@@ -27,4 +262,4 @@ children:
         children:
         - {type: Value, value: SERCOM3_UART}
 - type: ElementPosition
-  attributes: {x: '633', y: '158', id: appWincSerialBridge}
+  attributes: {x: '306', y: '340', id: appWincSerialBridge}

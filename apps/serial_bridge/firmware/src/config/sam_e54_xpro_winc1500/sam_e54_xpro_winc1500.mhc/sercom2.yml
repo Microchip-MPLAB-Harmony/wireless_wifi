@@ -137,13 +137,6 @@ children:
       children:
       - type: Dynamic
         attributes: {id: sercom2, value: '0'}
-  - type: KeyValueSet
-    attributes: {id: USART_TXPO}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: '0'}
 - type: Attachments
   children:
   - type: DirectCapability

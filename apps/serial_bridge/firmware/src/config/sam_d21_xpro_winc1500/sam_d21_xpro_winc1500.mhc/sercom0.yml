@@ -97,14 +97,14 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: '1000000'}
+        attributes: {value: '10000000'}
   - type: Integer
     attributes: {id: SPI_BAUD_REG_VALUE}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: sercom0, value: '23'}
+        attributes: {id: sercom0, value: '1'}
   - type: KeyValueSet
     attributes: {id: SPI_CHARSIZE_BITS}
     children:
@@ -181,10 +181,6 @@ children:
     children:
     - type: Attributes
       children:
-      - type: Boolean
-        attributes: {id: readOnly}
-        children:
-        - {type: Value, value: 'true'}
       - type: Boolean
         attributes: {id: visible}
         children:
@@ -277,15 +273,6 @@ children:
       - type: Dynamic
         attributes: {id: sercom0, value: '0'}
   - type: Boolean
-    attributes: {id: USART_INTERRUPT_MODE}
-    children:
-    - type: Attributes
-      children:
-      - type: String
-        attributes: {id: label}
-        children:
-        - {type: Value, value: '---'}
-  - type: Boolean
     attributes: {id: USART_INTERRUPT_MODE_ENABLE}
     children:
     - type: Values
@@ -308,10 +295,6 @@ children:
         attributes: {id: visible}
         children:
         - {type: Value, value: 'false'}
-    - type: Values
-      children:
-      - type: Dynamic
-        attributes: {id: sercom0, value: '1'}
   - type: KeyValueSet
     attributes: {id: USART_PARITY_MODE}
     children:
@@ -378,6 +361,15 @@ children:
       children:
       - type: Dynamic
         attributes: {id: sercom0, value: '0'}
+  - type: Boolean
+    attributes: {id: USART_SFDE}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'false'}
   - type: KeyValueSet
     attributes: {id: USART_STOP_BIT}
     children:
@@ -424,11 +416,11 @@ children:
       - type: String
         attributes: {id: targetComponentID}
         children:
-        - {type: Value, value: drv_spi_0}
+        - {type: Value, value: drvWifiWinc}
       - type: String
         attributes: {id: targetAttachmentID}
         children:
-        - {type: Value, value: drv_spi_SPI_dependency}
+        - {type: Value, value: spi_dependency}
   - type: DirectCapability
     attributes: {id: SERCOM0_UART}
     children:

@@ -1,18 +1,11 @@
 files:
-- generatedChecksum: 20EC657CE27B6AA7940F9E7C32673ABF
-  logicalPath: config/sam_d21_xpro_winc1500/driver/spi
-  name: drv_spi.c
-  physicalPath: driver/spi/src
+- generatedChecksum: null
+  logicalPath: ''
+  name: app.c
+  physicalPath: ../..
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 20EC657CE27B6AA7940F9E7C32673ABF
-- generatedChecksum: 17DED26B37D0965EDE1D2B3ABA53A38B
-  logicalPath: config/sam_d21_xpro_winc1500/driver/spi
-  name: drv_spi_local.h
-  physicalPath: driver/spi/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 17DED26B37D0965EDE1D2B3ABA53A38B
+  userChecksum: null
 - generatedChecksum: 0D18A719A1E40A8875895284967F66D0
   logicalPath: config/sam_d21_xpro_winc1500
   name: exceptions.c
@@ -41,27 +34,27 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: AF984BE0991599B02E1D672FDFDA2D8E
-- generatedChecksum: 674C9D460A3DDBE38DFBFAD3D7AB7FC4
+- generatedChecksum: C413E0ED1DEB046E07DCE008416483E3
   logicalPath: config/sam_d21_xpro_winc1500
   name: initialization.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 674C9D460A3DDBE38DFBFAD3D7AB7FC4
-- generatedChecksum: FFA87FCEF171F6A8076F97436F92132F
+  userChecksum: C413E0ED1DEB046E07DCE008416483E3
+- generatedChecksum: 5BFBDE714F8F90C062C4F08301E9D26B
   logicalPath: config/sam_d21_xpro_winc1500
   name: interrupts.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: FFA87FCEF171F6A8076F97436F92132F
-- generatedChecksum: 6513F2461B8F476B68CA73906086047F
+  userChecksum: 5BFBDE714F8F90C062C4F08301E9D26B
+- generatedChecksum: 2CDCA8CDF135BDEB85FDFC0A2A991C0B
   logicalPath: config/sam_d21_xpro_winc1500
   name: libc_syscalls.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 6513F2461B8F476B68CA73906086047F
+  userChecksum: 2CDCA8CDF135BDEB85FDFC0A2A991C0B
 - generatedChecksum: 9B1CA7A0B1348DDC08948436FA93A94C
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: m2m_hif.c
@@ -69,13 +62,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 9B1CA7A0B1348DDC08948436FA93A94C
-- generatedChecksum: F648EDA2CC1B6E679A5B09A57B11546D
+- generatedChecksum: 02EBD59B9051957ED4FC005EE3BAB5D5
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: m2m_ota.c
   physicalPath: driver/winc/drv/driver
   security: NON_SECURE
   type: SOURCE
-  userChecksum: F648EDA2CC1B6E679A5B09A57B11546D
+  userChecksum: 02EBD59B9051957ED4FC005EE3BAB5D5
 - generatedChecksum: 55B7E9D0C22558D4A28395AECD15AC50
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: m2m_periph.c
@@ -90,13 +83,20 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: B28F2D201F92EA4A2107425F13F45516
-- generatedChecksum: 7A57A09EF9EDB4FBA6074CBC90CCE8F6
+- generatedChecksum: ABAA92B769F66854ECC34E78C4295550
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: m2m_wifi.c
   physicalPath: driver/winc/drv/driver
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 7A57A09EF9EDB4FBA6074CBC90CCE8F6
+  userChecksum: ABAA92B769F66854ECC34E78C4295550
+- generatedChecksum: null
+  logicalPath: ''
+  name: main.c
+  physicalPath: ../..
+  security: NON_SECURE
+  type: SOURCE
+  userChecksum: null
 - generatedChecksum: 5BB451997FAC1DAD779E92B0F37B1C09
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/common
   name: nm_common.c
@@ -104,34 +104,34 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 5BB451997FAC1DAD779E92B0F37B1C09
-- generatedChecksum: 4CB01D94B778FD8215712467BD55B4FD
+- generatedChecksum: 86594809FD3AF3B47C992E556E899D66
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: nmasic.c
   physicalPath: driver/winc/drv/driver
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 4CB01D94B778FD8215712467BD55B4FD
-- generatedChecksum: E5BF3FAE3FA2C006285DAE58E2C0D0A0
+  userChecksum: 86594809FD3AF3B47C992E556E899D66
+- generatedChecksum: A0BA3511C73DC805D4E3F8AE37E00DB5
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: nmbus.c
   physicalPath: driver/winc/drv/driver
   security: NON_SECURE
   type: SOURCE
-  userChecksum: E5BF3FAE3FA2C006285DAE58E2C0D0A0
-- generatedChecksum: 36F0143131B212203AB99CED4DB550AD
+  userChecksum: A0BA3511C73DC805D4E3F8AE37E00DB5
+- generatedChecksum: 68C8F34264072F3F01AA43DDCBB04836
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: nmdrv.c
   physicalPath: driver/winc/drv/driver
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 36F0143131B212203AB99CED4DB550AD
-- generatedChecksum: B56EBF1E3BD433AE1A8077C631C13B22
+  userChecksum: 68C8F34264072F3F01AA43DDCBB04836
+- generatedChecksum: 7A9BAA2E18E9975652EF6E52E1226045
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/driver
   name: nmspi.c
   physicalPath: driver/winc/drv/driver
   security: NON_SECURE
   type: SOURCE
-  userChecksum: B56EBF1E3BD433AE1A8077C631C13B22
+  userChecksum: 7A9BAA2E18E9975652EF6E52E1226045
 - generatedChecksum: E83740946C6E654BBB5BF1E4DAE61E56
   logicalPath: config/sam_d21_xpro_winc1500/platform
   name: platform_sercom.c
@@ -139,27 +139,27 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: E83740946C6E654BBB5BF1E4DAE61E56
-- generatedChecksum: 26400302D024D695FC7C7FD5D65FA8A5
+- generatedChecksum: D61E7F37306CB7EB6DBF68B0840930BC
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/clock
   name: plib_clock.c
   physicalPath: peripheral/clock
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 26400302D024D695FC7C7FD5D65FA8A5
-- generatedChecksum: 47687D57859F30E0DEDBA48F054DB459
+  userChecksum: D61E7F37306CB7EB6DBF68B0840930BC
+- generatedChecksum: FE179372157C524688756449D14BF3F2
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/dmac
   name: plib_dmac.c
   physicalPath: peripheral/dmac
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 47687D57859F30E0DEDBA48F054DB459
-- generatedChecksum: 98F73B77B4C303C9257E17E1B6622D21
+  userChecksum: FE179372157C524688756449D14BF3F2
+- generatedChecksum: FC889508DC1CDB41A174AED4D17B29A6
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/eic
   name: plib_eic.c
   physicalPath: peripheral/eic
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 98F73B77B4C303C9257E17E1B6622D21
+  userChecksum: FC889508DC1CDB41A174AED4D17B29A6
 - generatedChecksum: C3ECDED3D6301DB0DE622293ED615D21
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/evsys
   name: plib_evsys.c
@@ -167,48 +167,55 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: C3ECDED3D6301DB0DE622293ED615D21
-- generatedChecksum: 5A81ABD2217F580246E09293EA3F7501
+- generatedChecksum: 4E32773577E439F2EE61D68F2C579B8F
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/nvic
   name: plib_nvic.c
   physicalPath: peripheral/nvic
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 5A81ABD2217F580246E09293EA3F7501
-- generatedChecksum: 8E76B0609233122F5E1694614CEC13B1
+  userChecksum: 4E32773577E439F2EE61D68F2C579B8F
+- generatedChecksum: CDBE0E5D94C53410F5F34B566B5FF51F
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/nvmctrl
   name: plib_nvmctrl.c
   physicalPath: peripheral/nvmctrl
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 8E76B0609233122F5E1694614CEC13B1
-- generatedChecksum: 08F916127BC07C7A116C42493CDA1D18
+  userChecksum: CDBE0E5D94C53410F5F34B566B5FF51F
+- generatedChecksum: A4445FA6D1B0635FA90D86E1C6D5F3EE
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/port
   name: plib_port.c
   physicalPath: peripheral/port
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 08F916127BC07C7A116C42493CDA1D18
-- generatedChecksum: 80594865EFBB992791E9C2801361F8EF
+  userChecksum: A4445FA6D1B0635FA90D86E1C6D5F3EE
+- generatedChecksum: 44457F0B15A7A4F2A17F7FA4117CF547
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/spi_master
   name: plib_sercom0_spi_master.c
   physicalPath: peripheral/sercom/spi_master
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 80594865EFBB992791E9C2801361F8EF
-- generatedChecksum: 436DEB41D55E97CC4EE1AC61E63AB0D4
+  userChecksum: 44457F0B15A7A4F2A17F7FA4117CF547
+- generatedChecksum: EED72ED4216AE88E16E5CA716D0427B9
+  logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/spi_master
+  name: plib_sercom1_spi_master.c
+  physicalPath: peripheral/sercom/spi_master
+  security: NON_SECURE
+  type: SOURCE
+  userChecksum: EED72ED4216AE88E16E5CA716D0427B9
+- generatedChecksum: 226C6072D8C72D628E9C6BFD1FCDF5B6
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/usart
   name: plib_sercom3_usart.c
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 436DEB41D55E97CC4EE1AC61E63AB0D4
-- generatedChecksum: B285057CBD62E175895157B837862224
+  userChecksum: 226C6072D8C72D628E9C6BFD1FCDF5B6
+- generatedChecksum: B90A3BE1A458F0D8B31C2D7E0DBE19FA
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/tc
   name: plib_tc3.c
   physicalPath: peripheral/tc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: B285057CBD62E175895157B837862224
+  userChecksum: B90A3BE1A458F0D8B31C2D7E0DBE19FA
 - generatedChecksum: AB6DE23857CE8D0981759DB8EE634D5F
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/drv/socket
   name: socket.c
@@ -223,13 +230,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 435447DE263266936D8977310F0C8D7F
-- generatedChecksum: 2645E564BD945DAED1424FD8D7B39330
+- generatedChecksum: 64C7B09EBF0E16AC27EFD31B52FDDDF8
   logicalPath: config/sam_d21_xpro_winc1500
   name: startup_xc32.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 2645E564BD945DAED1424FD8D7B39330
+  userChecksum: 64C7B09EBF0E16AC27EFD31B52FDDDF8
 - generatedChecksum: 5182754E707E008E4C8788FCAB430380
   logicalPath: config/sam_d21_xpro_winc1500/system/dma
   name: sys_dma.c
@@ -244,13 +251,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 02C3C1B519E59992810626BB6098CF56
-- generatedChecksum: 83BDE663A1AAB20C9E52263F22E2ED3C
+- generatedChecksum: AD9DEEA019A0C5B587E2066874A0499D
   logicalPath: config/sam_d21_xpro_winc1500/system/time
   name: sys_time.c
   physicalPath: system/time/src
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 83BDE663A1AAB20C9E52263F22E2ED3C
+  userChecksum: AD9DEEA019A0C5B587E2066874A0499D
 - generatedChecksum: B51F93A5873769DC9149F86C5BE8F2B2
   logicalPath: config/sam_d21_xpro_winc1500
   name: tasks.c
@@ -258,20 +265,20 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: B51F93A5873769DC9149F86C5BE8F2B2
-- generatedChecksum: 3980F3E227FD5A2D9D9BDA8D32DE71D8
+- generatedChecksum: 4A51545FAC686B09DDD3CC0558E664A4
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 3980F3E227FD5A2D9D9BDA8D32DE71D8
-- generatedChecksum: 1C250277649C756DDA1BF1A3DFF46C83
+  userChecksum: 4A51545FAC686B09DDD3CC0558E664A4
+- generatedChecksum: 04D36C15AB0901CEBE9F9AAADD6400C4
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_assoc.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 1C250277649C756DDA1BF1A3DFF46C83
+  userChecksum: 04D36C15AB0901CEBE9F9AAADD6400C4
 - generatedChecksum: F693A78C00C9813FA76E142C59EA9B90
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_authctx.c
@@ -300,13 +307,20 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 85251A7D979B2FDF1E1D25E84F0AB99A
-- generatedChecksum: F74B94AB0B0039A0F5784FB54E8D6F15
+- generatedChecksum: 9BE2AA2E15134B553E6CA2FB70667033
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/dev/gpio
   name: wdrv_winc_eint.c
   physicalPath: driver/winc/dev/gpio
   security: NON_SECURE
   type: SOURCE
-  userChecksum: F74B94AB0B0039A0F5784FB54E8D6F15
+  userChecksum: 9BE2AA2E15134B553E6CA2FB70667033
+- generatedChecksum: 4B121FB0CAC846A6A1E38060BD5D9203
+  logicalPath: config/sam_d21_xpro_winc1500/driver/winc
+  name: wdrv_winc_enterprise.c
+  physicalPath: driver/winc
+  security: NON_SECURE
+  type: SOURCE
+  userChecksum: 4B121FB0CAC846A6A1E38060BD5D9203
 - generatedChecksum: 08BEBE8A13076E61A844A43D2A7D2F16
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/dev/gpio
   name: wdrv_winc_gpio.c
@@ -349,13 +363,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: E6978BADAFB1B4D18E10CE9203CEFEBF
-- generatedChecksum: 4DBAFA0ED6522507AB21F9CD4B9D9513
+- generatedChecksum: 33BAA5F99AB14B15B7B34B9F0D82FF61
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_socket.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 4DBAFA0ED6522507AB21F9CD4B9D9513
+  userChecksum: 33BAA5F99AB14B15B7B34B9F0D82FF61
 - generatedChecksum: C55DE3FF63F2631DB47C9F5ABA0AF975
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_softap.c
@@ -363,13 +377,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: C55DE3FF63F2631DB47C9F5ABA0AF975
-- generatedChecksum: BBD7FECCBFCB49AE5B15DCA0B9F182D2
+- generatedChecksum: 63365EC8082B1B429FAFECA676E8B885
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/dev/spi
   name: wdrv_winc_spi.c
   physicalPath: driver/winc/dev/spi
   security: NON_SECURE
   type: SOURCE
-  userChecksum: BBD7FECCBFCB49AE5B15DCA0B9F182D2
+  userChecksum: 63365EC8082B1B429FAFECA676E8B885
 - generatedChecksum: C10080B1E0B43C51F7553E8985831817
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_ssl.c
@@ -384,13 +398,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 721C3EC3C8A9BD4819D1C3C3C458641B
-- generatedChecksum: 0E05FA2D3237381C3C0217A9C86A7003
+- generatedChecksum: 69A268763193E8601BF275BA8EB2CC19
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_systime.c
   physicalPath: driver/winc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 0E05FA2D3237381C3C0217A9C86A7003
+  userChecksum: 69A268763193E8601BF275BA8EB2CC19
 - generatedChecksum: D8399AAD9B69D69A67A8F188A0862F1C
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc
   name: wdrv_winc_wps.c
@@ -398,41 +412,48 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: D8399AAD9B69D69A67A8F188A0862F1C
-- generatedChecksum: 7806B30ECAE0D18D08CD583D8775530D
+- generatedChecksum: 71352EF41F6688AD8408E42970B50B66
   logicalPath: config/sam_d21_xpro_winc1500/stdio
   name: xc32_monitor.c
   physicalPath: stdio
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 7806B30ECAE0D18D08CD583D8775530D
-- generatedChecksum: 6DE7A9F0A5973D127B56B9739EBCDE20
+  userChecksum: 71352EF41F6688AD8408E42970B50B66
+- generatedChecksum: E4B5F5EB6E17B78D06CE31605D436AEB
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: ac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6DE7A9F0A5973D127B56B9739EBCDE20
-- generatedChecksum: 666C6398DBEF40FA8716BED23EEE17DB
+  userChecksum: E4B5F5EB6E17B78D06CE31605D436AEB
+- generatedChecksum: 1DFF055DE3840598320E91B5EC118AFD
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: ac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 666C6398DBEF40FA8716BED23EEE17DB
-- generatedChecksum: B403F7E9E144078FDB282986C647CAB6
+  userChecksum: 1DFF055DE3840598320E91B5EC118AFD
+- generatedChecksum: A50FCDAAC6148E7609F57041407064B5
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: adc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: B403F7E9E144078FDB282986C647CAB6
-- generatedChecksum: 35ABE5A146EF291395FAEFB4F1B44003
+  userChecksum: A50FCDAAC6148E7609F57041407064B5
+- generatedChecksum: 6D561FFDB168BF06247835142F64D4B4
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: adc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 35ABE5A146EF291395FAEFB4F1B44003
+  userChecksum: 6D561FFDB168BF06247835142F64D4B4
+- generatedChecksum: null
+  logicalPath: ''
+  name: app.h
+  physicalPath: ../..
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: null
 - generatedChecksum: 14F1AD56D242EFD0AF76849C6ADFECC4
   logicalPath: packs/CMSIS/CMSIS/Core/Include
   name: cachel1_armv7.h
@@ -489,13 +510,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 52F91AC0727F2311EDA0E3BAA7719A9F
-- generatedChecksum: 92D7C3873F77E8CB460C418823C053CD
+- generatedChecksum: F51016C8D9E84ED4FEAA58729EDA1A9D
   logicalPath: config/sam_d21_xpro_winc1500
   name: configuration.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 92D7C3873F77E8CB460C418823C053CD
+  userChecksum: F51016C8D9E84ED4FEAA58729EDA1A9D
 - generatedChecksum: CCBD23918BE14943EA128B0D552031C5
   logicalPath: packs/CMSIS/CMSIS/Core/Include
   name: core_cm0plus.h
@@ -503,27 +524,27 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: CCBD23918BE14943EA128B0D552031C5
-- generatedChecksum: 2D601C40C8593379036C7CDDA46F2FC7
+- generatedChecksum: DC93E3F8343DEADC04653F2DC397E766
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: dac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 2D601C40C8593379036C7CDDA46F2FC7
-- generatedChecksum: 2AD9700A41DC94A60C663A17CEDB2703
+  userChecksum: DC93E3F8343DEADC04653F2DC397E766
+- generatedChecksum: CB8D4E72D581CDEFB0BB729ADC52D698
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: dac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 2AD9700A41DC94A60C663A17CEDB2703
-- generatedChecksum: 9CB6BADF34A216C3A84818370A023A4A
+  userChecksum: CB8D4E72D581CDEFB0BB729ADC52D698
+- generatedChecksum: 481EA1BB0D518F0E050E0F930767B908
   logicalPath: config/sam_d21_xpro_winc1500
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 9CB6BADF34A216C3A84818370A023A4A
+  userChecksum: 481EA1BB0D518F0E050E0F930767B908
 - generatedChecksum: 636DD2FCAC011D9457B3B1813AC63647
   logicalPath: config/sam_d21_xpro_winc1500
   name: device.h
@@ -538,27 +559,27 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 85D3482D395C59BDFF268B01940CDDDE
-- generatedChecksum: EBDED58446BAB238B5EA4E735FFE151A
+- generatedChecksum: 7C90B107E29507131F51327A63DBF5C0
   logicalPath: config/sam_d21_xpro_winc1500
   name: device_vectors.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: EBDED58446BAB238B5EA4E735FFE151A
-- generatedChecksum: 18A84C15FD2374EB72ABAF9A32CC4824
+  userChecksum: 7C90B107E29507131F51327A63DBF5C0
+- generatedChecksum: 4249F5587636594A4D14D768DB1B3AAD
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: dmac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 18A84C15FD2374EB72ABAF9A32CC4824
-- generatedChecksum: 6300BE9AA96CD27B16EF756D3746C79D
+  userChecksum: 4249F5587636594A4D14D768DB1B3AAD
+- generatedChecksum: CF9FC7E9F850D213EE3E383FC19EE44E
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: dmac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6300BE9AA96CD27B16EF756D3746C79D
+  userChecksum: CF9FC7E9F850D213EE3E383FC19EE44E
 - generatedChecksum: 1D2094DFA60F847FFD4E8153B6E78027
   logicalPath: config/sam_d21_xpro_winc1500/driver
   name: driver.h
@@ -573,34 +594,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: CC7DFCC51CD25171A3E400E18969354F
-- generatedChecksum: F454D5E0E6162B53958549B1D524C549
-  logicalPath: config/sam_d21_xpro_winc1500/driver/spi
-  name: drv_spi.h
-  physicalPath: driver/spi
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: F454D5E0E6162B53958549B1D524C549
-- generatedChecksum: 992AF23C7154368CE0228A613D173EE1
-  logicalPath: config/sam_d21_xpro_winc1500/driver/spi
-  name: drv_spi_definitions.h
-  physicalPath: driver/spi
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 992AF23C7154368CE0228A613D173EE1
-- generatedChecksum: 6D81FF0B634113CCCB5A86460EFA92DD
+- generatedChecksum: BEA43FC50A08EA64E61A7BF2B14BDAD7
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: dsu.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6D81FF0B634113CCCB5A86460EFA92DD
-- generatedChecksum: 6214EC701605FB5C8C1E5B015A6BBF93
+  userChecksum: BEA43FC50A08EA64E61A7BF2B14BDAD7
+- generatedChecksum: 638DCA46E12CBFA3A15D1A889043C3EE
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: dsu.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6214EC701605FB5C8C1E5B015A6BBF93
+  userChecksum: 638DCA46E12CBFA3A15D1A889043C3EE
 - generatedChecksum: FB9E509090AF63A2F7846EA5C4197718
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: ecc_types.h
@@ -608,34 +615,34 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: FB9E509090AF63A2F7846EA5C4197718
-- generatedChecksum: CB730B525EBC40B7156534FE53671C76
+- generatedChecksum: D276AAF2F9822447E3205A401B07F637
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: eic.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: CB730B525EBC40B7156534FE53671C76
-- generatedChecksum: 331018A81FE90593154578739C6281E8
+  userChecksum: D276AAF2F9822447E3205A401B07F637
+- generatedChecksum: 8C427FA7011018F95400C813ECD7B2F0
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: eic.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 331018A81FE90593154578739C6281E8
-- generatedChecksum: 33344F7F14581555250B166FB7614171
+  userChecksum: 8C427FA7011018F95400C813ECD7B2F0
+- generatedChecksum: F7E099A1BF6C32C72308150B4E4629A5
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: evsys.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 33344F7F14581555250B166FB7614171
-- generatedChecksum: CE77849CE511728E1B207931CECD98FB
+  userChecksum: F7E099A1BF6C32C72308150B4E4629A5
+- generatedChecksum: B8E7D77DE1BC8A6635DA57A4B4DDBB4C
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: evsys.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: CE77849CE511728E1B207931CECD98FB
+  userChecksum: B8E7D77DE1BC8A6635DA57A4B4DDBB4C
 - generatedChecksum: F7AC4244EA5DD393238A8937D9F95003
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash
   name: flexible_flash.h
@@ -643,48 +650,62 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: F7AC4244EA5DD393238A8937D9F95003
-- generatedChecksum: C3C79A66D5ABA685FC43266F7F152385
+- generatedChecksum: 95F3BB3324DF855F76822A2EBCDFE21F
+  logicalPath: packs/ATSAMD21J18A_DFP/component
+  name: fuses.h
+  physicalPath: ../../packs/ATSAMD21J18A_DFP/component
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: 95F3BB3324DF855F76822A2EBCDFE21F
+- generatedChecksum: 6CF76F312A98180A28C810B9046FE88C
+  logicalPath: packs/ATSAMD21J18A_DFP/instance
+  name: fuses.h
+  physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: 6CF76F312A98180A28C810B9046FE88C
+- generatedChecksum: A7B1A01D2783CAC2DF1D0A694BED4657
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: gclk.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: C3C79A66D5ABA685FC43266F7F152385
-- generatedChecksum: FFB96168C3B0354E64304000DC949D21
+  userChecksum: A7B1A01D2783CAC2DF1D0A694BED4657
+- generatedChecksum: F4A6FB3AE2C9F16BFDD64C082A2622B9
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: gclk.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: FFB96168C3B0354E64304000DC949D21
-- generatedChecksum: B4D2953A582F026B48357CEC3EE41597
+  userChecksum: F4A6FB3AE2C9F16BFDD64C082A2622B9
+- generatedChecksum: 04F393E9D1E6EFA7CD5A43CB66752E93
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: hmatrixb.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: B4D2953A582F026B48357CEC3EE41597
-- generatedChecksum: 7A9446AACF2CC5568124D50148A07768
+  userChecksum: 04F393E9D1E6EFA7CD5A43CB66752E93
+- generatedChecksum: 62DED482D9A101302715310DD849F85B
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: i2s.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 7A9446AACF2CC5568124D50148A07768
-- generatedChecksum: 4017D6C4D2082CB4A87FEFE5411B6559
+  userChecksum: 62DED482D9A101302715310DD849F85B
+- generatedChecksum: 60D83610D79083C8FCA62E859E628F82
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: i2s.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 4017D6C4D2082CB4A87FEFE5411B6559
-- generatedChecksum: 4A03C8119D572FAF7A72F16D4D8C547A
+  userChecksum: 60D83610D79083C8FCA62E859E628F82
+- generatedChecksum: 3E0597B7E4B40BBFDDB3BCCD0351A655
   logicalPath: config/sam_d21_xpro_winc1500
   name: interrupts.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 4A03C8119D572FAF7A72F16D4D8C547A
+  userChecksum: 3E0597B7E4B40BBFDDB3BCCD0351A655
 - generatedChecksum: 67425BB33C9075607E40580599779775
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: m2m_hif.h
@@ -692,13 +713,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 67425BB33C9075607E40580599779775
-- generatedChecksum: 54A73E55DF56C60B4E67E108183AB851
+- generatedChecksum: 1932A84CBDAA7223A42CAD916A7E7B90
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: m2m_ota.h
   physicalPath: driver/winc/include/drv/driver
   security: NON_SECURE
   type: HEADER
-  userChecksum: 54A73E55DF56C60B4E67E108183AB851
+  userChecksum: 1932A84CBDAA7223A42CAD916A7E7B90
 - generatedChecksum: E9B15B7E86659E4E2EC3B170D30A8DE0
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: m2m_periph.h
@@ -713,27 +734,27 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 8897007B4F6EBDAF8137051408F381D3
-- generatedChecksum: 483D615B9081DBBEE79FDCD2FEF1979A
+- generatedChecksum: 28760099B658300DA673A9B2D3A86BBD
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: m2m_ssl.h
   physicalPath: driver/winc/include/drv/driver
   security: NON_SECURE
   type: HEADER
-  userChecksum: 483D615B9081DBBEE79FDCD2FEF1979A
-- generatedChecksum: EDF2346EF8202122DFC13067C78F8B69
+  userChecksum: 28760099B658300DA673A9B2D3A86BBD
+- generatedChecksum: F6FA04D2C6FC74C67247A3AFC6C89AC2
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: m2m_types.h
   physicalPath: driver/winc/include/drv/driver
   security: NON_SECURE
   type: HEADER
-  userChecksum: EDF2346EF8202122DFC13067C78F8B69
-- generatedChecksum: F6DD4E8AABBD29C4ABE52EEE29778259
+  userChecksum: F6FA04D2C6FC74C67247A3AFC6C89AC2
+- generatedChecksum: 43E183CB1BF2AF8C7E2E364E9C22E96D
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/driver
   name: m2m_wifi.h
   physicalPath: driver/winc/include/drv/driver
   security: NON_SECURE
   type: HEADER
-  userChecksum: F6DD4E8AABBD29C4ABE52EEE29778259
+  userChecksum: 43E183CB1BF2AF8C7E2E364E9C22E96D
 - generatedChecksum: 47E760D36E42A7B436306A9CB4E72A0E
   logicalPath: packs/CMSIS/CMSIS/Core/Include
   name: mpu_armv7.h
@@ -741,20 +762,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 47E760D36E42A7B436306A9CB4E72A0E
-- generatedChecksum: 204900BCF2F31182DBB6827DADD8BD65
+- generatedChecksum: 8A4436D6AA20AF6AC385D0DFBF6F4D9C
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: mtb.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 204900BCF2F31182DBB6827DADD8BD65
-- generatedChecksum: 668C8C74576C20FDD720B238DFB915D8
+  userChecksum: 8A4436D6AA20AF6AC385D0DFBF6F4D9C
+- generatedChecksum: 7A86BDDC36E770B3D447B352AB3ABE30
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: mtb.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 668C8C74576C20FDD720B238DFB915D8
+  userChecksum: 7A86BDDC36E770B3D447B352AB3ABE30
 - generatedChecksum: 9F3CD712F2D7A993DEAE278DE8F7E8E3
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket
   name: netinet_in.h
@@ -769,13 +790,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 8F2BD643CF1D6CD462DDE81B698B43E3
-- generatedChecksum: E555740324B3E2541849DD558A31CA08
+- generatedChecksum: 00E01AAA47DD40441B154A1B0F7ADF96
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/common
   name: nm_common.h
   physicalPath: driver/winc/include/drv/common
   security: NON_SECURE
   type: HEADER
-  userChecksum: E555740324B3E2541849DD558A31CA08
+  userChecksum: 00E01AAA47DD40441B154A1B0F7ADF96
 - generatedChecksum: 2E73E0802ED89EEF8A0A96C652CB40F4
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/common
   name: nm_debug.h
@@ -811,20 +832,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: F860FE242115BAEC707A7E749AD8F390
-- generatedChecksum: 566F84A8071CBEDE4954C7DCD06B1F8D
+- generatedChecksum: 570A6A71EEC062B19FD720EE732B2910
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: nvmctrl.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 566F84A8071CBEDE4954C7DCD06B1F8D
-- generatedChecksum: BA9C26A9F15ED6C123020B6BA997A1C3
+  userChecksum: 570A6A71EEC062B19FD720EE732B2910
+- generatedChecksum: B1FAA266AF1DE687CCB172B477F2A462
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: nvmctrl.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: BA9C26A9F15ED6C123020B6BA997A1C3
+  userChecksum: B1FAA266AF1DE687CCB172B477F2A462
 - generatedChecksum: F0AD88762263B7CB89B02AB4F5876059
   logicalPath: config/sam_d21_xpro_winc1500/osal
   name: osal.h
@@ -846,34 +867,34 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: B040122CCA94A0636810D6F15F13B751
-- generatedChecksum: FD2D8EFCE93F5BE3304475DA0AFAFE72
+- generatedChecksum: 8C680F044DB5F7B7BE3E7F2D0B637A4D
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: pac.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: FD2D8EFCE93F5BE3304475DA0AFAFE72
-- generatedChecksum: C284D03B3569B43807AF831D1361D637
+  userChecksum: 8C680F044DB5F7B7BE3E7F2D0B637A4D
+- generatedChecksum: B1D2E1C690EAC8F48BCE74D046F75448
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: pac0.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: C284D03B3569B43807AF831D1361D637
-- generatedChecksum: 971132501684FA497CFE6811090CF6FD
+  userChecksum: B1D2E1C690EAC8F48BCE74D046F75448
+- generatedChecksum: CC8E007DD251427AEDB85196724053C4
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: pac1.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 971132501684FA497CFE6811090CF6FD
-- generatedChecksum: B43B1C083FF9FEB9054B6EA52E742154
+  userChecksum: CC8E007DD251427AEDB85196724053C4
+- generatedChecksum: FDB1FF71A7FA08756D72F611F9A3B4DB
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: pac2.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: B43B1C083FF9FEB9054B6EA52E742154
+  userChecksum: FDB1FF71A7FA08756D72F611F9A3B4DB
 - generatedChecksum: D9883C70E96468DEE4D7B4669D1C837B
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/clock
   name: plib_clock.h
@@ -881,20 +902,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: D9883C70E96468DEE4D7B4669D1C837B
-- generatedChecksum: 1334695102DF03FA4F3D4E37B9C81615
+- generatedChecksum: CE256CEF0DBF1FB7EA93C4CC20296FAD
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/dmac
   name: plib_dmac.h
   physicalPath: peripheral/dmac
   security: NON_SECURE
   type: HEADER
-  userChecksum: 1334695102DF03FA4F3D4E37B9C81615
-- generatedChecksum: FDD41B64E79475FA9C26BA293183873E
+  userChecksum: CE256CEF0DBF1FB7EA93C4CC20296FAD
+- generatedChecksum: 36317C434E83C12D31AFDB13793C4EDE
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/eic
   name: plib_eic.h
   physicalPath: peripheral/eic
   security: NON_SECURE
   type: HEADER
-  userChecksum: FDD41B64E79475FA9C26BA293183873E
+  userChecksum: 36317C434E83C12D31AFDB13793C4EDE
 - generatedChecksum: CCAEF942C66AF995876DFD85CEFF611F
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/evsys
   name: plib_evsys.h
@@ -909,20 +930,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 55ECCC7FA71BD15B46EF80DC0515ED7A
-- generatedChecksum: AE3541D9EB0BC86EE90AC03EA3E1339F
+- generatedChecksum: EF2F1BB1D2A75B3EEF721CF17362EFA1
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/nvmctrl
   name: plib_nvmctrl.h
   physicalPath: peripheral/nvmctrl
   security: NON_SECURE
   type: HEADER
-  userChecksum: AE3541D9EB0BC86EE90AC03EA3E1339F
-- generatedChecksum: 5872A68815E1F4E09C85108121BBF88F
+  userChecksum: EF2F1BB1D2A75B3EEF721CF17362EFA1
+- generatedChecksum: F0745AACBD6606C916071698D1A27770
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/port
   name: plib_port.h
   physicalPath: peripheral/port
   security: NON_SECURE
   type: HEADER
-  userChecksum: 5872A68815E1F4E09C85108121BBF88F
+  userChecksum: F0745AACBD6606C916071698D1A27770
 - generatedChecksum: 7BE8D2DC4C674C3542390C9E75603EB6
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/spi_master
   name: plib_sercom0_spi_master.h
@@ -930,13 +951,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 7BE8D2DC4C674C3542390C9E75603EB6
-- generatedChecksum: BF6EFCCF1BB3BD81649BA580AAB0760F
+- generatedChecksum: 231433A77B48657B45E03C9B4159B670
+  logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/spi_master
+  name: plib_sercom1_spi_master.h
+  physicalPath: peripheral/sercom/spi_master
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: 231433A77B48657B45E03C9B4159B670
+- generatedChecksum: 63EC1A2944113596AD25C583BFF94013
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/usart
   name: plib_sercom3_usart.h
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: HEADER
-  userChecksum: BF6EFCCF1BB3BD81649BA580AAB0760F
+  userChecksum: 63EC1A2944113596AD25C583BFF94013
 - generatedChecksum: BED7AF34A8D633C6994B780C19D7157F
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/spi_master
   name: plib_sercom_spi_master_common.h
@@ -944,13 +972,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: BED7AF34A8D633C6994B780C19D7157F
-- generatedChecksum: 6F9F9CBBFEDEC8784446F157BB625E1C
+- generatedChecksum: 63CAB47DCDFFA547090FA01C1599F9DF
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/sercom/usart
   name: plib_sercom_usart_common.h
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6F9F9CBBFEDEC8784446F157BB625E1C
+  userChecksum: 63CAB47DCDFFA547090FA01C1599F9DF
 - generatedChecksum: 0DE96936AB21998A284FA176F870E596
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/tc
   name: plib_tc3.h
@@ -958,146 +986,146 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 0DE96936AB21998A284FA176F870E596
-- generatedChecksum: 6DBEAF7BD42014F5492374805406687A
+- generatedChecksum: B226E4D7CCB0F53AFA74446005A75252
   logicalPath: config/sam_d21_xpro_winc1500/peripheral/tc
   name: plib_tc_common.h
   physicalPath: peripheral/tc
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6DBEAF7BD42014F5492374805406687A
-- generatedChecksum: 482E54FA91E3C975FBC8AEE336572A05
+  userChecksum: B226E4D7CCB0F53AFA74446005A75252
+- generatedChecksum: 242CE394C762D4EF35E9A0274DCB2308
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: pm.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 482E54FA91E3C975FBC8AEE336572A05
-- generatedChecksum: 58E5A0D47B870051D9D331C99AF9D1CD
+  userChecksum: 242CE394C762D4EF35E9A0274DCB2308
+- generatedChecksum: C243E691C62DABA086AD4F198C0128DE
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: pm.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 58E5A0D47B870051D9D331C99AF9D1CD
-- generatedChecksum: AD1FFF76CF4017691BF733C246C6C279
+  userChecksum: C243E691C62DABA086AD4F198C0128DE
+- generatedChecksum: D8B562D6596BD5B66F3DB4ABFD87E4F3
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: port.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: AD1FFF76CF4017691BF733C246C6C279
-- generatedChecksum: 6D71AC20D2608BD6E23E85C67AF905D3
+  userChecksum: D8B562D6596BD5B66F3DB4ABFD87E4F3
+- generatedChecksum: 0377764A9D6738F5F1956F7BA51349CC
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: port.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6D71AC20D2608BD6E23E85C67AF905D3
-- generatedChecksum: 133A647B5363278AEBE4EA1BDC83B4C6
+  userChecksum: 0377764A9D6738F5F1956F7BA51349CC
+- generatedChecksum: FBD2C7C0E925BF2EB2FBFA8D9A656990
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: ptc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 133A647B5363278AEBE4EA1BDC83B4C6
-- generatedChecksum: 66CFCF5DF4849F807DA52A0D269B26A2
+  userChecksum: FBD2C7C0E925BF2EB2FBFA8D9A656990
+- generatedChecksum: C289D9872028215DFE51E186AEAA072D
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: ptc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 66CFCF5DF4849F807DA52A0D269B26A2
-- generatedChecksum: A577BA8BDF20D9977DC15C3456C0F0FF
+  userChecksum: C289D9872028215DFE51E186AEAA072D
+- generatedChecksum: 075E9F2623D0659757D82A0C42479E3C
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: rtc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: A577BA8BDF20D9977DC15C3456C0F0FF
-- generatedChecksum: B71541ECB386B4086F72A7BCF3C7DA60
+  userChecksum: 075E9F2623D0659757D82A0C42479E3C
+- generatedChecksum: BCF6D1D16D05E4C55848409C4AA91458
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: rtc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: B71541ECB386B4086F72A7BCF3C7DA60
-- generatedChecksum: BC4ECF7C861B47F900E7259530DAC5CF
+  userChecksum: BCF6D1D16D05E4C55848409C4AA91458
+- generatedChecksum: 018B7000DD28724612E2E43E08777DB6
   logicalPath: packs/ATSAMD21J18A_DFP
   name: samd21j18a.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP
   security: NON_SECURE
   type: HEADER
-  userChecksum: BC4ECF7C861B47F900E7259530DAC5CF
-- generatedChecksum: 4BCC1538CC3F93934AA8A4DE0F2C314F
+  userChecksum: 018B7000DD28724612E2E43E08777DB6
+- generatedChecksum: 6A22E3255FC45B125D893F6B4E6855CE
   logicalPath: packs/ATSAMD21J18A_DFP/pio
   name: samd21j18a.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/pio
   security: NON_SECURE
   type: HEADER
-  userChecksum: 4BCC1538CC3F93934AA8A4DE0F2C314F
-- generatedChecksum: 10E1F496FCCDE2FA5DDB467BEF74C4E5
+  userChecksum: 6A22E3255FC45B125D893F6B4E6855CE
+- generatedChecksum: C37577F89327C585CF5CA1410A2F34F2
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sbmatrix.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 10E1F496FCCDE2FA5DDB467BEF74C4E5
-- generatedChecksum: 83917655CEC793F1684CD40BAFF3BD6F
+  userChecksum: C37577F89327C585CF5CA1410A2F34F2
+- generatedChecksum: 52406CE0413F25471AA622B5A537F7CD
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: sercom.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 83917655CEC793F1684CD40BAFF3BD6F
-- generatedChecksum: 0D0BD1CF8FBD96B0FDFDF93B602720BB
+  userChecksum: 52406CE0413F25471AA622B5A537F7CD
+- generatedChecksum: D5766680808B3E1456B439C42034DA73
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sercom0.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 0D0BD1CF8FBD96B0FDFDF93B602720BB
-- generatedChecksum: 0E7F28415A2A5BBAE48C22096D3C5F74
+  userChecksum: D5766680808B3E1456B439C42034DA73
+- generatedChecksum: 4E71299A8BE99D462347B7F86F693357
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sercom1.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 0E7F28415A2A5BBAE48C22096D3C5F74
-- generatedChecksum: BDEE5B392D4864C9EFDB7D99927921F1
+  userChecksum: 4E71299A8BE99D462347B7F86F693357
+- generatedChecksum: 8432289BBBF193D178F233875EFF8A2C
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sercom2.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: BDEE5B392D4864C9EFDB7D99927921F1
-- generatedChecksum: 9625242B058FC24FAD2B17C389C3D4AC
+  userChecksum: 8432289BBBF193D178F233875EFF8A2C
+- generatedChecksum: D8E9F3025DA327D51A97D99A86EBF433
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sercom3.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 9625242B058FC24FAD2B17C389C3D4AC
-- generatedChecksum: 8AC182D72B27DCFF4DB39B657249E518
+  userChecksum: D8E9F3025DA327D51A97D99A86EBF433
+- generatedChecksum: 0B9906C5B19B5AA44BF8F6C2482E7E02
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sercom4.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 8AC182D72B27DCFF4DB39B657249E518
-- generatedChecksum: FD2510BC57F7413FFE7CC12E82D44B77
+  userChecksum: 0B9906C5B19B5AA44BF8F6C2482E7E02
+- generatedChecksum: D5297C2E551718257245686146A5096A
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sercom5.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: FD2510BC57F7413FFE7CC12E82D44B77
-- generatedChecksum: FFB28AB4424E2AA32C28B9BBD25932E4
+  userChecksum: D5297C2E551718257245686146A5096A
+- generatedChecksum: 3EA03B4CD5DE9F00E92ED3EEE075208F
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/socket
   name: socket.h
   physicalPath: driver/winc/include/drv/socket
   security: NON_SECURE
   type: HEADER
-  userChecksum: FFB28AB4424E2AA32C28B9BBD25932E4
+  userChecksum: 3EA03B4CD5DE9F00E92ED3EEE075208F
 - generatedChecksum: 60CF08E7ACC796D94BD7DFE110FE995D
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/drv/spi_flash
   name: spi_flash.h
@@ -1112,13 +1140,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 4331D2261FE1B93252555E47A4D02E42
-- generatedChecksum: 6BB6C54C5CD963A5A940CF7BB28F4E10
+- generatedChecksum: A16AB5B2D9FB7CE4684C82260B75C7C4
   logicalPath: config/sam_d21_xpro_winc1500/system/debug
   name: sys_debug.h
   physicalPath: system/debug
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6BB6C54C5CD963A5A940CF7BB28F4E10
+  userChecksum: A16AB5B2D9FB7CE4684C82260B75C7C4
 - generatedChecksum: AD3D611F2D5A85A8A73702BFF89DC94C
   logicalPath: config/sam_d21_xpro_winc1500/system/dma
   name: sys_dma.h
@@ -1147,20 +1175,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 00278F169FFB0CBBAB3A68B5D647F093
-- generatedChecksum: FE9F43E5EA9B28EE2A5C6899712E0B98
-  logicalPath: config/sam_d21_xpro_winc1500/system/ports
-  name: sys_ports.h
-  physicalPath: system/ports
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: FE9F43E5EA9B28EE2A5C6899712E0B98
-- generatedChecksum: 0077CD2365E6F28D76DF1D212FF80059
-  logicalPath: config/sam_d21_xpro_winc1500/system/ports
-  name: sys_ports_mapping.h
-  physicalPath: system/ports
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 0077CD2365E6F28D76DF1D212FF80059
 - generatedChecksum: 466D676839280C0E7FC2CC6F78BA6EE9
   logicalPath: config/sam_d21_xpro_winc1500/system/time
   name: sys_time.h
@@ -1175,27 +1189,27 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 125CB4EFA4E80BCD6041E8AC22F2E2FC
-- generatedChecksum: 62F39464265EC34979649F761FB4FE57
+- generatedChecksum: C7A6D8C5408A42EB1CD2CB277E6EFBF4
   logicalPath: config/sam_d21_xpro_winc1500/system/time
   name: sys_time_local.h
   physicalPath: system/time/src
   security: NON_SECURE
   type: HEADER
-  userChecksum: 62F39464265EC34979649F761FB4FE57
-- generatedChecksum: 486AC61EE71D8D443C426AD68798A33A
+  userChecksum: C7A6D8C5408A42EB1CD2CB277E6EFBF4
+- generatedChecksum: 9E3175F71815B2104BA4C85ED5CB37FD
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: sysctrl.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 486AC61EE71D8D443C426AD68798A33A
-- generatedChecksum: EB6BC525F20110B5BB7BCA4D40814C96
+  userChecksum: 9E3175F71815B2104BA4C85ED5CB37FD
+- generatedChecksum: 0A4385349F17E4B8C79F9E7698988439
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: sysctrl.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: EB6BC525F20110B5BB7BCA4D40814C96
+  userChecksum: 0A4385349F17E4B8C79F9E7698988439
 - generatedChecksum: BE95B4F134C5C929787B9DA6FDBF3501
   logicalPath: config/sam_d21_xpro_winc1500/system
   name: system.h
@@ -1217,76 +1231,76 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 1C75A8A6B60598A2FD0D533F57839B72
-- generatedChecksum: 62247071F0F4D0995E4F20C5E4F959E2
+- generatedChecksum: 0B68DD23CCE99F489BF8D549835A42A3
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: tc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 62247071F0F4D0995E4F20C5E4F959E2
-- generatedChecksum: A3169EE6471B80F202EF75DB7D75B8A0
+  userChecksum: 0B68DD23CCE99F489BF8D549835A42A3
+- generatedChecksum: F4203B65DAF89516E9F99064277F5575
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tc3.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: A3169EE6471B80F202EF75DB7D75B8A0
-- generatedChecksum: CF08F07227563D24EC6DFD621FF8F779
+  userChecksum: F4203B65DAF89516E9F99064277F5575
+- generatedChecksum: DBD896BC6316D43F6B53FC90642D09A6
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tc4.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: CF08F07227563D24EC6DFD621FF8F779
-- generatedChecksum: 7F3C12BD011BF49D2A9624CBE711CAA8
+  userChecksum: DBD896BC6316D43F6B53FC90642D09A6
+- generatedChecksum: 1965F64ABB81EA5D42726127CDB4EA92
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tc5.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 7F3C12BD011BF49D2A9624CBE711CAA8
-- generatedChecksum: 1ECF0674584BE961B1EEF35C232B5878
+  userChecksum: 1965F64ABB81EA5D42726127CDB4EA92
+- generatedChecksum: 1D23A2E2F9929FA16C198A9365B41447
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tc6.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 1ECF0674584BE961B1EEF35C232B5878
-- generatedChecksum: 81E3E0D085674FDDB6A5667D39AE56B4
+  userChecksum: 1D23A2E2F9929FA16C198A9365B41447
+- generatedChecksum: 4FC7B771AE551AB8A6FFF934B88BB93A
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tc7.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 81E3E0D085674FDDB6A5667D39AE56B4
-- generatedChecksum: ED30E602304B5FBEA49439D66ECC76F1
+  userChecksum: 4FC7B771AE551AB8A6FFF934B88BB93A
+- generatedChecksum: 0085371A15DD9C739CC5F01131192604
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: tcc.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: ED30E602304B5FBEA49439D66ECC76F1
-- generatedChecksum: 3332A0546C2C3F72DCFA76832A5F9D19
+  userChecksum: 0085371A15DD9C739CC5F01131192604
+- generatedChecksum: 23ACDF116F3A269AD30556D6FE28C60C
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tcc0.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 3332A0546C2C3F72DCFA76832A5F9D19
-- generatedChecksum: 0A2B448E1535EEC12E394995FE1AE54A
+  userChecksum: 23ACDF116F3A269AD30556D6FE28C60C
+- generatedChecksum: 5ADF978726A85F85E54B7B54C19D6AE1
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tcc1.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 0A2B448E1535EEC12E394995FE1AE54A
-- generatedChecksum: A4F9CEA337DBBD7C70C4DCDE9656A99C
+  userChecksum: 5ADF978726A85F85E54B7B54C19D6AE1
+- generatedChecksum: A94247343179BCF44C1C90A78E66356A
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: tcc2.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: A4F9CEA337DBBD7C70C4DCDE9656A99C
+  userChecksum: A94247343179BCF44C1C90A78E66356A
 - generatedChecksum: 5A6CE947CB477E5554790DE371B7FBAB
   logicalPath: config/sam_d21_xpro_winc1500
   name: toolchain_specifics.h
@@ -1294,41 +1308,48 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 5A6CE947CB477E5554790DE371B7FBAB
-- generatedChecksum: 60BF327C0EDB55BABB34AA93CC3D6FB7
+- generatedChecksum: F8578D2EDC40FC282F056EB15111E3B3
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: usb.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: 60BF327C0EDB55BABB34AA93CC3D6FB7
-- generatedChecksum: 617E901C702EFD6FA46BC53B61865ACE
+  userChecksum: F8578D2EDC40FC282F056EB15111E3B3
+- generatedChecksum: 55CE4B8D13BBEE1BF689ABCC624CCBAD
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: usb.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 617E901C702EFD6FA46BC53B61865ACE
-- generatedChecksum: FA5ABBDF0598C0ED8B197B3E416FB369
+  userChecksum: 55CE4B8D13BBEE1BF689ABCC624CCBAD
+- generatedChecksum: null
+  logicalPath: config/sam_d21_xpro_winc1500
+  name: user.h
+  physicalPath: ''
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: null
+- generatedChecksum: B32500B4A5E95CF22F190C2C55423D81
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: FA5ABBDF0598C0ED8B197B3E416FB369
-- generatedChecksum: 1D5E007CD3B2796BF827A1941B39D40F
+  userChecksum: B32500B4A5E95CF22F190C2C55423D81
+- generatedChecksum: 0BBAE22CC0A13B42A18C0B81DE861523
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_api.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: 1D5E007CD3B2796BF827A1941B39D40F
-- generatedChecksum: E59D88313B67DE2CEA6F7D0BEE5F61A9
+  userChecksum: 0BBAE22CC0A13B42A18C0B81DE861523
+- generatedChecksum: AFF6BC6F634E934C197FDE54FA76AC65
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_assoc.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: E59D88313B67DE2CEA6F7D0BEE5F61A9
+  userChecksum: AFF6BC6F634E934C197FDE54FA76AC65
 - generatedChecksum: 422C113E1DC55B034A044101F51E0A6A
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_authctx.h
@@ -1350,20 +1371,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 1A09A1E2933FB272AC441BF0EB0B43E5
-- generatedChecksum: B117332A9D5A92CB9D3A57B30921F9E0
+- generatedChecksum: C4229DD73F366C3472FA2C16AFAF1987
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_client_api.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: B117332A9D5A92CB9D3A57B30921F9E0
-- generatedChecksum: B647336EEF00889171B455CC9D8E4B3A
+  userChecksum: C4229DD73F366C3472FA2C16AFAF1987
+- generatedChecksum: 88C20871C192B1CCE4B8098C46A5864D
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_common.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: B647336EEF00889171B455CC9D8E4B3A
+  userChecksum: 88C20871C192B1CCE4B8098C46A5864D
 - generatedChecksum: ADB81872B1C02AAA29834AF1452AEA03
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_custie.h
@@ -1378,13 +1399,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 64F8DF83B137E462F595A5501401D8CF
-- generatedChecksum: D1BE44448B9DB014BA1243C35D01B3B1
+- generatedChecksum: 994FF956D39ACEC610FA346062023BBA
+  logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
+  name: wdrv_winc_enterprise.h
+  physicalPath: driver/winc/include
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: 994FF956D39ACEC610FA346062023BBA
+- generatedChecksum: 0E16FA381D63EF41473CB18407FE8F5C
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/dev
   name: wdrv_winc_gpio.h
   physicalPath: driver/winc/include/dev
   security: NON_SECURE
   type: HEADER
-  userChecksum: D1BE44448B9DB014BA1243C35D01B3B1
+  userChecksum: 0E16FA381D63EF41473CB18407FE8F5C
 - generatedChecksum: 76E11A9BB21E12895904A3AE3113E30C
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_host_file.h
@@ -1413,13 +1441,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: BB29E3755A067138F9A41BB5C23D4423
-- generatedChecksum: F70714D3F24AAC58E9C6D457DD9C3383
+- generatedChecksum: 06046CC766538F70B029FBDD32A8058D
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_socket.h
   physicalPath: driver/winc/include
   security: NON_SECURE
   type: HEADER
-  userChecksum: F70714D3F24AAC58E9C6D457DD9C3383
+  userChecksum: 06046CC766538F70B029FBDD32A8058D
 - generatedChecksum: E5AF59122D8CB3058702BE143FD19B91
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_softap.h
@@ -1427,13 +1455,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: E5AF59122D8CB3058702BE143FD19B91
-- generatedChecksum: D6499F908C8F6253A65EC8A2BFDFD131
+- generatedChecksum: 053FC49DEA9BE7018D9FD5F25E0ED43F
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include/dev
   name: wdrv_winc_spi.h
   physicalPath: driver/winc/include/dev
   security: NON_SECURE
   type: HEADER
-  userChecksum: D6499F908C8F6253A65EC8A2BFDFD131
+  userChecksum: 053FC49DEA9BE7018D9FD5F25E0ED43F
 - generatedChecksum: 2570CBAD686F31AC11168A7D364DD929
   logicalPath: config/sam_d21_xpro_winc1500/driver/winc/include
   name: wdrv_winc_ssl.h
@@ -1462,27 +1490,34 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 864E55BD2393FAB02C5879ED5EFC940F
-- generatedChecksum: FF1BA6166BFA6C9898A26FEC0DA4A381
+- generatedChecksum: F2C1D30FD266AB459CA764C416527657
   logicalPath: packs/ATSAMD21J18A_DFP/component
   name: wdt.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/component
   security: NON_SECURE
   type: HEADER
-  userChecksum: FF1BA6166BFA6C9898A26FEC0DA4A381
-- generatedChecksum: 14B863AA7D761D40752745B7DCF2250A
+  userChecksum: F2C1D30FD266AB459CA764C416527657
+- generatedChecksum: BA8AB78B63F1C2DB0E22A25E12149872
   logicalPath: packs/ATSAMD21J18A_DFP/instance
   name: wdt.h
   physicalPath: ../../packs/ATSAMD21J18A_DFP/instance
   security: NON_SECURE
   type: HEADER
-  userChecksum: 14B863AA7D761D40752745B7DCF2250A
-- generatedChecksum: 816DFF130AB6E7272D81EB9FE7A83A45
+  userChecksum: BA8AB78B63F1C2DB0E22A25E12149872
+- generatedChecksum: 70E03B89B33D299773D844BF7C20E664
   logicalPath: config/sam_d21_xpro_winc1500
   name: ATSAMD21J18A.ld
   physicalPath: ''
   security: NON_SECURE
   type: LINKER
-  userChecksum: 816DFF130AB6E7272D81EB9FE7A83A45
+  userChecksum: 70E03B89B33D299773D844BF7C20E664
+- generatedChecksum: CA4A56DD3631377085D9CAD89F821549
+  logicalPath: ''
+  name: pin_configurations.csv
+  physicalPath: ''
+  security: NON_SECURE
+  type: IMPORTANT
+  userChecksum: CA4A56DD3631377085D9CAD89F821549
 format_version: v1.0
 libraries: []
 settings:

@@ -83,6 +83,10 @@ static SERIAL_BRIDGE_DECODER_STATE serialBridgeDecoderState;
 
 APP_DATA appData;
 
+#ifdef APP_ENABLE_SEC_CONN
+extern const WDRV_WINC_SYS_INIT *appWincInitData[];
+#endif
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Callback Functions
@@ -95,6 +99,56 @@ APP_DATA appData;
 // Section: Application Local Functions
 // *****************************************************************************
 // *****************************************************************************
+
+#ifdef APP_ENABLE_SEC_CONN
+void WDRV_WINC_RESETN_Clear(void)
+{
+    if (0 == appData.currentWincInitDataIdx)
+    {
+        WDRV_WINC_RESETN_EXT1_Clear();
+    }
+    else
+    {
+        WDRV_WINC_RESETN_EXT2_Clear();
+    }
+}
+
+void WDRV_WINC_RESETN_Set(void)
+{
+    if (0 == appData.currentWincInitDataIdx)
+    {
+        WDRV_WINC_RESETN_EXT1_Set();
+    }
+    else
+    {
+        WDRV_WINC_RESETN_EXT2_Set();
+    }
+}
+
+void WDRV_WINC_CHIP_EN_Set(void)
+{
+    if (0 == appData.currentWincInitDataIdx)
+    {
+        WDRV_WINC_CHIP_EN_EXT1_Set();
+    }
+    else
+    {
+        WDRV_WINC_CHIP_EN_EXT2_Set();
+    }
+}
+
+void WDRV_WINC_CHIP_EN_Clear(void)
+{
+    if (0 == appData.currentWincInitDataIdx)
+    {
+        WDRV_WINC_CHIP_EN_EXT1_Clear();
+    }
+    else
+    {
+        WDRV_WINC_CHIP_EN_EXT2_Clear();
+    }
+}
+#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -114,6 +168,8 @@ void APP_Initialize(void)
 {
     /* Place the App state machine in its initial state. */
     appData.state = APP_STATE_INIT;
+
+    appData.currentWincInitDataIdx = 0;
 
     SerialBridge_PlatformInit();
 }
@@ -141,18 +197,59 @@ void APP_Tasks(void)
 
         case APP_STATE_INIT_WINC:
         {
-            if (SYS_STATUS_BUSY == WDRV_WINC_Status(sysObj.drvWifiWinc))
+            SYS_STATUS status;
+
+            status = WDRV_WINC_Status(sysObj.drvWifiWinc);
+
+            if (SYS_STATUS_READY == status)
             {
-                break;
+                appData.state = APP_STATE_WDRV_OPEN_BRIDGE;
+            }
+            else if (SYS_STATUS_ERROR == status)
+            {
+                WDRV_WINC_Deinitialize(sysObj.drvWifiWinc);
+
+#ifdef APP_ENABLE_SEC_CONN
+                if (WDRV_WINC_SYS_STATUS_ERROR_DEVICE_NOT_FOUND == WDRV_WINC_StatusExt(sysObj.drvWifiWinc))
+                {
+                    break;
+                }
+#endif
+
+                appData.state = APP_STATE_WDRV_OPEN_BRIDGE;
+            }
+            else if (SYS_STATUS_UNINITIALIZED == status)
+            {
+                sysObj.drvWifiWinc = SYS_MODULE_OBJ_INVALID;
+
+#ifdef APP_ENABLE_SEC_CONN
+                if (0 == appData.currentWincInitDataIdx)
+                {
+                    appData.currentWincInitDataIdx = 1;
+
+                    sysObj.drvWifiWinc = WDRV_WINC_Initialize(0, (SYS_MODULE_INIT*)appWincInitData[appData.currentWincInitDataIdx]);
+
+                    if (SYS_MODULE_OBJ_INVALID != sysObj.drvWifiWinc)
+                    {
+                        break;
+                    }
+                }
+#endif
+                appData.state = APP_STATE_ERROR;
             }
 
-            SerialBridge_Init(&serialBridgeDecoderState, 115200);
-
-            appData.state = APP_STATE_WDRV_OPEN_BRIDGE;
             break;
         }
 
         case APP_STATE_WDRV_OPEN_BRIDGE:
+        {
+            SerialBridge_Init(&serialBridgeDecoderState, 115200);
+
+            appData.state = APP_STATE_WDRV_SERIAL_BRIDGE;
+            break;
+        }
+
+        case APP_STATE_WDRV_SERIAL_BRIDGE:
         {
             SerialBridge_Process(&serialBridgeDecoderState);
             break;

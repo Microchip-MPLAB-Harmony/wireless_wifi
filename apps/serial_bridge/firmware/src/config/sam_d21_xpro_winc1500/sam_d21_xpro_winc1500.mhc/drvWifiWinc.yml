@@ -4,27 +4,6 @@ attributes: {id: drvWifiWinc}
 children:
 - type: Symbols
   children:
-  - type: Combo
-    attributes: {id: DRV_WIFI_WINC1500_VERSION}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: 19.7.6}
-  - type: Combo
-    attributes: {id: DRV_WIFI_WINC_DEVICE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: WINC1500}
-  - type: Combo
-    attributes: {id: DRV_WIFI_WINC_DRIVER_MODE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: Socket Mode}
   - type: Boolean
     attributes: {id: DRV_WIFI_WINC_EIC_SRC_0}
     children:
@@ -70,6 +49,12 @@ children:
   - type: Boolean
     attributes: {id: DRV_WIFI_WINC_EIC_SRC_14}
     children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
     - type: Values
       children:
       - type: Dynamic
@@ -153,19 +138,41 @@ children:
       - type: Dynamic
         attributes: {id: drvWifiWinc, value: '4'}
   - type: String
-    attributes: {id: DRV_WIFI_WINC_SPI_INST}
+    attributes: {id: DRV_WIFI_WINC_PLIB}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: drvWifiWinc, value: drv_spi_0}
+        attributes: {id: drvWifiWinc, value: SERCOM0}
   - type: Integer
-    attributes: {id: DRV_WIFI_WINC_SPI_INST_IDX}
+    attributes: {id: DRV_WIFI_WINC_RX_DMA_CHANNEL}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: drvWifiWinc, value: '1'}
+  - type: Menu
+    attributes: {id: DRV_WIFI_WINC_SPI_MENU}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Boolean
+    attributes: {id: DRV_WIFI_WINC_SYS_DMA_ENABLE}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: drvWifiWinc, value: '0'}
+        attributes: {id: drvWifiWinc, value: 'true'}
   - type: File
     attributes: {id: DRV_WIFI_WINC_SYS_RTOS_TASK}
     children:
@@ -175,29 +182,62 @@ children:
         attributes: {id: enabled}
         children:
         - {type: Value, value: 'false'}
+  - type: Integer
+    attributes: {id: DRV_WIFI_WINC_TX_DMA_CHANNEL}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: drvWifiWinc, value: '0'}
   - type: Boolean
-    attributes: {id: DRV_WIFI_WINC_USE_TCPIP_STACK}
+    attributes: {id: DRV_WIFI_WINC_TX_RX_DMA}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: readOnly}
+        children:
+        - {type: Value, value: 'false'}
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
+  - type: Boolean
+    attributes: {id: DRV_WIFI_WINC_TX_RX_DMA_EN}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: drvWifiWinc, value: 'false'}
-      - type: User
-        attributes: {value: 'false'}
+        attributes: {id: drvWifiWinc, value: 'true'}
 - type: Attachments
   children:
   - type: DirectDependency
-    attributes: {id: spi}
+    attributes: {id: drv_spi_dependency}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'false'}
+  - type: DirectDependency
+    attributes: {id: spi_dependency}
     children:
     - type: Attributes
       children:
       - type: String
         attributes: {id: targetComponentID}
         children:
-        - {type: Value, value: drv_spi_0}
+        - {type: Value, value: sercom0}
       - type: String
         attributes: {id: targetAttachmentID}
         children:
-        - {type: Value, value: drv_spi}
+        - {type: Value, value: SERCOM0_SPI}
 - type: ElementPosition
-  attributes: {x: '471', y: '271', id: drvWifiWinc}
+  attributes: {x: '310', y: '207', id: drvWifiWinc}

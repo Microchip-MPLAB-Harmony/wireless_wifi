@@ -72,10 +72,6 @@ children:
         attributes: {id: enabled}
         children:
         - {type: Value, value: 'true'}
-      - type: String
-        attributes: {id: source}
-        children:
-        - {type: Value, value: ../peripheral/sercom_u2201/templates/plib_sercom_usart.h.ftl}
   - type: File
     attributes: {id: SERCOM_USART_SOURCE}
     children:
@@ -85,10 +81,6 @@ children:
         attributes: {id: enabled}
         children:
         - {type: Value, value: 'true'}
-      - type: String
-        attributes: {id: source}
-        children:
-        - {type: Value, value: ../peripheral/sercom_u2201/templates/plib_sercom_usart.c.ftl}
   - type: Integer
     attributes: {id: SPI_BAUD_REG_VALUE}
     children:
@@ -124,19 +116,6 @@ children:
       children:
       - type: Dynamic
         attributes: {id: sercom2, value: 'true'}
-  - type: Boolean
-    attributes: {id: USART_RING_BUFFER_ENABLE}
-    children:
-    - type: Attributes
-      children:
-      - type: String
-        attributes: {id: label}
-        children:
-        - {type: Value, value: '---'}
-    - type: Values
-      children:
-      - type: Dynamic
-        attributes: {id: sercom2, value: 'false'}
   - type: KeyValueSet
     attributes: {id: USART_RXPO}
     children:
@@ -192,4 +171,4 @@ children:
         children:
         - {type: Value, value: uart}
 - type: ElementPosition
-  attributes: {x: '364', y: '254', id: sercom2}
+  attributes: {x: '516', y: '290', id: sercom2}

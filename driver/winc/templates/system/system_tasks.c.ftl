@@ -36,7 +36,7 @@
     /* Allocate the stack for _WDRV_WINC_Tasks thread */
     tx_byte_allocate(&byte_pool_0,
         (VOID **) &_WDRV_WINC_Task_Stk_Ptr,
-        ${DRV_WIFI_WINC_RTOS_STACK_SIZE},
+        DRV_WIFI_WINC_RTOS_STACK_SIZE,
         TX_NO_WAIT
     );
 
@@ -46,9 +46,9 @@
         _WDRV_WINC_Tasks,
         0,
         _WDRV_WINC_Task_Stk_Ptr,
-        ${DRV_WIFI_WINC_RTOS_STACK_SIZE},
-        ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY},
-        ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY},
+        DRV_WIFI_WINC_RTOS_STACK_SIZE,
+        DRV_WIFI_WINC_RTOS_TASK_PRIORITY,
+        DRV_WIFI_WINC_RTOS_TASK_PRIORITY,
         TX_NO_TIME_SLICE,
         TX_AUTO_START
     );

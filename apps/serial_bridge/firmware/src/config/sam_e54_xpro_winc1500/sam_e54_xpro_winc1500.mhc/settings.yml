@@ -5,9 +5,9 @@ frameworkPath: ../../..
 processor: ATSAME54P20A
 projectName: ''
 settings:
-  PackageFilter: azure-rtos-threadx;bsp;core;crypto;cryptoauthlib;csp;dev_packs;net;wireless_wifi;wsg_dev
+  PackageFilter: azure_rtos;bsp;core;crypto;cryptoauthlib;csp;dev_packs;net;wireless_wifi;wsg_dev
   FORCE_OPTIMIZATION: 'false'
   GENERATE_BACKUP: 'true'
   CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
   MERGE_STRATEGY: USER_ALL
-  DFPPath: .\dev_packs\Microchip\SAME54_DFP\3.6.95\atdf\ATSAME54P20A.atdf
+  DFPPath: .\dev_packs\Microchip\SAME54_DFP\3.7.122\atdf\ATSAME54P20A.atdf

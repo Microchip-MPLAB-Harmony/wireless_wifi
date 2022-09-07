@@ -3,6 +3,10 @@
 ###############################################################################
 
 global sort_alphanumeric
+global isDMAPresent
+
+def handleMessage(messageID, args):
+    return None
 
 def sort_alphanumeric(l):
     import re
@@ -153,51 +157,139 @@ def setIncPath(component, configName, incPathEntry):
     incPathSym.setDependencies(callback, dependencies)
 
 def onAttachmentConnected(source, target):
-    if source['id'] == 'spi':
-        drvSPIIndex = target['component'].getSymbolValue('INDEX')
+    global isDMAPresent
 
-        wifiDrvSPIInst = source['component'].getSymbolByID('DRV_WIFI_WINC_SPI_INST')
-        wifiDrvSPIInstInx = source['component'].getSymbolByID('DRV_WIFI_WINC_SPI_INST_IDX')
+    localComponent = source['component']
+    remoteComponent = target['component']
+    remoteID = remoteComponent.getID()
+    connectID = source['id']
+    targetID = target['id']
+
+    if connectID == 'drv_spi_dependency':
+        drvSPIIndex = remoteComponent.getSymbolValue('INDEX')
+
+        wifiDrvSPIInst = localComponent.getSymbolByID('DRV_WIFI_WINC_SPI_INST')
+        wifiDrvSPIInstInx = localComponent.getSymbolByID('DRV_WIFI_WINC_SPI_INST_IDX')
 
         wifiDrvSPIInst.setValue('drv_spi_' + str(drvSPIIndex))
         wifiDrvSPIInst.setVisible(True)
 
         wifiDrvSPIInstInx.setValue(drvSPIIndex)
-    elif source['id'] == 'sys_debug':
-        wincUseSysDebug = source['component'].getSymbolByID('DRV_WIFI_WINC_USE_SYS_DEBUG')
+
+        localComponent.setDependencyEnabled('spi_dependency', False)
+        localComponent.getSymbolByID('DRV_WIFI_WINC_DRV_SPI_MENU').setVisible(True)
+    elif connectID == 'sys_debug':
+        wincUseSysDebug = localComponent.getSymbolByID('DRV_WIFI_WINC_USE_SYS_DEBUG')
         wincUseSysDebug.setValue(True)
+    elif connectID == 'spi_dependency':
+        plibUsed = localComponent.getSymbolByID('DRV_WIFI_WINC_PLIB')
+        plibUsed.clearValue()
+        plibUsed.setValue(remoteID.upper())
+
+        dmaChannelSym = Database.getSymbolValue('core', 'DMA_CH_FOR_' + remoteID.upper() + '_Transmit')
+        dmaRequestSym = Database.getSymbolValue('core', 'DMA_CH_NEEDED_FOR_' + remoteID.upper() + '_Transmit')
+
+        # Do not change the order as DMA Channels needs to be allocated
+        # after setting the plibUsed symbol
+        # Both device and connected plib should support DMA
+        if isDMAPresent == True and dmaChannelSym != None and dmaRequestSym != None:
+            localComponent.getSymbolByID('DRV_WIFI_WINC_TX_RX_DMA').setReadOnly(False)
+
+        localComponent.setDependencyEnabled('drv_spi_dependency', False)
+        localComponent.getSymbolByID('DRV_WIFI_WINC_SPI_MENU').setVisible(True)
 
 def onAttachmentDisconnected(source, target):
-    if source['id'] == 'spi':
-        wifiDrvSPIInst = source['component'].getSymbolByID('DRV_WIFI_WINC_SPI_INST')
-        wifiDrvSPIInstInx = source['component'].getSymbolByID('DRV_WIFI_WINC_SPI_INST_IDX')
+    global isDMAPresent
+
+    localComponent = source['component']
+    remoteComponent = target['component']
+    remoteID = remoteComponent.getID()
+    connectID = source['id']
+    targetID = target['id']
+
+    if connectID == 'drv_spi_dependency':
+        wifiDrvSPIInst = localComponent.getSymbolByID('DRV_WIFI_WINC_SPI_INST')
+        wifiDrvSPIInstInx = localComponent.getSymbolByID('DRV_WIFI_WINC_SPI_INST_IDX')
 
         wifiDrvSPIInst.setValue('')
         wifiDrvSPIInst.setVisible(False)
 
         wifiDrvSPIInstInx.setValue(-1)
-    elif source['id'] == 'sys_debug':
-        wincUseSysDebug = source['component'].getSymbolByID('DRV_WIFI_WINC_USE_SYS_DEBUG')
+
+        localComponent.setDependencyEnabled('spi_dependency', True)
+        localComponent.getSymbolByID('DRV_WIFI_WINC_DRV_SPI_MENU').setVisible(False)
+    elif connectID == 'sys_debug':
+        wincUseSysDebug = localComponent.getSymbolByID('DRV_WIFI_WINC_USE_SYS_DEBUG')
         wincUseSysDebug.setValue(False)
+    elif connectID == 'spi_dependency':
+
+        dmaChannelSym = Database.getSymbolValue('core', 'DMA_CH_FOR_' + remoteID.upper() + '_Transmit')
+        dmaRequestSym = Database.getSymbolValue('core', 'DMA_CH_NEEDED_FOR_' + remoteID.upper() + '_Transmit')
+
+        # Do not change the order as DMA Channels needs to be cleared
+        # before clearing the plibUsed symbol
+        # Both device and connected plib should support DMA
+        if isDMAPresent == True and dmaChannelSym != None and dmaRequestSym != None:
+            localComponent.getSymbolByID('DRV_WIFI_WINC_TX_RX_DMA').clearValue()
+            localComponent.getSymbolByID('DRV_WIFI_WINC_TX_RX_DMA').setReadOnly(True)
+
+        plibUsed = localComponent.getSymbolByID('DRV_WIFI_WINC_PLIB')
+        plibUsed.clearValue()
+
+        localComponent.setDependencyEnabled('drv_spi_dependency', True)
+        localComponent.getSymbolByID('DRV_WIFI_WINC_SPI_MENU').setVisible(False)
+
+def updateDMAEnableCntr(symbol, event):
+    result_dict = {}
+
+    if symbol.getValue() != event['value']:
+        symbol.setValue(event['value'])
+        if symbol.getValue() == True:
+            result_dict = Database.sendMessage('drv_spi', 'DRV_WIFI_WINC_DMA_ENABLED', result_dict)
+        else:
+            result_dict = Database.sendMessage('drv_spi', 'DRV_WIFI_WINC_DMA_DISABLED', result_dict)
+
+def sysDMAEnabled(symbol, event):
+    if symbol.getValue() != event['value']:
+        symbol.setValue(event['value'])
+        if Database.getSymbolValue('core', 'DMA_ENABLE') != None:
+            Database.sendMessage('HarmonyCore', 'ENABLE_SYS_DMA', {'isEnabled':event['value']})
 
 def instantiateComponent(drvWincComponent):
+    global isDMAPresent
+
     print('WINC Driver Component')
 
-    Database.activateComponents(["sys_time"])
-    Database.activateComponents(["eic"])
+    if Database.getSymbolValue('core', 'DMA_ENABLE') == None:
+        isDMAPresent = False
+    else:
+        isDMAPresent = True
+
+    Database.activateComponents(['HarmonyCore'])
+    Database.activateComponents(['sys_time'])
+    Database.activateComponents(['eic'])
+
+    # Enable 'Generate Harmony Driver Common Files' option in MHC
+    Database.sendMessage('HarmonyCore', 'ENABLE_DRV_COMMON', {'isEnabled':True})
+
+    # Enable "Generate Harmony System Service Common Files" option in MHC
+    Database.sendMessage("HarmonyCore", "ENABLE_SYS_COMMON", {"isEnabled":True})
 
     configName = Variables.get('__CONFIGURATION_NAME')
 
     eicNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals/module@[name=\"EIC\"]/instance@[name=\"EIC\"]/parameters/param@[name=\"EXTINT_NUM\"]")
 
-    drvWincComponent.addDependency('spi', 'DRV_SPI', False, True)
+    drvWincComponent.addDependency('drv_spi_dependency', 'DRV_SPI', False, True)
+    drvWincComponent.addDependency('spi_dependency', 'SPI', False, True)
     drvWincComponent.addDependency('sys_debug', 'SYS_DEBUG', True, False)
+    drvWincComponent.addDependency('wdrv_winc_HarmonyCoreDependency', 'Core Service', 'Core Service', True, True)
 
     # WINC Device
     wincDevice = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DEVICE', None, ['WINC1500', 'WINC3400'])
     wincDevice.setLabel('WiFi Device')
     wincDevice.setVisible(True)
 
+    # Use SYS_DEBUG Option
     wincUseSysDebug = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_SYS_DEBUG', None)
     wincUseSysDebug.setVisible(False)
     wincUseSysDebug.setDefaultValue(False)
@@ -208,15 +300,76 @@ def instantiateComponent(drvWincComponent):
     wincLogLevel.setVisible(True)
     wincLogLevel.setDependencies(setEnableLogLevel, ['DRV_WIFI_WINC_USE_SYS_DEBUG', 'sys_debug.SYS_DEBUG_USE_CONSOLE'])
 
+    # DRV_SPI Menu
+    wincDrvSpiMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_DRV_SPI_MENU', None)
+    wincDrvSpiMenu.setLabel('SPI')
+    wincDrvSpiMenu.setDescription('SPI using DRV_SPI')
+    wincDrvSpiMenu.setVisible(False)
+
     # SPI Instance Index
-    wincSpiInst = drvWincComponent.createStringSymbol('DRV_WIFI_WINC_SPI_INST', None)
+    wincSpiInst = drvWincComponent.createStringSymbol('DRV_WIFI_WINC_SPI_INST', wincDrvSpiMenu)
     wincSpiInst.setLabel('SPI Driver')
     wincSpiInst.setReadOnly(True)
     wincSpiInst.setDefaultValue('')
 
-    wincSpiInstIdx = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SPI_INST_IDX', None)
+    wincSpiInstIdx = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SPI_INST_IDX', wincDrvSpiMenu)
     wincSpiInstIdx.setVisible(False)
     wincSpiInstIdx.setDefaultValue(-1)
+
+    # SPI (PLIB) Menu
+    wincSpiMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_SPI_MENU', None)
+    wincSpiMenu.setLabel('SPI')
+    wincSpiMenu.setDescription('SPI using PLIB')
+    wincSpiMenu.setVisible(False)
+
+    wincSymPLIB = drvWincComponent.createStringSymbol('DRV_WIFI_WINC_PLIB', wincSpiMenu)
+    wincSymPLIB.setLabel('PLIB Used')
+    wincSymPLIB.setReadOnly(True)
+    wincSymPLIB.setDefaultValue('')
+
+    global wincTXRXDMA
+    wincTXRXDMA = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_TX_RX_DMA', wincSpiMenu)
+    wincTXRXDMA.setLabel('Use DMA for Transmit and Receive?')
+    wincTXRXDMA.setVisible(isDMAPresent)
+    wincTXRXDMA.setReadOnly(True)
+
+    wincTXRXDMAEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_TX_RX_DMA_EN', wincSpiMenu)
+    wincTXRXDMAEn.setVisible(False)
+    wincTXRXDMAEn.setDefaultValue(False)
+    wincTXRXDMAEn.setDependencies(updateDMAEnableCntr, ['DRV_WIFI_WINC_TX_RX_DMA'])
+
+    global wincTXDMAChannel
+    wincTXDMAChannel = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_TX_DMA_CHANNEL', wincSpiMenu)
+    wincTXDMAChannel.setLabel('DMA Channel For Transmit')
+    wincTXDMAChannel.setDefaultValue(0)
+    wincTXDMAChannel.setVisible(False)
+    wincTXDMAChannel.setReadOnly(True)
+    wincTXDMAChannel.setDependencies(requestAndAssignTxDMAChannel, ['DRV_WIFI_WINC_TX_RX_DMA'])
+
+    global wincTXDMAChannelComment
+    wincTXDMAChannelComment = drvWincComponent.createCommentSymbol('DRV_WIFI_WINC_TX_DMA_CH_COMMENT', wincSpiMenu)
+    wincTXDMAChannelComment.setLabel("Warning!!! Couldn't Allocate DMA Channel for Transmit. Check DMA Manager. !!!")
+    wincTXDMAChannelComment.setVisible(False)
+    wincTXDMAChannelComment.setDependencies(requestDMAComment, ['DRV_WIFI_WINC_TX_DMA_CHANNEL'])
+
+    global wincRXDMAChannel
+    wincRXDMAChannel = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_RX_DMA_CHANNEL', wincSpiMenu)
+    wincRXDMAChannel.setLabel('DMA Channel For Receive')
+    wincRXDMAChannel.setDefaultValue(1)
+    wincRXDMAChannel.setVisible(False)
+    wincRXDMAChannel.setReadOnly(True)
+    wincRXDMAChannel.setDependencies(requestAndAssignRxDMAChannel, ['DRV_WIFI_WINC_TX_RX_DMA'])
+
+    global wincRXDMAChannelComment
+    wincRXDMAChannelComment = drvWincComponent.createCommentSymbol('DRV_WIFI_WINC_RX_DMA_CH_COMMENT', wincSpiMenu)
+    wincRXDMAChannelComment.setLabel("Warning!!! Couldn't Allocate DMA Channel for Receive. Check DMA Manager. !!!")
+    wincRXDMAChannelComment.setVisible(False)
+    wincRXDMAChannelComment.setDependencies(requestDMAComment, ['DRV_WIFI_WINC_RX_DMA_CHANNEL'])
+
+    wincSymSYSDMAEnable = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_SYS_DMA_ENABLE', None)
+    wincSymSYSDMAEnable.setDefaultValue(False)
+    wincSymSYSDMAEnable.setVisible(False)
+    wincSymSYSDMAEnable.setDependencies(sysDMAEnabled, ['DRV_WIFI_WINC_TX_RX_DMA'])
 
     # Interrupt Source
     wincIntSrcList = []
@@ -224,14 +377,14 @@ def instantiateComponent(drvWincComponent):
     if eicNode:
         wincIntSrcList.append('EIC')
     else:
-        periphNode = ATDF.getNode("/avr-tools-device-file/devices/device/peripherals")
+        periphNode = ATDF.getNode('/avr-tools-device-file/devices/device/peripherals')
         modules = periphNode.getChildren()
 
         for module in range (0, len(modules)):
-            periphName = str(modules[module].getAttribute("name"))
-            if periphName == "PIO":
+            periphName = str(modules[module].getAttribute('name'))
+            if periphName == 'PIO':
                 wincIntSrcList.append('PIO')
-            elif periphName == "GPIO":
+            elif periphName == 'GPIO':
                 wincIntSrcList.append('GPIO')
 
     if len(wincIntSrcList):
@@ -266,63 +419,63 @@ def instantiateComponent(drvWincComponent):
         wincEicSrcSel.setMin(-1)
         wincEicSrcSel.setMax(extIntCount-1)
 
-        wincSymPinConfigComment = drvWincComponent.createCommentSymbol("DRV_WIFI_WINC_EIC_CONFIG_COMMENT", None)
-        wincSymPinConfigComment.setLabel("***EIC channel must be configured in EIC component for interrupt source***")
+        wincSymPinConfigComment = drvWincComponent.createCommentSymbol('DRV_WIFI_WINC_EIC_CONFIG_COMMENT', None)
+        wincSymPinConfigComment.setLabel('***EIC channel must be configured in EIC component for interrupt source***')
 
     elif 'GPIO' in wincIntSrcList:
         # Devices using GPIO Interrupts such as PIC32MZ
         availablePinDictionary = {}
         # Send message to core to get available pins
-        availablePinDictionary = Database.sendMessage("core", "PIN_LIST", availablePinDictionary)
+        availablePinDictionary = Database.sendMessage('core', 'PIN_LIST', availablePinDictionary)
 
-        wincGpioIntSrc = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_GPIO_SRC_SELECT", None)
-        wincGpioIntSrc.setLabel("Interrupt Pin")
-        wincGpioIntSrc.setOutputMode("Key")
-        wincGpioIntSrc.setDisplayMode("Description")
+        wincGpioIntSrc = drvWincComponent.createKeyValueSetSymbol('DRV_WIFI_WINC_GPIO_SRC_SELECT', None)
+        wincGpioIntSrc.setLabel('Interrupt Pin')
+        wincGpioIntSrc.setOutputMode('Key')
+        wincGpioIntSrc.setDisplayMode('Description')
 
         for pad in sort_alphanumeric(availablePinDictionary.values()):
-            key = "GPIO_PIN_" + pad
+            key = 'GPIO_PIN_' + pad
             value = list(availablePinDictionary.keys())[list(availablePinDictionary.values()).index(pad)]
             description = pad
             wincGpioIntSrc.addKey(key, value, description)
 
-        wincGpioIntSrc.addKey("GPIO_PIN_NONE", "-1", "None")
-        wincGpioIntSrc = drvWincComponent.createCommentSymbol("DRV_WINC_PINS_CONFIG_COMMENT", None)
-        wincGpioIntSrc.setLabel("***Above selected pins must be configured as GPIO Output in Pin Manager***")
+        wincGpioIntSrc.addKey('GPIO_PIN_NONE', '-1', 'None')
+        wincGpioIntSrc = drvWincComponent.createCommentSymbol('DRV_WINC_PINS_CONFIG_COMMENT', None)
+        wincGpioIntSrc.setLabel('***Above selected pins must be configured as GPIO Input in Pin Manager***')
 
     elif 'PIO' in wincIntSrcList:
         #PIO is used in Cortex-M7 and MPU devices
         availablePinDictionary = {}
         # Send message to core to get available pins
-        availablePinDictionary = Database.sendMessage("core", "PIN_LIST", availablePinDictionary)
+        availablePinDictionary = Database.sendMessage('core', 'PIN_LIST', availablePinDictionary)
 
-        wincPioIntSrc = drvWincComponent.createKeyValueSetSymbol("DRV_WIFI_WINC_PIO_SRC_SELECT", None)
-        wincPioIntSrc.setLabel("Interrupt Pin")
-        wincPioIntSrc.setOutputMode("Key")
-        wincPioIntSrc.setDisplayMode("Description")
+        wincPioIntSrc = drvWincComponent.createKeyValueSetSymbol('DRV_WIFI_WINC_PIO_SRC_SELECT', None)
+        wincPioIntSrc.setLabel('Interrupt Pin')
+        wincPioIntSrc.setOutputMode('Key')
+        wincPioIntSrc.setDisplayMode('Description')
 
         for pad in sort_alphanumeric(availablePinDictionary.values()):
-            key = "PIO_PIN_" + pad
+            key = 'PIO_PIN_' + pad
             value = list(availablePinDictionary.keys())[list(availablePinDictionary.values()).index(pad)]
             description = pad
             wincPioIntSrc.addKey(key, value, description)
 
-        wincPioIntSrc.addKey("PIO_PIN_NONE", "-1", "None")
-        wincPioIntSrc = drvWincComponent.createCommentSymbol("DRV_WINC_PINS_CONFIG_COMMENT", None)
-        wincPioIntSrc.setLabel("***Above selected pins must be configured as PIO Output in Pin Manager***")
+        wincPioIntSrc.addKey('PIO_PIN_NONE', '-1', 'None')
+        wincPioIntSrc = drvWincComponent.createCommentSymbol('DRV_WINC_PINS_CONFIG_COMMENT', None)
+        wincPioIntSrc.setLabel('***Above selected pins must be configured as PIO Input in Pin Manager***')
 
     # WINC1500 Version
-    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1', '19.7.6'])
+    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.6.1', '19.7.7'])
     winc1500Version.setLabel('Firmware Version')
     winc1500Version.setVisible(True)
-    winc1500Version.setDefaultValue('19.7.6')
+    winc1500Version.setDefaultValue('19.7.7')
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 Version
-    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.1', '1.4.3'])
+    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.1', '1.4.4'])
     winc3400Version.setLabel('Firmware Version')
     winc3400Version.setVisible(False)
-    winc3400Version.setDefaultValue('1.4.3')
+    winc3400Version.setDefaultValue('1.4.')
     winc3400Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 BLE API Support
@@ -348,7 +501,7 @@ def instantiateComponent(drvWincComponent):
     wincUseTcpipStack.setDependencies(setVisibilityUseTcpipStack, ['DRV_WIFI_WINC_DRIVER_MODE'])
 
     # At startup, Hide Mac Capability
-    drvWincComponent.setCapabilityEnabled("libdrvWincMac", False)
+    drvWincComponent.setCapabilityEnabled('libdrvWincMac', False)
 
     # RTOS Configuration
     wincRtosMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_RTOS_MENU', None)
@@ -397,16 +550,17 @@ def instantiateComponent(drvWincComponent):
     flagSocketMode          = (wincDriverMode.getValue() == 'Socket Mode')
     flagTcpipStackPresent   = (flagEthernetMode and (wincUseTcpipStack.getValue() == 'True'))
     flagBlePresent          = (winc3400UseBle.getValue() == 'True')
+    flagEntConOptSupport    = (((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.7.7')) or ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() != '1.2.2')))
     flagWinc1500_19_6_1     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.6.1'))
-    flagWinc1500_19_7_6     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.7.6'))
+    flagWinc1500_19_7_7     = ((wincDevice.getValue() == 'WINC1500') and (winc1500Version.getValue() == '19.7.7'))
     flagWinc1500            = ((wincDevice.getValue() == 'WINC1500'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
     flagWinc3400_1_3_1      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.1'))
-    flagWinc3400_1_4_3      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.4.3'))
+    flagWinc3400_1_4_4      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.4.4'))
     flagWinc3400            = ((wincDevice.getValue() == 'WINC3400'))
 
-    flagHostFileSupport     = (flagSocketMode and (flagWinc1500_19_6_1 or flagWinc1500_19_7_6))
-    flagFlexFlashMapSupport = (flagWinc1500_19_6_1 or flagWinc1500_19_7_6)
+    flagHostFileSupport     = (flagSocketMode and (flagWinc1500_19_6_1 or flagWinc1500_19_7_7))
+    flagFlexFlashMapSupport = (flagWinc1500_19_6_1 or flagWinc1500_19_7_7)
 
     condAlways              = [True,                    None,                           []]
     condSocketMode          = [flagSocketMode,          setEnableSocketMode,            ['DRV_WIFI_WINC_DRIVER_MODE']]
@@ -415,12 +569,13 @@ def instantiateComponent(drvWincComponent):
     condFlexFlashMapSupport = [flagFlexFlashMapSupport, setEnableFlexFlashMapSupport,   ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION']]
     condTcpipStackPresent   = [flagTcpipStackPresent,   setEnableTcpipStackPresent,     ['DRV_WIFI_WINC_USE_TCPIP_STACK', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condBle                 = [flagBlePresent,          setEnableBlePresent,            ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400']]
+    condEntConOpt           = [flagEntConOptSupport,    setEnableEntConOptSupport,      ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC3400_VERSION']]
     condWinc1500_19_6_1     = [flagWinc1500_19_6_1,     setEnableWinc1500_19_6_1,       ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
-    condWinc1500_19_7_6     = [flagWinc1500_19_7_6,     setEnableWinc1500_19_7_6,       ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc1500_19_7_7     = [flagWinc1500_19_7_7,     setEnableWinc1500_19_7_7,       ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC1500_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc1500            = [flagWinc1500,            setEnableWinc1500,              ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_3_1      = [flagWinc3400_1_3_1,      setEnableWinc3400_1_3_1,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
-    condWinc3400_1_4_3      = [flagWinc3400_1_4_3,      setEnableWinc3400_1_4_3,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc3400_1_4_4      = [flagWinc3400_1_4_4,      setEnableWinc3400_1_4_4,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400            = [flagWinc3400,            setEnableWinc3400,              ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
 
     wdrvIncFiles = [
@@ -435,9 +590,11 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_common.h',                  condAlways],
         ['wdrv_winc_custie.h',                  condAlways],
         ['wdrv_winc_debug.h',                   condAlways],
+        ['wdrv_winc_enterprise.h',              condEntConOpt],
         ['wdrv_winc_ethernet.h',                condEthernetMode],
         ['wdrv_winc_host_file.h',               condHostFileSupport],
         ['wdrv_winc_httpprovctx.h',             condSocketMode],
+        ['wdrv_winc_mac.h',                     condTcpipStackPresent],
         ['wdrv_winc_nvm.h',                     condAlways],
         ['wdrv_winc_powersave.h',               condAlways],
         ['wdrv_winc_socket.h',                  condSocketMode],
@@ -446,9 +603,7 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_sta.h',                     condAlways],
         ['wdrv_winc_systime.h',                 condAlways],
         ['wdrv_winc_wps.h',                     condAlways],
-        ['wdrv_winc_mac.h',                     condTcpipStackPresent],
-        ['dev/wdrv_winc_gpio.h',                condAlways],
-        ['dev/wdrv_winc_spi.h',                 condAlways]
+        ['dev/wdrv_winc_gpio.h',                condAlways]
     ]
 
     wdrvFirmwareDriverIncFiles = [
@@ -506,7 +661,7 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc1500_19_6_1, configName, incFileEntry, 'winc1500_19.6.1')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, flagWinc1500_19_7_6, configName, incFileEntry, 'winc1500_19.7.6')
+        importIncFile(drvWincComponent, flagWinc1500_19_7_7, configName, incFileEntry, 'winc1500_19.7.7')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, flagWinc3400_1_2_2, configName, incFileEntry, 'winc3400_1.2.2')
@@ -515,7 +670,7 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc3400_1_3_1, configName, incFileEntry, 'winc3400_1.3.1')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, flagWinc3400_1_4_3, configName, incFileEntry, 'winc3400_1.4.3')
+        importIncFile(drvWincComponent, flagWinc3400_1_4_4, configName, incFileEntry, 'winc3400_1.4.4')
 
     for incFileEntry in bledrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'bluetooth_driver')
@@ -528,6 +683,7 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_bssctx.c',                  condAlways],
         ['wdrv_winc_bssfind.c',                 condAlways],
         ['wdrv_winc_custie.c',                  condAlways],
+        ['wdrv_winc_enterprise.c',              condEntConOpt],
         ['wdrv_winc_ethernet.c',                condEthernetMode],
         ['wdrv_winc_host_file.c',               condHostFileSupport],
         ['wdrv_winc_httpprovctx.c',             condSocketMode],
@@ -541,7 +697,6 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_wps.c',                     condAlways],
         ['dev/gpio/wdrv_winc_eint.c',           condAlways],
         ['dev/gpio/wdrv_winc_gpio.c',           condAlways],
-        ['dev/spi/wdrv_winc_spi.c',             condAlways],
     ]
 
     wdrvFirmwareDriverSrcFiles = [
@@ -590,7 +745,7 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, flagWinc1500_19_6_1, configName, srcFileEntry, 'winc1500_19.6.1')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, flagWinc1500_19_7_6, configName, srcFileEntry, 'winc1500_19.7.6')
+        importSrcFile(drvWincComponent, flagWinc1500_19_7_7, configName, srcFileEntry, 'winc1500_19.7.7')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, flagWinc3400_1_2_2, configName, srcFileEntry, 'winc3400_1.2.2')
@@ -599,7 +754,7 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, flagWinc3400_1_3_1, configName, srcFileEntry, 'winc3400_1.3.1')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, flagWinc3400_1_4_3, configName, srcFileEntry, 'winc3400_1.4.3')
+        importSrcFile(drvWincComponent, flagWinc3400_1_4_4, configName, srcFileEntry, 'winc3400_1.4.4')
 
     for srcFileEntry in bledrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'bluetooth_driver')
@@ -645,16 +800,16 @@ def instantiateComponent(drvWincComponent):
     drvwincSystemConfFile.setSourcePath('driver/winc/templates/system/system_config.h.ftl')
     drvwincSystemConfFile.setMarkup(True)
 
-    drvwincSystemInitDataFile = drvWincComponent.createFileSymbol("DRV_WIFI_WINC_INIT_DATA", None)
-    drvwincSystemInitDataFile.setType("STRING")
-    drvwincSystemInitDataFile.setOutputName("core.LIST_SYSTEM_INIT_C_DRIVER_INITIALIZATION_DATA")
-    drvwincSystemInitDataFile.setSourcePath("driver/winc/templates/system/system_initialize_data.c.ftl")
+    drvwincSystemInitDataFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_INIT_DATA', None)
+    drvwincSystemInitDataFile.setType('STRING')
+    drvwincSystemInitDataFile.setOutputName('core.LIST_SYSTEM_INIT_C_DRIVER_INITIALIZATION_DATA')
+    drvwincSystemInitDataFile.setSourcePath('driver/winc/templates/system/system_initialize_data.c.ftl')
     drvwincSystemInitDataFile.setMarkup(True)
 
-    drvwincSystemInitFile = drvWincComponent.createFileSymbol("DRV_WIFI_WINC_SYS_INIT", None)
-    drvwincSystemInitFile.setType("STRING")
-    drvwincSystemInitFile.setOutputName("core.LIST_SYSTEM_INIT_C_SYS_INITIALIZE_DRIVERS")
-    drvwincSystemInitFile.setSourcePath("driver/winc/templates/system/system_initialize.c.ftl")
+    drvwincSystemInitFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYS_INIT', None)
+    drvwincSystemInitFile.setType('STRING')
+    drvwincSystemInitFile.setOutputName('core.LIST_SYSTEM_INIT_C_SYS_INITIALIZE_DRIVERS')
+    drvwincSystemInitFile.setSourcePath('driver/winc/templates/system/system_initialize.c.ftl')
     drvwincSystemInitFile.setMarkup(True)
 
     drvwincSystemTaskFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYSTEM_TASKS_C', None)
@@ -663,14 +818,32 @@ def instantiateComponent(drvWincComponent):
     drvwincSystemTaskFile.setSourcePath('driver/winc/templates/system/system_tasks.c.ftl')
     drvwincSystemTaskFile.setMarkup(True)
 
-    drvwincOsalFile = drvWincComponent.createFileSymbol('WDRV_WINC_OSAL_SRC', None)
-    drvwincOsalFile.setSourcePath("driver/winc/templates/osal/wdrv_winc_osal.c.ftl")
-    drvwincOsalFile.setOutputName('wdrv_winc_osal.c')
-    drvwincOsalFile.setDestPath('/driver/winc/osal')
-    drvwincOsalFile.setProjectPath('config/' + configName + "/driver/winc/osal")
-    drvwincOsalFile.setType('SOURCE')
-    drvwincOsalFile.setMarkup(True)
-    drvwincOsalFile.setOverwrite(True)
+    drvwincOsalSrcFile = drvWincComponent.createFileSymbol('WDRV_WINC_OSAL_SRC', None)
+    drvwincOsalSrcFile.setSourcePath('driver/winc/templates/osal/wdrv_winc_osal.c.ftl')
+    drvwincOsalSrcFile.setOutputName('wdrv_winc_osal.c')
+    drvwincOsalSrcFile.setDestPath('/driver/winc/osal')
+    drvwincOsalSrcFile.setProjectPath('config/' + configName + '/driver/winc/osal')
+    drvwincOsalSrcFile.setType('SOURCE')
+    drvwincOsalSrcFile.setMarkup(True)
+    drvwincOsalSrcFile.setOverwrite(True)
+
+    drvwincDevSpiSrcFile = drvWincComponent.createFileSymbol('WDRV_WINC_DEV_SPI_SRC', None)
+    drvwincDevSpiSrcFile.setSourcePath('driver/winc/templates/dev/spi/wdrv_winc_spi.c.ftl')
+    drvwincDevSpiSrcFile.setOutputName('wdrv_winc_spi.c')
+    drvwincDevSpiSrcFile.setDestPath('/driver/winc/dev/spi')
+    drvwincDevSpiSrcFile.setProjectPath('config/' + configName + '/driver/winc/dev/spi')
+    drvwincDevSpiSrcFile.setType('SOURCE')
+    drvwincDevSpiSrcFile.setMarkup(True)
+    drvwincDevSpiSrcFile.setOverwrite(True)
+
+    drvwincDevSpiHdrFile = drvWincComponent.createFileSymbol('WDRV_WINC_DEV_SPI_HDR', None)
+    drvwincDevSpiHdrFile.setSourcePath('driver/winc/templates/dev/spi/wdrv_winc_spi.h.ftl')
+    drvwincDevSpiHdrFile.setOutputName('wdrv_winc_spi.h')
+    drvwincDevSpiHdrFile.setDestPath('/driver/winc/include/dev')
+    drvwincDevSpiHdrFile.setProjectPath('config/' + configName + '/driver/winc/include/dev')
+    drvwincDevSpiHdrFile.setType('HEADER')
+    drvwincDevSpiHdrFile.setMarkup(True)
+    drvwincDevSpiHdrFile.setOverwrite(True)
 
     drvwincSystemRtosTasksFile = drvWincComponent.createFileSymbol('DRV_WIFI_WINC_SYS_RTOS_TASK', None)
     drvwincSystemRtosTasksFile.setType('STRING')
@@ -679,6 +852,13 @@ def instantiateComponent(drvWincComponent):
     drvwincSystemRtosTasksFile.setMarkup(True)
     drvwincSystemRtosTasksFile.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))
     drvwincSystemRtosTasksFile.setDependencies(setEnabledRTOSTask, ['HarmonyCore.SELECT_RTOS'])
+
+def destroyComponent(drvWincComponentCommon):
+    Database.sendMessage('HarmonyCore', 'ENABLE_DRV_COMMON', {'isEnabled':False})
+    Database.sendMessage('HarmonyCore', 'ENABLE_SYS_COMMON', {'isEnabled':False})
+
+    if Database.getSymbolValue('core', 'DMA_ENABLE') != None:
+        Database.sendMessage('HarmonyCore', 'ENABLE_SYS_DMA', {'isEnabled':False})
 
 def setVisibilityWincVersion(symbol, event):
     if event['value'] == 'WINC1500':
@@ -778,9 +958,9 @@ def setEnableEthernetMode(symbol, event):
     if ((event['value'] == 'Ethernet Mode') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
-        wincMacActive = symbol.getComponent().getCapabilityEnabled("libdrvWincMac")
+        wincMacActive = symbol.getComponent().getCapabilityEnabled('libdrvWincMac')
         if (wincMacActive == True):
-            symbol.getComponent().setCapabilityEnabled("libdrvWincMac", False)
+            symbol.getComponent().setCapabilityEnabled('libdrvWincMac', False)
         symbol.setEnabled(False)
 
 def setEnableBlePresent(symbol, event):
@@ -799,16 +979,16 @@ def setEnableTcpipStackPresent(symbol, event):
 
     wincDrvMode   = component.getSymbolValue('DRV_WIFI_WINC_DRIVER_MODE')
     useTcpipStack = component.getSymbolValue('DRV_WIFI_WINC_USE_TCPIP_STACK')
-    wincMacActive = component.getCapabilityEnabled("libdrvWincMac")
+    wincMacActive = component.getCapabilityEnabled('libdrvWincMac')
 
     if ((wincDrvMode == 'Ethernet Mode') and (useTcpipStack == True) and (checkPrefix(symbol))):
         symbol.setEnabled(True)
         if (wincMacActive == False):
-            component.setCapabilityEnabled("libdrvWincMac", True)
+            component.setCapabilityEnabled('libdrvWincMac', True)
     else:
         symbol.setEnabled(False)
         if (wincMacActive == True):
-            component.setCapabilityEnabled("libdrvWincMac", False)
+            component.setCapabilityEnabled('libdrvWincMac', False)
 
 def setEnableWinc1500_19_6_1(symbol, event):
     component = symbol.getComponent()
@@ -821,13 +1001,13 @@ def setEnableWinc1500_19_6_1(symbol, event):
     else:
         symbol.setEnabled(False)
 
-def setEnableWinc1500_19_7_6(symbol, event):
+def setEnableWinc1500_19_7_7(symbol, event):
     component = symbol.getComponent()
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
 
-    if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.7.6') and (checkPrefix(symbol))):
+    if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.7.7') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)
@@ -864,13 +1044,13 @@ def setEnableWinc3400_1_3_1(symbol, event):
     else:
         symbol.setEnabled(False)
 
-def setEnableWinc3400_1_4_3(symbol, event):
+def setEnableWinc3400_1_4_4(symbol, event):
     component = symbol.getComponent()
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
 
-    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.4.3') and (checkPrefix(symbol))):
+    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.4.4') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)
@@ -910,6 +1090,21 @@ def setEnableFlexFlashMapSupport(symbol, event):
     else:
         symbol.setEnabled(False)
 
+def setEnableEntConOptSupport(symbol, event):
+    # Enterprise connect support requires WINC1500 version 19.7.7+ or WINC3400 1.3.1+
+    component = symbol.getComponent()
+
+    wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
+    winc1500Ver = component.getSymbolValue('DRV_WIFI_WINC1500_VERSION')
+    winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
+
+    if ((wincDevice == 'WINC1500') and (winc1500Ver == '19.7.7') and (checkPrefix(symbol))):
+        symbol.setEnabled(True)
+    elif ((wincDevice == 'WINC3400') and (winc3400Ver != '1.2.2') and (checkPrefix(symbol))):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)
+
 def setEnablePrefix(symbol, event):
     symbol.setEnabled(checkPrefix(symbol))
 
@@ -918,3 +1113,68 @@ def setEnableLogLevel(symbol, event):
         symbol.setVisible(False)
     else:
         symbol.setVisible(True)
+
+def requestAndAssignTxDMAChannel(symbol, event):
+    global wincTXDMAChannelComment
+    component = symbol.getComponent()
+
+    spiPeripheral = component.getSymbolValue('DRV_WIFI_WINC_PLIB')
+
+    dmaChannelID = 'DMA_CH_FOR_' + str(spiPeripheral) + '_Transmit'
+    dmaRequestID = 'DMA_CH_NEEDED_FOR_' + str(spiPeripheral) + '_Transmit'
+
+    # Clear the DMA symbol. Done for backward compatibility.
+    Database.clearSymbolValue('core', dmaRequestID)
+
+    dummyDict = {}
+
+    if event['value'] == False:
+        dummyDict = Database.sendMessage('core', 'DMA_CHANNEL_DISABLE', {'dma_channel':dmaRequestID})
+        wincTXDMAChannelComment.setVisible(False)
+        symbol.setVisible(False)
+    else:
+        symbol.setVisible(True)
+        dummyDict = Database.sendMessage('core', 'DMA_CHANNEL_ENABLE', {'dma_channel':dmaRequestID})
+
+    # Get the allocated channel and assign it
+    channel = Database.getSymbolValue('core', dmaChannelID)
+
+    if channel is not None:
+        symbol.setValue(channel)
+
+def requestAndAssignRxDMAChannel(symbol, event):
+    global wincRXDMAChannelComment
+    component = symbol.getComponent()
+
+    spiPeripheral = component.getSymbolValue('DRV_WIFI_WINC_PLIB')
+
+    dmaChannelID = 'DMA_CH_FOR_' + str(spiPeripheral) + '_Receive'
+    dmaRequestID = 'DMA_CH_NEEDED_FOR_' + str(spiPeripheral) + '_Receive'
+
+    # Clear the DMA symbol. Done for backward compatibility.
+    Database.clearSymbolValue('core', dmaRequestID)
+
+    dummyDict = {}
+
+    if event['value'] == False:
+        dummyDict = Database.sendMessage('core', 'DMA_CHANNEL_DISABLE', {'dma_channel':dmaRequestID})
+        wincRXDMAChannelComment.setVisible(False)
+        symbol.setVisible(False)
+    else:
+        symbol.setVisible(True)
+        dummyDict = Database.sendMessage('core', 'DMA_CHANNEL_ENABLE', {'dma_channel':dmaRequestID})
+
+    # Get the allocated channel and assign it
+    channel = Database.getSymbolValue('core', dmaChannelID)
+
+    if channel is not None:
+        symbol.setValue(channel)
+
+def requestDMAComment(symbol, event):
+    global wincTXRXDMA
+
+    if(event['value'] == -2) and (wincTXRXDMA.getValue() == True):
+        symbol.setVisible(True)
+        event['symbol'].setVisible(False)
+    else:
+        symbol.setVisible(False)

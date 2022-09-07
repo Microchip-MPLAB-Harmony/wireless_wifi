@@ -155,4 +155,4 @@ children:
         children:
         - {type: Value, value: uart}
 - type: ElementPosition
-  attributes: {x: '475', y: '170', id: sercom3}
+  attributes: {x: '152', y: '404', id: sercom3}

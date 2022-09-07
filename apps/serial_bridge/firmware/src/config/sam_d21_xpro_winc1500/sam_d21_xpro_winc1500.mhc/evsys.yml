@@ -201,6 +201,13 @@ children:
       - type: Dynamic
         attributes: {id: core, value: 'false'}
   - type: Boolean
+    attributes: {id: GENERATOR_EIC_EXTINT_14_ACTIVE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: eic, value: 'true'}
+  - type: Boolean
     attributes: {id: GENERATOR_EIC_EXTINT_4_ACTIVE}
     children:
     - type: Values

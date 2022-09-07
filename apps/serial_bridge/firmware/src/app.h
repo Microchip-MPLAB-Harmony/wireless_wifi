@@ -47,6 +47,13 @@ extern "C" {
 // *****************************************************************************
 // *****************************************************************************
 
+#ifdef APP_ENABLE_SEC_CONN
+void WDRV_WINC_RESETN_Clear(void);
+void WDRV_WINC_RESETN_Set(void);
+void WDRV_WINC_CHIP_EN_Set(void);
+void WDRV_WINC_CHIP_EN_Clear(void);
+#endif
+
 // *****************************************************************************
 /* Application states
 
@@ -64,6 +71,7 @@ typedef enum
     APP_STATE_INIT=0,
     APP_STATE_INIT_WINC,
     APP_STATE_WDRV_OPEN_BRIDGE,
+    APP_STATE_WDRV_SERIAL_BRIDGE,
     APP_STATE_ERROR
 } APP_STATES;
 
@@ -88,6 +96,8 @@ typedef struct
 
     /* Device configured state */
     bool isConfigured;
+
+    int currentWincInitDataIdx;
 } APP_DATA;
 
 

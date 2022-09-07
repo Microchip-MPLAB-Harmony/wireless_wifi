@@ -1,17 +1,14 @@
 /*** WiFi WINC Driver Configuration ***/
 <#if DRV_WIFI_WINC_INT_SRC == "EIC">
-    <#lt>#define WDRV_WINC_EIC_SOURCE                EIC_PIN_${DRV_WIFI_WINC_EIC_SRC_SELECT}
+    <#lt>#define WDRV_WINC_EIC_SOURCE
 <#elseif DRV_WIFI_WINC_INT_SRC == "GPIO">
-    <#lt>#define WDRV_WINC_GPIO_SOURCE               ${DRV_WIFI_WINC_GPIO_SRC_SELECT}
+    <#lt>#define WDRV_WINC_GPIO_SOURCE
 <#elseif DRV_WIFI_WINC_INT_SRC == "PIO">
-    <#lt>#define WDRV_WINC_PIO_SOURCE                ${DRV_WIFI_WINC_PIO_SRC_SELECT}
+    <#lt>#define WDRV_WINC_PIO_SOURCE
 <#elseif DRV_WIFI_WINC_INT_SRC == "External_Interrupt">
 <#elseif DRV_WIFI_WINC_INT_SRC == "Change_Notification">
     <#lt>#define WDRV_WINC_INT_SOURCE INT_SOURCE_CHANGE_NOTICE
     <#lt>#define WDRV_WINC_INT_SOURCE_CN_PORT WDRV_WINC_INT_PORT
-</#if>
-<#if -1 < DRV_WIFI_WINC_SPI_INST_IDX>
-    <#lt>#define WDRV_WINC_SPI_INDEX                 DRV_SPI_INDEX_${DRV_WIFI_WINC_SPI_INST_IDX}
 </#if>
 <#if DRV_WIFI_WINC_DRIVER_MODE == "Ethernet Mode">
     <#lt>#define WDRV_WINC_NETWORK_MODE_ETHERNET
@@ -41,9 +38,10 @@
         </#if>
         <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
         <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
-        <#if DRV_WIFI_WINC1500_VERSION == "19.7.6">
+        <#if DRV_WIFI_WINC1500_VERSION == "19.7.7">
             <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
             <#lt>#define WDRV_WINC_DEVICE_DEPRECATE_WEP
+            <#lt>#define WDRV_WINC_DEVICE_OTA_SSL_OPTIONS
         </#if>
     </#if>
     <#if DRV_WIFI_WINC_DRIVER_MODE == "Socket Mode">
@@ -57,6 +55,7 @@
     <#if DRV_WIFI_WINC3400_VERSION == "1.2.2">
         <#lt>#define WDRV_WINC_DEVICE_USE_FLASH_INIT
         <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           uint8_t
+        <#lt>#define WDRV_WINC_DEVICE_NO_GET_WIFI_STATE
     <#else>
         <#lt>#define WDRV_WINC_DEVICE_ENTERPRISE_CONNECT
         <#lt>#define WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
@@ -68,7 +67,7 @@
             <#lt>#define WDRV_WINC_DEVICE_OTA_STATUS_EXTENDED
         </#if>
         <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
-        <#if DRV_WIFI_WINC3400_VERSION == "1.4.3">
+        <#if DRV_WIFI_WINC3400_VERSION == "1.4.4">
             <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
             <#lt>#define WDRV_WINC_DEVICE_DEPRECATE_WEP
             <#lt>#define WDRV_WINC_DEVICE_SCAN_SSID_LIST
