@@ -249,31 +249,10 @@
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="true">
-      <logicalFolder name="f1"
-                     displayName="sam_d21_xpro_winc1500.mhc"
-                     projectFiles="true">
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/appWincSerialBridge.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/cmsis.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/core.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/dfp.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/drvWifiWinc.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/eic.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/evsys.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/GraphSettings.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/HarmonyCore.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/nvmctrl.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/project.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/sercom0.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/sercom1.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/sercom3.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/settings.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/sys_time.yml</itemPath>
-        <itemPath>../src/config/sam_d21_xpro_winc1500/sam_d21_xpro_winc1500.mhc/tc3.yml</itemPath>
-      </logicalFolder>
       <itemPath>Makefile</itemPath>
       <itemPath>../src/config/sam_d21_xpro_winc1500/harmony-manifest-success.yml</itemPath>
-      <itemPath>../src/config/sam_d21_xpro_winc1500/harmony-manifest-failure.yml</itemPath>
       <itemPath>../src/config/sam_d21_xpro_winc1500/pin_configurations.csv</itemPath>
+      <itemPath>serial_bridge_sam_d21_xpro_winc1500.mc3</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -429,7 +408,7 @@
         <targetDevice>ATSAMD21J18A</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>EdbgTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.10</languageToolchainVersion>
         <platform>3</platform>
@@ -492,6 +471,7 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
@@ -548,6 +528,7 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -587,6 +568,7 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>

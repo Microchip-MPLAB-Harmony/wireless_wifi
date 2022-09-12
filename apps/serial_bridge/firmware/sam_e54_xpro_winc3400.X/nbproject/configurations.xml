@@ -296,31 +296,10 @@
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="true">
-      <logicalFolder name="f1"
-                     displayName="sam_e54_xpro_winc3400.mhc"
-                     projectFiles="true">
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/appWincSerialBridge.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/BSP_SAM_E54_Xplained_Pro.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/cmsis.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/core.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/dfp.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/drvWifiWinc.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/eic.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/evsys.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/GraphSettings.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/HarmonyCore.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/nvmctrl.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/project.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sercom2.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sercom4.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sercom6.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/settings.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sys_time.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/tc3.yml</itemPath>
-      </logicalFolder>
       <itemPath>Makefile</itemPath>
       <itemPath>../src/config/sam_e54_xpro_winc3400/harmony-manifest-success.yml</itemPath>
       <itemPath>../src/config/sam_e54_xpro_winc3400/pin_configurations.csv</itemPath>
+      <itemPath>serial_bridge_sam_e54_xpro_winc3400.mc3</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -487,7 +466,7 @@
         <targetDevice>ATSAME54P20A</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>EdbgTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.10</languageToolchainVersion>
         <platform>3</platform>
@@ -550,6 +529,7 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
@@ -606,6 +586,7 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -645,6 +626,7 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
@@ -673,6 +655,7 @@
         <property key="use-indirect-calls" value="false"/>
       </C32CPP>
       <C32Global>
+        <property key="appendMe" value=""/>
         <property key="common-include-directories" value=""/>
         <property key="gp-relative-option" value=""/>
         <property key="legacy-libc" value="false"/>
