@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="BSS Search" />
+<meta name="DC.relation" scheme="URI" content="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-62609FEA-0339-4187-9435-88CE00E65018.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="bss-search" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>BSS Search</title>
+<meta name="Microsoft.Help.Id" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F-bss-search" />
+<meta name="Microsoft.Help.TocParent" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F" />
+<meta name="Microsoft.Help.TocOrder" content="0" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless WiFi PIC32MZW1 Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="bss-search">
+<h1 class="title topictitle1" id="ariaid-title1">BSS Search</h1><div class="body"><p class="p">The application can use this interface to request a scan for local BSSs. Once requested the WINC device will conduct the search using the configured search parameters and report the results back to the application one BSS at a time. This interface can be used in either a callback mode, a polled mode or a combination of both callback and polled depending on how the application wished to
+receive the BSS information.</p>
+<p class="p"><strong class="ph b">Scan Parameters, Thresholds and Channels</strong></p>
+<p class="p">How a scan is conducted depends on the parameters, threshold and channel lists provided by the application.
+Each scan operation on a channel consists of a number of scan slots, the time spent in each slot can be configured for both active and passive scans as well as the number of slots per channel. These parameters are set using the function WDRV_WINC_BSSFindSetScanParameters.</p>
+<p class="p">The RSSI threshold a BSS must exceed to be considered detected can be set by calling WDRV_WINC_BSSFindSetRSSIThreshold.</p>
+<p class="p">The channels which can be scanned can be set by calling WDRV_WINC_BSSFindSetEnabledChannels.</p>
+<p class="p"><strong class="ph b">Starting a Scan</strong></p>
+<p class="p">When an application wishes to begin a scan operation it must call WDRV_WINC_BSSFindFirst. It is possible to request a scan on only a single channel or on all channels enabled by WDRV_WINC_BSSFindSetEnabledChannels. The scan can be performed using active mode (where probe requests are transmitted) or passive mode (where beacons are listened for).</p>
+<p class="p">WDRV_WINC_BSSFindFirst takes an optional callback function to use for notifying the application when the scan operation is complete, and the first result is available. If this isn’t provided, the application can poll this interface using WDRV_WINC_BSSFindInProgress to determine if the WINC device is still scanning.</p>
+<p class="p"><strong class="ph b">Getting Results: Callback Only</strong></p>
+<p class="p">If a callback function was provided to WDRV_WINC_BSSFindFirst the WINC driver will call this callback when the first results are available. The callback is provided with the scan result for a single BSS as well as the index of the results within the full set of BSSs discovered.
+If the callback function returns the value true to the WINC driver it will cause the driver to request the next result from the WINC device. When this result is available the WINC driver will again call the callback and provide the BSS information. It is thus possible to receive all the results via the callback.</p>
+<p class="p"><strong class="ph b">Getting Results : Callback Notification, Foreground Retrieval</strong></p>
+<p class="p">While the application may wish to be notified of a BSS result being available via the callback mechanism it may be preferable to retrieve the result information from a foreground task. For example, in an OS environment the callback may simply signal a semaphore triggering the main application task to retrieve the BSS information.
+In this model the callback called by the WINC driver should return the value false. The WINC driver will not request the next set of BSS information from the WINC device.
+The foreground task may then call WDRV_WINC_BSSFindGetInfo with a pointer to a WDRV_WINC_BSS_INFO structure to receive the BSS information. If the function is called when there is no valid BSS information present in the WINC driver the function will return WDRV_WINC_STATUS_NO_BSS_INFO.</p>
+<p class="p">When the application wishes to request the next set of BSS information it must call WDRV_WINC_BSSFindNext. It is possible to change the callback function at this time or even turn off callback operation if a NULL pointer is used. Assuming the callback function is again specified the WINC driver will request the next set of BSS information from the WINC device and inform the application via the callback.</p>
+<p class="p"><strong class="ph b">Getting Results : Polled</strong></p>
+<p class="p">The operations of the BSS scan can be inferred by polling this interface.
+WDRV_WINC_BSSFindInProgress indicates if the scan operation is currently active and results are not yet available.</p>
+<p class="p">WDRV_WINC_BSSFindGetNumBSSResults returns the number of sets of BSS information available as a result of a scan
+operation.</p>
+<p class="p">WDRV_WINC_BSSFindGetInfo can be called to retrieve the BSS information. If the information is not yet available this function will return WDRV_WINC_STATUS_NO_BSS_INFO.</p>
+<p class="p"><strong class="ph b">Terminating a BSS Search</strong></p>
+<p class="p">Once a scan operation has been started by calling WDRV_WINC_BSSFindFirst it must be allowed to complete, once it has the application may decide to ignore some or all of the results. To abort the BSS information retrieval and abandon any remaining results the application can call WDRV_WINC_BSSFindReset.</p>
+</div>
+<div class="related-links">
+<ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.html">WDRV_WINC_BSSFIND_NOTIFY_CALLBACK Typedef</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.html">WDRV_WINC_BSSFindFirst Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-62609FEA-0339-4187-9435-88CE00E65018.html">WDRV_WINC_BSSFindGetInfo Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.html">WDRV_WINC_BSSFindGetNumBSSResults Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.html">WDRV_WINC_BSSFindInProgress Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.html">WDRV_WINC_BSSFindNext Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.html">WDRV_WINC_BSSFindReset Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.html">WDRV_WINC_BSSFindSetEnabledChannels Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.html">WDRV_WINC_BSSFindSetRSSIThreshold Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.html">WDRV_WINC_BSSFindSetScanMatchMode Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.html">WDRV_WINC_BSSFindSetScanParameters Function</a></strong><br />
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html">MPLAB® Harmony WINC WLAN Library</a></div>
+</div>
+</div></body>
+</html>

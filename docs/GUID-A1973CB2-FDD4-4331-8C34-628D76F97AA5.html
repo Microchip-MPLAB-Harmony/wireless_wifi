@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
+<meta name="DC.rights.owner" content="(C) Copyright 2022" />
+<meta name="DC.type" content="topic" />
+<meta name="DC.title" content="Authentication, BSS &amp; HTTP provisioning" />
+<meta name="DC.relation" scheme="URI" content="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-0B377484-72D9-4299-AE14-DFBE284E0BC3.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-97F4B27C-55F0-422F-A3D6-A58842D09E97.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-3744A796-97FD-42E1-91E5-6AC2632D5607.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-C29F6564-0F47-4455-A4E3-FE68DFC51C49.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-2C98CE0C-BC5E-4875-842C-2D591C000F85.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-BB0DEC1B-642C-486F-8155-29DEF7A538D0.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-2335ACBC-3CA0-4AE1-A842-59F55DC0B149.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-70CC6D2C-E661-472B-A9FC-C8B2BAD88832.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-7A3FD52F-3099-49A8-A6AC-7461BC124ED8.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-7E8B70A2-A1F9-4F83-89F8-5450933B7D77.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-5F105463-B28D-4D4E-BD09-365304360143.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-237690AC-9D9D-4CE1-A4BE-BE2A0A41ABE1.html" />
+<meta name="DC.relation" scheme="URI" content="GUID-833E3062-0EF5-4C7B-90AA-244A02494757.html" />
+<meta name="DC.format" content="XHTML" />
+<meta name="DC.identifier" content="authentication-bss--http-provisioning" />
+<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
+<title>Authentication, BSS &amp; HTTP provisioning</title>
+<meta name="Microsoft.Help.Id" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F-authentication-bss--http-provisioning" />
+<meta name="Microsoft.Help.TocParent" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F" />
+<meta name="Microsoft.Help.TocOrder" content="0" />
+<meta name="Microsoft.Help.Locale" content="en-US" />
+<meta name="Microsoft.Help.TopicLocale" content="en-US" />
+<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless WiFi PIC32MZW1 Reference A 04/2022" />
+<script language="javascript">
+       
+       if (window.parent.location.protocol != 'file:') {
+				document.addEventListener('click', function(e) {
+				    if (e.target) {
+               if (e.target.nodeName == "A" ) {
+                    if (!e.target.target) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                              
+                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
+                      if (origUrl.length === 0) {
+                          origUrl = window.parent.location.href;
+                      }
+                      var href= e.target.getAttribute("href");
+                      var parts = href.split("#");
+          
+                      var url = "";
+                      if (parts.length == 2 ) {
+                        if (!parts[0].length) {
+                            url = window.parent.location.search.replace('?','')
+                        } else {
+                            url = parts[0].replace('.html','');
+                        }
+                      } else {
+                        url = parts[0].replace('.html','');
+                      }
+
+                      if (parts.length == 2) {
+                          url += "#" + parts[1];
+                      }
+    
+                      window.parent.location.href = origUrl + "?" + url;
+
+                      return false;
+                    }
+               }
+            }
+				});
+			}
+
+		</script><script language="javascript">
+         
+         function copyContent(content, button) {
+         
+            var textArea = document.createElement("textarea");
+            
+            // Place in the top-left corner of screen regardless of scroll position.
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            
+            // Ensure it has a small width and height. Setting to 1px / 1em
+            // doesn't work as this gives a negative w/h on some browsers.
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            
+            // We don't need padding, reducing the size if it does flash render.
+            textArea.style.padding = 0;
+            
+            // Clean up any borders.
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            
+            // Avoid flash of the white box if rendered for any reason.
+            textArea.style.background = 'transparent';
+            
+            textArea.value = content;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+               var successful = document.execCommand('copy');
+               var msg = successful ? 'successful' : 'unsuccessful';
+               if (!button.classList.contains("copied")){
+                  button.textContent = "Copied";
+                  button.classList.add("copied");
+                  setTimeout(function(){
+                     button.textContent = "Copy";
+                     button.classList.remove("copied");
+                  },1000);
+               }
+            } catch (err) {
+               console.log('Oops, unable to copy');
+            }
+            
+            document.body.removeChild(textArea);
+         }
+         
+         function cpy(id, button) {
+            var element = document.getElementById(id);
+            var content = element.getAttribute("content");
+            
+            copyContent(content, button);
+         }
+         
+         document.addEventListener("DOMContentLoaded", function(event) {
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.style.position = "relative";
+               var copy = document.createElement("button");
+               copy.textContent = "Copy";
+               copy.setAttribute("class", "copy-code");
+               
+               var content = elem.textContent;
+               
+               copy.addEventListener("click", function(){
+                  copyContent(content, copy);
+               });
+               
+               elem.addEventListener("mouseenter", function(evt){
+                  elem.prepend(copy);
+               });
+            });
+            
+            document.querySelectorAll(".codeblock").forEach(function(elem) {
+               elem.addEventListener("mouseleave", function(evt){
+                  document.querySelector(".copy-code").remove();
+               });
+            });
+         });
+         
+      </script><script language="javascript">
+          
+          // Add the MathML namespace to html
+          var html = document.getElementsByTagName("html")[0],
+          head = document.getElementsByTagName("head")[0];
+          
+          var mathJax = document.createElement("script");
+          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
+          head.appendChild(mathJax);
+          
+          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
+          
+          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+          
+          if (!inIframe()) { 
+          
+          var Default = "index.html?GUID-A1973CB2-FDD4-4331-8C34-628D76F97AA5"; 
+          
+          var displaylocation = "value" + window.location.href;
+          
+          var GUIDS = displaylocation.split('GUID');          
+          
+          if (displaylocation.indexOf('#GUID') != -1) {            
+          var First = GUIDS[1].split('.html');  
+          if (GUIDS[3]){First = GUIDS[2].split('.html');}
+          if (GUIDS[4]){First = GUIDS[3].split('.html');}
+          if (GUIDS[5]){First = GUIDS[4].split('.html');}
+          
+          var Second = GUIDS[2].split('#');   
+          if (GUIDS[3]){Second = GUIDS[3].split('#');}
+          if (GUIDS[4]){Second = GUIDS[4].split('#');}
+          if (GUIDS[5]){Second = GUIDS[5].split('#');}
+          
+          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
+          }                    
+          window.top.location = Default;
+          }       
+          
+        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
+        
+          button.copy-code{
+            display:none;
+            padding:0.7em 1.4em;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            color:#FFFFFF;
+            background-color:#9c9c9c;
+            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+            text-align:center;
+            position:relative;
+            border: 0;
+            float: right;
+            border-radius: .5em;
+            cursor: pointer;
+          }
+          button.copy-code:active{
+            top:0.1em;
+          }
+          
+          pre:hover button.copy-code{
+            display: inline-block !important;
+          }
+          button.copy-code.copied {
+            cursor: default !important;
+          }
+          
+          
+          @media all and (max-width:30em){
+            button.copy-code{
+              display:block;
+              margin:0.4em auto;
+            }
+          }
+        
+        
+      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
+<body id="authentication-bss--http-provisioning">
+<h1 class="title topictitle1" id="ariaid-title1">Authentication, BSS &amp; HTTP provisioning</h1><div class="body"><p class="p">This topic provides information how contexts are used.
+To simplify other interfaces and encapsulate information the WINC Driver uses context structures in various places to pass around
+information. Interface functions are provided to create, query and update these contexts as appropriate for their function.</p>
+<p class="p"><strong class="ph b">Authentication Contexts</strong></p>
+<p class="p">The authentication context contains information relevant to the authentication mechanisms used in Wi-Fi. Currently supported are
+Open, WEP and WPA-PSK.</p>
+<p class="p">The structure WDRV_WINC_AUTH_CONTEXT is provided to contain the context.
+To initialize a context the function WDRV_WINC_AuthCtxSetDefaults is provided, this ensures the context is in a known state.
+The function WDRV_WINC_AuthCtxIsValid is provided to test if a context is valid.
+Each authentication type has at least one function which can be used to configure the type of authentication algorithm used as well as the parameters which are required.</p>
+<p class="p"><strong class="ph b">BSS Contexts</strong></p>
+<p class="p">The BSS context contains information relevant to a BSS such as SSID and channel.</p>
+<p class="p">The structure WDRV_WINC_BSS_CONTEXT is provided to contain the context.
+To initialize a context the function WDRV_WINC_BSSCtxSetDefaults is provided, this ensures the context is in a known state. The function WDRV_WINC_BSSCtxIsValid is provided to test if a context is valid. In some applications a BSS context is valid even if an SSID is blank therefore this function can be informed whether a blank SSID is valid or not.</p>
+<p class="p">The SSID of the BSS can be configured using the function WDRV_WINC_BSSCtxSetSSID.</p>
+<p class="p">The channel of the BSS can be configure using the function WDRV_WINC_BSSCtxSetChannel.</p>
+<p class="p">In some applications a BSS can be cloaked therefore the state can be configured in a BSS context using the function WDRV_WINC_BSSCtxSetSSIDVisibility to indicate if an BSS is considered visible or not.</p>
+<p class="p"><strong class="ph b">HTTP Provisioning Contexts</strong></p>
+<p class="p">The HTTP Provisioning Context contains information relevant to a provisioning Soft-AP.</p>
+<p class="p">The structure WDRV_WINC_HTTP_PROV_CONTEXT is provided to contain the context.
+To initialize a context the function WDRV_WINC_HTTPProvCtxSetDefaults is provided, this ensures the context is in a known state. The domain name of the provisioning HTTP server is configured using the function WDRV_WINC_HTTPProvCtxSetDomainName.</p>
+<p class="p">A provisioning HTTP server can perform wildcard DNS mapping to force a HTTP client to connect irrespective of the URL used, to configure this option the function WDRV_WINC_HTTPProvCtxSetURLWildcard is provided.</p>
+<p class="p">A callback for the provisioning service can be configure using the function WDRV_WINC_HTTPProvCtxSetConnectCallback.</p>
+</div>
+<div class="related-links">
+<ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="GUID-0B377484-72D9-4299-AE14-DFBE284E0BC3.html">WDRV_WINC_AuthCtxIsValid Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-97F4B27C-55F0-422F-A3D6-A58842D09E97.html">WDRV_WINC_AuthCtxSetDefaults Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-3744A796-97FD-42E1-91E5-6AC2632D5607.html">WDRV_WINC_AuthCtxSetOpen Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-C29F6564-0F47-4455-A4E3-FE68DFC51C49.html">WDRV_WINC_AuthCtxSetWEP Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-2C98CE0C-BC5E-4875-842C-2D591C000F85.html">WDRV_WINC_AuthCtxSetWPA Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-BB0DEC1B-642C-486F-8155-29DEF7A538D0.html">WDRV_WINC_AuthCtxSetWPAEnterpriseMSCHAPv2 Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-2335ACBC-3CA0-4AE1-A842-59F55DC0B149.html">WDRV_WINC_AuthCtxSetWPAEnterpriseTLS Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-70CC6D2C-E661-472B-A9FC-C8B2BAD88832.html">WDRV_WINC_HTTP_PROV_CONTEXT Struct</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-7A3FD52F-3099-49A8-A6AC-7461BC124ED8.html">WDRV_WINC_HTTPPROV_INFO_CALLBACK Typedef</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-7E8B70A2-A1F9-4F83-89F8-5450933B7D77.html">WDRV_WINC_HTTPProvCtxSetConnectCallback Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-5F105463-B28D-4D4E-BD09-365304360143.html">WDRV_WINC_HTTPProvCtxSetDefaults Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-237690AC-9D9D-4CE1-A4BE-BE2A0A41ABE1.html">WDRV_WINC_HTTPProvCtxSetDomainName Function</a></strong><br />
+</li>
+<li class="link ulchildlink"><strong><a href="GUID-833E3062-0EF5-4C7B-90AA-244A02494757.html">WDRV_WINC_HTTPProvCtxSetURLWildcard Function</a></strong><br />
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html">MPLAB® Harmony WINC WLAN Library</a></div>
+</div>
+</div></body>
+</html>
