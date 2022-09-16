@@ -1,0 +1,22 @@
+package:
+  format-version: "1.0.0"
+  name: "wireless_wifi"
+  type: "api"
+  status: "production"
+  required: true
+  version: "3.7.0"
+
+  dependencies:
+    - name: "csp"
+      type: "package"
+      version: "3.13.1"
+    - name: "core"
+      type: "package"
+      version: "3.11.1"
+    - name: "net"
+      type: "package"
+      version: "3.8.0"
+    - name: "bsp"
+      type: "package"
+      version: "3.13.0"
+      

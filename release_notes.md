@@ -12,6 +12,7 @@ This release includes additions and improvements to the **PIC32MZW1 and WINC** d
 - WINC: Adds support for WINC1500 FW v19.7.7.
 - WINC: Adds support for WINC3400 FW v1.4.4.
 - WINC3400: Added support for B.A.T.M.A.N. ethernet packets (EtherType 0x4305).
+- WINC: Migrate Serial Bridge application to MCC.
 - PIC32MZW1: Add support for Enterprise security(EAP-TLS).
 - PIC32MZW1: AP Mode performance improvements.
 - PIC32MZW1: (WPA3) Add support for Hash-to-element and Transition Disable.
