@@ -30,8 +30,7 @@ reference information.
 - [MPLAB® Harmony License](mplab_harmony_license.md)
 - [MPLAB® Harmony 3 Wireless_wifi Wiki](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/wiki)
 - [MPLAB® Harmony 3 Wireless_wifi API Help](https://microchip-mplab-harmony.github.io/wireless_wifi)
-- [MPLAB® Harmony 3 WINC Wireless APIs](driver/readme.md)
-- [MPLAB® Harmony 3 PIC32MZW1 Wireless APIs](driver/readme.md)
+
 
 ##### Note: PIC32MZ W1 Software User’s Guide is available [here](https://ww1.microchip.com/downloads/en/DeviceDoc/PIC32MZ_W1_Software_User_Guide.pdf)
 
@@ -44,8 +43,7 @@ reference information.
 | ---        | ---                                                                                 |
 | apps       | Redirects to Example applications repositories for Wireless library components      |
 | config     | Wireless module configuration file                                                  |
-| doc        | Wireless library help documentation (md)                                            |
-| docs       | Wireless library help documentation (pdf)                                           |
+| docs       | Wireless library help documentation                                                 |
 | drivers    | Driver/Firmware files for different products                                        |
 | utilities  | Contains root certs, firmware programmer/downloader                                 |
 

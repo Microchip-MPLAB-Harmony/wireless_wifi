@@ -3,6 +3,43 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.7.0
+This release includes additions and improvements to the **PIC32MZW1 and WINC** devices.
+
+### New Features
+
+- WINC: Consider Subject Alternative Names when verifying TLS server name.
+- WINC: Adds support for WINC1500 FW v19.7.7.
+- WINC: Adds support for WINC3400 FW v1.4.4.
+- WINC3400: Added support for B.A.T.M.A.N. ethernet packets (EtherType 0x4305).
+- PIC32MZW1: Add support for Enterprise security(EAP-TLS).
+- PIC32MZW1: AP Mode performance improvements.
+- PIC32MZW1: (WPA3) Add support for Hash-to-element and Transition Disable.
+- PIC32MZW1: 3.7.0 version of the release is WFA certified.
+
+### Bug fixes
+- WINC1500: Fix AP mode connection instability.
+- WINC1500: Fixed handling of source address when forwarding ARP packets out from the host.
+- WINC1500: Fix to ignore unknown OUI in message 3 of 4-way handshake.
+- WINC3400: Increased fragmentation threshold and improved outer layer PEAP and TTLS fragmentation.
+- WINC3400: Fixed multithread race condition during provisioning connection teardown.
+- PIC32MZW1: Optimise connect time (STA mode).
+- PIC32MZW1: IPv6 not working in AP mode.
+- PIC32MZW1: Hidden network scanning includes cloaked APs.
+- PIC32MZW1: Fix AP behavior when a client connects using wrong password.
+- PIC32MZW1: WiFi driver open/close resets state and loses sync with firmware.
+- PIC32MZW1: RegDomain name used as part of WDRV_PIC32MZW_RegDomainSet() supports limited customization.
+
+### Known Issues/Limitations
+- PIC32MZW1: Occasional non-fragmented frames treated as fragments.
+- WINC1500: The WINC15x0 cannot handle two simultaneous TLS handshakes, due to memory constraints.
+- WINC3400: The AP initiated group rekey process sometimes fails when the WINC is processing a high volume of receive traffic.
+- WINC MISRA warnings/false positives(same as previous releases):
+    - driver/winc/drv/driver/m2m_wifi.c(1039) 	644 	9.1 	Variable 'strNetworkId' (line 1030) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/wdrv_winc_authctx.c(122) 	530 	9.1 	Symbol 'PKCS1_RSA_PRIVATE_KEY' (line 105) not initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/driver/nmspi.c(928) 	644 	9.1 	Variable 'tmpBuf' (line 905) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/socket/socket.c(574) 	644 	9.1 	Variable 'pstrSock' (line 535) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
 ## Wireless_wifi Release v3.6.1
 
 ### Dot Release Update for v3.6.1:
