@@ -35,7 +35,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /* https://www.iana.org/assignments/ipsec-registry/ipsec-registry.xhtml#ipsec-registry-10 */
 typedef enum {
     DRV_PIC32MZW1_CRYPTO_FCG_NONE       = 0,
-    DRV_PIC32MZW1_CRYPTO_FCG_CURVE_P256 = 19
+    DRV_PIC32MZW1_CRYPTO_FCG_CURVE_P256 = 19,
+    DRV_PIC32MZW1_CRYPTO_FCG_MAX        = 0xFFFF
 } DRV_PIC32MZW1_CRYPTO_FCG_ID_T;
 
 typedef enum
