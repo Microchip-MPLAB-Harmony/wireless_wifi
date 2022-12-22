@@ -3,6 +3,15 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.7.1
+
+### Dot Release v3.7.1:
+- PIC32MZW1: AP mode: Fix broadcasts of “SSID = Wildcard” messages instead of the configured SSID.
+- PIC32MZW1: AP mode: Fix issue with STAs deauthenticated during long runs
+- PIC32MZW1: Fix endianness of transaction identifier in AP mode SA Query Response. 
+
+**Other release notes for v3.7.0 apply here too**
+
 ## Wireless_wifi Release v3.7.0
 This release includes additions and improvements to the **PIC32MZW1 and WINC** devices.
 
