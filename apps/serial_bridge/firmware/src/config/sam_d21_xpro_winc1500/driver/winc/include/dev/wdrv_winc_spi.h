@@ -152,7 +152,7 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize);
 //*******************************************************************************
 /*
   Function:
-    void WDRV_WINC_SPIOpen(void)
+    bool WDRV_WINC_SPIOpen(void)
 
   Summary:
     Opens the SPI object for the WiFi driver.
@@ -167,13 +167,13 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize);
     None.
 
   Returns:
-    None.
+    true of false indicating success of operation.
 
   Remarks:
     None.
  */
 
-void WDRV_WINC_SPIOpen(void);
+bool WDRV_WINC_SPIOpen(void);
 
 //*******************************************************************************
 /*

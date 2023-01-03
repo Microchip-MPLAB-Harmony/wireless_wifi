@@ -40,6 +40,10 @@
 #ifndef _WDRV_WINC_SPI_H
 #define _WDRV_WINC_SPI_H
 
+<#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
+#include "system/ports/sys_ports.h"
+
+</#if>
 <#if DRV_WIFI_WINC_SPI_INST_IDX == -1>
 <#if DRV_WIFI_WINC_TX_RX_DMA == false>
 typedef bool (*WDRV_WINC_SPI_PLIB_WRITE_READ)(void*, size_t, void *, size_t);
@@ -90,6 +94,12 @@ typedef struct
 <#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
     /* SPI driver index. */
     SYS_MODULE_INDEX drvIndex;
+
+    /* SPI baud rate. */
+    uint32_t baudRateInHz;
+
+    /* Chip select pin, or SYS_PORT_PIN_NONE. */
+    SYS_PORT_PIN chipSelect;
 <#else>
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
     /* Transmit DMA Channel */
@@ -173,7 +183,7 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize);
 //*******************************************************************************
 /*
   Function:
-    void WDRV_WINC_SPIOpen(void)
+    bool WDRV_WINC_SPIOpen(void)
 
   Summary:
     Opens the SPI object for the WiFi driver.
@@ -188,13 +198,13 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize);
     None.
 
   Returns:
-    None.
+    true of false indicating success of operation.
 
   Remarks:
     None.
  */
 
-void WDRV_WINC_SPIOpen(void);
+bool WDRV_WINC_SPIOpen(void);
 
 //*******************************************************************************
 /*

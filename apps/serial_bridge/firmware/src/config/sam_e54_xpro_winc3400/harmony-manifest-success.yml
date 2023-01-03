@@ -4,18 +4,18 @@
 
 
 project: serial_bridge
-creation_date: 2022-09-12T11:57:38.575+01:00[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2023-01-03T15:15:53.728Z[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 10
 mhc_mode: Standalone            # [IDE|Standalone|Headless]
-mhc_version: v3.8.5
+mhc_version: NA
 mplabx_version: NA        # if MPLAB X plugin only
 plugin_version: NA        # if MPLAB X plugin only
 compiler: xc32
 
 modules:
-    - {name: "csp", version: "v3.13.1"}
-    - {name: "wireless_wifi", version: "v3.7.0"}
+    - {name: "csp", version: "v3.14.0"}
+    - {name: "wireless_wifi", version: "v3.7.2"}
     - {name: "core", version: "v3.11.1"}
-    - {name: "dev_packs", version: "v3.13.1"}
-    - {name: "bsp", version: "v3.13.0"}
+    - {name: "dev_packs", version: "v3.14.0"}
+    - {name: "bsp", version: "v3.14.0"}
 

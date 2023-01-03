@@ -49,9 +49,17 @@ def onAttachmentConnected(source, target):
         localComponent.setDependencyEnabled('drv_spi_dependency', False)
         localComponent.getSymbolByID('APP_SPI_MENU').setVisible(True)
     elif connectID == 'uart':
+        plibName = remoteComponent.getID().upper()
+
         plibUsed = localComponent.getSymbolByID('APP_USART_PLIB')
         plibUsed.clearValue()
-        plibUsed.setValue(remoteComponent.getID().upper(), 1)
+        plibUsed.setValue(plibName, 1)
+
+        if plibName.startswith('SERCOM'):
+            localComponent.getSymbolByID('APP_PLATFORM_SERCOM_FILE_SRC').setEnabled(True)
+        elif plibName.startswith('UART'):
+            localComponent.getSymbolByID('APP_PLATFORM_UART_FILE_SRC').setEnabled(True)
+
 
 def onAttachmentDisconnected(source, target):
     global isDMAPresent
@@ -93,6 +101,8 @@ def onAttachmentDisconnected(source, target):
     elif connectID == 'uart':
         plibUsed = localComponent.getSymbolByID('APP_USART_PLIB')
         plibUsed.clearValue()
+        localComponent.getSymbolByID('APP_PLATFORM_SERCOM_FILE_SRC').setEnabled(False)
+        localComponent.getSymbolByID('APP_PLATFORM_UART_FILE_SRC').setEnabled(False)
 
 def updateDMAEnableCntr(symbol, event):
     result_dict = {}
@@ -145,15 +155,26 @@ def instantiateComponent(appWincSerialBridgeApp):
     appPlatformSercomSrc.setType('SOURCE')
     appPlatformSercomSrc.setMarkup(True)
     appPlatformSercomSrc.setOverwrite(True)
+    appPlatformSercomSrc.setEnabled(False)
 
-    appPlatformSercomDataPath = appWincSerialBridgeApp.createSettingSymbol('APP_PLATFORM_SERCOM_DATA_FILE_PATH', None)
-    appPlatformSercomDataPath.setValue('../src/config/' + configName + '/platform;')
-    appPlatformSercomDataPath.setCategory('C32')
-    appPlatformSercomDataPath.setKey('extra-include-directories')
-    appPlatformSercomDataPath.setAppend(True, ';')
-    appPlatformSercomDataPath.setEnabled(True)
+    appPlatformUartSrc = appWincSerialBridgeApp.createFileSymbol('APP_PLATFORM_UART_FILE_SRC', None)
+    appPlatformUartSrc.setSourcePath('apps/serial_bridge/templates/platform_uart.c.ftl')
+    appPlatformUartSrc.setOutputName('platform_uart.c')
+    appPlatformUartSrc.setDestPath('platform')
+    appPlatformUartSrc.setProjectPath('config/' + configName + '/platform/')
+    appPlatformUartSrc.setType('SOURCE')
+    appPlatformUartSrc.setMarkup(True)
+    appPlatformUartSrc.setOverwrite(True)
+    appPlatformUartSrc.setEnabled(False)
 
-    if any((w in Variables.get('__PROCESSOR') for w in ['SAMD21', 'SAME54'])):
+    appPlatformUartDataPath = appWincSerialBridgeApp.createSettingSymbol('APP_PLATFORM_UART_DATA_FILE_PATH', None)
+    appPlatformUartDataPath.setValue('../src/config/' + configName + '/platform;')
+    appPlatformUartDataPath.setCategory('C32')
+    appPlatformUartDataPath.setKey('extra-include-directories')
+    appPlatformUartDataPath.setAppend(True, ';')
+    appPlatformUartDataPath.setEnabled(True)
+
+    if any((w in Variables.get('__PROCESSOR') for w in ['SAMD21', 'SAME54', 'SAMA5D2'])):
         appSecConnEn = appWincSerialBridgeApp.createBooleanSymbol('APP_ENABLE_SEC_CONN', None)
         appSecConnEn.setLabel('Enable Secondary WINC Connection?')
 
@@ -334,7 +355,7 @@ def instantiateComponent(appWincSerialBridgeApp):
 
         appSystemInitDataFile = appWincSerialBridgeApp.createFileSymbol('APP_INIT_DATA', appSecConnMenu)
         appSystemInitDataFile.setType('STRING')
-        appSystemInitDataFile.setOutputName('core.LIST_SYSTEM_INIT_C_DRIVER_INITIALIZATION_DATA')
+        appSystemInitDataFile.setOutputName('core.LIST_SYSTEM_INIT_C_SYSTEM_INITIALIZATION')
         appSystemInitDataFile.setSourcePath('apps/serial_bridge/templates/system/system_initialize_data.c.ftl')
         appSystemInitDataFile.setMarkup(True)
 

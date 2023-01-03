@@ -1,0 +1,71 @@
+/**
+ *
+ * Copyright (c) 2022 Microchip Technology Inc. and its subsidiaries.
+ *
+ * Subject to your compliance with these terms, you may use Microchip
+ * software and any derivatives exclusively with Microchip products.
+ * It is your responsibility to comply with third party license terms applicable
+ * to your use of third party software (including open source software) that
+ * may accompany Microchip software.
+ *
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
+ * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
+ * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
+ * LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL
+ * LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE
+ * SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE
+ * POSSIBILITY OR THE DAMAGES ARE FORESEEABLE.  TO THE FULLEST EXTENT
+ * ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY
+ * RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+ * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+ *
+ */
+/*
+ * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+ */
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include "platform/platform.h"
+
+#include "definitions.h"
+
+static UART_SERIAL_SETUP ${APP_USART_PLIB}_Setup = {.baudRate = 115200, .parity = UART_PARITY_NONE};
+
+void SerialBridge_PlatformInit(void)
+{
+    ${APP_USART_PLIB}_SerialSetup(&${APP_USART_PLIB}_Setup, 0);
+}
+
+void SerialBridge_PlatformUARTSetBaudRate(uint32_t baud)
+{
+    ${APP_USART_PLIB}_Setup.baudRate = baud;
+
+    while (false == ${APP_USART_PLIB}_TransmitComplete())
+    {
+    }
+
+    ${APP_USART_PLIB}_SerialSetup(&${APP_USART_PLIB}_Setup, 0);
+}
+
+size_t SerialBridge_PlatformUARTReadGetBuffer(void *pBuf, size_t numBytes)
+{
+    return ${APP_USART_PLIB}_Read(pBuf, numBytes);
+}
+
+bool SerialBridge_PlatformUARTWritePutByte(uint8_t b)
+{
+    return ${APP_USART_PLIB}_Write((void*)&b, 1);
+}
+
+bool SerialBridge_PlatformUARTWritePutBuffer(const void *pBuf, size_t numBytes)
+{
+    if (numBytes != ${APP_USART_PLIB}_Write((uint8_t*)pBuf, numBytes))
+    {
+        return false;
+    }
+
+    return true;
+}

@@ -44,28 +44,12 @@
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_spi.h"
 
-<#if DRV_WIFI_WINC_TX_RX_DMA == true || DRV_WIFI_WINC_SPI_INST_IDX gte 0 && core.DMA_ENABLE?has_content && drv_spi?? && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
-#ifdef USE_CACHE_MAINTENANCE
-/* Cache Management to be enabled in core & system components of MHC Project Graph*/
-#include "system/cache/sys_cache.h"
-#include "sys/kmem.h"
-#endif
-
-</#if>
 // *****************************************************************************
 // *****************************************************************************
 // Section: Data Type Definitions
 // *****************************************************************************
 // *****************************************************************************
 
-<#if DRV_WIFI_WINC_TX_RX_DMA == true || DRV_WIFI_WINC_SPI_INST_IDX gte 0 && core.DMA_ENABLE?has_content && drv_spi?? && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
-#if defined(__PIC32MZ__) && defined(USE_CACHE_MAINTENANCE)
-#define SPI_DMA_DCACHE_CLEAN(addr, size) _DataCacheClean(addr, size)
-#else
-#define SPI_DMA_DCACHE_CLEAN(addr, size) do { } while (0)
-#endif
-
-</#if>
 typedef struct
 {
     /* This is the SPI configuration. */
@@ -91,28 +75,12 @@ static WDRV_WINC_SPIDCPT spiDcpt;
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
 static CACHE_ALIGN uint8_t dummyData[CACHE_ALIGNED_SIZE_GET(4)];
 </#if>
-
-<#if DRV_WIFI_WINC_TX_RX_DMA == true || DRV_WIFI_WINC_SPI_INST_IDX gte 0 && core.DMA_ENABLE?has_content && drv_spi?? && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
-#if defined(__PIC32MZ__) && defined(USE_CACHE_MAINTENANCE)
-/****************************************************************************
- * Function:        _DataCacheClean
- * Summary: Used in Cache management to clean cache based on address.
- * Cache Management to be enabled in core & system components of MHC.
- *****************************************************************************/
-static void _DataCacheClean(unsigned char *address, uint32_t size)
-{
-    if (IS_KVA0(address))
-    {
-        uint32_t a = (uint32_t)address & 0xfffffff0;
-        uint32_t r = (uint32_t)address & 0x0000000f;
-        uint32_t s = ((size + r + 15) >> 4) << 4;
-
-        SYS_CACHE_CleanDCache_by_Addr((uint32_t *)a, s);
-    }
-}
-#endif
-
+<#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
+<#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
+static CACHE_ALIGN uint8_t alignedBuffer[CACHE_ALIGNED_SIZE_GET(2048)];
 </#if>
+</#if>
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: File scope functions
@@ -172,9 +140,6 @@ static void _DRV_SPI_PlibCallbackHandler(uintptr_t contextHandle)
 
 bool WDRV_WINC_SPISend(void* pTransmitData, size_t txSize)
 {
-<#if DRV_WIFI_WINC_TX_RX_DMA == true || DRV_WIFI_WINC_SPI_INST_IDX gte 0 && core.DMA_ENABLE?has_content && drv_spi?? && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
-    SPI_DMA_DCACHE_CLEAN(pTransmitData, txSize);
-</#if>
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
 
     /* Configure the RX DMA channel - to receive dummy data */
@@ -189,8 +154,12 @@ bool WDRV_WINC_SPISend(void* pTransmitData, size_t txSize)
     {
     }
 <#elseif drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
-
+<#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
+    memcpy(alignedBuffer, pTransmitData, txSize);
+    DRV_SPI_WriteTransferAdd(spiDcpt.spiHandle, alignedBuffer, txSize, &spiDcpt.transferTxHandle);
+<#else>
     DRV_SPI_WriteTransferAdd(spiDcpt.spiHandle, pTransmitData, txSize, &spiDcpt.transferTxHandle);
+</#if>
 
     if (DRV_SPI_TRANSFER_HANDLE_INVALID == spiDcpt.transferTxHandle)
     {
@@ -235,8 +204,6 @@ bool WDRV_WINC_SPISend(void* pTransmitData, size_t txSize)
 bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
 {
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
-    SPI_DMA_DCACHE_CLEAN(buf, size);
-
     /* Configure the RX DMA channel - to receive data in receive buffer */
     SYS_DMA_AddressingModeSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, SYS_DMA_DESTINATION_ADDRESSING_MODE_INCREMENTED);
     SYS_DMA_ChannelTransfer(spiDcpt.cfg.rxDMAChannel, (const void*)spiDcpt.cfg.rxAddress, pReceiveData, rxSize);
@@ -251,11 +218,11 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
 <#elseif drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
     static uint8_t dummy = 0;
 
-<#if core.DMA_ENABLE?has_content && drv_spi?? && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
-    SPI_DMA_DCACHE_CLEAN(pReceiveData, rxSize);
-</#if>
-
+<#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
+    DRV_SPI_WriteReadTransferAdd(spiDcpt.spiHandle, &dummy, 1, alignedBuffer, rxSize, &spiDcpt.transferRxHandle);
+<#else>
     DRV_SPI_WriteReadTransferAdd(spiDcpt.spiHandle, &dummy, 1, pReceiveData, rxSize, &spiDcpt.transferRxHandle);
+</#if>
 
     if (DRV_SPI_TRANSFER_HANDLE_INVALID == spiDcpt.transferRxHandle)
     {
@@ -265,6 +232,10 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
     while (OSAL_RESULT_FALSE == OSAL_SEM_Pend(&spiDcpt.rxSyncSem, OSAL_WAIT_FOREVER))
     {
     }
+
+<#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
+    memcpy(pReceiveData, alignedBuffer, rxSize);
+</#if>
 <#else>
     static uint8_t dummy = 0;
 
@@ -287,7 +258,7 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
 //*******************************************************************************
 /*
   Function:
-    void WDRV_WINC_SPIOpen(void)
+    bool WDRV_WINC_SPIOpen(void)
 
   Summary:
     Opens the SPI object for the WiFi driver.
@@ -299,7 +270,7 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
     See wdrv_winc_spi.h for usage information.
  */
 
-void WDRV_WINC_SPIOpen(void)
+bool WDRV_WINC_SPIOpen(void)
 {
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_WIDTH_8_BIT);
@@ -307,14 +278,23 @@ void WDRV_WINC_SPIOpen(void)
 
     memset(dummyData, 0, sizeof(dummyData));
 <#else>
+<#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
+    DRV_SPI_TRANSFER_SETUP spiTransConf = {
+        .clockPhase     = DRV_SPI_CLOCK_PHASE_VALID_LEADING_EDGE,
+        .clockPolarity  = DRV_SPI_CLOCK_POLARITY_IDLE_LOW,
+        .dataBits       = DRV_SPI_DATA_BITS_8,
+        .csPolarity     = DRV_SPI_CS_POLARITY_ACTIVE_LOW
+    };
+
+</#if>
     if (OSAL_RESULT_TRUE != OSAL_SEM_Create(&spiDcpt.txSyncSem, OSAL_SEM_TYPE_COUNTING, 10, 0))
     {
-        return;
+        return false;
     }
 
     if (OSAL_RESULT_TRUE != OSAL_SEM_Create(&spiDcpt.rxSyncSem, OSAL_SEM_TYPE_COUNTING, 10, 0))
     {
-        return;
+        return false;
     }
 <#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
 
@@ -325,12 +305,26 @@ void WDRV_WINC_SPIOpen(void)
         if (DRV_HANDLE_INVALID == spiDcpt.spiHandle)
         {
             WDRV_DBG_ERROR_PRINT("SPI open failed\r\n");
+
+            return false;
         }
+    }
+
+    spiTransConf.baudRateInHz = spiDcpt.cfg.baudRateInHz;
+    spiTransConf.chipSelect   = spiDcpt.cfg.chipSelect;
+
+    if (false == DRV_SPI_TransferSetup(spiDcpt.spiHandle, &spiTransConf))
+    {
+        WDRV_DBG_ERROR_PRINT("SPI transfer setup failed\r\n");
+
+        return false;
     }
 
     DRV_SPI_TransferEventHandlerSet(spiDcpt.spiHandle, _WDRV_WINC_SPITransferEventHandler, 0);
 </#if>
 </#if>
+
+    return true;
 }
 
 //*******************************************************************************
@@ -385,6 +379,14 @@ void WDRV_WINC_SPIDeinitialize(void)
 
     OSAL_SEM_Post(&spiDcpt.rxSyncSem);
     OSAL_SEM_Delete(&spiDcpt.rxSyncSem);
+<#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
+
+    if (DRV_HANDLE_INVALID != spiDcpt.spiHandle)
+    {
+        DRV_SPI_Close(spiDcpt.spiHandle);
+        spiDcpt.spiHandle = DRV_HANDLE_INVALID;
+    }
+</#if>
 </#if>
 }
 

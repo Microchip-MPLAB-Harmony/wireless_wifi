@@ -41,23 +41,11 @@
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_spi.h"
 
-#ifdef USE_CACHE_MAINTENANCE
-/* Cache Management to be enabled in core & system components of MHC Project Graph*/
-#include "system/cache/sys_cache.h"
-#include "sys/kmem.h"
-#endif
-
 // *****************************************************************************
 // *****************************************************************************
 // Section: Data Type Definitions
 // *****************************************************************************
 // *****************************************************************************
-
-#if defined(__PIC32MZ__) && defined(USE_CACHE_MAINTENANCE)
-#define SPI_DMA_DCACHE_CLEAN(addr, size) _DataCacheClean(addr, size)
-#else
-#define SPI_DMA_DCACHE_CLEAN(addr, size) do { } while (0)
-#endif
 
 typedef struct
 {
@@ -73,25 +61,6 @@ typedef struct
 
 static WDRV_WINC_SPIDCPT spiDcpt;
 static CACHE_ALIGN uint8_t dummyData[CACHE_ALIGNED_SIZE_GET(4)];
-
-#if defined(__PIC32MZ__) && defined(USE_CACHE_MAINTENANCE)
-/****************************************************************************
- * Function:        _DataCacheClean
- * Summary: Used in Cache management to clean cache based on address.
- * Cache Management to be enabled in core & system components of MHC.
- *****************************************************************************/
-static void _DataCacheClean(unsigned char *address, uint32_t size)
-{
-    if (IS_KVA0(address))
-    {
-        uint32_t a = (uint32_t)address & 0xfffffff0;
-        uint32_t r = (uint32_t)address & 0x0000000f;
-        uint32_t s = ((size + r + 15) >> 4) << 4;
-
-        SYS_CACHE_CleanDCache_by_Addr((uint32_t *)a, s);
-    }
-}
-#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -116,7 +85,6 @@ static void _DataCacheClean(unsigned char *address, uint32_t size)
 
 bool WDRV_WINC_SPISend(void* pTransmitData, size_t txSize)
 {
-    SPI_DMA_DCACHE_CLEAN(pTransmitData, txSize);
 
     /* Configure the RX DMA channel - to receive dummy data */
     SYS_DMA_AddressingModeSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED);
@@ -150,8 +118,6 @@ bool WDRV_WINC_SPISend(void* pTransmitData, size_t txSize)
 
 bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
 {
-    SPI_DMA_DCACHE_CLEAN(buf, size);
-
     /* Configure the RX DMA channel - to receive data in receive buffer */
     SYS_DMA_AddressingModeSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, SYS_DMA_DESTINATION_ADDRESSING_MODE_INCREMENTED);
     SYS_DMA_ChannelTransfer(spiDcpt.cfg.rxDMAChannel, (const void*)spiDcpt.cfg.rxAddress, pReceiveData, rxSize);
@@ -170,7 +136,7 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
 //*******************************************************************************
 /*
   Function:
-    void WDRV_WINC_SPIOpen(void)
+    bool WDRV_WINC_SPIOpen(void)
 
   Summary:
     Opens the SPI object for the WiFi driver.
@@ -182,12 +148,14 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
     See wdrv_winc_spi.h for usage information.
  */
 
-void WDRV_WINC_SPIOpen(void)
+bool WDRV_WINC_SPIOpen(void)
 {
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_WIDTH_8_BIT);
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.txDMAChannel, SYS_DMA_WIDTH_8_BIT);
 
     memset(dummyData, 0, sizeof(dummyData));
+
+    return true;
 }
 
 //*******************************************************************************

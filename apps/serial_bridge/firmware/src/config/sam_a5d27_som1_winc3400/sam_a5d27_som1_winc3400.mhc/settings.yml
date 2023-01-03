@@ -1,0 +1,14 @@
+configName: sam_a5d27_som1_winc3400
+folderName: sam_a5d27_som1_winc3400
+format_version: v1.0
+frameworkPath: D:\WiFi_Projects\WINC\Harmony_repo
+processor: ATSAMA5D27CD1G
+projectName: sam_a5d27_som1_winc3400
+settings:
+  PackageFilter: azure_rtos;bsp;core;crypto;cryptoauthlib;csp;dev_packs;net;wireless_wifi;wsg_dev
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: .\dev_packs\Microchip\SAMA5D2_DFP\1.7.91\atdf\ATSAMA5D27CD1G.atdf

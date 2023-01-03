@@ -93,25 +93,6 @@ static const WDRV_WINC_SYS_INIT wdrvWincInitData = {
     .intSrc     = EIC_PIN_4
 };
 
-static const WDRV_WINC_SPI_CFG appWincStubSpiInitData =
-{
-    .txDMAChannel       = SYS_DMA_CHANNEL_2,
-    .rxDMAChannel       = SYS_DMA_CHANNEL_3,
-    .txAddress          = (void *)&(SERCOM1_REGS->SPIM.SERCOM_DATA),
-    .rxAddress          = (void *)&(SERCOM1_REGS->SPIM.SERCOM_DATA),
-};
-
-static const WDRV_WINC_SYS_INIT appWincStubInitData = {
-    .pSPICfg    = &appWincStubSpiInitData,
-    .intSrc     = EIC_PIN_14
-};
-
-const WDRV_WINC_SYS_INIT *appWincInitData[2] =
-{
-    &wdrvWincInitData,
-    &appWincStubInitData
-};
-
 
 
 // *****************************************************************************
@@ -153,6 +134,25 @@ const SYS_TIME_INIT sysTimeInitData =
 };
 
 // </editor-fold>
+static const WDRV_WINC_SPI_CFG appWincStubSpiInitData =
+{
+    .txDMAChannel       = SYS_DMA_CHANNEL_2,
+    .rxDMAChannel       = SYS_DMA_CHANNEL_3,
+    .txAddress          = (void *)&(SERCOM1_REGS->SPIM.SERCOM_DATA),
+    .rxAddress          = (void *)&(SERCOM1_REGS->SPIM.SERCOM_DATA),
+};
+
+static const WDRV_WINC_SYS_INIT appWincStubInitData = {
+    .pSPICfg    = &appWincStubSpiInitData,
+    .intSrc     = EIC_PIN_14
+};
+
+const WDRV_WINC_SYS_INIT *appWincInitData[2] =
+{
+    &wdrvWincInitData,
+    &appWincStubInitData
+};
+
 
 
 
@@ -195,8 +195,8 @@ void SYS_Initialize ( void* data )
 
     SERCOM1_SPI_Initialize();
 
-
     SERCOM0_SPI_Initialize();
+
 
     DMAC_Initialize();
 

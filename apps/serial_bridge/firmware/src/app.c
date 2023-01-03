@@ -81,7 +81,7 @@ static SERIAL_BRIDGE_DECODER_STATE serialBridgeDecoderState;
     Application strings and buffers are be defined outside this structure.
 */
 
-APP_DATA appData;
+APP_DATA appData = {.currentWincInitDataIdx = 0};
 
 #ifdef APP_ENABLE_SEC_CONN
 extern const WDRV_WINC_SYS_INIT *appWincInitData[];
@@ -172,6 +172,10 @@ void APP_Initialize(void)
     appData.currentWincInitDataIdx = 0;
 
     SerialBridge_PlatformInit();
+
+#ifdef APP_SPI_PLIB_FLEXCOM_CS_FUNC
+    APP_SPI_PLIB_FLEXCOM_CS_FUNC(FLEXCOM_SPI_CHIP_SELECT_NPCS1);
+#endif
 }
 
 /******************************************************************************
@@ -207,11 +211,10 @@ void APP_Tasks(void)
             }
             else if (SYS_STATUS_ERROR == status)
             {
-                WDRV_WINC_Deinitialize(sysObj.drvWifiWinc);
-
 #ifdef APP_ENABLE_SEC_CONN
                 if (WDRV_WINC_SYS_STATUS_ERROR_DEVICE_NOT_FOUND == WDRV_WINC_StatusExt(sysObj.drvWifiWinc))
                 {
+                    WDRV_WINC_Deinitialize(sysObj.drvWifiWinc);
                     break;
                 }
 #endif
@@ -227,6 +230,9 @@ void APP_Tasks(void)
                 {
                     appData.currentWincInitDataIdx = 1;
 
+#ifdef APP_SPI_PLIB_FLEXCOM_CS_FUNC
+                    APP_SPI_PLIB_FLEXCOM_CS_FUNC(FLEXCOM_SPI_CHIP_SELECT_NPCS0);
+#endif
                     sysObj.drvWifiWinc = WDRV_WINC_Initialize(0, (SYS_MODULE_INIT*)appWincInitData[appData.currentWincInitDataIdx]);
 
                     if (SYS_MODULE_OBJ_INVALID != sysObj.drvWifiWinc)

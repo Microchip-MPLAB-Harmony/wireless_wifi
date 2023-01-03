@@ -1,4 +1,4 @@
-<config configName="sam_e54_xpro_winc1500" projectName="serial_bridge_sam_e54_xpro_winc1500" configVersion="1.1" device="ATSAME54P20A" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.11">
+<config configName="sam_e54_xpro_winc1500" projectName="serial_bridge_sam_e54_xpro_winc1500" configVersion="1.1" device="ATSAME54P20A" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.14">
    <usedPackages class="java.util.ArrayList"/>
    <usedClasses class="java.util.TreeMap">
       <entry>
@@ -961,7 +961,8 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;GraphSettings canvasHeight=&quot;402&quot; canvasWidth=&quot;833&quot; dnOrder=&quot;0&quot;/&gt;
+    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;BSP_SAM_E54_Xplained_Pro&quot; x=&quot;310&quot; y=&quot;60&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;HarmonyCore&quot; x=&quot;165&quot; y=&quot;102&quot;/&gt;
@@ -980,7 +981,6 @@
         &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;tc3&quot; x=&quot;546&quot; y=&quot;65&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
-    &lt;GraphSettings canvasHeight=&quot;402&quot; canvasWidth=&quot;833&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -9613,7 +9613,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc1500\driver\winc\dev\spi\wdrv_winc_spi.c</file>
-         <hash>fedf9b33714630dac42edf151ca9adf24c8b51d31f39c1651377df63fc233d8a</hash>
+         <hash>5405c186771185a75647a71709eb2f580f1f1a7c39a05eee640c715d0d1a310e</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME54P20A_DFP\component\tcc.h</file>
@@ -10041,7 +10041,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc1500\initialization.c</file>
-         <hash>97c96d3128492aac6a8c212e39fe6c63ad73d39cd3e50a624b5300fe328a3910</hash>
+         <hash>34a322cbacf4e6c483d6b4deb7fcc11a59b1f3c4f8d6a704d8bca90f7952a6a7</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME54P20A_DFP\component\dsu.h</file>
@@ -10201,7 +10201,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc.c</file>
-         <hash>796e6722497630e5a4cbc9a2ae40ad36437c62d7ee5f6fcdff708c5ca7f3ee4c</hash>
+         <hash>ad1ee1cc4c9591b5390c2609898cadf5fafd09141c4e8dd25e648eb00a0e2c4d</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME54P20A_DFP\instance\dac.h</file>
@@ -10369,7 +10369,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc1500\driver\winc\dev\gpio\wdrv_winc_eint.c</file>
-         <hash>41942501c8d9502763cdc13b4300fe4728369c4c6ff0348c99cf7cd4a5db276b</hash>
+         <hash>8ffc0f79262c44908c380a3ad15d46449d63fc532e94c8a4d10156b2a1d42493</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME54P20A_DFP\component\dmac.h</file>
@@ -10389,7 +10389,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc1500\driver\winc\include\dev\wdrv_winc_spi.h</file>
-         <hash>88becf94e2a92eec0115c0430d9a468f0eb8521fc7fdfd432c6b5bc8c429ac6f</hash>
+         <hash>7dc57d45de3e9c257a4a7157ed1e1821f23eee944a10da5309b127e3ae54e4c2</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc1500\driver\winc\include\drv\common\nm_common.h</file>

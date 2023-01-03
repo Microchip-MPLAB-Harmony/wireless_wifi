@@ -1,4 +1,4 @@
-<config configName="sam_d21_xpro_winc1500" projectName="serial_bridge_sam_d21_xpro_winc1500" configVersion="1.1" device="ATSAMD21J18A" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.11">
+<config configName="sam_d21_xpro_winc1500" projectName="serial_bridge_sam_d21_xpro_winc1500" configVersion="1.1" device="ATSAMD21J18A" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.14">
    <usedPackages class="java.util.ArrayList"/>
    <usedClasses class="java.util.TreeMap">
       <entry>
@@ -896,7 +896,8 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;GraphSettings canvasHeight=&quot;516&quot; canvasWidth=&quot;795&quot; dnOrder=&quot;0&quot;/&gt;
+    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;HarmonyCore&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;appWincSerialBridge&quot; x=&quot;306&quot; y=&quot;340&quot;/&gt;
@@ -914,7 +915,6 @@
         &lt;ElementPosition dnOrder=&quot;13&quot; id=&quot;tc3&quot; x=&quot;0&quot; y=&quot;184&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
-    &lt;GraphSettings canvasHeight=&quot;516&quot; canvasWidth=&quot;795&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -7641,7 +7641,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\definitions.h</file>
-         <hash>0ff0d6d0cd4ae733280a2ea291ba2ca715f33c30375766dca3783becbf0ec1d4</hash>
+         <hash>03b6cb445c0a607ec3ed16d28db6975e827469e6c0b132fac99bd8f0ed1b4fc6</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\hmatrixb.h</file>
@@ -7649,7 +7649,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\dev\spi\wdrv_winc_spi.c</file>
-         <hash>fedf9b33714630dac42edf151ca9adf24c8b51d31f39c1651377df63fc233d8a</hash>
+         <hash>5405c186771185a75647a71709eb2f580f1f1a7c39a05eee640c715d0d1a310e</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\dmac.h</file>
@@ -7777,7 +7777,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\initialization.c</file>
-         <hash>f79c1376c38e0da8ecd0863b141b9e1427d6c68a458c7072e1a79d99975a47a0</hash>
+         <hash>27204700957dd3684ca931f416889300627e81bab1828f7c47f722bed44eb4e9</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\sercom3.h</file>
@@ -7805,7 +7805,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\dev\wdrv_winc_spi.h</file>
-         <hash>88becf94e2a92eec0115c0430d9a468f0eb8521fc7fdfd432c6b5bc8c429ac6f</hash>
+         <hash>7dc57d45de3e9c257a4a7157ed1e1821f23eee944a10da5309b127e3ae54e4c2</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\cmsis_armclang.h</file>
@@ -8089,7 +8089,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\dev\gpio\wdrv_winc_eint.c</file>
-         <hash>41942501c8d9502763cdc13b4300fe4728369c4c6ff0348c99cf7cd4a5db276b</hash>
+         <hash>8ffc0f79262c44908c380a3ad15d46449d63fc532e94c8a4d10156b2a1d42493</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\interrupts.h</file>
@@ -8177,7 +8177,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc.c</file>
-         <hash>796e6722497630e5a4cbc9a2ae40ad36437c62d7ee5f6fcdff708c5ca7f3ee4c</hash>
+         <hash>ad1ee1cc4c9591b5390c2609898cadf5fafd09141c4e8dd25e648eb00a0e2c4d</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_systime.h</file>
