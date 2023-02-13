@@ -3,6 +3,14 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.7.2
+
+### Dot Release v3.7.2:
+- WINC: Support added for SAMA5D27 platform
+	- WINC1500 support (v19.7.7) & WINC3400 support (v1.4.4)
+
+**Other release notes for v3.7.1 apply here**
+
 ## Wireless_wifi Release v3.7.1
 
 ### Dot Release v3.7.1:

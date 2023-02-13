@@ -4,7 +4,7 @@ package:
   type: "api"
   status: "production"
   required: true
-  version: "3.7.1"
+  version: "3.7.2"
 
   dependencies:
     - name: "csp"
