@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <keywords publicationid="GUID-8B137D7B-852A-471A-8E47-463DF557852F"
           language="en-US"
-          version="1"
-          documenttitle="MPLAB Harmony Wireless WiFi PIC32MZW1"
+          version="2"
+          documenttitle="MPLAB Harmony Wireless WiFi Software"
           pubtype="Online Reference"
           pubsubtype=""
           pubuserguidesubtype=""
           pubproductheirarchy=""
           devices=""
-          revisiondate="28/04/2022 00:00:00"
-          revisionletter="A"
+          revisiondate="15/02/2023 00:00:00"
+          revisionletter="2"
           isbn=""
           pubid=""
           reachid=""
           description=""
-          lastmodified="15/09/2022 15:09:28"
+          lastmodified="20/02/2023 07:27:35"
           covertitle="MPLAB Harmony Wireless WiFi"
           frontcover="">
+   <keyworditem topicid="GUID-271CC4C5-196A-4BF0-BAF9-9A95284A87D7"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_SYS_INIT Struct</register>
+      <title>WDRV_PIC32MZW_SYS_INIT Struct</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_SYS_INIT</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-60C12586-1616-42CB-85FB-DFC96C5D08A7"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_SYS_STATUS Enum</register>
+      <title>WDRV_PIC32MZW_SYS_STATUS Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_SYS_STATUS</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-EC53AE64-05BF-48B0-99DB-A40DABE5E4C7"
                 nocomponent="true"
                 parent="">
@@ -28,49 +50,16 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_Initialize</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-2C5CEB80-077C-4EB2-A2D5-9EF849C1F2F2"
+   <keyworditem topicid="GUID-92A5C628-45F6-4F40-BF99-846176902BAC"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_Open Function</register>
-      <title>WDRV_PIC32MZW_Open Function</title>
+      <register>WDRV_PIC32MZW_Deinitialize Function</register>
+      <title>WDRV_PIC32MZW_Deinitialize Function</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_Open</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-14E56CEC-4DA0-4224-B7C3-DD36BD3E79E2"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindNext Function</register>
-      <title>WDRV_PIC32MZW_BSSFindNext Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindNext</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-5E0FFB91-528B-46EF-A4CF-A205923C64E4"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindSetScanMatchMode Function</register>
-      <title>WDRV_PIC32MZW_BSSFindSetScanMatchMode Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindSetScanMatchMode</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindSetScanParameters Function</register>
-      <title>WDRV_PIC32MZW_BSSFindSetScanParameters Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindSetScanParameters</keyword>
+      <keyword>WDRV_PIC32MZW_Deinitialize</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-DDF7C35B-3ADE-47F3-813D-4628CCDF4218"
                 nocomponent="true"
@@ -94,17 +83,6 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_Status</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-9A4FCDF0-2CE1-4CA9-BC92-2D79BBDA4E42"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSS_ROAMING_CFG Enum</register>
-      <title>WDRV_PIC32MZW_BSS_ROAMING_CFG Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSS_ROAMING_CFG</keyword>
-   </keyworditem>
    <keyworditem topicid="GUID-8CC2A673-AF23-4055-8F1E-C43A3195F69A"
                 nocomponent="true"
                 parent="">
@@ -116,6 +94,17 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_CTRLDCPT</keyword>
    </keyworditem>
+   <keyworditem topicid="GUID-2C5CEB80-077C-4EB2-A2D5-9EF849C1F2F2"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_Open Function</register>
+      <title>WDRV_PIC32MZW_Open Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_Open</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-094BA77A-E430-4C1F-B051-58848BE93F9D"
                 nocomponent="true"
                 parent="">
@@ -126,17 +115,6 @@
       <title>WDRV_PIC32MZW_Close Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_Close</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-8BF10274-CD22-4774-8C40-CCFED5766714"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSCtxSetBSSID Function</register>
-      <title>WDRV_PIC32MZW_BSSCtxSetBSSID Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSCtxSetBSSID</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-0AEDA27D-A7D4-4DAA-8A8F-4CB3146CFB62"
                 nocomponent="true"
@@ -171,6 +149,17 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_SCAN_MATCH_MODE</keyword>
    </keyworditem>
+   <keyworditem topicid="GUID-E012F7C2-64C2-40DA-89CF-C613B200BF19"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_SEC_MASK Enum</register>
+      <title>WDRV_PIC32MZW_SEC_MASK Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_SEC_MASK</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-81D18119-F240-47CC-8CDA-1B9FDD83B822"
                 nocomponent="true"
                 parent="">
@@ -181,39 +170,6 @@
       <title>WDRV_PIC32MZW_BSSFindFirst Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_BSSFindFirst</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-271CC4C5-196A-4BF0-BAF9-9A95284A87D7"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_SYS_INIT Struct</register>
-      <title>WDRV_PIC32MZW_SYS_INIT Struct</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_SYS_INIT</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-60C12586-1616-42CB-85FB-DFC96C5D08A7"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_SYS_STATUS Enum</register>
-      <title>WDRV_PIC32MZW_SYS_STATUS Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_SYS_STATUS</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-92A5C628-45F6-4F40-BF99-846176902BAC"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_Deinitialize Function</register>
-      <title>WDRV_PIC32MZW_Deinitialize Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_Deinitialize</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-031836CF-94FC-442B-B7E8-45F3E66649D1"
                 nocomponent="true"
@@ -226,6 +182,105 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_BSSFindGetInfo</keyword>
    </keyworditem>
+   <keyworditem topicid="GUID-AF380EDC-B004-4B11-8FF6-2563D3DAC1B6"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindGetNumBSSResults Function</register>
+      <title>WDRV_PIC32MZW_BSSFindGetNumBSSResults Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindGetNumBSSResults</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-EA06AD1D-6A2D-4772-9E90-E7A8F2EC23DA"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindInProgress Function</register>
+      <title>WDRV_PIC32MZW_BSSFindInProgress Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindInProgress</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-14E56CEC-4DA0-4224-B7C3-DD36BD3E79E2"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindNext Function</register>
+      <title>WDRV_PIC32MZW_BSSFindNext Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindNext</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-EFE4EBAB-3F25-4EE9-BD27-D3BD6F14C3D8"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindReset Function</register>
+      <title>WDRV_PIC32MZW_BSSFindReset Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindReset</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-CE31A004-61F9-480A-A2ED-86AE40681AAD"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindSetEnabledChannels24 Function</register>
+      <title>WDRV_PIC32MZW_BSSFindSetEnabledChannels24 Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindSetEnabledChannels24</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-5E0FFB91-528B-46EF-A4CF-A205923C64E4"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindSetScanMatchMode Function</register>
+      <title>WDRV_PIC32MZW_BSSFindSetScanMatchMode Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindSetScanMatchMode</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSFindSetScanParameters Function</register>
+      <title>WDRV_PIC32MZW_BSSFindSetScanParameters Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSFindSetScanParameters</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-B6921361-2F3A-4384-8081-FCE9BC1D3895"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSRoamingConfigure Function</register>
+      <title>WDRV_PIC32MZW_BSSRoamingConfigure Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSRoamingConfigure</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-A51864DC-AD1F-43AC-A5CC-3310BB2362EB"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSS_CONTEXT Struct</register>
+      <title>WDRV_PIC32MZW_BSS_CONTEXT Struct</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSS_CONTEXT</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-9AE7E6C6-BBAA-44B2-9D3A-38A80624E8A5"
                 nocomponent="true"
                 parent="">
@@ -236,6 +291,17 @@
       <title>WDRV_PIC32MZW_BSS_INFO Struct</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_BSS_INFO</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-9A4FCDF0-2CE1-4CA9-BC92-2D79BBDA4E42"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSS_ROAMING_CFG Enum</register>
+      <title>WDRV_PIC32MZW_BSS_ROAMING_CFG Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSS_ROAMING_CFG</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-E339E93F-7BCF-4C2F-80D5-783001332B05"
                 nocomponent="true"
@@ -258,6 +324,17 @@
       <title>WDRV_PIC32MZW_BSSCtxIsValid Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_BSSCtxIsValid</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-8BF10274-CD22-4774-8C40-CCFED5766714"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSCtxSetBSSID Function</register>
+      <title>WDRV_PIC32MZW_BSSCtxSetBSSID Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSCtxSetBSSID</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-3AD98956-9F94-46AE-9499-1EDAD7E191D9"
                 nocomponent="true"
@@ -292,104 +369,16 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_BSSCtxSetSSID</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-003633FA-D0EE-4D3E-A716-5E98DAA38F02"
+   <keyworditem topicid="GUID-2A173EAE-1DB4-418C-A805-C68BE939178D"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_ASSOC_HANDLE; Typedef</register>
-      <title>WDRV_PIC32MZW_ASSOC_HANDLE; Typedef</title>
+      <register>WDRV_PIC32MZW_BSSCtxSetSSIDVisibility Function</register>
+      <title>WDRV_PIC32MZW_BSSCtxSetSSIDVisibility Function</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_ASSOC_HANDLE</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-E012F7C2-64C2-40DA-89CF-C613B200BF19"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_SEC_MASK Enum</register>
-      <title>WDRV_PIC32MZW_SEC_MASK Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_SEC_MASK</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-AF380EDC-B004-4B11-8FF6-2563D3DAC1B6"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindGetNumBSSResults Function</register>
-      <title>WDRV_PIC32MZW_BSSFindGetNumBSSResults Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindGetNumBSSResults</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-EA06AD1D-6A2D-4772-9E90-E7A8F2EC23DA"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindInProgress Function</register>
-      <title>WDRV_PIC32MZW_BSSFindInProgress Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindInProgress</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-EFE4EBAB-3F25-4EE9-BD27-D3BD6F14C3D8"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindReset Function</register>
-      <title>WDRV_PIC32MZW_BSSFindReset Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindReset</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-B6921361-2F3A-4384-8081-FCE9BC1D3895"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSRoamingConfigure Function</register>
-      <title>WDRV_PIC32MZW_BSSRoamingConfigure Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSRoamingConfigure</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-A51864DC-AD1F-43AC-A5CC-3310BB2362EB"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSS_CONTEXT Struct</register>
-      <title>WDRV_PIC32MZW_BSS_CONTEXT Struct</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSS_CONTEXT</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-D8D5DAC8-3B55-4B87-9428-936D8B524F3D"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_AuthCtxStaTransitionDisable Function</register>
-      <title>WDRV_PIC32MZW_AuthCtxStaTransitionDisable Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_AuthCtxStaTransitionDisable</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-7CFA4233-3BEA-4D18-AB0D-36A346709A67"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSDisconnect Function</register>
-      <title>WDRV_PIC32MZW_BSSDisconnect Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSDisconnect</keyword>
+      <keyword>WDRV_PIC32MZW_BSSCtxSetSSIDVisibility</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-C8FD6AB1-6D19-4A8B-86E3-74F54370A97E"
                 nocomponent="true"
@@ -446,17 +435,6 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_AuthCtxIsValid</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-FD15FA49-9089-44AF-9012-CCC3EE291522"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_APSetCustIE Function</register>
-      <title>WDRV_PIC32MZW_APSetCustIE Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_APSetCustIE</keyword>
-   </keyworditem>
    <keyworditem topicid="GUID-9DC08CEA-87E3-441C-9346-0317D8A1D46C"
                 nocomponent="true"
                 parent="">
@@ -468,39 +446,6 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_AuthCtxSetDefaults</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-DB172BDF-7D69-4E47-8E3A-9BE4DDBE6144"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_PS_NOTIFY_CALLBACK Typedef</register>
-      <title>WDRV_PIC32MZW_PS_NOTIFY_CALLBACK Typedef</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_PS_NOTIFY_CALLBACK</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-84A559F7-B9AF-4927-9073-A2BDA2AA6804"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_POWERSAVE_MODE Enum</register>
-      <title>WDRV_PIC32MZW_POWERSAVE_MODE Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_POWERSAVE_MODE</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-E0B3B3A6-07A9-4EC6-9C84-977842046668"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION Enum</register>
-      <title>WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION</keyword>
-   </keyworditem>
    <keyworditem topicid="GUID-3FD559C0-0864-4DCE-A113-101288D32FE2"
                 nocomponent="true"
                 parent="">
@@ -511,17 +456,6 @@
       <title>WDRV_PIC32MZW_AuthCtxSetEnterpriseTLS Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_AuthCtxSetEnterpriseTLS</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-78A366F1-25A1-48F4-8E56-7A4FE40964F7"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_PowerSaveBroadcastTrackingSet Function</register>
-      <title>WDRV_PIC32MZW_PowerSaveBroadcastTrackingSet Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_PowerSaveBroadcastTrackingSet</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-1B8A0623-FBC3-46A4-B1A5-4CB7C607899A"
                 nocomponent="true"
@@ -556,28 +490,6 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_AuthCtxSharedKey</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-AAAB9525-D75A-490F-89CA-766C731ABBA6"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_REGDOMAIN_CALLBACK Typedef</register>
-      <title>WDRV_PIC32MZW_REGDOMAIN_CALLBACK Typedef</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_REGDOMAIN_CALLBACK</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-CE31A004-61F9-480A-A2ED-86AE40681AAD"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSFindSetEnabledChannels24 Function</register>
-      <title>WDRV_PIC32MZW_BSSFindSetEnabledChannels24 Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSFindSetEnabledChannels24</keyword>
-   </keyworditem>
    <keyworditem topicid="GUID-D58D1F96-DFB6-4A48-9D0B-BD09F88955CC"
                 nocomponent="true"
                 parent="">
@@ -588,6 +500,17 @@
       <title>WDRV_PIC32MZW_AuthCtxApTransitionDisable Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_AuthCtxApTransitionDisable</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-D8D5DAC8-3B55-4B87-9428-936D8B524F3D"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_AuthCtxStaTransitionDisable Function</register>
+      <title>WDRV_PIC32MZW_AuthCtxStaTransitionDisable Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_AuthCtxStaTransitionDisable</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-A0876431-0E46-449A-87BB-62D7B850C638"
                 nocomponent="true"
@@ -611,6 +534,17 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_ASSOC_RSSI_CALLBACK</keyword>
    </keyworditem>
+   <keyworditem topicid="GUID-003633FA-D0EE-4D3E-A716-5E98DAA38F02"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_ASSOC_HANDLE; Typedef</register>
+      <title>WDRV_PIC32MZW_ASSOC_HANDLE; Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_ASSOC_HANDLE</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-9B851175-EAC6-4C6D-9E59-3F30C6595DF0"
                 nocomponent="true"
                 parent="">
@@ -622,17 +556,6 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_ASSOC_INFO</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-2A173EAE-1DB4-418C-A805-C68BE939178D"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_BSSCtxSetSSIDVisibility Function</register>
-      <title>WDRV_PIC32MZW_BSSCtxSetSSIDVisibility Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSCtxSetSSIDVisibility</keyword>
-   </keyworditem>
    <keyworditem topicid="GUID-FC75E7D6-8778-4E1C-977F-CB39857FCBCB"
                 nocomponent="true"
                 parent="">
@@ -643,6 +566,61 @@
       <title>WDRV_PIC32MZW_AssocDisconnect Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_AssocDisconnect</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-4D6BE8EC-13EC-4A94-ABDE-0605142C88B5"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_AssocPeerAddressGet Function</register>
+      <title>WDRV_PIC32MZW_AssocPeerAddressGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_AssocPeerAddressGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-CAEE987E-7C37-4ED7-8306-49A2E8EF93EA"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_AssocRSSIGet Function</register>
+      <title>WDRV_PIC32MZW_AssocRSSIGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_AssocRSSIGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-D9C35F46-3BAD-427E-9C83-CA548BAE77DF"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_AssocTransitionDisableGet Function</register>
+      <title>WDRV_PIC32MZW_AssocTransitionDisableGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_AssocTransitionDisableGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-5C692195-B523-4322-A373-4780486CD3AB"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSConnect Function</register>
+      <title>WDRV_PIC32MZW_BSSConnect Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSConnect</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-7CFA4233-3BEA-4D18-AB0D-36A346709A67"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_BSSDisconnect Function</register>
+      <title>WDRV_PIC32MZW_BSSDisconnect Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_BSSDisconnect</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-7E92DBD1-3ACE-40D5-A3D0-91FAEBA57E7E"
                 nocomponent="true"
@@ -688,60 +666,126 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_APRekeyIntervalSet</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-4D6BE8EC-13EC-4A94-ABDE-0605142C88B5"
+   <keyworditem topicid="GUID-FD15FA49-9089-44AF-9012-CCC3EE291522"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_AssocPeerAddressGet Function</register>
-      <title>WDRV_PIC32MZW_AssocPeerAddressGet Function</title>
+      <register>WDRV_PIC32MZW_APSetCustIE Function</register>
+      <title>WDRV_PIC32MZW_APSetCustIE Function</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_AssocPeerAddressGet</keyword>
+      <keyword>WDRV_PIC32MZW_APSetCustIE</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-CAEE987E-7C37-4ED7-8306-49A2E8EF93EA"
+   <keyworditem topicid="GUID-DB172BDF-7D69-4E47-8E3A-9BE4DDBE6144"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_AssocRSSIGet Function</register>
-      <title>WDRV_PIC32MZW_AssocRSSIGet Function</title>
+      <register>WDRV_PIC32MZW_PS_NOTIFY_CALLBACK Typedef</register>
+      <title>WDRV_PIC32MZW_PS_NOTIFY_CALLBACK Typedef</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_AssocRSSIGet</keyword>
+      <keyword>WDRV_PIC32MZW_PS_NOTIFY_CALLBACK</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-218B5D0A-233A-4F9A-B771-1C7B7CA01C37"
+   <keyworditem topicid="GUID-84A559F7-B9AF-4927-9073-A2BDA2AA6804"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_InfoRfMacConfigGet Function</register>
-      <title>WDRV_PIC32MZW_InfoRfMacConfigGet Function</title>
+      <register>WDRV_PIC32MZW_POWERSAVE_MODE Enum</register>
+      <title>WDRV_PIC32MZW_POWERSAVE_MODE Enum</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_InfoRfMacConfigGet</keyword>
+      <keyword>WDRV_PIC32MZW_POWERSAVE_MODE</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-D9C35F46-3BAD-427E-9C83-CA548BAE77DF"
+   <keyworditem topicid="GUID-E0B3B3A6-07A9-4EC6-9C84-977842046668"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_AssocTransitionDisableGet Function</register>
-      <title>WDRV_PIC32MZW_AssocTransitionDisableGet Function</title>
+      <register>WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION Enum</register>
+      <title>WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION Enum</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_AssocTransitionDisableGet</keyword>
+      <keyword>WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-5C692195-B523-4322-A373-4780486CD3AB"
+   <keyworditem topicid="GUID-C83F212A-690F-48CE-8F2A-4B83862B2C31"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_BSSConnect Function</register>
-      <title>WDRV_PIC32MZW_BSSConnect Function</title>
+      <register>WDRV_PIC32MZW_PowerSaveModeSet Function</register>
+      <title>WDRV_PIC32MZW_PowerSaveModeSet Function</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_BSSConnect</keyword>
+      <keyword>WDRV_PIC32MZW_PowerSaveModeSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-78A366F1-25A1-48F4-8E56-7A4FE40964F7"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_PowerSaveBroadcastTrackingSet Function</register>
+      <title>WDRV_PIC32MZW_PowerSaveBroadcastTrackingSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_PowerSaveBroadcastTrackingSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-9545B29C-1FCB-4AB0-A576-3B5F7BEEF4B9"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_PowerSaveListenIntervalSet Function</register>
+      <title>WDRV_PIC32MZW_PowerSaveListenIntervalSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_PowerSaveListenIntervalSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-68449BC3-7664-4425-8DAB-120B78CC3C35"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_PowerSaveSleepInactLimitSet Function</register>
+      <title>WDRV_PIC32MZW_PowerSaveSleepInactLimitSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_PowerSaveSleepInactLimitSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-AAAB9525-D75A-490F-89CA-766C731ABBA6"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_REGDOMAIN_CALLBACK Typedef</register>
+      <title>WDRV_PIC32MZW_REGDOMAIN_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_REGDOMAIN_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-104E40C1-F4A9-499B-A870-1A65C35EF5C1"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_REGDOMAIN_SELECT Enum</register>
+      <title>WDRV_PIC32MZW_REGDOMAIN_SELECT Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_REGDOMAIN_SELECT</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-8DF1397A-E9E5-47F3-8737-CFA4F0CD376A"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_RF_MAC_CONFIG Struct</register>
+      <title>WDRV_PIC32MZW_RF_MAC_CONFIG Struct</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_RF_MAC_CONFIG</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-FA9685C3-2B37-4821-AD49-3A01ED20F7CC"
                 nocomponent="true"
@@ -820,115 +864,16 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_IERxDataGet</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-BC2CF70D-B995-4831-8AE7-85E53E02A57D"
+   <keyworditem topicid="GUID-FF05BAE1-E2E0-4281-A31D-9659BC2F604D"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_CHANNEL_ID Enum</register>
-      <title>WDRV_PIC32MZW_CHANNEL_ID Enum</title>
+      <register>WDRV_PIC32MZW_InfoDeviceMACAddressGet Function</register>
+      <title>WDRV_PIC32MZW_InfoDeviceMACAddressGet Function</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_CHANNEL_ID</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-C83F212A-690F-48CE-8F2A-4B83862B2C31"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_PowerSaveModeSet Function</register>
-      <title>WDRV_PIC32MZW_PowerSaveModeSet Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_PowerSaveModeSet</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-9545B29C-1FCB-4AB0-A576-3B5F7BEEF4B9"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_PowerSaveListenIntervalSet Function</register>
-      <title>WDRV_PIC32MZW_PowerSaveListenIntervalSet Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_PowerSaveListenIntervalSet</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-68449BC3-7664-4425-8DAB-120B78CC3C35"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_PowerSaveSleepInactLimitSet Function</register>
-      <title>WDRV_PIC32MZW_PowerSaveSleepInactLimitSet Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_PowerSaveSleepInactLimitSet</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-104E40C1-F4A9-499B-A870-1A65C35EF5C1"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_REGDOMAIN_SELECT Enum</register>
-      <title>WDRV_PIC32MZW_REGDOMAIN_SELECT Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_REGDOMAIN_SELECT</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-8DF1397A-E9E5-47F3-8737-CFA4F0CD376A"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_RF_MAC_CONFIG Struct</register>
-      <title>WDRV_PIC32MZW_RF_MAC_CONFIG Struct</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_RF_MAC_CONFIG</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-DD1B8C31-2334-40FA-B562-83563A4A8933"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_CHANNEL24_MASK Enum</register>
-      <title>WDRV_PIC32MZW_CHANNEL24_MASK Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_CHANNEL24_MASK</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-08FC43FF-5ACA-46F3-AEA6-8F5EFAD077EB"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_CONN_STATE Enum</register>
-      <title>WDRV_PIC32MZW_CONN_STATE Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_CONN_STATE</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-3D1E32DB-4425-4009-9267-8617566212CD"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_GetStatistics Function</register>
-      <title>WDRV_PIC32MZW_GetStatistics Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_GetStatistics</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-537E27A2-F053-4056-861D-7A2157C17DE6"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</register>
-      <title>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_InfoEnabledChannelsGet</keyword>
+      <keyword>WDRV_PIC32MZW_InfoDeviceMACAddressGet</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-577EB4F3-C11B-4D1A-BB91-0CFDB6EF6FB7"
                 nocomponent="true"
@@ -941,6 +886,28 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_InfoOpChanGet</keyword>
    </keyworditem>
+   <keyworditem topicid="GUID-218B5D0A-233A-4F9A-B771-1C7B7CA01C37"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_InfoRfMacConfigGet Function</register>
+      <title>WDRV_PIC32MZW_InfoRfMacConfigGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_InfoRfMacConfigGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-3D1E32DB-4425-4009-9267-8617566212CD"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_GetStatistics Function</register>
+      <title>WDRV_PIC32MZW_GetStatistics Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_GetStatistics</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-F7D866DC-091E-4AC3-AA41-268779AF490A"
                 nocomponent="true"
                 parent="">
@@ -952,15 +919,48 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_PMKCacheFlush</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-FF05BAE1-E2E0-4281-A31D-9659BC2F604D"
+   <keyworditem topicid="GUID-BC2CF70D-B995-4831-8AE7-85E53E02A57D"
                 nocomponent="true"
                 parent="">
       <device/>
       <module/>
       <component/>
-      <register>WDRV_PIC32MZW_InfoDeviceMACAddressGet Function</register>
-      <title>WDRV_PIC32MZW_InfoDeviceMACAddressGet Function</title>
+      <register>WDRV_PIC32MZW_CHANNEL_ID Enum</register>
+      <title>WDRV_PIC32MZW_CHANNEL_ID Enum</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_InfoDeviceMACAddressGet</keyword>
+      <keyword>WDRV_PIC32MZW_CHANNEL_ID</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-DD1B8C31-2334-40FA-B562-83563A4A8933"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_CHANNEL24_MASK Enum</register>
+      <title>WDRV_PIC32MZW_CHANNEL24_MASK Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_CHANNEL24_MASK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-537E27A2-F053-4056-861D-7A2157C17DE6"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</register>
+      <title>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_InfoEnabledChannelsGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-08FC43FF-5ACA-46F3-AEA6-8F5EFAD077EB"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_CONN_STATE Enum</register>
+      <title>WDRV_PIC32MZW_CONN_STATE Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_CONN_STATE</keyword>
    </keyworditem>
 </keywords>

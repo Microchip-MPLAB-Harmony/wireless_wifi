@@ -1,296 +1,300 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
-<meta name="DC.title" content="BSS Search" />
-<meta name="DC.relation" scheme="URI" content="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-62609FEA-0339-4187-9435-88CE00E65018.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.html" />
-<meta name="DC.relation" scheme="URI" content="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.html" />
-<meta name="DC.format" content="XHTML" />
-<meta name="DC.identifier" content="bss-search" />
-<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
-<title>BSS Search</title>
-<meta name="Microsoft.Help.Id" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F-bss-search" />
-<meta name="Microsoft.Help.TocParent" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F" />
-<meta name="Microsoft.Help.TocOrder" content="0" />
-<meta name="Microsoft.Help.Locale" content="en-US" />
-<meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless WiFi PIC32MZW1 Reference A 04/2022" />
-<script language="javascript">
-       
-       if (window.parent.location.protocol != 'file:') {
-				document.addEventListener('click', function(e) {
-				    if (e.target) {
-               if (e.target.nodeName == "A" ) {
-                    if (!e.target.target) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                              
-                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
-                      if (origUrl.length === 0) {
-                          origUrl = window.parent.location.href;
-                      }
-                      var href= e.target.getAttribute("href");
-                      var parts = href.split("#");
-          
-                      var url = "";
-                      if (parts.length == 2 ) {
-                        if (!parts[0].length) {
-                            url = window.parent.location.search.replace('?','')
-                        } else {
-                            url = parts[0].replace('.html','');
-                        }
-                      } else {
-                        url = parts[0].replace('.html','');
-                      }
-
-                      if (parts.length == 2) {
-                          url += "#" + parts[1];
-                      }
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="The application can use this interface to request a scan for local BSSs. Once requested the WINC device will conduct the search using the configured search parameters and report the results back to ..."/><meta name="copyright" content="(C) Copyright 2023"/><meta name="DC.rights.owner" content="(C) Copyright 2023"/><meta name="DC.type" content="topic"/><meta name="DC.relation" content="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.md"/><meta name="DC.relation" content="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.md"/><meta name="DC.relation" content="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.md"/><meta name="DC.relation" content="GUID-62609FEA-0339-4187-9435-88CE00E65018.md"/><meta name="DC.relation" content="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.md"/><meta name="DC.relation" content="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.md"/><meta name="DC.relation" content="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.md"/><meta name="DC.relation" content="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.md"/><meta name="DC.relation" content="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.md"/><meta name="DC.relation" content="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.md"/><meta name="DC.relation" content="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.md"/><meta name="DC.relation" content="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.md"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="bss-search"/><title>1.1.5 BSS Search</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;&lt;?workdir /D:\InfoShare\Data\Publish\Data\ohm3eec2pwx\work\temp?&gt;&lt;?workdir-uri file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/temp/?&gt;&lt;?path2project?&gt;&lt;?path2project-uri ./?&gt;&lt;?path2rootmap-uri ./?&gt;&lt;topic xmlns:ditaarch=&#34;http://dita.oasis-open.org/architecture/2005/&#34; xmlns:dita-ot=&#34;http://dita-ot.sourceforge.net/ns/201007/dita-ot&#34; class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;bss-search&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;topic:1;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;title:1;182:3&#34;&gt;BSS Search&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;body:1;182:3&#34;&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:1;182:3&#34;&gt;The application can use this interface to request a scan for local BSSs. Once requested the WINC device will conduct the search using the configured search parameters and report the results back to the application one BSS at a time. This interface can be used in either a callback mode, a polled mode or a combination of both callback and polled depending on how the application wished to receive the BSS information.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:2;182:3&#34;&gt;&lt;b class=&#34;+ topic/ph hi-d/b &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;b:1;182:3&#34;&gt;Scan Parameters, Thresholds and Channels&lt;/b&gt;&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:3;182:3&#34;&gt;How a scan is conducted depends on the parameters, threshold and channel lists provided by the application. Each scan operation on a channel consists of a number of scan slots, the time spent in each slot can be configured for both active and passive scans as well as the number of slots per channel. These parameters are set using the function WDRV_WINC_BSSFindSetScanParameters.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:4;182:3&#34;&gt;The RSSI threshold a BSS must exceed to be considered detected can be set by calling WDRV_WINC_BSSFindSetRSSIThreshold.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:5;182:3&#34;&gt;The channels which can be scanned can be set by calling WDRV_WINC_BSSFindSetEnabledChannels.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:6;182:3&#34;&gt;&lt;b class=&#34;+ topic/ph hi-d/b &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;b:2;182:3&#34;&gt;Starting a Scan&lt;/b&gt;&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:7;182:3&#34;&gt;When an application wishes to begin a scan operation it must call WDRV_WINC_BSSFindFirst. It is possible to request a scan on only a single channel or on all channels enabled by WDRV_WINC_BSSFindSetEnabledChannels. The scan can be performed using active mode (where probe requests are transmitted) or passive mode (where beacons are listened for).&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:8;182:3&#34;&gt;WDRV_WINC_BSSFindFirst takes an optional callback function to use for notifying the application when the scan operation is complete, and the first result is available. If this isn’t provided, the application can poll this interface using WDRV_WINC_BSSFindInProgress to determine if the WINC device is still scanning.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:9;182:3&#34;&gt;&lt;b class=&#34;+ topic/ph hi-d/b &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;b:3;182:3&#34;&gt;Getting Results: Callback Only&lt;/b&gt;&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:10;182:3&#34;&gt;If a callback function was provided to WDRV_WINC_BSSFindFirst the WINC driver will call this callback when the first results are available. The callback is provided with the scan result for a single BSS as well as the index of the results within the full set of BSSs discovered. If the callback function returns the value true to the WINC driver it will cause the driver to request the next result from the WINC device. When this result is available the WINC driver will again call the callback and provide the BSS information. It is thus possible to receive all the results via the callback.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:11;182:3&#34;&gt;&lt;b class=&#34;+ topic/ph hi-d/b &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;b:4;182:3&#34;&gt;Getting Results : Callback Notification, Foreground Retrieval&lt;/b&gt;&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:12;182:3&#34;&gt;While the application may wish to be notified of a BSS result being available via the callback mechanism it may be preferable to retrieve the result information from a foreground task. For example, in an OS environment the callback may simply signal a semaphore triggering the main application task to retrieve the BSS information. In this model the callback called by the WINC driver should return the value false. The WINC driver will not request the next set of BSS information from the WINC device. The foreground task may then call WDRV_WINC_BSSFindGetInfo with a pointer to a WDRV_WINC_BSS_INFO structure to receive the BSS information. If the function is called when there is no valid BSS information present in the WINC driver the function will return WDRV_WINC_STATUS_NO_BSS_INFO.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:13;182:3&#34;&gt;When the application wishes to request the next set of BSS information it must call WDRV_WINC_BSSFindNext. It is possible to change the callback function at this time or even turn off callback operation if a NULL pointer is used. Assuming the callback function is again specified the WINC driver will request the next set of BSS information from the WINC device and inform the application via the callback.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:14;182:3&#34;&gt;&lt;b class=&#34;+ topic/ph hi-d/b &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;b:5;182:3&#34;&gt;Getting Results : Polled&lt;/b&gt;&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:15;182:3&#34;&gt;The operations of the BSS scan can be inferred by polling this interface. WDRV_WINC_BSSFindInProgress indicates if the scan operation is currently active and results are not yet available.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:16;182:3&#34;&gt;WDRV_WINC_BSSFindGetNumBSSResults returns the number of sets of BSS information available as a result of a scan operation.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:17;182:3&#34;&gt;WDRV_WINC_BSSFindGetInfo can be called to retrieve the BSS information. If the information is not yet available this function will return WDRV_WINC_STATUS_NO_BSS_INFO.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:18;182:3&#34;&gt;&lt;b class=&#34;+ topic/ph hi-d/b &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;b:6;182:3&#34;&gt;Terminating a BSS Search&lt;/b&gt;&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md&#34; xtrc=&#34;p:19;182:3&#34;&gt;Once a scan operation has been started by calling WDRV_WINC_BSSFindFirst it must be allowed to complete, once it has the application may decide to ignore some or all of the results. To abort the BSS information retrieval and abandon any remaining results the application can call WDRV_WINC_BSSFindReset.&lt;/p&gt;&lt;/body&gt;&lt;related-links class=&#34;- topic/related-links &#34;&gt;&lt;linkpool class=&#34;- topic/linkpool &#34; mapkeyref=&#34;GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74&#34; xtrc=&#34;topicref:18;3:3839&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;parent&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:2;3:1514&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;MPLAB® Harmony WINC WLAN Library&lt;/linktext&gt;&lt;/link&gt;&lt;linkpool class=&#34;- topic/linkpool &#34; xtrc=&#34;topicref:18;3:3839&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:19;3:3974&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFIND_NOTIFY_CALLBACK Typedef&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:20;3:4120&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindFirst Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-62609FEA-0339-4187-9435-88CE00E65018.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:21;3:4266&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindGetInfo Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:22;3:4412&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindGetNumBSSResults Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:23;3:4558&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindInProgress Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:24;3:4704&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindNext Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:25;3:4850&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindReset Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:26;3:4996&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindSetEnabledChannels Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:27;3:5142&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindSetRSSIThreshold Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:28;3:5288&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindSetScanMatchMode Function&lt;/linktext&gt;&lt;/link&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;child&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:29;3:5434&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;WDRV_WINC_BSSFindSetScanParameters Function&lt;/linktext&gt;&lt;/link&gt;&lt;/linkpool&gt;&lt;/linkpool&gt;&lt;/related-links&gt;&lt;/topic&gt;"/><meta name="wh-source-relpath" content="GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.md"/><meta name="wh-out-relpath" content="GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
     
-                      window.parent.location.href = origUrl + "?" + url;
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+</head>
 
-                      return false;
-                    }
-               }
-            }
-				});
-			}
+    <body id="bss-search" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB Harmony Wireless WiFi "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB Harmony Wireless WiFi </a></div>
+                    
+                </div>
+                
+                
+            </div>
 
-		</script><script language="javascript">
-         
-         function copyContent(content, button) {
-         
-            var textArea = document.createElement("textarea");
-            
-            // Place in the top-left corner of screen regardless of scroll position.
-            textArea.style.position = 'fixed';
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            
-            // Ensure it has a small width and height. Setting to 1px / 1em
-            // doesn't work as this gives a negative w/h on some browsers.
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            
-            // We don't need padding, reducing the size if it does flash render.
-            textArea.style.padding = 0;
-            
-            // Clean up any borders.
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            
-            // Avoid flash of the white box if rendered for any reason.
-            textArea.style.background = 'transparent';
-            
-            textArea.value = content;
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-               var successful = document.execCommand('copy');
-               var msg = successful ? 'successful' : 'unsuccessful';
-               if (!button.classList.contains("copied")){
-                  button.textContent = "Copied";
-                  button.classList.add("copied");
-                  setTimeout(function(){
-                     button.textContent = "Copy";
-                     button.classList.remove("copied");
-                  },1000);
-               }
-            } catch (err) {
-               console.log('Oops, unable to copy');
-            }
-            
-            document.body.removeChild(textArea);
-         }
-         
-         function cpy(id, button) {
-            var element = document.getElementById(id);
-            var content = element.getAttribute("content");
-            
-            copyContent(content, button);
-         }
-         
-         document.addEventListener("DOMContentLoaded", function(event) {
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.style.position = "relative";
-               var copy = document.createElement("button");
-               copy.textContent = "Copy";
-               copy.setAttribute("class", "copy-code");
-               
-               var content = elem.textContent;
-               
-               copy.addEventListener("click", function(){
-                  copyContent(content, copy);
-               });
-               
-               elem.addEventListener("mouseenter", function(evt){
-                  elem.prepend(copy);
-               });
-            });
-            
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.addEventListener("mouseleave", function(evt){
-                  document.querySelector(".copy-code").remove();
-               });
-            });
-         });
-         
-      </script><script language="javascript">
-          
-          // Add the MathML namespace to html
-          var html = document.getElementsByTagName("html")[0],
-          head = document.getElementsByTagName("head")[0];
-          
-          var mathJax = document.createElement("script");
-          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
-          head.appendChild(mathJax);
-          
-          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
-          
-          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
-          
-          if (!inIframe()) { 
-          
-          var Default = "index.html?GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C"; 
-          
-          var displaylocation = "value" + window.location.href;
-          
-          var GUIDS = displaylocation.split('GUID');          
-          
-          if (displaylocation.indexOf('#GUID') != -1) {            
-          var First = GUIDS[1].split('.html');  
-          if (GUIDS[3]){First = GUIDS[2].split('.html');}
-          if (GUIDS[4]){First = GUIDS[3].split('.html');}
-          if (GUIDS[5]){First = GUIDS[4].split('.html');}
-          
-          var Second = GUIDS[2].split('#');   
-          if (GUIDS[3]){Second = GUIDS[3].split('#');}
-          if (GUIDS[4]){Second = GUIDS[4].split('#');}
-          if (GUIDS[5]){Second = GUIDS[5].split('#');}
-          
-          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
-          }                    
-          window.top.location = Default;
-          }       
-          
-        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
-        
-          button.copy-code{
-            display:none;
-            padding:0.7em 1.4em;
-            margin:0 0.3em 0.3em 0;
-            border-radius:0.15em;
-            box-sizing: border-box;
-            text-decoration:none;
-            font-family:'Roboto',sans-serif;
-            text-transform:uppercase;
-            font-weight:400;
-            color:#FFFFFF;
-            background-color:#9c9c9c;
-            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-            text-align:center;
-            position:relative;
-            border: 0;
-            float: right;
-            border-radius: .5em;
-            cursor: pointer;
-          }
-          button.copy-code:active{
-            top:0.1em;
-          }
-          
-          pre:hover button.copy-code{
-            display: inline-block !important;
-          }
-          button.copy-code.copied {
-            cursor: default !important;
-          }
-          
-          
-          @media all and (max-width:30em){
-            button.copy-code{
-              display:block;
-              margin:0.4em auto;
-            }
-          }
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
         
         
-      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
-<body id="bss-search">
-<h1 class="title topictitle1" id="ariaid-title1">BSS Search</h1><div class="body"><p class="p">The application can use this interface to request a scan for local BSSs. Once requested the WINC device will conduct the search using the configured search parameters and report the results back to the application one BSS at a time. This interface can be used in either a callback mode, a polled mode or a combination of both callback and polled depending on how the application wished to
-receive the BSS information.</p>
-<p class="p"><strong class="ph b">Scan Parameters, Thresholds and Channels</strong></p>
-<p class="p">How a scan is conducted depends on the parameters, threshold and channel lists provided by the application.
-Each scan operation on a channel consists of a number of scan slots, the time spent in each slot can be configured for both active and passive scans as well as the number of slots per channel. These parameters are set using the function WDRV_WINC_BSSFindSetScanParameters.</p>
-<p class="p">The RSSI threshold a BSS must exceed to be considered detected can be set by calling WDRV_WINC_BSSFindSetRSSIThreshold.</p>
-<p class="p">The channels which can be scanned can be set by calling WDRV_WINC_BSSFindSetEnabledChannels.</p>
-<p class="p"><strong class="ph b">Starting a Scan</strong></p>
-<p class="p">When an application wishes to begin a scan operation it must call WDRV_WINC_BSSFindFirst. It is possible to request a scan on only a single channel or on all channels enabled by WDRV_WINC_BSSFindSetEnabledChannels. The scan can be performed using active mode (where probe requests are transmitted) or passive mode (where beacons are listened for).</p>
-<p class="p">WDRV_WINC_BSSFindFirst takes an optional callback function to use for notifying the application when the scan operation is complete, and the first result is available. If this isn’t provided, the application can poll this interface using WDRV_WINC_BSSFindInProgress to determine if the WINC device is still scanning.</p>
-<p class="p"><strong class="ph b">Getting Results: Callback Only</strong></p>
-<p class="p">If a callback function was provided to WDRV_WINC_BSSFindFirst the WINC driver will call this callback when the first results are available. The callback is provided with the scan result for a single BSS as well as the index of the results within the full set of BSSs discovered.
-If the callback function returns the value true to the WINC driver it will cause the driver to request the next result from the WINC device. When this result is available the WINC driver will again call the callback and provide the BSS information. It is thus possible to receive all the results via the callback.</p>
-<p class="p"><strong class="ph b">Getting Results : Callback Notification, Foreground Retrieval</strong></p>
-<p class="p">While the application may wish to be notified of a BSS result being available via the callback mechanism it may be preferable to retrieve the result information from a foreground task. For example, in an OS environment the callback may simply signal a semaphore triggering the main application task to retrieve the BSS information.
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
+            
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
+</div>
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="mplab-harmony-3-wireless-wifi"><div class="title"><a href="GUID-63404677-1C09-41F6-8D95-12C76CAA1BDE.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+MPLAB® Harmony 3 Wireless_wifi</a></div></div></li><li><div class="topicref" data-id="mplab-harmony-winc-wlan-library"><div class="title"><a href="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1</ph>
+MPLAB® Harmony WINC WLAN Library</a></div></div></li><li class="active"><div class="topicref" data-id="bss-search"><div class="title"><a href="GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5</ph>
+BSS Search</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="true"><div data-tocid="mplab-harmony-3-wireless-wifi-d2053e9" class="topicref" data-id="mplab-harmony-3-wireless-wifi" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action mplab-harmony-3-wireless-wifi-d2053e9-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-63404677-1C09-41F6-8D95-12C76CAA1BDE.html" id="mplab-harmony-3-wireless-wifi-d2053e9-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+MPLAB® Harmony 3 Wireless_wifi</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="mplab-harmony-winc-wlan-library-d2053e17" class="topicref" data-id="mplab-harmony-winc-wlan-library" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action mplab-harmony-winc-wlan-library-d2053e17-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html" id="mplab-harmony-winc-wlan-library-d2053e17-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1</ph>
+MPLAB® Harmony WINC WLAN Library</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="winc-firmware-update-guide-d2053e25" class="topicref" data-id="winc-firmware-update-guide" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-9D7FF72B-E648-4E12-A908-7D722938C12A.html" id="winc-firmware-update-guide-d2053e25-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.1</ph>
+WINC Firmware Update Guide</a></div></div></li><li role="treeitem"><div data-tocid="serial-bridge-d2053e33" class="topicref" data-id="serial-bridge" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-ABDC9A29-634D-48AC-B83D-570E298B7803.html" id="serial-bridge-d2053e33-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.2</ph>
+Serial Bridge</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="association-management-d2053e41" class="topicref" data-id="association-management" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action association-management-d2053e41-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-616CDBC1-3935-4DBC-80FC-A5B9CE78ED13.html" id="association-management-d2053e41-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.3</ph>
+Association Management</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ble-operation-d2053e113" class="topicref" data-id="ble-operation" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ble-operation-d2053e113-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-38B98272-9F79-4E2B-8B1B-1BE940F6B02A.html" id="ble-operation-d2053e113-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.4</ph>
+BLE Operation</a></div></div></li><li role="treeitem" aria-expanded="true" class="active"><div data-tocid="bss-search-d2053e145" class="topicref" data-id="bss-search" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action bss-search-d2053e145-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3B687BA8-CC6B-4846-A782-129F1EBC470C.html" id="bss-search-d2053e145-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5</ph>
+BSS Search</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="wdrv-winc-bssfind-notify-callback-typedef-d2053e153" class="topicref" data-id="wdrv-winc-bssfind-notify-callback-typedef" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.html" id="wdrv-winc-bssfind-notify-callback-typedef-d2053e153-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.1</ph>
+WDRV_WINC_BSSFIND_NOTIFY_CALLBACK Typedef</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindfirst-function-d2053e161" class="topicref" data-id="wdrv-winc-bssfindfirst-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.html" id="wdrv-winc-bssfindfirst-function-d2053e161-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.2</ph>
+WDRV_WINC_BSSFindFirst Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindgetinfo-function-d2053e169" class="topicref" data-id="wdrv-winc-bssfindgetinfo-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-62609FEA-0339-4187-9435-88CE00E65018.html" id="wdrv-winc-bssfindgetinfo-function-d2053e169-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.3</ph>
+WDRV_WINC_BSSFindGetInfo Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindgetnumbssresults-function-d2053e177" class="topicref" data-id="wdrv-winc-bssfindgetnumbssresults-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.html" id="wdrv-winc-bssfindgetnumbssresults-function-d2053e177-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.4</ph>
+WDRV_WINC_BSSFindGetNumBSSResults Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindinprogress-function-d2053e185" class="topicref" data-id="wdrv-winc-bssfindinprogress-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.html" id="wdrv-winc-bssfindinprogress-function-d2053e185-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.5</ph>
+WDRV_WINC_BSSFindInProgress Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindnext-function-d2053e193" class="topicref" data-id="wdrv-winc-bssfindnext-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.html" id="wdrv-winc-bssfindnext-function-d2053e193-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.6</ph>
+WDRV_WINC_BSSFindNext Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindreset-function-d2053e201" class="topicref" data-id="wdrv-winc-bssfindreset-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.html" id="wdrv-winc-bssfindreset-function-d2053e201-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.7</ph>
+WDRV_WINC_BSSFindReset Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindsetenabledchannels-function-d2053e209" class="topicref" data-id="wdrv-winc-bssfindsetenabledchannels-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.html" id="wdrv-winc-bssfindsetenabledchannels-function-d2053e209-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.8</ph>
+WDRV_WINC_BSSFindSetEnabledChannels Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindsetrssithreshold-function-d2053e217" class="topicref" data-id="wdrv-winc-bssfindsetrssithreshold-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.html" id="wdrv-winc-bssfindsetrssithreshold-function-d2053e217-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.9</ph>
+WDRV_WINC_BSSFindSetRSSIThreshold Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindsetscanmatchmode-function-d2053e225" class="topicref" data-id="wdrv-winc-bssfindsetscanmatchmode-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.html" id="wdrv-winc-bssfindsetscanmatchmode-function-d2053e225-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.10</ph>
+WDRV_WINC_BSSFindSetScanMatchMode Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-winc-bssfindsetscanparameters-function-d2053e234" class="topicref" data-id="wdrv-winc-bssfindsetscanparameters-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.html" id="wdrv-winc-bssfindsetscanparameters-function-d2053e234-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.5.11</ph>
+WDRV_WINC_BSSFindSetScanParameters Function</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="authentication-bss--http-provisioning-d2053e242" class="topicref" data-id="authentication-bss--http-provisioning" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action authentication-bss--http-provisioning-d2053e242-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-A1973CB2-FDD4-4331-8C34-628D76F97AA5.html" id="authentication-bss--http-provisioning-d2053e242-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.6</ph>
+Authentication, BSS &amp; HTTP provisioning</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client-interaction-d2053e355" class="topicref" data-id="client-interaction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client-interaction-d2053e355-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-2FAD3653-78B4-42A4-89A3-D1F492AE27A0.html" id="client-interaction-d2053e355-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.7</ph>
+Client Interaction</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="network-sockets-and-ip-d2053e379" class="topicref" data-id="network-sockets-and-ip" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action network-sockets-and-ip-d2053e379-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-78DB111E-E79A-4370-AE52-C9CE06147971.html" id="network-sockets-and-ip-d2053e379-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.8</ph>
+Network Sockets and IP</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="nvm-access-d2053e492" class="topicref" data-id="nvm-access" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action nvm-access-d2053e492-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-CA544C44-D3FF-451B-9DC3-EF8A5A84C161.html" id="nvm-access-d2053e492-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.9</ph>
+NVM Access</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="power-save-control-d2053e532" class="topicref" data-id="power-save-control" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action power-save-control-d2053e532-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-1A16AFB9-0845-42CE-A604-361A3C412DED.html" id="power-save-control-d2053e532-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.10</ph>
+Power Save Control</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="setup--initialization-d2053e581" class="topicref" data-id="setup--initialization" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setup--initialization-d2053e581-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-72234C45-8DB7-4B1A-A5D9-B45EE408CFEF.html" id="setup--initialization-d2053e581-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.11</ph>
+Setup &amp; Initialization</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="soft-ap-d2053e629" class="topicref" data-id="soft-ap" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action soft-ap-d2053e629-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-579FADC9-118B-4DB9-8A61-89F87AAAB36F.html" id="soft-ap-d2053e629-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.12</ph>
+Soft-AP</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="sta-d2053e701" class="topicref" data-id="sta" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action sta-d2053e701-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-FECD3CB6-70F0-44C7-AC06-C2FFFB669D65.html" id="sta-d2053e701-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.13</ph>
+STA</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ssltls-control-d2053e741" class="topicref" data-id="ssltls-control" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ssltls-control-d2053e741-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-888B1D77-10DC-4BCA-BEA0-88EAA6A78507.html" id="ssltls-control-d2053e741-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.14</ph>
+SSL/TLS Control</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="system-time-control-d2053e838" class="topicref" data-id="system-time-control" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action system-time-control-d2053e838-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-339C64DA-F57A-42E4-8018-96013D179999.html" id="system-time-control-d2053e838-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.15</ph>
+System Time Control</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="wps-d2053e902" class="topicref" data-id="wps" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action wps-d2053e902-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-3E485907-2C41-4C9A-A5A9-BF00F332D046.html" id="wps-d2053e902-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1.16</ph>
+WPS</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="mplab-harmony-pic32mzw1-wlan-library-d2053e942" class="topicref" data-id="mplab-harmony-pic32mzw1-wlan-library" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action mplab-harmony-pic32mzw1-wlan-library-d2053e942-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-11E4FD9C-17E6-4F65-AE7A-6550EB45E118.html" id="mplab-harmony-pic32mzw1-wlan-library-d2053e942-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2</ph>
+MPLAB® Harmony PIC32MZW1 WLAN Library</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2053e1737" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2053e1737-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2053e1737-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="- topic/title title topictitle1" id="ariaid-title1" style="">1.1.5 BSS Search</h1><div class="- topic/body body"><p class="- topic/p p">The application can use this interface to request a scan for local BSSs. Once requested the WINC device will conduct the search using the configured search parameters and report the results back to the application one BSS at a time. This interface can be used in either a callback mode, a polled mode or a combination of both callback and polled depending on how the application wished to
+receive the BSS information.</p><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Scan Parameters, Thresholds and Channels</strong></p><p class="- topic/p p">How a scan is conducted depends on the parameters, threshold and channel lists provided by the application.
+Each scan operation on a channel consists of a number of scan slots, the time spent in each slot can be configured for both active and passive scans as well as the number of slots per channel. These parameters are set using the function WDRV_WINC_BSSFindSetScanParameters.</p><p class="- topic/p p">The RSSI threshold a BSS must exceed to be considered detected can be set by calling WDRV_WINC_BSSFindSetRSSIThreshold.</p><p class="- topic/p p">The channels which can be scanned can be set by calling WDRV_WINC_BSSFindSetEnabledChannels.</p><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Starting a Scan</strong></p><p class="- topic/p p">When an application wishes to begin a scan operation it must call WDRV_WINC_BSSFindFirst. It is possible to request a scan on only a single channel or on all channels enabled by WDRV_WINC_BSSFindSetEnabledChannels. The scan can be performed using active mode (where probe requests are transmitted) or passive mode (where beacons are listened for).</p><p class="- topic/p p">WDRV_WINC_BSSFindFirst takes an optional callback function to use for notifying the application when the scan operation is complete, and the first result is available. If this isn’t provided, the application can poll this interface using WDRV_WINC_BSSFindInProgress to determine if the WINC device is still scanning.</p><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Getting Results: Callback Only</strong></p><p class="- topic/p p">If a callback function was provided to WDRV_WINC_BSSFindFirst the WINC driver will call this callback when the first results are available. The callback is provided with the scan result for a single BSS as well as the index of the results within the full set of BSSs discovered.
+If the callback function returns the value true to the WINC driver it will cause the driver to request the next result from the WINC device. When this result is available the WINC driver will again call the callback and provide the BSS information. It is thus possible to receive all the results via the callback.</p><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Getting Results : Callback Notification, Foreground Retrieval</strong></p><p class="- topic/p p">While the application may wish to be notified of a BSS result being available via the callback mechanism it may be preferable to retrieve the result information from a foreground task. For example, in an OS environment the callback may simply signal a semaphore triggering the main application task to retrieve the BSS information.
 In this model the callback called by the WINC driver should return the value false. The WINC driver will not request the next set of BSS information from the WINC device.
-The foreground task may then call WDRV_WINC_BSSFindGetInfo with a pointer to a WDRV_WINC_BSS_INFO structure to receive the BSS information. If the function is called when there is no valid BSS information present in the WINC driver the function will return WDRV_WINC_STATUS_NO_BSS_INFO.</p>
-<p class="p">When the application wishes to request the next set of BSS information it must call WDRV_WINC_BSSFindNext. It is possible to change the callback function at this time or even turn off callback operation if a NULL pointer is used. Assuming the callback function is again specified the WINC driver will request the next set of BSS information from the WINC device and inform the application via the callback.</p>
-<p class="p"><strong class="ph b">Getting Results : Polled</strong></p>
-<p class="p">The operations of the BSS scan can be inferred by polling this interface.
-WDRV_WINC_BSSFindInProgress indicates if the scan operation is currently active and results are not yet available.</p>
-<p class="p">WDRV_WINC_BSSFindGetNumBSSResults returns the number of sets of BSS information available as a result of a scan
-operation.</p>
-<p class="p">WDRV_WINC_BSSFindGetInfo can be called to retrieve the BSS information. If the information is not yet available this function will return WDRV_WINC_STATUS_NO_BSS_INFO.</p>
-<p class="p"><strong class="ph b">Terminating a BSS Search</strong></p>
-<p class="p">Once a scan operation has been started by calling WDRV_WINC_BSSFindFirst it must be allowed to complete, once it has the application may decide to ignore some or all of the results. To abort the BSS information retrieval and abandon any remaining results the application can call WDRV_WINC_BSSFindReset.</p>
+The foreground task may then call WDRV_WINC_BSSFindGetInfo with a pointer to a WDRV_WINC_BSS_INFO structure to receive the BSS information. If the function is called when there is no valid BSS information present in the WINC driver the function will return WDRV_WINC_STATUS_NO_BSS_INFO.</p><p class="- topic/p p">When the application wishes to request the next set of BSS information it must call WDRV_WINC_BSSFindNext. It is possible to change the callback function at this time or even turn off callback operation if a NULL pointer is used. Assuming the callback function is again specified the WINC driver will request the next set of BSS information from the WINC device and inform the application via the callback.</p><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Getting Results : Polled</strong></p><p class="- topic/p p">The operations of the BSS scan can be inferred by polling this interface.
+WDRV_WINC_BSSFindInProgress indicates if the scan operation is currently active and results are not yet available.</p><p class="- topic/p p">WDRV_WINC_BSSFindGetNumBSSResults returns the number of sets of BSS information available as a result of a scan
+operation.</p><p class="- topic/p p">WDRV_WINC_BSSFindGetInfo can be called to retrieve the BSS information. If the information is not yet available this function will return WDRV_WINC_STATUS_NO_BSS_INFO.</p><p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Terminating a BSS Search</strong></p><p class="- topic/p p">Once a scan operation has been started by calling WDRV_WINC_BSSFindFirst it must be allowed to complete, once it has the application may decide to ignore some or all of the results. To abort the BSS information retrieval and abandon any remaining results the application can call WDRV_WINC_BSSFindReset.</p></div></article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
 </div>
-<div class="related-links">
-<ul class="ullinks">
-<li class="link ulchildlink"><strong><a href="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4.html">WDRV_WINC_BSSFIND_NOTIFY_CALLBACK Typedef</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88.html">WDRV_WINC_BSSFindFirst Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-62609FEA-0339-4187-9435-88CE00E65018.html">WDRV_WINC_BSSFindGetInfo Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E.html">WDRV_WINC_BSSFindGetNumBSSResults Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B.html">WDRV_WINC_BSSFindInProgress Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E.html">WDRV_WINC_BSSFindNext Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3.html">WDRV_WINC_BSSFindReset Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9.html">WDRV_WINC_BSSFindSetEnabledChannels Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA.html">WDRV_WINC_BSSFindSetRSSIThreshold Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD.html">WDRV_WINC_BSSFindSetScanMatchMode Function</a></strong><br />
-</li>
-<li class="link ulchildlink"><strong><a href="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF.html">WDRV_WINC_BSSFindSetScanParameters Function</a></strong><br />
-</li>
-</ul>
-
-<div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html">MPLAB® Harmony WINC WLAN Library</a></div>
-</div>
-</div></body>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
 </html>

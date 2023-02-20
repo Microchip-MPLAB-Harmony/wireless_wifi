@@ -1,285 +1,311 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE11" /><meta name="copyright" content="(C) Copyright 2022" />
-<meta name="DC.rights.owner" content="(C) Copyright 2022" />
-<meta name="DC.type" content="topic" />
-<meta name="DC.title" content="WDRV_PIC32MZW_BSSFindSetScanParameters Function" />
-<meta name="DC.relation" scheme="URI" content="GUID-428BA90A-8569-4AF5-99EF-A915134BF434.html" />
-<meta name="DC.format" content="XHTML" />
-<meta name="DC.identifier" content="wdrv-pic32mzw-bssfindsetscanparameters-function" />
-<link rel="stylesheet" type="text/css" href="stylesheets/atmel.css" />
-<title>WDRV_PIC32MZW_BSSFindSetScanParameters Function</title>
-<meta name="Microsoft.Help.Id" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F-wdrv-pic32mzw-bssfindsetscanparameters-function" />
-<meta name="Microsoft.Help.TocParent" content="GUID-8B137D7B-852A-471A-8E47-463DF557852F" />
-<meta name="Microsoft.Help.TocOrder" content="0" />
-<meta name="Microsoft.Help.Locale" content="en-US" />
-<meta name="Microsoft.Help.TopicLocale" content="en-US" />
-<meta name="Microsoft.Help.DisplayVersion" content="MPLAB Harmony Wireless WiFi PIC32MZW1 Reference A 04/2022" />
-<script language="javascript">
-       
-       if (window.parent.location.protocol != 'file:') {
-				document.addEventListener('click', function(e) {
-				    if (e.target) {
-               if (e.target.nodeName == "A" ) {
-                    if (!e.target.target) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                              
-                      var origUrl = window.parent.location.href.substr(0, window.parent.location.href.indexOf("?"));
-                      if (origUrl.length === 0) {
-                          origUrl = window.parent.location.href;
-                      }
-                      var href= e.target.getAttribute("href");
-                      var parts = href.split("#");
-          
-                      var url = "";
-                      if (parts.length == 2 ) {
-                        if (!parts[0].length) {
-                            url = window.parent.location.search.replace('?','')
-                        } else {
-                            url = parts[0].replace('.html','');
-                        }
-                      } else {
-                        url = parts[0].replace('.html','');
-                      }
-
-                      if (parts.length == 2) {
-                          url += "#" + parts[1];
-                      }
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="24.1">
+    <head><link rel="shortcut icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><link rel="icon" href="oxygen-webhelp\template\resources/images/favicon.ico"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="description" content="WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters ( DRV_HANDLE handle, uint8_t numSlots, uint16_t activeSlotTime, uint16_t passiveSlotTime, uint8_t numProbes ) Configures the scan operation. ..."/><meta name="copyright" content="(C) Copyright 2023"/><meta name="DC.rights.owner" content="(C) Copyright 2023"/><meta name="DC.type" content="topic"/><meta name="DC.relation" content="GUID-428BA90A-8569-4AF5-99EF-A915134BF434.md"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="wdrv-pic32mzw-bssfindsetscanparameters-function"/><title>1.2.3.12 WDRV_PIC32MZW_BSSFindSetScanParameters Function</title><!--  Generated with Oxygen version 24.1, build number 2022062014.  --><meta name="wh-path2root" content=""/><meta name="wh-toc-id" content="&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;&lt;?workdir /D:\InfoShare\Data\Publish\Data\ohm3eec2pwx\work\temp?&gt;&lt;?workdir-uri file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/temp/?&gt;&lt;?path2project?&gt;&lt;?path2project-uri ./?&gt;&lt;?path2rootmap-uri ./?&gt;&lt;topic xmlns:ditaarch=&#34;http://dita.oasis-open.org/architecture/2005/&#34; xmlns:dita-ot=&#34;http://dita-ot.sourceforge.net/ns/201007/dita-ot&#34; class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;wdrv-pic32mzw-bssfindsetscanparameters-function&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:1;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:1;182:3&#34;&gt;WDRV_PIC32MZW_BSSFindSetScanParameters Function&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:1;182:3&#34;/&gt;&lt;related-links class=&#34;- topic/related-links &#34;&gt;&lt;linkpool class=&#34;- topic/linkpool &#34; mapkeyref=&#34;GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74&#34; xtrc=&#34;topicref:142;3:21932&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;link class=&#34;- topic/link &#34; format=&#34;dita&#34; href=&#34;GUID-428BA90A-8569-4AF5-99EF-A915134BF434.md&#34; mapclass=&#34;- map/topicref &#34; role=&#34;parent&#34; scope=&#34;local&#34; type=&#34;topic&#34; xtrc=&#34;topicref:130;3:20191&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-EE428367-AE83-42DD-8E87-B939D1E7FB74.ditamap&#34;&gt;&lt;?ditaot usertext?&gt;&lt;linktext class=&#34;- topic/linktext &#34;&gt;&lt;?ditaot gentext?&gt;Client - BSS Find APIs&lt;/linktext&gt;&lt;/link&gt;&lt;/linkpool&gt;&lt;/related-links&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;c&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:2;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:2;182:3&#34;&gt;C&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:2;182:3&#34;&gt;&lt;codeblock class=&#34;+ topic/pre pr-d/codeblock &#34; xml:space=&#34;preserve&#34; outputclass=&#34;c&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;codeblock:1;182:3&#34;&gt;WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters ( DRV_HANDLE handle, uint8_t numSlots, uint16_t activeSlotTime, uint16_t passiveSlotTime, uint8_t numProbes )&lt;/codeblock&gt;&lt;/body&gt;&lt;/topic&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;summary&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:3;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:3;182:3&#34;&gt;Summary&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:3;182:3&#34;&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:1;182:3&#34;&gt;Configures the scan operation.&lt;/p&gt;&lt;/body&gt;&lt;/topic&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;description&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:4;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:4;182:3&#34;&gt;Description&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:4;182:3&#34;&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:2;182:3&#34;&gt;Configures the time periods of active and passive scanning operations.&lt;/p&gt;&lt;/body&gt;&lt;/topic&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;precondition&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:5;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:5;182:3&#34;&gt;Precondition&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:5;182:3&#34;&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:3;182:3&#34;&gt;WDRV_PIC32MZW_Initialize must have been called. WDRV_PIC32MZW_Open must have been called to obtain a valid handle.&lt;/p&gt;&lt;/body&gt;&lt;/topic&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;parameters&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:6;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:6;182:3&#34;&gt;Parameters&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:6;182:3&#34;&gt;&lt;table class=&#34;- topic/table &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;table:1;182:3&#34;&gt;&lt;tgroup class=&#34;- topic/tgroup &#34; cols=&#34;2&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;tgroup:1;182:3&#34;&gt;&lt;colspec class=&#34;- topic/colspec &#34; colname=&#34;col1&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;colspec:1;182:3&#34; colnum=&#34;1&#34;/&gt;&lt;colspec class=&#34;- topic/colspec &#34; colname=&#34;col2&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;colspec:2;182:3&#34; colnum=&#34;2&#34;/&gt;&lt;thead class=&#34;- topic/thead &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;thead:1;182:3&#34;&gt;&lt;row class=&#34;- topic/row &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;row:1;182:3&#34;&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:1;182:3&#34; colname=&#34;col1&#34; dita-ot:x=&#34;1&#34; dita-ot:y=&#34;1&#34;&gt;Param&lt;/entry&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:2;182:3&#34; colname=&#34;col2&#34; dita-ot:x=&#34;2&#34; dita-ot:y=&#34;1&#34;&gt;Description&lt;/entry&gt;&lt;/row&gt;&lt;/thead&gt;&lt;tbody class=&#34;- topic/tbody &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;tbody:1;182:3&#34;&gt;&lt;row class=&#34;- topic/row &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;row:2;182:3&#34;&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:3;182:3&#34; colname=&#34;col1&#34; dita-ot:x=&#34;1&#34; dita-ot:y=&#34;2&#34;&gt;handle&lt;/entry&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:4;182:3&#34; colname=&#34;col2&#34; dita-ot:x=&#34;2&#34; dita-ot:y=&#34;2&#34;&gt;Client handle obtained by a call to WDRV_PIC32MZW_Open.&lt;/entry&gt;&lt;/row&gt;&lt;row class=&#34;- topic/row &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;row:3;182:3&#34;&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:5;182:3&#34; colname=&#34;col1&#34; dita-ot:x=&#34;1&#34; dita-ot:y=&#34;3&#34;&gt;numSlots&lt;/entry&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:6;182:3&#34; colname=&#34;col2&#34; dita-ot:x=&#34;2&#34; dita-ot:y=&#34;3&#34;&gt;Number of slots (minimum is 2).&lt;/entry&gt;&lt;/row&gt;&lt;row class=&#34;- topic/row &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;row:4;182:3&#34;&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:7;182:3&#34; colname=&#34;col1&#34; dita-ot:x=&#34;1&#34; dita-ot:y=&#34;4&#34;&gt;activeSlotTime&lt;/entry&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:8;182:3&#34; colname=&#34;col2&#34; dita-ot:x=&#34;2&#34; dita-ot:y=&#34;4&#34;&gt;Time spent on each active channel probing for BSS's.&lt;/entry&gt;&lt;/row&gt;&lt;row class=&#34;- topic/row &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;row:5;182:3&#34;&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:9;182:3&#34; colname=&#34;col1&#34; dita-ot:x=&#34;1&#34; dita-ot:y=&#34;5&#34;&gt;passiveSlotTime&lt;/entry&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:10;182:3&#34; colname=&#34;col2&#34; dita-ot:x=&#34;2&#34; dita-ot:y=&#34;5&#34;&gt;Time spent on each passive channel listening for beacons.&lt;/entry&gt;&lt;/row&gt;&lt;row class=&#34;- topic/row &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;row:6;182:3&#34;&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:11;182:3&#34; colname=&#34;col1&#34; dita-ot:x=&#34;1&#34; dita-ot:y=&#34;6&#34;&gt;numProbes&lt;/entry&gt;&lt;entry class=&#34;- topic/entry &#34; align=&#34;left&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;entry:12;182:3&#34; colname=&#34;col2&#34; dita-ot:x=&#34;2&#34; dita-ot:y=&#34;6&#34;&gt;Number of probes per slot.&lt;/entry&gt;&lt;/row&gt;&lt;/tbody&gt;&lt;/tgroup&gt;&lt;/table&gt;&lt;/body&gt;&lt;/topic&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;returns&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:7;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:7;182:3&#34;&gt;Returns&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:7;182:3&#34;&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:4;182:3&#34;&gt;&lt;i class=&#34;+ topic/ph hi-d/i &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;i:1;182:3&#34;&gt;WDRV_PIC32MZW_STATUS_OK&lt;/i&gt; - The request was accepted.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:5;182:3&#34;&gt;&lt;i class=&#34;+ topic/ph hi-d/i &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;i:2;182:3&#34;&gt;WDRV_PIC32MZW_STATUS_NOT_OPEN&lt;/i&gt; - The driver instance is not open.&lt;/p&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:6;182:3&#34;&gt;&lt;i class=&#34;+ topic/ph hi-d/i &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;i:3;182:3&#34;&gt;WDRV_PIC32MZW_STATUS_INVALID_ARG&lt;/i&gt; - The parameters were incorrect.&lt;/p&gt;&lt;/body&gt;&lt;/topic&gt;&lt;topic class=&#34;- topic/topic &#34; ditaarch:DITAArchVersion=&#34;1.2&#34; domains=&#34;(topic hi-d) (topic ut-d) (topic indexing-d) (topic hazard-d) (topic abbrev-d) (topic pr-d) (topic sw-d) (topic ui-d)&#34; id=&#34;remarks&#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;topic:8;182:3&#34; specializations=&#34;&#34;&gt;&lt;title class=&#34;- topic/title &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;title:8;182:3&#34;&gt;Remarks&lt;/title&gt;&lt;body class=&#34;- topic/body &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;body:8;182:3&#34;&gt;&lt;p class=&#34;- topic/p &#34; xtrf=&#34;file:/D:/InfoShare/Data/Publish/Data/ohm3eec2pwx/work/2/en-US/GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md&#34; xtrc=&#34;p:7;182:3&#34;&gt;If any parameter is zero then the configured value is unchanged.&lt;/p&gt;&lt;/body&gt;&lt;/topic&gt;&lt;/topic&gt;"/><meta name="wh-source-relpath" content="GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.md"/><meta name="wh-out-relpath" content="GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.html"/>
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/lib/bootstrap/css/bootstrap.min.css"/>
     
-                      window.parent.location.href = origUrl + "?" + url;
+    <link rel="stylesheet" href="./oxygen-webhelp/lib/jquery-ui/jquery-ui.min.css"/>
+    
+    <!-- Template default styles  -->
+    <link rel="stylesheet" type="text/css" href="./oxygen-webhelp/app/topic-page.css?buildId=2022062014"/>
+    
+    
+    <script src="./oxygen-webhelp/lib/jquery/jquery-3.5.1.min.js"></script>
+    
+    <script data-main="./oxygen-webhelp/app/topic-page.js" src="./oxygen-webhelp/lib/requirejs/require.js"></script>
+<link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/microchip.css?buildId=2022062014"/><link rel="stylesheet" type="text/css" href="oxygen-webhelp/template/notes.css?buildId=2022062014"/>
+<script src="mchp-context-help.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="" type="text/javascript"></script>
+</head>
 
-                      return false;
-                    }
-               }
-            }
-				});
-			}
+    <body id="wdrv-pic32mzw-bssfindsetscanparameters-function" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+        <header class="navbar navbar-default wh_header">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container navbar-nav navbar-expand-md navbar-dark">
+            <div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    
+                    <a href="index.html" class=" wh_logo d-none d-sm-block "><img src="oxygen-webhelp\template\resources/images/microchip.png" alt="MPLAB Harmony Wireless WiFi "/></a>
+                    <div class=" wh_publication_title "><a href="index.html">MPLAB Harmony Wireless WiFi </a></div>
+                    
+                </div>
+                
+                
+            </div>
 
-		</script><script language="javascript">
-         
-         function copyContent(content, button) {
-         
-            var textArea = document.createElement("textarea");
-            
-            // Place in the top-left corner of screen regardless of scroll position.
-            textArea.style.position = 'fixed';
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            
-            // Ensure it has a small width and height. Setting to 1px / 1em
-            // doesn't work as this gives a negative w/h on some browsers.
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            
-            // We don't need padding, reducing the size if it does flash render.
-            textArea.style.padding = 0;
-            
-            // Clean up any borders.
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            
-            // Avoid flash of the white box if rendered for any reason.
-            textArea.style.background = 'transparent';
-            
-            textArea.value = content;
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-               var successful = document.execCommand('copy');
-               var msg = successful ? 'successful' : 'unsuccessful';
-               if (!button.classList.contains("copied")){
-                  button.textContent = "Copied";
-                  button.classList.add("copied");
-                  setTimeout(function(){
-                     button.textContent = "Copy";
-                     button.classList.remove("copied");
-                  },1000);
-               }
-            } catch (err) {
-               console.log('Oops, unable to copy');
-            }
-            
-            document.body.removeChild(textArea);
-         }
-         
-         function cpy(id, button) {
-            var element = document.getElementById(id);
-            var content = element.getAttribute("content");
-            
-            copyContent(content, button);
-         }
-         
-         document.addEventListener("DOMContentLoaded", function(event) {
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.style.position = "relative";
-               var copy = document.createElement("button");
-               copy.textContent = "Copy";
-               copy.setAttribute("class", "copy-code");
-               
-               var content = elem.textContent;
-               
-               copy.addEventListener("click", function(){
-                  copyContent(content, copy);
-               });
-               
-               elem.addEventListener("mouseenter", function(evt){
-                  elem.prepend(copy);
-               });
-            });
-            
-            document.querySelectorAll(".codeblock").forEach(function(elem) {
-               elem.addEventListener("mouseleave", function(evt){
-                  document.querySelector(".copy-code").remove();
-               });
-            });
-         });
-         
-      </script><script language="javascript">
-          
-          // Add the MathML namespace to html
-          var html = document.getElementsByTagName("html")[0],
-          head = document.getElementsByTagName("head")[0];
-          
-          var mathJax = document.createElement("script");
-          mathJax.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML";
-          head.appendChild(mathJax);
-          
-          html.setAttribute("xmlns:m","http://www.w3.org/1998/Math/MathML");
-          
-          function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
-          
-          if (!inIframe()) { 
-          
-          var Default = "index.html?GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01"; 
-          
-          var displaylocation = "value" + window.location.href;
-          
-          var GUIDS = displaylocation.split('GUID');          
-          
-          if (displaylocation.indexOf('#GUID') != -1) {            
-          var First = GUIDS[1].split('.html');  
-          if (GUIDS[3]){First = GUIDS[2].split('.html');}
-          if (GUIDS[4]){First = GUIDS[3].split('.html');}
-          if (GUIDS[5]){First = GUIDS[4].split('.html');}
-          
-          var Second = GUIDS[2].split('#');   
-          if (GUIDS[3]){Second = GUIDS[3].split('#');}
-          if (GUIDS[4]){Second = GUIDS[4].split('#');}
-          if (GUIDS[5]){Second = GUIDS[5].split('#');}
-          
-          Default = "index.html?" + "GUID" + First[0] + "GUID" + Second[0];     
-          }                    
-          window.top.location = Default;
-          }       
-          
-        </script><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /><style xml:space="">
-        
-          button.copy-code{
-            display:none;
-            padding:0.7em 1.4em;
-            margin:0 0.3em 0.3em 0;
-            border-radius:0.15em;
-            box-sizing: border-box;
-            text-decoration:none;
-            font-family:'Roboto',sans-serif;
-            text-transform:uppercase;
-            font-weight:400;
-            color:#FFFFFF;
-            background-color:#9c9c9c;
-            box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-            text-align:center;
-            position:relative;
-            border: 0;
-            float: right;
-            border-radius: .5em;
-            cursor: pointer;
-          }
-          button.copy-code:active{
-            top:0.1em;
-          }
-          
-          pre:hover button.copy-code{
-            display: inline-block !important;
-          }
-          button.copy-code.copied {
-            cursor: default !important;
-          }
-          
-          
-          @media all and (max-width:30em){
-            button.copy-code{
-              display:block;
-              margin:0.4em auto;
-            }
-          }
+            <div class="wh_top_menu_and_indexterms_link collapse navbar-collapse" id="wh_top_menu_and_indexterms_link">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</header>
         
         
-      </style><link rel="stylesheet" type="text/css" href="syntax-highlight.css" /></head>
-<body id="wdrv-pic32mzw-bssfindsetscanparameters-function">
-<h1 class="title topictitle1" id="ariaid-title1">WDRV_PIC32MZW_BSSFindSetScanParameters Function</h1><div class="body"></div>
-<div class="related-links">
-<div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="GUID-428BA90A-8569-4AF5-99EF-A915134BF434.html">Client - BSS Find APIs</a></div>
+         
+        
+        <div class=" wh_search_input navbar-form wh_topic_page_search search " role="form">
+            
+            
+            
+            <form id="searchForm" method="get" role="search" action="search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            <div class="mchp-color-stripe-grid-container">
+  <div class="mchp-main-bar mchp-orange-bar"></div>
+  <div class="mchp-main-bar mchp-blue-bar"></div>
+  <div class="mchp-main-bar mchp-green-bar"></div>
 </div>
-</div><div class="topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="title topictitle2" id="ariaid-title2">C</h2><div class="body"><pre class="pre codeblock c">WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
+            
+        </div>
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="mplab-harmony-3-wireless-wifi"><div class="title"><a href="GUID-63404677-1C09-41F6-8D95-12C76CAA1BDE.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+MPLAB® Harmony 3 Wireless_wifi</a></div></div></li><li><div class="topicref" data-id="mplab-harmony-pic32mzw1-wlan-library"><div class="title"><a href="GUID-11E4FD9C-17E6-4F65-AE7A-6550EB45E118.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2</ph>
+MPLAB® Harmony PIC32MZW1 WLAN Library</a></div></div></li><li><div class="topicref" data-id="client---bss-find-apis"><div class="title"><a href="GUID-428BA90A-8569-4AF5-99EF-A915134BF434.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3</ph>
+Client - BSS Find APIs</a></div></div></li><li class="active"><div class="topicref" data-id="wdrv-pic32mzw-bssfindsetscanparameters-function"><div class="title"><a href="GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.html"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.12</ph>
+WDRV_PIC32MZW_BSSFindSetScanParameters Function</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <button type="button" id="wh_toc_button" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        <nav id="wh_publication_toc" class="col-lg-3 col-md-3 col-sm-12 d-md-block d-none d-print-none" aria-label="Table of Contents Container">
+                            <div id="wh_publication_toc_content">
+		                        
+                            	<div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="true"><div data-tocid="mplab-harmony-3-wireless-wifi-d2053e9" class="topicref" data-id="mplab-harmony-3-wireless-wifi" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action mplab-harmony-3-wireless-wifi-d2053e9-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-63404677-1C09-41F6-8D95-12C76CAA1BDE.html" id="mplab-harmony-3-wireless-wifi-d2053e9-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1</ph>
+MPLAB® Harmony 3 Wireless_wifi</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="mplab-harmony-winc-wlan-library-d2053e17" class="topicref" data-id="mplab-harmony-winc-wlan-library" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action mplab-harmony-winc-wlan-library-d2053e17-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4EC8AD6B-F2ED-4E18-965F-82C5B8A3028F.html" id="mplab-harmony-winc-wlan-library-d2053e17-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.1</ph>
+MPLAB® Harmony WINC WLAN Library</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="mplab-harmony-pic32mzw1-wlan-library-d2053e942" class="topicref" data-id="mplab-harmony-pic32mzw1-wlan-library" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action mplab-harmony-pic32mzw1-wlan-library-d2053e942-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-11E4FD9C-17E6-4F65-AE7A-6550EB45E118.html" id="mplab-harmony-pic32mzw1-wlan-library-d2053e942-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2</ph>
+MPLAB® Harmony PIC32MZW1 WLAN Library</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="system-interface-apis-d2053e950" class="topicref" data-id="system-interface-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action system-interface-apis-d2053e950-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4B7527DC-12C4-4A41-8004-41415FF65DAB.html" id="system-interface-apis-d2053e950-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.1</ph>
+System Interface APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client-openclose-apis-d2053e1006" class="topicref" data-id="client-openclose-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client-openclose-apis-d2053e1006-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-05DB8121-0E91-4E8A-AE77-8A0405604950.html" id="client-openclose-apis-d2053e1006-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.2</ph>
+Client Open/Close APIs</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="client---bss-find-apis-d2053e1046" class="topicref" data-id="client---bss-find-apis" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action client---bss-find-apis-d2053e1046-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-428BA90A-8569-4AF5-99EF-A915134BF434.html" id="client---bss-find-apis-d2053e1046-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3</ph>
+Client - BSS Find APIs</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfind-notify-callback-typedef-d2053e1054" class="topicref" data-id="wdrv-pic32mzw-bssfind-notify-callback-typedef" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-6C1D56BE-C531-4584-903E-B20EA545069E.html" id="wdrv-pic32mzw-bssfind-notify-callback-typedef-d2053e1054-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.1</ph>
+WDRV_PIC32MZW_BSSFIND_NOTIFY_CALLBACK Typedef</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-scan-match-mode-enum-d2053e1062" class="topicref" data-id="wdrv-pic32mzw-scan-match-mode-enum" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-5160F49B-444F-4D1A-A398-5207DEF78843.html" id="wdrv-pic32mzw-scan-match-mode-enum-d2053e1062-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.2</ph>
+WDRV_PIC32MZW_SCAN_MATCH_MODE Enum</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-sec-mask-enum-d2053e1070" class="topicref" data-id="wdrv-pic32mzw-sec-mask-enum" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-E012F7C2-64C2-40DA-89CF-C613B200BF19.html" id="wdrv-pic32mzw-sec-mask-enum-d2053e1070-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.3</ph>
+WDRV_PIC32MZW_SEC_MASK Enum</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindfirst-function-d2053e1078" class="topicref" data-id="wdrv-pic32mzw-bssfindfirst-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-81D18119-F240-47CC-8CDA-1B9FDD83B822.html" id="wdrv-pic32mzw-bssfindfirst-function-d2053e1078-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.4</ph>
+WDRV_PIC32MZW_BSSFindFirst Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindgetinfo-function-d2053e1086" class="topicref" data-id="wdrv-pic32mzw-bssfindgetinfo-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-031836CF-94FC-442B-B7E8-45F3E66649D1.html" id="wdrv-pic32mzw-bssfindgetinfo-function-d2053e1086-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.5</ph>
+WDRV_PIC32MZW_BSSFindGetInfo Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindgetnumbssresults-function-d2053e1094" class="topicref" data-id="wdrv-pic32mzw-bssfindgetnumbssresults-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-AF380EDC-B004-4B11-8FF6-2563D3DAC1B6.html" id="wdrv-pic32mzw-bssfindgetnumbssresults-function-d2053e1094-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.6</ph>
+WDRV_PIC32MZW_BSSFindGetNumBSSResults Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindinprogress-function-d2053e1102" class="topicref" data-id="wdrv-pic32mzw-bssfindinprogress-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-EA06AD1D-6A2D-4772-9E90-E7A8F2EC23DA.html" id="wdrv-pic32mzw-bssfindinprogress-function-d2053e1102-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.7</ph>
+WDRV_PIC32MZW_BSSFindInProgress Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindnext-function-d2053e1110" class="topicref" data-id="wdrv-pic32mzw-bssfindnext-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-14E56CEC-4DA0-4224-B7C3-DD36BD3E79E2.html" id="wdrv-pic32mzw-bssfindnext-function-d2053e1110-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.8</ph>
+WDRV_PIC32MZW_BSSFindNext Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindreset-function-d2053e1118" class="topicref" data-id="wdrv-pic32mzw-bssfindreset-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-EFE4EBAB-3F25-4EE9-BD27-D3BD6F14C3D8.html" id="wdrv-pic32mzw-bssfindreset-function-d2053e1118-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.9</ph>
+WDRV_PIC32MZW_BSSFindReset Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindsetenabledchannels24-function-d2053e1126" class="topicref" data-id="wdrv-pic32mzw-bssfindsetenabledchannels24-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-CE31A004-61F9-480A-A2ED-86AE40681AAD.html" id="wdrv-pic32mzw-bssfindsetenabledchannels24-function-d2053e1126-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.10</ph>
+WDRV_PIC32MZW_BSSFindSetEnabledChannels24 Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssfindsetscanmatchmode-function-d2053e1135" class="topicref" data-id="wdrv-pic32mzw-bssfindsetscanmatchmode-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-5E0FFB91-528B-46EF-A4CF-A205923C64E4.html" id="wdrv-pic32mzw-bssfindsetscanmatchmode-function-d2053e1135-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.11</ph>
+WDRV_PIC32MZW_BSSFindSetScanMatchMode Function</a></div></div></li><li role="treeitem" class="active"><div data-tocid="wdrv-pic32mzw-bssfindsetscanparameters-function-d2053e1143" class="topicref" data-id="wdrv-pic32mzw-bssfindsetscanparameters-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-562FFC3B-E23F-423C-B72D-C2DE095DDB01.html" id="wdrv-pic32mzw-bssfindsetscanparameters-function-d2053e1143-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.12</ph>
+WDRV_PIC32MZW_BSSFindSetScanParameters Function</a></div></div></li><li role="treeitem"><div data-tocid="wdrv-pic32mzw-bssroamingconfigure-function-d2053e1151" class="topicref" data-id="wdrv-pic32mzw-bssroamingconfigure-function" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="GUID-B6921361-2F3A-4384-8081-FCE9BC1D3895.html" id="wdrv-pic32mzw-bssroamingconfigure-function-d2053e1151-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.3.13</ph>
+WDRV_PIC32MZW_BSSRoamingConfigure Function</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="client---bss-context-apis-d2053e1159" class="topicref" data-id="client---bss-context-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client---bss-context-apis-d2053e1159-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-A7016003-8684-4D26-B759-0441465932F4.html" id="client---bss-context-apis-d2053e1159-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.4</ph>
+Client - BSS Context APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client-interface---authentication-context-apis-d2053e1247" class="topicref" data-id="client-interface---authentication-context-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client-interface---authentication-context-apis-d2053e1247-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-7754F32E-D105-41A5-A616-96D9F21EF2E6.html" id="client-interface---authentication-context-apis-d2053e1247-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.5</ph>
+Client Interface - Authentication Context APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client---association-apis-d2053e1352" class="topicref" data-id="client---association-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client---association-apis-d2053e1352-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-A41D060B-3559-4D60-8C99-34B6D015731E.html" id="client---association-apis-d2053e1352-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.6</ph>
+Client - Association APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client-interface---sta-mode-apis-d2053e1424" class="topicref" data-id="client-interface---sta-mode-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client-interface---sta-mode-apis-d2053e1424-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-280694C4-227F-4691-BEF1-FB6365B3CD28.html" id="client-interface---sta-mode-apis-d2053e1424-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.7</ph>
+Client Interface - STA mode APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client-interface---soft-ap-mode-apis-d2053e1448" class="topicref" data-id="client-interface---soft-ap-mode-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client-interface---soft-ap-mode-apis-d2053e1448-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-4594F3F1-EA78-43B4-854F-36413FDD31C5.html" id="client-interface---soft-ap-mode-apis-d2053e1448-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.8</ph>
+Client Interface - Soft AP mode APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="80211-powersave-api-d2053e1496" class="topicref" data-id="80211-powersave-api" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action 80211-powersave-api-d2053e1496-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-692317EF-E19C-4FF1-A9C7-EF5346CB492C.html" id="80211-powersave-api-d2053e1496-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.9</ph>
+802.11 Powersave API</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="regulatory-domain-selection-apis-d2053e1560" class="topicref" data-id="regulatory-domain-selection-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action regulatory-domain-selection-apis-d2053e1560-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-2837E642-4901-446E-B0F5-8EE66291BCFC.html" id="regulatory-domain-selection-apis-d2053e1560-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.10</ph>
+Regulatory Domain Selection APIs</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="vendor-ie-api-implementation-d2053e1609" class="topicref" data-id="vendor-ie-api-implementation" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action vendor-ie-api-implementation-d2053e1609-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-2EE5E09F-F7A3-4B3A-9CEE-DB7F52840E02.html" id="vendor-ie-api-implementation-d2053e1609-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.11</ph>
+Vendor IE API Implementation</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="client---information-apis-d2053e1657" class="topicref" data-id="client---information-apis" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action client---information-apis-d2053e1657-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-533D5ED2-D4A6-4D2D-96C2-F22F52395F72.html" id="client---information-apis-d2053e1657-link"><ph xmlns="http://www.oxygenxml.com/ns/webhelp/toc">1.2.12</ph>
+Client - Information APIs</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2053e1737" class="topicref backmatter backmatter_parent" data-id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2053e1737-link" class="wh-expand-btn"></span><div class="title"><a href="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B.html" id="GUID-0FB3F908-88EE-45CE-94F5-E97AF9049C9B-d2053e1737-link">Microchip Information</a></div></div></li></ul></div>
+		                        
+                            </div>
+                        </nav>
+                    
+                    
+                    <div class="col-lg-7 col-md-9 col-sm-12" id="wh_topic_body">
+                        <button id="wh_close_publication_toc_button" class="close-toc-button d-none" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        <button id="wh_close_topic_toc_button" class="close-toc-button d-none" aria-label="Toggle topic table of content" aria-controls="wh_topic_toc" aria-expanded="true">
+                            <span class="close-toc-icon-container">
+                                <span class="close-toc-icon"></span>     
+                            </span>
+                        </button>
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="- topic/title title topictitle1" id="ariaid-title1" style="">1.2.3.12 WDRV_PIC32MZW_BSSFindSetScanParameters Function</h1><div class="- topic/body body"></div><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title2" id="c"><h2 class="- topic/title title topictitle2" id="ariaid-title2" style=""> C</h2><div class="- topic/body body"><pre class="+ topic/pre pr-d/codeblock pre codeblock c">WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
 (
 DRV_HANDLE handle,
 uint8_t numSlots,
 uint16_t activeSlotTime,
 uint16_t passiveSlotTime,
 uint8_t numProbes
-)</pre></div>
+)</pre></div></article><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title3" id="summary"><h2 class="- topic/title title topictitle2" id="ariaid-title3" style=""> Summary</h2><div class="- topic/body body"><p class="- topic/p p">Configures the scan operation.</p></div></article><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title4" id="description"><h2 class="- topic/title title topictitle2" id="ariaid-title4" style=""> Description</h2><div class="- topic/body body"><p class="- topic/p p">Configures the time periods of active and passive scanning operations.</p></div></article><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title5" id="precondition"><h2 class="- topic/title title topictitle2" id="ariaid-title5" style=""> Precondition</h2><div class="- topic/body body"><p class="- topic/p p">WDRV_PIC32MZW_Initialize must have been called. WDRV_PIC32MZW_Open must have been called to obtain a valid handle.</p></div></article><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title6" id="parameters"><h2 class="- topic/title title topictitle2" id="ariaid-title6" style=""> Parameters</h2><div class="- topic/body body"><div class="table-container"><table class="- topic/table table" data-cols="2"><caption></caption><colgroup><col/><col/></colgroup><thead class="- topic/thead thead"><tr class="- topic/row"><th class="- topic/entry entry align-left colsep-0 rowsep-0" id="parameters__entry__1">Param</th><th class="- topic/entry entry align-left colsep-0 rowsep-0" id="parameters__entry__2">Description</th></tr></thead><tbody class="- topic/tbody tbody"><tr class="- topic/row"><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__1">handle</td><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__2">Client handle obtained by a call to WDRV_PIC32MZW_Open.</td></tr><tr class="- topic/row"><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__1">numSlots</td><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__2">Number of slots (minimum is 2).</td></tr><tr class="- topic/row"><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__1">activeSlotTime</td><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__2">Time spent on each active channel probing for BSS's.</td></tr><tr class="- topic/row"><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__1">passiveSlotTime</td><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__2">Time spent on each passive channel listening for beacons.</td></tr><tr class="- topic/row"><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__1">numProbes</td><td class="- topic/entry entry align-left colsep-0 rowsep-0" headers="parameters__entry__2">Number of probes per slot.</td></tr></tbody></table></div></div></article><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title7" id="returns"><h2 class="- topic/title title topictitle2" id="ariaid-title7" style=""> Returns</h2><div class="- topic/body body"><p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">WDRV_PIC32MZW_STATUS_OK</em> - The request was accepted.</p><p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">WDRV_PIC32MZW_STATUS_NOT_OPEN</em> - The driver instance is not open.</p><p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">WDRV_PIC32MZW_STATUS_INVALID_ARG</em> - The parameters were incorrect.</p></div></article><article class="- topic/topic topic nested1" aria-labelledby="ariaid-title8" id="remarks"><h2 class="- topic/title title topictitle2" id="ariaid-title8" style=""> Remarks</h2><div class="- topic/body body"><p class="- topic/p p">If any parameter is zero then the configured value is unchanged.</p></div></article></article></main></div>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                        <nav role="navigation" id="wh_topic_toc" aria-label="On this page" class="col-lg-2 d-none d-lg-block navbar d-print-none"> 
+                            <div id="wh_topic_toc_content">
+		                        
+	                            <div class=" wh_topic_toc "><div class="wh_topic_label">On this page</div><ul><li class="topic-item"><a href="#c" data-tocid="c"> C</a></li><li class="topic-item"><a href="#summary" data-tocid="summary"> Summary</a></li><li class="topic-item"><a href="#description" data-tocid="description"> Description</a></li><li class="topic-item"><a href="#precondition" data-tocid="precondition"> Precondition</a></li><li class="topic-item"><a href="#parameters" data-tocid="parameters"> Parameters</a></li><li class="topic-item"><a href="#returns" data-tocid="returns"> Returns</a></li><li class="topic-item"><a href="#remarks" data-tocid="remarks"> Remarks</a></li></ul></div>
+	                        	
+                        	</div>
+                        </nav>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer">
+  <div class=" footer-container mx-auto ">
+    <div class="footer">
+  <div class="mchp-wh-footer">
+    <div class="mchp-footer">
+      <div class="mchp-footer-tier1">
+        <div class="spacer"></div>
+        <div class="mchp-footer-container">
+          <div class="mchp-footer-links mchp-social-media-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.facebook.com/pages/Microchip-Technology-Inc/20320981741" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Facebook" src="oxygen-webhelp/template/resources/images/201016-corp-facebook.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.linkedin.com/company/microchip-technology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip LinkedIn" src="oxygen-webhelp/template/resources/images/201016-corp-linkedin.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://twitter.com/MicrochipTech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Twitter" src="oxygen-webhelp/template/resources/images/201016-corp-twitter.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.youtube.com/user/MicrochipTechnology" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip YouTube" src="oxygen-webhelp/template/resources/images/201016-corp-youtube.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.instagram.com/microchiptechnologyinc/" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Instagram" src="oxygen-webhelp/template/resources/images/201016-corp-instagram.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.weibo.com/microchiptech" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Weibo" src="oxygen-webhelp/template/resources/images/201016-corp-weibo.png"/>
+                </a>
+              </div>
+              <div class="mchp-component-item">
+                <a class="cmp-image__link" href="https://www.microchip.com/en-us/about/blog" target="_blank">
+                  <img class="cmp-image__image" alt="Microchip Blog" src="oxygen-webhelp/template/resources/images/201016-corp-blog.png"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-links">
+            <div class="mchp-component-items">
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://www.microchip.com/about-us/contact-us" class="mchp-link__link">Contact</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information" class="mchp-link__link">Legal</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/privacy-policy" class="mchp-link__link">Privacy Policy</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item ">
+                <div class="link">
+                  <a href="https://www.microchip.com/en-us/about/legal-information/microchip-cookie-statement" class="mchp-link__link">Cookies</a>
+                  <span class="mchp-link__separator">|</span>
+                </div>
+              </div>
+              <div class="mchp-component-item">
+                <div class="link">
+                  <a href="https://careers.microchip.com/" class="mchp-link__link">Careers</a>
+                  <span class="mchp-link__separator"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mchp-footer-newsletter">
+            <div class="cmp-text">
+              <p>Stay on the leading edge with our blog</p>
+            </div>
+            <div class="mchp-button-wrapper">
+              <a role="button" href="https://www.microchip.com/en-us/about/blog" class="mchp-button mchp-button-regular solid">
+                <span class="mchp-button__span">MicroSolutions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="graphic">
+          <img src="oxygen-webhelp/template/resources/images/footer-graphic.png"/>
+        </div>
+      </div>
+      <div class="mchp-footer-tier2">
+        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());   
+    gtag('config', 'UA-2724382-19');
+  </script>
 </div>
-<div class="topic nested1" aria-labelledby="ariaid-title3" id="summary"><h2 class="title topictitle2" id="ariaid-title3">Summary</h2><div class="body"><p class="p">Configures the scan operation.</p>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="ariaid-title4" id="description"><h2 class="title topictitle2" id="ariaid-title4">Description</h2><div class="body"><p class="p">Configures the time periods of active and passive scanning operations.</p>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="ariaid-title5" id="precondition"><h2 class="title topictitle2" id="ariaid-title5">Precondition</h2><div class="body"><p class="p">WDRV_PIC32MZW_Initialize must have been called. WDRV_PIC32MZW_Open must have been called to obtain a valid handle.</p>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="ariaid-title6" id="parameters"><h2 class="title topictitle2" id="ariaid-title6">Parameters</h2><div class="body">
-<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="border" border="1" rules="all"><col style="width:" /><col style="width:" /><thead class="thead" style="text-align:left;"><tr class="row"><th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d39079e51"><span>Param</span></th>
-<th class="entry cellrowborder" style="text-align:left;vertical-align:middle;" id="d39079e53"><span>Description</span></th>
-</tr>
-</thead>
-<tbody class="tbody"><tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e51 "><span>handle</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e53 "><span>Client handle obtained by a call to WDRV_PIC32MZW_Open.</span></td>
-</tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e51 "><span>numSlots</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e53 "><span>Number of slots (minimum is 2).</span></td>
-</tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e51 "><span>activeSlotTime</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e53 "><span>Time spent on each active channel probing for BSS's.</span></td>
-</tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e51 "><span>passiveSlotTime</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e53 "><span>Time spent on each passive channel listening for beacons.</span></td>
-</tr>
-<tr class="row"><td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e51 "><span>numProbes</span></td>
-<td class="entry cellrowborder" style="text-align:left;vertical-align:middle;" headers="d39079e53 "><span>Number of probes per slot.</span></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="ariaid-title7" id="returns"><h2 class="title topictitle2" id="ariaid-title7">Returns</h2><div class="body"><p class="p"><em class="ph i">WDRV_PIC32MZW_STATUS_OK</em> - The request was accepted.</p>
-<p class="p"><em class="ph i">WDRV_PIC32MZW_STATUS_NOT_OPEN</em> - The driver instance is not open.</p>
-<p class="p"><em class="ph i">WDRV_PIC32MZW_STATUS_INVALID_ARG</em> - The parameters were incorrect.</p>
-</div>
-</div>
-<div class="topic nested1" aria-labelledby="ariaid-title8" id="remarks"><h2 class="title topictitle2" id="ariaid-title8">Remarks</h2><div class="body"><p class="p">If any parameter is zero then the configured value is unchanged.</p>
-</div>
-</div>
-</body>
+  </div>
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <div id="modal_img_container"></div>
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
 </html>
