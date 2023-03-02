@@ -3,13 +3,30 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
-## Wireless_wifi Release v3.7.2
+## Wireless_wifi Release v3.8.0
+This release contains improvements to the serial bridge application to add support for SAMA5D27 host.
 
-### Dot Release v3.7.2:
-- WINC: Support added for SAMA5D27 platform
-	- WINC1500 support (v19.7.7) & WINC3400 support (v1.4.4)
+### New Features
 
-**Other release notes for v3.7.1 apply here**
+- WINC: Enhance serial bridge application to support SAMA5D27.
+
+### Note: WINC FW version is same as previous major release v3.7.0.
+###    - WINC1500(v19.7.7) & WINC3400(v1.4.4)	
+
+### Bug fixes
+- WINC: WINC Harmony driver leaves WINC device enabled on de-initialisation .
+- WINC: WINC Harmony driver does not close DRV_SPI on de-initialisation.
+- WINC: Serial bridge fails on SAMA5D27 if firmware is 19.5.4.
+
+### Known Issues/Limitations
+
+- WINC MISRA warnings/false positives(same as previous releases):
+    - driver/winc/drv/driver/m2m_wifi.c(1039) 	644 	9.1 	Variable 'strNetworkId' (line 1030) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/wdrv_winc_authctx.c(122) 	530 	9.1 	Symbol 'PKCS1_RSA_PRIVATE_KEY' (line 105) not initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/driver/nmspi.c(928) 	644 	9.1 	Variable 'tmpBuf' (line 905) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/socket/socket.c(574) 	644 	9.1 	Variable 'pstrSock' (line 535) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
+**Other release notes for v3.7.0 apply here too**
 
 ## Wireless_wifi Release v3.7.1
 
