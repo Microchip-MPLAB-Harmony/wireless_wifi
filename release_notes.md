@@ -26,6 +26,22 @@ This release contains improvements to the serial bridge application to add suppo
     - driver/winc/drv/driver/nmspi.c(928) 	644 	9.1 	Variable 'tmpBuf' (line 905) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
     - driver/winc/drv/socket/socket.c(574) 	644 	9.1 	Variable 'pstrSock' (line 535) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
 
+### Development Tools(applicable for WINC only)
+
+- [MPLAB® X IDE v6.05](https://www.microchip.com/mplab/mplab-x-ide)
+- MPLAB® X IDE plug-ins:
+  - [MPLAB® Code Configurator (MCC) v5.1.17](https://www.microchip.com/en-us/tools-resources/configure/mplab-code-configurator)
+- [MPLAB® XC32 C/C++ Compiler v4.20](https://www.microchip.com/mplab/compilers)
+
+### Development Tools(applicable for PIC32MZW1 only)
+
+- [MPLAB® X IDE v6.00](https://www.microchip.com/mplab/mplab-x-ide)
+- MPLAB® X IDE plug-ins:
+    - [MPLAB® Code Configurator (MCC) v5.1.17](https://www.microchip.com/en-us/tools-resources/configure/mplab-code-configurator)
+- [MPLAB® XC32 C/C++ Compiler v3.01](https://www.microchip.com/mplab/compilers)
+- DFP 1.6.220
+
+
 **Other release notes for v3.7.0 apply here too**
 
 ## Wireless_wifi Release v3.7.1
