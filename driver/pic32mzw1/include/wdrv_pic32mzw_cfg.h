@@ -544,6 +544,37 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 /*
     Summary:
+        WID for COEX interface type.
+    Description:
+        DRV_WIFI_WID_COEX_INTERFACE_TYPE is used to set the CoEx interface type.
+        The possible values are:
+          0 for 3-wire (BT_Act, BT_Prio, WLAN_Act) interface
+          1 for 2-wire (BT_Prio, WLAN_Act) interface
+*/
+#define DRV_WIFI_WID_COEX_INTERFACE_TYPE                 0x00E0
+// *****************************************************************************
+/*
+    Summary:
+        WID for COEX priority flags.
+    Description:
+        DRV_WIFI_WID_COEX_PRIORITY_FLAGS is used to set the CoEx priority flags.
+        It indicates WLAN TX priority grater than BT LP.
+*/
+#define DRV_WIFI_WID_COEX_PRIORITY_FLAGS                 0x00E1
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for CoEx enable.
+    Description:
+        DRV_WIFI_WID_COEX_ENABLE is used to enable/disable the CoEx.
+        The possible values are 0 for disabled and 1 for enabled.
+*/
+#define DRV_WIFI_WID_COEX_ENABLE                        0x00E6
+
+// *****************************************************************************
+/*
+    Summary:
         WID for powersave correlation with PIC.
     Description:
         DRV_WIFI_WID_PS_CORRELATION is used to set the powersave correlation with PIC.
@@ -741,16 +772,16 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         The bit encoding of this is the same as that for DRV_WIFI_WID_USER_PREF_CHANNEL.
 */
 #define DRV_WIFI_WID_USER_SCAN_CHANNEL                          0x1022
-        
-// *****************************************************************************
+
+// *****************************************************************************        
 /*
     Summary:
         WID for listen interval.
     Description:
         This field contains the Listen Interval value to be used by a BSS-STA.
 */
-#define DRV_WIFI_WID_LISTEN_INTERVAL                    		0x1023
-
+#define DRV_WIFI_WID_LISTEN_INTERVAL                            0x1023
+        
 // *****************************************************************************
 /*
     Summary:
@@ -761,7 +792,19 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         During powersave if there is no activity in the BSS for the number of 
         beacons specified by this WID, a NULL frame will be sent to the AP.
 */
-#define DRV_WIFI_WID_SLEEP_INACT_IND_THRESHOLD           		0x1024        
+#define DRV_WIFI_WID_SLEEP_INACT_IND_THRESHOLD           		0x1024
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for 802.1X Authentication method.
+    Description:
+        DRV_WIFI_WID_SUPP_1X_AUTH_METHOD is valid for STA  mode.
+ *      DRV_WIFI_WID_SUPP_1X_AUTH_METHOD specify the EAP authentication method to be used to establish the enterprise connection.
+ *      1 - EAP-TLS
+ *      2 - EAP-TTLSv0/MSCHAPv2
+*/
+#define DRV_WIFI_WID_SUPP_1X_AUTH_METHOD                 		0x1090        
         
 
 // *****************************************************************************
@@ -1129,7 +1172,29 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
         This field gives the username or [username][domain name] or [domain name][username].
         The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
 */
-#define DRV_WIFI_WID_SUPP_DOMAIN_USERNAME                   0x3035  
+#define DRV_WIFI_WID_SUPP_DOMAIN_USERNAME                   0x3035
+        
+// *****************************************************************************
+/*
+    Summary:
+        WID for setting the username for 802.1X MSCHAPv2 authentication.
+    Description:
+        DRV_WIFI_WID_SUPP_USERNAME is valid for STA  mode.
+        This field specify the username for MSCHAPv2(phase2) enterprise authentication.
+        The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
+*/
+#define DRV_WIFI_WID_SUPP_USERNAME                          0x3010
+        
+// *****************************************************************************
+/*
+    Summary:
+        WID for setting the password for 802.1X MSCHAPv2 authentication.
+    Description:
+        DRV_WIFI_WID_SUPP_PASSWORD is valid for STA  mode.
+        specify the password for MSCHAPv2(phase2) enterprise authentication.
+        The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
+*/
+#define DRV_WIFI_WID_SUPP_PASSWORD                          0x3011         
 
 // *****************************************************************************
 /*

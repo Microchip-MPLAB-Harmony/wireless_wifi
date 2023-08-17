@@ -165,6 +165,9 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
     /* Allocate memory for the WIDs. */
     DRV_PIC32MZW_MultiWIDInit(&wids, 512);
 
+    /* Switch to AP mode (1). */
+    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SWITCH_MODE, 1);
+
     /* Enable or disable broadcast SSID based on cloaked flag. */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_BCAST_SSID, pBSSCtx->cloaked ? 1 : 0);
 
@@ -214,9 +217,6 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
 
     /* Set 11n enabled (1). */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_11N_ENABLE, 1);
-
-    /* Switch to AP mode (1). */
-    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SWITCH_MODE, 1);
 
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 

@@ -102,17 +102,23 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 /* Minimum length of a WPA Personal Password. */
 #define WDRV_PIC32MZW_MIN_PSK_PASSWORD_LEN      8
-        
+
 #ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
 /* The maximum length (in ASCII characters) of domain name + username (including '@' or '\')
    for authentication with Enterprise methods.
-*/        
+*/
 #define WDRV_PIC32MZW_ENT_AUTH_IDENTITY_LEN_MAX         255
 /* The maximum length (in ASCII characters) of server domain name for server certificate's validation
    during enterprise connection.
-*/        
-#define WDRV_PIC32MZW_ENT_AUTH_SERVER_DOMAIN_LEN_MAX    255        
-#endif        
+*/
+#define WDRV_PIC32MZW_ENT_AUTH_SERVER_DOMAIN_LEN_MAX    255
+/* The maximum length (in ASCII characters) of username for enterprise authentication.
+*/
+#define WDRV_PIC32MZW_ENT_AUTH_USERNAME_LEN_MAX    255
+/* The maximum length (in ASCII characters) of password for enterprise authentication.
+*/
+#define WDRV_PIC32MZW_ENT_AUTH_PASSWORD_LEN_MAX    255
+#endif
 
 // *****************************************************************************
 /*  WiFi Channels
@@ -397,6 +403,21 @@ typedef uintptr_t WDRV_PIC32MZW_ASSOC_HANDLE;
 
 #define WDRV_PIC32MZW_ASSOC_HANDLE_INVALID  (((WDRV_PIC32MZW_ASSOC_HANDLE) -1))
 
+// *****************************************************************************
+/* All Association Handles
+
+ Summary:
+    All association handles.
+
+ Description:
+    Defines a value which refers to all associations.
+
+ Remarks:
+    None.
+*/
+
+#define WDRV_PIC32MZW_ASSOC_HANDLE_ALL  (((WDRV_PIC32MZW_ASSOC_HANDLE) -2))
+
 #ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
 // *****************************************************************************
 /* Wolfssl context (WOLFSSL_CTX) handle
@@ -408,9 +429,9 @@ typedef uintptr_t WDRV_PIC32MZW_ASSOC_HANDLE;
     This handle identifies the open instance of a Wolfssl Context.
 
   Remarks:
-   The application should create the wolfssl context, load the required CA and device 
+   The application should create the wolfssl context, load the required CA and device
    certificates, load the device private key, enable peer server certificate verification
-   before calling any of the enterprise related APIs and pass this context handle as part of 
+   before calling any of the enterprise related APIs and pass this context handle as part of
    Authentication context.
 */
 typedef uintptr_t WDRV_PIC32MZW_TLS_CONTEXT_HANDLE;

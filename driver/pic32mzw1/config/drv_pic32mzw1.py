@@ -213,6 +213,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1SupportSae.setDescription('Support for WPA3 Personal security. Requires BA414E Cryptographic Accelerator from crypto release v3.6.2 or later. Also requires wolfCrypt support.')
     pic32mzw1SupportSae.setVisible(True)
     pic32mzw1SupportSae.setDefaultValue(True)
+    pic32mzw1SupportSae.setDependencies(setWpa3dependency, ['DRV_WIFI_PIC32MZW1_SUPPORT_SAE'])
 
     # Require BA414E hardware driver?
     pic32mzw1RequireBa414e = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_BA414E', None)
@@ -415,6 +416,12 @@ def setRequireWolfssl(symbol, event):
         symbol.setValue(False)
         drvPic32mzw1Component.setDependencyEnabled('Wolfssl_PIC32MZW1_Dependency', False)
         print('WolfSSL not required')
+
+def setWpa3dependency(symbol, event):
+    autoConnectwpa3 = [["drvWifiPic32mzw1", "BA414E_Dependency", "drv_ba414e", "drv_ba414e"]]
+    if (event["value"] == True):
+        res = Database.activateComponents(["drv_ba414e"], "BASIC CONFIGURATION")
+        res = Database.connectDependencies(autoConnectwpa3)
 
 def setEnabledRTOSTask(symbol, event):
     symbol.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))

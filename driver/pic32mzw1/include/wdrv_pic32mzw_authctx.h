@@ -121,6 +121,32 @@ typedef enum
     WDRV_PIC32MZW_AUTH_TYPE_MAX
 } WDRV_PIC32MZW_AUTH_TYPE;
 
+#ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
+/*  802.1X Enterprise authentication methods
+ * 
+  Summary:
+    List of possible EAP methods supported by WPA-Enterprise authentication.
+
+  Description:
+    This type defines the possible EAP methods supported by WPA-Enterprise 
+    authentication in STA mode.
+
+  Remarks:
+    None.
+*/
+
+typedef enum
+{
+    /* phase1 - EAP-TLS - Extensible Authentication Protocol - Transport Layer Security 
+       phase2 - None */
+    WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTLS = 1,
+    /* phase1 - EAP-TTLSv0 - Extensible Authentication Protocol Tunneled Transport Layer Security
+       Authenticated Protocol Version 0 
+       phase 2 - TTLSv0/MSCHPAv2 - Microsoft PPP CHAP Extensions, Version 2 */        
+    WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2
+} WDRV_PIC32MZW_AUTH_1X_METHOD;
+#endif
+
 // *****************************************************************************
 /*  Authentication Modifiers
 
@@ -277,18 +303,35 @@ typedef struct
             uint8_t password[WDRV_PIC32MZW_PSK_LEN];
         } personal;
 #ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
-         /* 802.1x (TLS) authentication state. */
+         /* 802.1x authentication state. */
         struct
         {
-            /* Specifies the EAP identity name - [Domain][UserName] or [Username][Domain] */
-            char identity[WDRV_PIC32MZW_ENT_AUTH_IDENTITY_LEN_MAX+1];
-            /* WOLFSSL_CTX handle */
-            WDRV_PIC32MZW_TLS_CONTEXT_HANDLE tlsCtxHandle;
-            /* Server domain name against which either server certificate's subject alternative 
-             * name(SAN) or common name(CN) shall be matched for successful enterprise connection */
-            char serverDomainName[WDRV_PIC32MZW_ENT_AUTH_SERVER_DOMAIN_LEN_MAX + 1];
-            
-        } WPAEntTLS;
+            /* EAP method configured for 802.1X authentication */
+            WDRV_PIC32MZW_AUTH_1X_METHOD   auth1xMethod;
+            struct
+            {
+                /* Specifies the EAP identity name - [Domain][UserName] or [Username][Domain] */
+                char identity[WDRV_PIC32MZW_ENT_AUTH_IDENTITY_LEN_MAX+1];
+                /* WOLFSSL_CTX handle */
+                WDRV_PIC32MZW_TLS_CONTEXT_HANDLE tlsCtxHandle;
+                /* Server domain name against which either server certificate's subject alternative 
+                 * name(SAN) or common name(CN) shall be matched for successful enterprise connection */
+                char serverDomainName[WDRV_PIC32MZW_ENT_AUTH_SERVER_DOMAIN_LEN_MAX + 1];
+            } phase1;
+            struct
+            {
+                union
+                {
+                    struct
+                    {
+						/* username for mschapv2 authentication */
+                        char username[WDRV_PIC32MZW_ENT_AUTH_USERNAME_LEN_MAX + 1];
+						/* password for mschapv2 authentication */
+                        char password[WDRV_PIC32MZW_ENT_AUTH_PASSWORD_LEN_MAX + 1];
+                    } mschapv2;
+                } credentials;
+            } phase2;
+        } enterprise;
 #endif
     } authInfo;
 } WDRV_PIC32MZW_AUTH_CONTEXT;
@@ -657,7 +700,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxStaTransitionDisable
 
   Summary:
     Configure an authentication context for WPA-Enterprise authentication
-    using TLS.
+    using enterprise authentication method == WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTLS.
 
   Description:
     The type and state information are configured appropriately for WPA-Enterprise
@@ -765,7 +808,142 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetEnterpriseTLS
     const char *const pIdentity,
     WDRV_PIC32MZW_TLS_CONTEXT_HANDLE tlsCtxHandle,
     const char *const pServerDomain,    
-    WDRV_PIC32MZW_AUTH_TYPE authType
+    WDRV_PIC32MZW_AUTH_TYPE authType    
+);
+
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetEnterpriseTTLSMSCHAPv2
+    (
+        WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx,    
+        const char *const pIdentity,
+        WDRV_PIC32MZW_TLS_CONTEXT_HANDLE tlsCtxHandle,
+        const char *const pServerDomain,
+        const char *const pUserName,
+        const char *const pPassword,
+        WDRV_PIC32MZW_AUTH_TYPE authType,
+        WDRV_PIC32MZW_AUTH_1X_METHOD auth1xMethod
+    )
+
+  Summary:
+    Configure an authentication context for WPA-Enterprise authentication
+    using enterprise authentication method == WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2.
+
+  Description:
+    The type and state information are configured appropriately for WPA-Enterprise
+    authentication. The Management Frame Protection configuration is initialized 
+    to WDRV_PIC32MZW_AUTH_MFP_ENABLED
+
+  Precondition:
+    Wolfssl TLS context handle is created and all the required certs and keys are loaded,
+    peer server certificate validation is enabled using the appropriate wolfssl APIs.
+   
+   Below is the example code for reference:
+   <code>
+    WDRV_PIC32MZW_TLS_CONTEXT_HANDLE APP_Create_TLS_Context(
+        const uint8_t *const pCAcert,
+        uint16_t u16CAcertLen,
+        int caCertFormat,    
+        const uint8_t *const pCert,
+        uint16_t u16CertLen,
+        int privCertFormat,
+        const uint8_t *const pPriKey,
+        uint16_t u16PriKeyLen,
+        int privKeyFormat)
+    {
+        WOLFSSL_CTX *pTlsCtx = NULL;
+
+        if ((NULL == pCAcert) || (NULL == pCert) || (NULL == pPriKey))
+        {
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+        if ((u16CAcertLen == 0) || (u16CertLen == 0) || (u16PriKeyLen == 0 ))
+        {
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+
+        // Validate cert and key formats 
+        if (!((WOLFSSL_FILETYPE_PEM == caCertFormat) || (WOLFSSL_FILETYPE_ASN1 == caCertFormat)))
+        {
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+        if (!((WOLFSSL_FILETYPE_PEM == privCertFormat) || (WOLFSSL_FILETYPE_ASN1 == privCertFormat)))
+        {
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+        if (!((WOLFSSL_FILETYPE_PEM == privKeyFormat) || (WOLFSSL_FILETYPE_ASN1 == privKeyFormat)))
+        {
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+
+        // Create wolfssl context with TLS v1.2 
+        pTlsCtx = wolfSSL_CTX_new(wolfTLSv1_2_client_method());
+        if (NULL == pTlsCtx)
+        {
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+
+        // Load CA certificate into WOLFSSL_CTX for validating peer
+        if (SSL_SUCCESS != wolfSSL_CTX_load_verify_buffer(pTlsCtx, pCAcert, u16CAcertLen, caCertFormat))
+        {
+            wolfSSL_CTX_free(pTlsCtx);
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+        // Verify the certificate received from the server during the handshake 
+        wolfSSL_CTX_set_verify(pTlsCtx, WOLFSSL_VERIFY_PEER, 0);
+
+
+        // Load client certificate into WOLFSSL_CTX 
+        if (SSL_SUCCESS != wolfSSL_CTX_use_certificate_buffer(pTlsCtx, pCert, u16CertLen, privCertFormat))
+        {
+            wolfSSL_CTX_free(pTlsCtx);
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+       
+        // Load client key into WOLFSSL_CTX 
+        if (SSL_SUCCESS != wolfSSL_CTX_use_PrivateKey_buffer(pTlsCtx, pPriKey, u16PriKeyLen, privKeyFormat))
+        {
+            wolfSSL_CTX_free(pTlsCtx);
+            return WDRV_PIC32MZW_TLS_CONTEXT_HANDLE_INVALID;
+        }
+
+        return (WDRV_PIC32MZW_TLS_CONTEXT_HANDLE) pTlsCtx;
+    }  
+   </code> 
+
+  Parameters:
+    pAuthCtx         - Pointer to an authentication context.
+    authType         - Authentication type
+    pIdentity        - Pointer to EAP Identity(user and domain name).
+    tlsCtxHandle     - Wolfssl TLS Context handle.
+    pServerDomain    - Server domain name against which either server certificate's 
+                       subject alternative name(SAN) or common name(CN) shall be 
+                       matched for successful enterprise connection
+    pUserName        - User name for phase2 authentication if auth1xMethod is 
+                       WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2.
+    pPassword        - Password for phase2 authentication if auth1xMethod is 
+                       WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2
+
+  Returns:
+    WDRV_PIC32MZW_STATUS_OK             - The context has been configured.
+    WDRV_PIC32MZW_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AuthCtxSetEnterpriseTTLSMSCHAPv2
+(
+    WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthCtx,
+    const char *const pIdentity,
+    WDRV_PIC32MZW_TLS_CONTEXT_HANDLE tlsCtxHandle,
+    const char *const pServerDomain,
+    const char *const pUserName,
+    const char *const pPassword,    
+    WDRV_PIC32MZW_AUTH_TYPE authType    
 );
 #endif
 

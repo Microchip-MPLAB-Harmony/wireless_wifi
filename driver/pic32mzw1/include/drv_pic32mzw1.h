@@ -27,6 +27,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <stdint.h>
 #include <stdbool.h>
 
+extern const uint8_t pic32mzw_rsr_pkt_num;
+
 #define DRV_PIC32MZW_MAX_SCAN_TIME                  1500
 #define DRV_PIC32MZW_MIN_SCAN_TIME                  10
 #define DRV_PIC32MZW_DEFAULT_ACTIVE_SCAN_TIME       20
@@ -40,9 +42,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define DRV_PIC32MZW_REGDOMAIN_MAX_NAME_LEN         6
 #define DRV_PIC32MZW_REGDOMAIN_RES_LEN              16
 #define DRV_PIC32MZW_PS_INFO_LEN                    6
-#define DRV_PIC32MZW_DEFAULT_PS_LISTEN_INTERVAL	    10
+#define DRV_PIC32MZW_DEFAULT_PS_LISTEN_INTERVAL     10
 #define DRV_PIC32MZW_MAX_HIDDEN_SITES               4
 #define DRV_PIC32MZW_AP_REKEY_MIN_PERIOD            60
+#define DRV_PIC32MZW_PKT_BUFF_NUM                   pic32mzw_rsr_pkt_num
 //#define DRV_PIC32MZW_TRACK_MEMORY_ALLOC
 
 #define DRV_PIC32MZW_POWER_ON_CAL_CONFIG            0x01

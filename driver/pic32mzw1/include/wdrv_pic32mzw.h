@@ -154,6 +154,9 @@ typedef struct _WDRV_PIC32MZW_CTRLDCPT
     /* Power-save PIC/WiFi sync/async correlation mode. */
     WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION powerSavePICCorrelation;
 
+    /* Coexistence arbiter configuration flags */
+    uint8_t coexConfigFlags;
+
     /* Access semaphore for MAC firmware library. */
     OSAL_SEM_HANDLE_TYPE drvAccessSemaphore;
 

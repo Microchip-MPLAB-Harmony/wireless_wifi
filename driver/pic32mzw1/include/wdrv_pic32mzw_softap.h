@@ -138,7 +138,10 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
     WDRV_PIC32MZW_STATUS_REQUEST_ERROR - The request to the PIC32MZW was rejected.
 
   Remarks:
-    None.
+    The AP stopping will be confirmed via the notification callback registered
+    by WDRV_PIC32MZW_APStart. The callback will receive the association handle
+    WDRV_PIC32MZW_ASSOC_HANDLE_ALL to signify that all STA associations have been
+    disconnected.
 
 */
 

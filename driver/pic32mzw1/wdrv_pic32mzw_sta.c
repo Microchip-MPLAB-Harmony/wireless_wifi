@@ -233,8 +233,8 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSConnect
     if (dot11iInfo & DRV_PIC32MZW_11I_1X)
     {       
         /* Initialize TLS stack with the WOLFSSL_CTX handle passed */
-        pDcpt->pCtrl->tlsHandle = DRV_PIC32MZW1_TLS_Init(pAuthCtx->authInfo.WPAEntTLS.tlsCtxHandle,
-                pAuthCtx->authInfo.WPAEntTLS.serverDomainName);    
+        pDcpt->pCtrl->tlsHandle = DRV_PIC32MZW1_TLS_Init(pAuthCtx->authInfo.enterprise.phase1.tlsCtxHandle,
+                pAuthCtx->authInfo.enterprise.phase1.serverDomainName);    
         if (DRV_PIC32MZW1_TLS_HANDLE_INVALID == pDcpt->pCtrl->tlsHandle)
         {
             /* Failed to initialize TLS module */
@@ -245,8 +245,23 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSConnect
         
         /* set the EAP domainUsername */
         DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_DOMAIN_USERNAME,
-            (uint8_t *) pAuthCtx->authInfo.WPAEntTLS.identity,
-            (uint16_t) strlen(pAuthCtx->authInfo.WPAEntTLS.identity));
+            (uint8_t *) pAuthCtx->authInfo.enterprise.phase1.identity,
+            (uint16_t) strlen(pAuthCtx->authInfo.enterprise.phase1.identity));
+        
+        /* Set the 802.1x EAP method */
+        DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SUPP_1X_AUTH_METHOD, (uint16_t) pAuthCtx->authInfo.enterprise.auth1xMethod);
+        
+        if (WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2 == pAuthCtx->authInfo.enterprise.auth1xMethod)
+        {
+            /* Set the MSCHAPv2 username and password */
+            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_USERNAME,
+                (uint8_t *) pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.username,
+                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.username));
+            
+            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_PASSWORD,
+                (uint8_t *) pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.password,
+                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.password));
+        }
     }  
 #endif
 

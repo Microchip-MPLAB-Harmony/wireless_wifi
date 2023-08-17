@@ -92,7 +92,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IECustTxDataSet
 
     /* We are concerned about 3 bits in the mask*/
     frameMask &= 0x0007;
-    
+
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || ((0 != frameMask) && (NULL == pCustIECtx)))
     {
@@ -104,13 +104,13 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IECustTxDataSet
     {
         return WDRV_PIC32MZW_STATUS_NOT_OPEN;
     }
-    
+
     /* Update the frame filter mask */
     pDcpt->pCtrl->vendorIEMask &= 0xF0;
     pDcpt->pCtrl->vendorIEMask |= frameMask;
-    
+
     if (0 != frameMask)
-    {    
+    {
         DRV_PIC32MZW_MultiWIDInit(&wids, (32 + pCustIECtx->curLength));
 
         DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_VSIE_FRAME, pDcpt->pCtrl->vendorIEMask);
@@ -132,9 +132,12 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IECustTxDataSet
     if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
     {
         OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
+
+        DRV_PIC32MZW_MultiWIDDestroy(&wids);
+
         return WDRV_PIC32MZW_STATUS_REQUEST_ERROR;
     }
-    
+
     OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 
     return WDRV_PIC32MZW_STATUS_OK;
@@ -175,7 +178,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IERxDataGet
     WDRV_PIC32MZW_DCPT *pDcpt = (WDRV_PIC32MZW_DCPT *)handle;
     DRV_PIC32MZW_WIDCTX wids;
     OSAL_CRITSECT_DATA_TYPE critSect;
-    
+
     /* We are concerned about 3 bits in the mask*/
     frameMask &= 0x0007;
 
@@ -190,15 +193,15 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IERxDataGet
     {
         return WDRV_PIC32MZW_STATUS_NOT_OPEN;
     }
-    
+
     /* Update the frame filter mask */
     pDcpt->pCtrl->vendorIEMask &= 0x0F;
     pDcpt->pCtrl->vendorIEMask |= (frameMask << 4);
-    
+
     DRV_PIC32MZW_MultiWIDInit(&wids, 64);
-    
+
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_VSIE_FRAME, pDcpt->pCtrl->vendorIEMask);
-    
+
     if (0 != frameMask)
     {
         DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_VSIE_RX_OUI, vendorOUI);
@@ -211,18 +214,21 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IERxDataGet
 
         DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_VSIE_INFO_ENABLE, 0);
     }
-    
+
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
     /* Write the wids. */
     if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
     {
         OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
+
+        DRV_PIC32MZW_MultiWIDDestroy(&wids);
+
         return WDRV_PIC32MZW_STATUS_REQUEST_ERROR;
     }
-    
+
     pDcpt->pCtrl->pfVendorIERxCB = pfVendorIERxCB;
-    
+
     OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 
     return WDRV_PIC32MZW_STATUS_OK;

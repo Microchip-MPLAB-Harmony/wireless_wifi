@@ -126,6 +126,48 @@ typedef enum
     WDRV_PIC32MZW_POWERSAVE_PIC_SYNC_MODE = 1
 } WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION;
 
+//*******************************************************************************
+/*  Coexistence arbiter configuration flags
+
+  Summary:
+    Defines the coexistence arbiter configuration flags.
+
+  Description:
+    These pre-processor macros define the coexistence arbiter configuration flags.
+
+    WDRV_PIC32MZW_COEX_CONFIG_DISABLE -
+    WDRV_PIC32MZW_COEX_CONFIG_ENABLE -
+    Disable or enable the coexistence arbiter.
+
+    WDRV_PIC32MZW_COEX_IF_3WIRE -
+    WDRV_PIC32MZW_COEX_IF_2WIRE -
+    3- (BT_Act, BT_Prio, WLAN_Act) or 2-wire (BT_Prio, WLAN_Act) interface type
+
+    WDRV_PIC32MZW_COEX_PRIO_WLAN_TX_LT_BTLP:
+    WDRV_PIC32MZW_COEX_PRIO_WLAN_TX_GT_BTLP:
+    WLAN TX priority lower and greater than low priority BT.
+
+    WDRV_PIC32MZW_COEX_PRIO_WLAN_RX_LT_BTLP:
+    WDRV_PIC32MZW_COEX_PRIO_WLAN_RX_GT_BTLP:
+    WLAN RX priority lower and greater than low priority BT.
+
+  Remarks:
+    None.
+
+*/
+#define WDRV_PIC32MZW_COEX_CONFIG_DISABLE                   0x0
+#define WDRV_PIC32MZW_COEX_CONFIG_ENABLE                    0x1
+                                                            
+#define WDRV_PIC32MZW_COEX_CONFIG_IF_3WIRE                  0x0
+#define WDRV_PIC32MZW_COEX_CONFIG_IF_2WIRE                  0x2
+                                                            
+#define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_LT_BTLP      0x0
+#define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_GT_BTLP      0x4
+
+#define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_LT_BTLP      0x0
+#define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_GT_BTLP      0x8
+
+//*******************************************************************************
 /*  WiFi Control Initialization Data
 
   Summary:
@@ -149,6 +191,9 @@ typedef struct
 
     /* Correlation between PIC and WiFi power modes. */
     WDRV_PIC32MZW_POWERSAVE_PIC_CORRELATION powerSavePICCorrelation;
+
+    /* Coexistence arbiter configuration flags */
+    uint8_t coexConfigFlags;
 } WDRV_PIC32MZW_SYS_INIT;
 
 /*  WiFi MAC Initialization Data

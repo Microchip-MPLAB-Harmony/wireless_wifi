@@ -51,7 +51,12 @@ typedef enum
     /*
      TLS session is successfully established with the peer and the handshake is complete.
     */
-    DRV_PIC32MZW1_TLS_EVENT_SESSION_ESTABLISHED  
+    DRV_PIC32MZW1_TLS_EVENT_SESSION_ESTABLISHED,
+    /*
+     There is a TLS application data received. The upper layer is responsible for calling 
+	the corresponding receive API for receiving the decrypted TLS application data packet.
+     */
+    DRV_PIC32MZW1_TLS_EVENT_RX_APPLICATION_DATA        
 }DRV_PIC32MZW1_TLS_EVENT;
 
 /* Callback function type through which TLS events will be notified */
@@ -73,7 +78,8 @@ typedef enum
     DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_KEY_EXCHANGE,       
     DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_FINISHED,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_CLIENT_CHANGE_CIPHER_SPEC,
-    DRV_PIC32MZW1_TLS_RECORD_TYPE_ALERT        
+    DRV_PIC32MZW1_TLS_RECORD_TYPE_ALERT,
+    DRV_PIC32MZW1_TLS_RECORD_TYPE_APPLICATION_DATA
 } DRV_PIC32MZW1_TLS_CLIENT_RECORD_TYPE;
 
 /* TLS record header */
@@ -129,13 +135,29 @@ bool DRV_PIC32MZW1_TLS_WriteRxBuffer
     uint8_t	*pDataBuff
 );
 
-/* Derive keying material required for EAP-TLS */
-bool DRV_PIC32MZW1_TLS_DeriveSessionKey
+/* Derive keying material required for EAP-TLS and EAP-TTLS */
+bool DRV_PIC32MZW1_TLS_GenerateKey
 (
     DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
-    uint8_t *pMskEmsk,
+    uint8_t *pMsk,
     uint16_t keyLen,
     const char *pLabel        
+);
+
+/* Write Application data to encrypt and send to server */
+int32_t DRV_PIC32MZW1_TLS_WriteAppData
+(
+    DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
+    uint8_t *pAppData,
+    uint16_t AppDataLen      
+);
+
+/* Read Application data - decrypted and received from server */
+int32_t DRV_PIC32MZW1_TLS_ReadAppData
+(
+    DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
+    uint8_t *pAppData,
+    uint16_t AppDataLen      
 );
 
 #endif /* _DRV_PIC32MZW1_TLS_H */
