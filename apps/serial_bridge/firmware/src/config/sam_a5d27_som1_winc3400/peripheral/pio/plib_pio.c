@@ -45,10 +45,10 @@
 #include "interrupts.h"
 
 /* Array to store callback objects of each configured interrupt */
-static PIO_PIN_CALLBACK_OBJ portPinCbObj[2];
+volatile static PIO_PIN_CALLBACK_OBJ portPinCbObj[2];
 
 /* Array to store number of interrupts in each PORT Channel + previous interrupt count */
-static uint8_t portNumCb[7 + 1] = { 0, 1, 2, 2, 2, 2, 2, 2, };
+volatile static uint8_t portNumCb[7 + 1] = { 0, 1, 2, 2, 2, 2, 2, 2, };
 
 
 
@@ -392,19 +392,24 @@ bool PIO_PinInterruptCallbackRegister(
   Remarks:
     User should not call this function.
 */
-void PIOA_InterruptHandler(void)
+void __attribute__((used)) PIOA_InterruptHandler(void)
 {
-    uint32_t status = 0U;
+    uint32_t status;
     uint8_t j;
+    /* Additional local variable to prevent MISRA C violations (Rule 13.x) */
+    PIO_PIN pin;
+    uintptr_t context;
 
-    status  = PIOA_REGS->PIO_ISR;
+    status = PIOA_REGS->PIO_ISR;
     status &= PIOA_REGS->PIO_IMR;
 
     for( j = 0U; j < 1U; j++ )
     {
-        if(((status & (1UL << (portPinCbObj[j].pin & 0x1FU))) != 0U) && (portPinCbObj[j].callback != NULL))
+        pin = portPinCbObj[j].pin;
+        context = portPinCbObj[j].context;
+        if((portPinCbObj[j].callback != NULL) && ((status & (1UL << (pin & 0x1FU))) != 0U))
         {
-            portPinCbObj[j].callback ( portPinCbObj[j].pin, portPinCbObj[j].context );
+            portPinCbObj[j].callback ( portPinCbObj[j].pin, context);
         }
     }
 }
@@ -422,19 +427,24 @@ void PIOA_InterruptHandler(void)
   Remarks:
     User should not call this function.
 */
-void PIOB_InterruptHandler(void)
+void __attribute__((used)) PIOB_InterruptHandler(void)
 {
-    uint32_t status = 0U;
+    uint32_t status;
     uint8_t j;
+    /* Additional local variable to prevent MISRA C violations (Rule 13.x) */
+    PIO_PIN pin;
+    uintptr_t context;
 
-    status  = PIOB_REGS->PIO_ISR;
+    status = PIOB_REGS->PIO_ISR;
     status &= PIOB_REGS->PIO_IMR;
 
     for( j = 1U; j < 2U; j++ )
     {
-        if(((status & (1UL << (portPinCbObj[j].pin & 0x1FU))) != 0U) && (portPinCbObj[j].callback != NULL))
+        pin = portPinCbObj[j].pin;
+        context = portPinCbObj[j].context;
+        if((portPinCbObj[j].callback != NULL) && ((status & (1UL << (pin & 0x1FU))) != 0U))
         {
-            portPinCbObj[j].callback ( portPinCbObj[j].pin, portPinCbObj[j].context );
+            portPinCbObj[j].callback ( portPinCbObj[j].pin, context);
         }
     }
 }

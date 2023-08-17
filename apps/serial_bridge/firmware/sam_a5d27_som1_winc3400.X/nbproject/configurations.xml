@@ -154,6 +154,7 @@
           <itemPath>../src/config/sam_a5d27_som1_winc3400/toolchain_specifics.h</itemPath>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/device_cache.h</itemPath>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/interrupts.h</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/sys_tasks.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="packs" displayName="packs" projectFiles="true">
@@ -272,11 +273,11 @@
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pdmic.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom4.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/i2sc0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/smc.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tc1.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/twihs1.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/qspi0.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/hsmc.h</itemPath>
           </logicalFolder>
           <logicalFolder name="pio" displayName="pio" projectFiles="true">
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/pio/sama5d27cd1g.h</itemPath>
@@ -492,14 +493,14 @@
         <targetDevice>ATSAMA5D27CD1G</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>jlink</platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.20</languageToolchainVersion>
+        <languageToolchainVersion>4.21</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
         <pack name="SAMA5D2_DFP" vendor="Microchip" version="1.9.106"/>
+        <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
       </packs>
       <ScriptingSettings>
         <ScriptingSetting key="boot.load_adr" value=""/>

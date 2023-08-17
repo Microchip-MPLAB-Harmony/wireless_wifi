@@ -73,7 +73,8 @@ typedef struct
 
 static WDRV_WINC_SPIDCPT spiDcpt;
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
-static CACHE_ALIGN uint8_t dummyData[CACHE_ALIGNED_SIZE_GET(4)];
+static CACHE_ALIGN uint8_t dummyDataTx[CACHE_ALIGNED_SIZE_GET(4)];
+static CACHE_ALIGN uint8_t dummyDataRx[CACHE_ALIGNED_SIZE_GET(4)];
 </#if>
 <#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
 <#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true && drv_spi.DRV_SPI_SYS_DMA_ENABLE == true>
@@ -144,7 +145,7 @@ bool WDRV_WINC_SPISend(void* pTransmitData, size_t txSize)
 
     /* Configure the RX DMA channel - to receive dummy data */
     SYS_DMA_AddressingModeSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED);
-    SYS_DMA_ChannelTransfer(spiDcpt.cfg.rxDMAChannel, (const void*)spiDcpt.cfg.rxAddress, (const void *)dummyData, txSize);
+    SYS_DMA_ChannelTransfer(spiDcpt.cfg.rxDMAChannel, (const void*)spiDcpt.cfg.rxAddress, (const void *)dummyDataRx, txSize);
 
     /* Configure the transmit DMA channel - to send data from transmit buffer */
     SYS_DMA_AddressingModeSetup(spiDcpt.cfg.txDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_INCREMENTED, SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED);
@@ -210,7 +211,7 @@ bool WDRV_WINC_SPIReceive(void* pReceiveData, size_t rxSize)
 
     /* Configure the TX DMA channel - to send dummy data */
     SYS_DMA_AddressingModeSetup(spiDcpt.cfg.txDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED);
-    SYS_DMA_ChannelTransfer(spiDcpt.cfg.txDMAChannel, (const void *)dummyData, (const void*)spiDcpt.cfg.txAddress, rxSize);
+    SYS_DMA_ChannelTransfer(spiDcpt.cfg.txDMAChannel, (const void *)dummyDataTx, (const void*)spiDcpt.cfg.txAddress, rxSize);
 
     while (true == SYS_DMA_ChannelIsBusy(spiDcpt.cfg.rxDMAChannel))
     {
@@ -276,7 +277,7 @@ bool WDRV_WINC_SPIOpen(void)
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_WIDTH_8_BIT);
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.txDMAChannel, SYS_DMA_WIDTH_8_BIT);
 
-    memset(dummyData, 0, sizeof(dummyData));
+    memset(dummyDataTx, 0, sizeof(dummyDataTx));
 <#else>
 <#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
     DRV_SPI_TRANSFER_SETUP spiTransConf = {

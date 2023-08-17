@@ -20,7 +20,7 @@
  *
  */
 
-/* file generated from device description version 2022-02-21T21:01:56Z */
+/* file generated from device description version 2022-10-04T10:37:12Z */
 #ifndef _SAMA5D27CD1G_GPIO_H_
 #define _SAMA5D27CD1G_GPIO_H_
 
@@ -1484,313 +1484,313 @@
 #define PIN_PA29E_SDMMC1_WP                        _UINT32_(29) /**< SDMMC1 signal: SDMMC1_WP on PA29 mux E */
 #define MUX_PA29E_SDMMC1_WP                        _UINT32_(4)  /**< SDMMC1 signal line function value: SDMMC1_WP */
 #define PIO_PA29E_SDMMC1_WP                        (_UINT32_(1) << 29) /**< SDMMC1 signal: SDMMC1_WP */
-/* ========== PIO definition for SMC peripheral ========== */
-#define PIN_PB12B_SMC_A1                           _UINT32_(44) /**< SMC signal: SMC_A1 on PB12 mux B */
-#define MUX_PB12B_SMC_A1                           _UINT32_(1)  /**< SMC signal line function value: SMC_A1 */
-#define PIO_PB12B_SMC_A1                           (_UINT32_(1) << 12) /**< SMC signal: SMC_A1 */
-#define PIN_PC12C_SMC_A1                           _UINT32_(76) /**< SMC signal: SMC_A1 on PC12 mux C */
-#define MUX_PC12C_SMC_A1                           _UINT32_(2)  /**< SMC signal line function value: SMC_A1 */
-#define PIO_PC12C_SMC_A1                           (_UINT32_(1) << 12) /**< SMC signal: SMC_A1 */
-#define PIN_PB13B_SMC_A2                           _UINT32_(45) /**< SMC signal: SMC_A2 on PB13 mux B */
-#define MUX_PB13B_SMC_A2                           _UINT32_(1)  /**< SMC signal line function value: SMC_A2 */
-#define PIO_PB13B_SMC_A2                           (_UINT32_(1) << 13) /**< SMC signal: SMC_A2 */
-#define PIN_PC13C_SMC_A2                           _UINT32_(77) /**< SMC signal: SMC_A2 on PC13 mux C */
-#define MUX_PC13C_SMC_A2                           _UINT32_(2)  /**< SMC signal line function value: SMC_A2 */
-#define PIO_PC13C_SMC_A2                           (_UINT32_(1) << 13) /**< SMC signal: SMC_A2 */
-#define PIN_PB14B_SMC_A3                           _UINT32_(46) /**< SMC signal: SMC_A3 on PB14 mux B */
-#define MUX_PB14B_SMC_A3                           _UINT32_(1)  /**< SMC signal line function value: SMC_A3 */
-#define PIO_PB14B_SMC_A3                           (_UINT32_(1) << 14) /**< SMC signal: SMC_A3 */
-#define PIN_PC14C_SMC_A3                           _UINT32_(78) /**< SMC signal: SMC_A3 on PC14 mux C */
-#define MUX_PC14C_SMC_A3                           _UINT32_(2)  /**< SMC signal line function value: SMC_A3 */
-#define PIO_PC14C_SMC_A3                           (_UINT32_(1) << 14) /**< SMC signal: SMC_A3 */
-#define PIN_PB15B_SMC_A4                           _UINT32_(47) /**< SMC signal: SMC_A4 on PB15 mux B */
-#define MUX_PB15B_SMC_A4                           _UINT32_(1)  /**< SMC signal line function value: SMC_A4 */
-#define PIO_PB15B_SMC_A4                           (_UINT32_(1) << 15) /**< SMC signal: SMC_A4 */
-#define PIN_PC15C_SMC_A4                           _UINT32_(79) /**< SMC signal: SMC_A4 on PC15 mux C */
-#define MUX_PC15C_SMC_A4                           _UINT32_(2)  /**< SMC signal line function value: SMC_A4 */
-#define PIO_PC15C_SMC_A4                           (_UINT32_(1) << 15) /**< SMC signal: SMC_A4 */
-#define PIN_PB16B_SMC_A5                           _UINT32_(48) /**< SMC signal: SMC_A5 on PB16 mux B */
-#define MUX_PB16B_SMC_A5                           _UINT32_(1)  /**< SMC signal line function value: SMC_A5 */
-#define PIO_PB16B_SMC_A5                           (_UINT32_(1) << 16) /**< SMC signal: SMC_A5 */
-#define PIN_PC16C_SMC_A5                           _UINT32_(80) /**< SMC signal: SMC_A5 on PC16 mux C */
-#define MUX_PC16C_SMC_A5                           _UINT32_(2)  /**< SMC signal line function value: SMC_A5 */
-#define PIO_PC16C_SMC_A5                           (_UINT32_(1) << 16) /**< SMC signal: SMC_A5 */
-#define PIN_PB17B_SMC_A6                           _UINT32_(49) /**< SMC signal: SMC_A6 on PB17 mux B */
-#define MUX_PB17B_SMC_A6                           _UINT32_(1)  /**< SMC signal line function value: SMC_A6 */
-#define PIO_PB17B_SMC_A6                           (_UINT32_(1) << 17) /**< SMC signal: SMC_A6 */
-#define PIN_PC17C_SMC_A6                           _UINT32_(81) /**< SMC signal: SMC_A6 on PC17 mux C */
-#define MUX_PC17C_SMC_A6                           _UINT32_(2)  /**< SMC signal line function value: SMC_A6 */
-#define PIO_PC17C_SMC_A6                           (_UINT32_(1) << 17) /**< SMC signal: SMC_A6 */
-#define PIN_PB18B_SMC_A7                           _UINT32_(50) /**< SMC signal: SMC_A7 on PB18 mux B */
-#define MUX_PB18B_SMC_A7                           _UINT32_(1)  /**< SMC signal line function value: SMC_A7 */
-#define PIO_PB18B_SMC_A7                           (_UINT32_(1) << 18) /**< SMC signal: SMC_A7 */
-#define PIN_PC18C_SMC_A7                           _UINT32_(82) /**< SMC signal: SMC_A7 on PC18 mux C */
-#define MUX_PC18C_SMC_A7                           _UINT32_(2)  /**< SMC signal line function value: SMC_A7 */
-#define PIO_PC18C_SMC_A7                           (_UINT32_(1) << 18) /**< SMC signal: SMC_A7 */
-#define PIN_PB19B_SMC_A8                           _UINT32_(51) /**< SMC signal: SMC_A8 on PB19 mux B */
-#define MUX_PB19B_SMC_A8                           _UINT32_(1)  /**< SMC signal line function value: SMC_A8 */
-#define PIO_PB19B_SMC_A8                           (_UINT32_(1) << 19) /**< SMC signal: SMC_A8 */
-#define PIN_PC19C_SMC_A8                           _UINT32_(83) /**< SMC signal: SMC_A8 on PC19 mux C */
-#define MUX_PC19C_SMC_A8                           _UINT32_(2)  /**< SMC signal line function value: SMC_A8 */
-#define PIO_PC19C_SMC_A8                           (_UINT32_(1) << 19) /**< SMC signal: SMC_A8 */
-#define PIN_PB20B_SMC_A9                           _UINT32_(52) /**< SMC signal: SMC_A9 on PB20 mux B */
-#define MUX_PB20B_SMC_A9                           _UINT32_(1)  /**< SMC signal line function value: SMC_A9 */
-#define PIO_PB20B_SMC_A9                           (_UINT32_(1) << 20) /**< SMC signal: SMC_A9 */
-#define PIN_PC20C_SMC_A9                           _UINT32_(84) /**< SMC signal: SMC_A9 on PC20 mux C */
-#define MUX_PC20C_SMC_A9                           _UINT32_(2)  /**< SMC signal line function value: SMC_A9 */
-#define PIO_PC20C_SMC_A9                           (_UINT32_(1) << 20) /**< SMC signal: SMC_A9 */
-#define PIN_PB21B_SMC_A10                          _UINT32_(53) /**< SMC signal: SMC_A10 on PB21 mux B */
-#define MUX_PB21B_SMC_A10                          _UINT32_(1)  /**< SMC signal line function value: SMC_A10 */
-#define PIO_PB21B_SMC_A10                          (_UINT32_(1) << 21) /**< SMC signal: SMC_A10 */
-#define PIN_PC21C_SMC_A10                          _UINT32_(85) /**< SMC signal: SMC_A10 on PC21 mux C */
-#define MUX_PC21C_SMC_A10                          _UINT32_(2)  /**< SMC signal line function value: SMC_A10 */
-#define PIO_PC21C_SMC_A10                          (_UINT32_(1) << 21) /**< SMC signal: SMC_A10 */
-#define PIN_PB22B_SMC_A11                          _UINT32_(54) /**< SMC signal: SMC_A11 on PB22 mux B */
-#define MUX_PB22B_SMC_A11                          _UINT32_(1)  /**< SMC signal line function value: SMC_A11 */
-#define PIO_PB22B_SMC_A11                          (_UINT32_(1) << 22) /**< SMC signal: SMC_A11 */
-#define PIN_PC22C_SMC_A11                          _UINT32_(86) /**< SMC signal: SMC_A11 on PC22 mux C */
-#define MUX_PC22C_SMC_A11                          _UINT32_(2)  /**< SMC signal line function value: SMC_A11 */
-#define PIO_PC22C_SMC_A11                          (_UINT32_(1) << 22) /**< SMC signal: SMC_A11 */
-#define PIN_PB23B_SMC_A12                          _UINT32_(55) /**< SMC signal: SMC_A12 on PB23 mux B */
-#define MUX_PB23B_SMC_A12                          _UINT32_(1)  /**< SMC signal line function value: SMC_A12 */
-#define PIO_PB23B_SMC_A12                          (_UINT32_(1) << 23) /**< SMC signal: SMC_A12 */
-#define PIN_PC23C_SMC_A12                          _UINT32_(87) /**< SMC signal: SMC_A12 on PC23 mux C */
-#define MUX_PC23C_SMC_A12                          _UINT32_(2)  /**< SMC signal line function value: SMC_A12 */
-#define PIO_PC23C_SMC_A12                          (_UINT32_(1) << 23) /**< SMC signal: SMC_A12 */
-#define PIN_PB24B_SMC_A13                          _UINT32_(56) /**< SMC signal: SMC_A13 on PB24 mux B */
-#define MUX_PB24B_SMC_A13                          _UINT32_(1)  /**< SMC signal line function value: SMC_A13 */
-#define PIO_PB24B_SMC_A13                          (_UINT32_(1) << 24) /**< SMC signal: SMC_A13 */
-#define PIN_PC24C_SMC_A13                          _UINT32_(88) /**< SMC signal: SMC_A13 on PC24 mux C */
-#define MUX_PC24C_SMC_A13                          _UINT32_(2)  /**< SMC signal line function value: SMC_A13 */
-#define PIO_PC24C_SMC_A13                          (_UINT32_(1) << 24) /**< SMC signal: SMC_A13 */
-#define PIN_PB25B_SMC_A14                          _UINT32_(57) /**< SMC signal: SMC_A14 on PB25 mux B */
-#define MUX_PB25B_SMC_A14                          _UINT32_(1)  /**< SMC signal line function value: SMC_A14 */
-#define PIO_PB25B_SMC_A14                          (_UINT32_(1) << 25) /**< SMC signal: SMC_A14 */
-#define PIN_PC25C_SMC_A14                          _UINT32_(89) /**< SMC signal: SMC_A14 on PC25 mux C */
-#define MUX_PC25C_SMC_A14                          _UINT32_(2)  /**< SMC signal line function value: SMC_A14 */
-#define PIO_PC25C_SMC_A14                          (_UINT32_(1) << 25) /**< SMC signal: SMC_A14 */
-#define PIN_PB26B_SMC_A15                          _UINT32_(58) /**< SMC signal: SMC_A15 on PB26 mux B */
-#define MUX_PB26B_SMC_A15                          _UINT32_(1)  /**< SMC signal line function value: SMC_A15 */
-#define PIO_PB26B_SMC_A15                          (_UINT32_(1) << 26) /**< SMC signal: SMC_A15 */
-#define PIN_PC26C_SMC_A15                          _UINT32_(90) /**< SMC signal: SMC_A15 on PC26 mux C */
-#define MUX_PC26C_SMC_A15                          _UINT32_(2)  /**< SMC signal line function value: SMC_A15 */
-#define PIO_PC26C_SMC_A15                          (_UINT32_(1) << 26) /**< SMC signal: SMC_A15 */
-#define PIN_PB27B_SMC_A16                          _UINT32_(59) /**< SMC signal: SMC_A16 on PB27 mux B */
-#define MUX_PB27B_SMC_A16                          _UINT32_(1)  /**< SMC signal line function value: SMC_A16 */
-#define PIO_PB27B_SMC_A16                          (_UINT32_(1) << 27) /**< SMC signal: SMC_A16 */
-#define PIN_PC27C_SMC_A16                          _UINT32_(91) /**< SMC signal: SMC_A16 on PC27 mux C */
-#define MUX_PC27C_SMC_A16                          _UINT32_(2)  /**< SMC signal line function value: SMC_A16 */
-#define PIO_PC27C_SMC_A16                          (_UINT32_(1) << 27) /**< SMC signal: SMC_A16 */
-#define PIN_PB28B_SMC_A17                          _UINT32_(60) /**< SMC signal: SMC_A17 on PB28 mux B */
-#define MUX_PB28B_SMC_A17                          _UINT32_(1)  /**< SMC signal line function value: SMC_A17 */
-#define PIO_PB28B_SMC_A17                          (_UINT32_(1) << 28) /**< SMC signal: SMC_A17 */
-#define PIN_PC28C_SMC_A17                          _UINT32_(92) /**< SMC signal: SMC_A17 on PC28 mux C */
-#define MUX_PC28C_SMC_A17                          _UINT32_(2)  /**< SMC signal line function value: SMC_A17 */
-#define PIO_PC28C_SMC_A17                          (_UINT32_(1) << 28) /**< SMC signal: SMC_A17 */
-#define PIN_PB29B_SMC_A18                          _UINT32_(61) /**< SMC signal: SMC_A18 on PB29 mux B */
-#define MUX_PB29B_SMC_A18                          _UINT32_(1)  /**< SMC signal line function value: SMC_A18 */
-#define PIO_PB29B_SMC_A18                          (_UINT32_(1) << 29) /**< SMC signal: SMC_A18 */
-#define PIN_PC29C_SMC_A18                          _UINT32_(93) /**< SMC signal: SMC_A18 on PC29 mux C */
-#define MUX_PC29C_SMC_A18                          _UINT32_(2)  /**< SMC signal line function value: SMC_A18 */
-#define PIO_PC29C_SMC_A18                          (_UINT32_(1) << 29) /**< SMC signal: SMC_A18 */
-#define PIN_PB30B_SMC_A19                          _UINT32_(62) /**< SMC signal: SMC_A19 on PB30 mux B */
-#define MUX_PB30B_SMC_A19                          _UINT32_(1)  /**< SMC signal line function value: SMC_A19 */
-#define PIO_PB30B_SMC_A19                          (_UINT32_(1) << 30) /**< SMC signal: SMC_A19 */
-#define PIN_PC30C_SMC_A19                          _UINT32_(94) /**< SMC signal: SMC_A19 on PC30 mux C */
-#define MUX_PC30C_SMC_A19                          _UINT32_(2)  /**< SMC signal line function value: SMC_A19 */
-#define PIO_PC30C_SMC_A19                          (_UINT32_(1) << 30) /**< SMC signal: SMC_A19 */
-#define PIN_PB31B_SMC_A20                          _UINT32_(63) /**< SMC signal: SMC_A20 on PB31 mux B */
-#define MUX_PB31B_SMC_A20                          _UINT32_(1)  /**< SMC signal line function value: SMC_A20 */
-#define PIO_PB31B_SMC_A20                          (_UINT32_(1) << 31) /**< SMC signal: SMC_A20 */
-#define PIN_PC31C_SMC_A20                          _UINT32_(95) /**< SMC signal: SMC_A20 on PC31 mux C */
-#define MUX_PC31C_SMC_A20                          _UINT32_(2)  /**< SMC signal line function value: SMC_A20 */
-#define PIO_PC31C_SMC_A20                          (_UINT32_(1) << 31) /**< SMC signal: SMC_A20 */
-#define PIN_PC0B_SMC_A23                           _UINT32_(64) /**< SMC signal: SMC_A23 on PC0 mux B */
-#define MUX_PC0B_SMC_A23                           _UINT32_(1)  /**< SMC signal line function value: SMC_A23 */
-#define PIO_PC0B_SMC_A23                           (_UINT32_(1) << 0) /**< SMC signal: SMC_A23 */
-#define PIN_PD0C_SMC_A23                           _UINT32_(96) /**< SMC signal: SMC_A23 on PD0 mux C */
-#define MUX_PD0C_SMC_A23                           _UINT32_(2)  /**< SMC signal line function value: SMC_A23 */
-#define PIO_PD0C_SMC_A23                           (_UINT32_(1) << 0) /**< SMC signal: SMC_A23 */
-#define PIN_PC1B_SMC_A24                           _UINT32_(65) /**< SMC signal: SMC_A24 on PC1 mux B */
-#define MUX_PC1B_SMC_A24                           _UINT32_(1)  /**< SMC signal line function value: SMC_A24 */
-#define PIO_PC1B_SMC_A24                           (_UINT32_(1) << 1) /**< SMC signal: SMC_A24 */
-#define PIN_PD1C_SMC_A24                           _UINT32_(97) /**< SMC signal: SMC_A24 on PD1 mux C */
-#define MUX_PD1C_SMC_A24                           _UINT32_(2)  /**< SMC signal line function value: SMC_A24 */
-#define PIO_PD1C_SMC_A24                           (_UINT32_(1) << 1) /**< SMC signal: SMC_A24 */
-#define PIN_PC2B_SMC_A25                           _UINT32_(66) /**< SMC signal: SMC_A25 on PC2 mux B */
-#define MUX_PC2B_SMC_A25                           _UINT32_(1)  /**< SMC signal line function value: SMC_A25 */
-#define PIO_PC2B_SMC_A25                           (_UINT32_(1) << 2) /**< SMC signal: SMC_A25 */
-#define PIN_PD2C_SMC_A25                           _UINT32_(98) /**< SMC signal: SMC_A25 on PD2 mux C */
-#define MUX_PD2C_SMC_A25                           _UINT32_(2)  /**< SMC signal line function value: SMC_A25 */
-#define PIO_PD2C_SMC_A25                           (_UINT32_(1) << 2) /**< SMC signal: SMC_A25 */
-#define PIN_PB11B_SMC_A0                           _UINT32_(43) /**< SMC signal: SMC_A0 on PB11 mux B */
-#define MUX_PB11B_SMC_A0                           _UINT32_(1)  /**< SMC signal line function value: SMC_A0 */
-#define PIO_PB11B_SMC_A0                           (_UINT32_(1) << 11) /**< SMC signal: SMC_A0 */
-#define PIN_PC11F_SMC_A0                           _UINT32_(75) /**< SMC signal: SMC_A0 on PC11 mux F */
-#define MUX_PC11F_SMC_A0                           _UINT32_(5)  /**< SMC signal line function value: SMC_A0 */
-#define PIO_PC11F_SMC_A0                           (_UINT32_(1) << 11) /**< SMC signal: SMC_A0 */
-#define PIN_PA10F_SMC_A21                          _UINT32_(10) /**< SMC signal: SMC_A21 on PA10 mux F */
-#define MUX_PA10F_SMC_A21                          _UINT32_(5)  /**< SMC signal line function value: SMC_A21 */
-#define PIO_PA10F_SMC_A21                          (_UINT32_(1) << 10) /**< SMC signal: SMC_A21 */
-#define PIN_PB0B_SMC_A21                           _UINT32_(32) /**< SMC signal: SMC_A21 on PB0 mux B */
-#define MUX_PB0B_SMC_A21                           _UINT32_(1)  /**< SMC signal line function value: SMC_A21 */
-#define PIO_PB0B_SMC_A21                           (_UINT32_(1) << 0) /**< SMC signal: SMC_A21 */
-#define PIN_PA11F_SMC_A22                          _UINT32_(11) /**< SMC signal: SMC_A22 on PA11 mux F */
-#define MUX_PA11F_SMC_A22                          _UINT32_(5)  /**< SMC signal line function value: SMC_A22 */
-#define PIO_PA11F_SMC_A22                          (_UINT32_(1) << 11) /**< SMC signal: SMC_A22 */
-#define PIN_PB1B_SMC_A22                           _UINT32_(33) /**< SMC signal: SMC_A22 on PB1 mux B */
-#define MUX_PB1B_SMC_A22                           _UINT32_(1)  /**< SMC signal line function value: SMC_A22 */
-#define PIO_PB1B_SMC_A22                           (_UINT32_(1) << 1) /**< SMC signal: SMC_A22 */
-#define PIN_PA0F_SMC_D0                            _UINT32_(0)  /**< SMC signal: SMC_D0 on PA0 mux F */
-#define MUX_PA0F_SMC_D0                            _UINT32_(5)  /**< SMC signal line function value: SMC_D0 */
-#define PIO_PA0F_SMC_D0                            (_UINT32_(1) << 0) /**< SMC signal: SMC_D0 */
-#define PIN_PA22B_SMC_D0                           _UINT32_(22) /**< SMC signal: SMC_D0 on PA22 mux B */
-#define MUX_PA22B_SMC_D0                           _UINT32_(1)  /**< SMC signal line function value: SMC_D0 */
-#define PIO_PA22B_SMC_D0                           (_UINT32_(1) << 22) /**< SMC signal: SMC_D0 */
-#define PIN_PA1F_SMC_D1                            _UINT32_(1)  /**< SMC signal: SMC_D1 on PA1 mux F */
-#define MUX_PA1F_SMC_D1                            _UINT32_(5)  /**< SMC signal line function value: SMC_D1 */
-#define PIO_PA1F_SMC_D1                            (_UINT32_(1) << 1) /**< SMC signal: SMC_D1 */
-#define PIN_PA23B_SMC_D1                           _UINT32_(23) /**< SMC signal: SMC_D1 on PA23 mux B */
-#define MUX_PA23B_SMC_D1                           _UINT32_(1)  /**< SMC signal line function value: SMC_D1 */
-#define PIO_PA23B_SMC_D1                           (_UINT32_(1) << 23) /**< SMC signal: SMC_D1 */
-#define PIN_PA2F_SMC_D2                            _UINT32_(2)  /**< SMC signal: SMC_D2 on PA2 mux F */
-#define MUX_PA2F_SMC_D2                            _UINT32_(5)  /**< SMC signal line function value: SMC_D2 */
-#define PIO_PA2F_SMC_D2                            (_UINT32_(1) << 2) /**< SMC signal: SMC_D2 */
-#define PIN_PA24B_SMC_D2                           _UINT32_(24) /**< SMC signal: SMC_D2 on PA24 mux B */
-#define MUX_PA24B_SMC_D2                           _UINT32_(1)  /**< SMC signal line function value: SMC_D2 */
-#define PIO_PA24B_SMC_D2                           (_UINT32_(1) << 24) /**< SMC signal: SMC_D2 */
-#define PIN_PA3F_SMC_D3                            _UINT32_(3)  /**< SMC signal: SMC_D3 on PA3 mux F */
-#define MUX_PA3F_SMC_D3                            _UINT32_(5)  /**< SMC signal line function value: SMC_D3 */
-#define PIO_PA3F_SMC_D3                            (_UINT32_(1) << 3) /**< SMC signal: SMC_D3 */
-#define PIN_PA25B_SMC_D3                           _UINT32_(25) /**< SMC signal: SMC_D3 on PA25 mux B */
-#define MUX_PA25B_SMC_D3                           _UINT32_(1)  /**< SMC signal line function value: SMC_D3 */
-#define PIO_PA25B_SMC_D3                           (_UINT32_(1) << 25) /**< SMC signal: SMC_D3 */
-#define PIN_PA4F_SMC_D4                            _UINT32_(4)  /**< SMC signal: SMC_D4 on PA4 mux F */
-#define MUX_PA4F_SMC_D4                            _UINT32_(5)  /**< SMC signal line function value: SMC_D4 */
-#define PIO_PA4F_SMC_D4                            (_UINT32_(1) << 4) /**< SMC signal: SMC_D4 */
-#define PIN_PA26B_SMC_D4                           _UINT32_(26) /**< SMC signal: SMC_D4 on PA26 mux B */
-#define MUX_PA26B_SMC_D4                           _UINT32_(1)  /**< SMC signal line function value: SMC_D4 */
-#define PIO_PA26B_SMC_D4                           (_UINT32_(1) << 26) /**< SMC signal: SMC_D4 */
-#define PIN_PA5F_SMC_D5                            _UINT32_(5)  /**< SMC signal: SMC_D5 on PA5 mux F */
-#define MUX_PA5F_SMC_D5                            _UINT32_(5)  /**< SMC signal line function value: SMC_D5 */
-#define PIO_PA5F_SMC_D5                            (_UINT32_(1) << 5) /**< SMC signal: SMC_D5 */
-#define PIN_PA27B_SMC_D5                           _UINT32_(27) /**< SMC signal: SMC_D5 on PA27 mux B */
-#define MUX_PA27B_SMC_D5                           _UINT32_(1)  /**< SMC signal line function value: SMC_D5 */
-#define PIO_PA27B_SMC_D5                           (_UINT32_(1) << 27) /**< SMC signal: SMC_D5 */
-#define PIN_PA6F_SMC_D6                            _UINT32_(6)  /**< SMC signal: SMC_D6 on PA6 mux F */
-#define MUX_PA6F_SMC_D6                            _UINT32_(5)  /**< SMC signal line function value: SMC_D6 */
-#define PIO_PA6F_SMC_D6                            (_UINT32_(1) << 6) /**< SMC signal: SMC_D6 */
-#define PIN_PA28B_SMC_D6                           _UINT32_(28) /**< SMC signal: SMC_D6 on PA28 mux B */
-#define MUX_PA28B_SMC_D6                           _UINT32_(1)  /**< SMC signal line function value: SMC_D6 */
-#define PIO_PA28B_SMC_D6                           (_UINT32_(1) << 28) /**< SMC signal: SMC_D6 */
-#define PIN_PA7F_SMC_D7                            _UINT32_(7)  /**< SMC signal: SMC_D7 on PA7 mux F */
-#define MUX_PA7F_SMC_D7                            _UINT32_(5)  /**< SMC signal line function value: SMC_D7 */
-#define PIO_PA7F_SMC_D7                            (_UINT32_(1) << 7) /**< SMC signal: SMC_D7 */
-#define PIN_PA29B_SMC_D7                           _UINT32_(29) /**< SMC signal: SMC_D7 on PA29 mux B */
-#define MUX_PA29B_SMC_D7                           _UINT32_(1)  /**< SMC signal line function value: SMC_D7 */
-#define PIO_PA29B_SMC_D7                           (_UINT32_(1) << 29) /**< SMC signal: SMC_D7 */
-#define PIN_PA13F_SMC_D8                           _UINT32_(13) /**< SMC signal: SMC_D8 on PA13 mux F */
-#define MUX_PA13F_SMC_D8                           _UINT32_(5)  /**< SMC signal line function value: SMC_D8 */
-#define PIO_PA13F_SMC_D8                           (_UINT32_(1) << 13) /**< SMC signal: SMC_D8 */
-#define PIN_PB3B_SMC_D8                            _UINT32_(35) /**< SMC signal: SMC_D8 on PB3 mux B */
-#define MUX_PB3B_SMC_D8                            _UINT32_(1)  /**< SMC signal line function value: SMC_D8 */
-#define PIO_PB3B_SMC_D8                            (_UINT32_(1) << 3) /**< SMC signal: SMC_D8 */
-#define PIN_PA14F_SMC_D9                           _UINT32_(14) /**< SMC signal: SMC_D9 on PA14 mux F */
-#define MUX_PA14F_SMC_D9                           _UINT32_(5)  /**< SMC signal line function value: SMC_D9 */
-#define PIO_PA14F_SMC_D9                           (_UINT32_(1) << 14) /**< SMC signal: SMC_D9 */
-#define PIN_PB4B_SMC_D9                            _UINT32_(36) /**< SMC signal: SMC_D9 on PB4 mux B */
-#define MUX_PB4B_SMC_D9                            _UINT32_(1)  /**< SMC signal line function value: SMC_D9 */
-#define PIO_PB4B_SMC_D9                            (_UINT32_(1) << 4) /**< SMC signal: SMC_D9 */
-#define PIN_PA15F_SMC_D10                          _UINT32_(15) /**< SMC signal: SMC_D10 on PA15 mux F */
-#define MUX_PA15F_SMC_D10                          _UINT32_(5)  /**< SMC signal line function value: SMC_D10 */
-#define PIO_PA15F_SMC_D10                          (_UINT32_(1) << 15) /**< SMC signal: SMC_D10 */
-#define PIN_PB5B_SMC_D10                           _UINT32_(37) /**< SMC signal: SMC_D10 on PB5 mux B */
-#define MUX_PB5B_SMC_D10                           _UINT32_(1)  /**< SMC signal line function value: SMC_D10 */
-#define PIO_PB5B_SMC_D10                           (_UINT32_(1) << 5) /**< SMC signal: SMC_D10 */
-#define PIN_PA16F_SMC_D11                          _UINT32_(16) /**< SMC signal: SMC_D11 on PA16 mux F */
-#define MUX_PA16F_SMC_D11                          _UINT32_(5)  /**< SMC signal line function value: SMC_D11 */
-#define PIO_PA16F_SMC_D11                          (_UINT32_(1) << 16) /**< SMC signal: SMC_D11 */
-#define PIN_PB6B_SMC_D11                           _UINT32_(38) /**< SMC signal: SMC_D11 on PB6 mux B */
-#define MUX_PB6B_SMC_D11                           _UINT32_(1)  /**< SMC signal line function value: SMC_D11 */
-#define PIO_PB6B_SMC_D11                           (_UINT32_(1) << 6) /**< SMC signal: SMC_D11 */
-#define PIN_PA17F_SMC_D12                          _UINT32_(17) /**< SMC signal: SMC_D12 on PA17 mux F */
-#define MUX_PA17F_SMC_D12                          _UINT32_(5)  /**< SMC signal line function value: SMC_D12 */
-#define PIO_PA17F_SMC_D12                          (_UINT32_(1) << 17) /**< SMC signal: SMC_D12 */
-#define PIN_PB7B_SMC_D12                           _UINT32_(39) /**< SMC signal: SMC_D12 on PB7 mux B */
-#define MUX_PB7B_SMC_D12                           _UINT32_(1)  /**< SMC signal line function value: SMC_D12 */
-#define PIO_PB7B_SMC_D12                           (_UINT32_(1) << 7) /**< SMC signal: SMC_D12 */
-#define PIN_PA18F_SMC_D13                          _UINT32_(18) /**< SMC signal: SMC_D13 on PA18 mux F */
-#define MUX_PA18F_SMC_D13                          _UINT32_(5)  /**< SMC signal line function value: SMC_D13 */
-#define PIO_PA18F_SMC_D13                          (_UINT32_(1) << 18) /**< SMC signal: SMC_D13 */
-#define PIN_PB8B_SMC_D13                           _UINT32_(40) /**< SMC signal: SMC_D13 on PB8 mux B */
-#define MUX_PB8B_SMC_D13                           _UINT32_(1)  /**< SMC signal line function value: SMC_D13 */
-#define PIO_PB8B_SMC_D13                           (_UINT32_(1) << 8) /**< SMC signal: SMC_D13 */
-#define PIN_PA19F_SMC_D14                          _UINT32_(19) /**< SMC signal: SMC_D14 on PA19 mux F */
-#define MUX_PA19F_SMC_D14                          _UINT32_(5)  /**< SMC signal line function value: SMC_D14 */
-#define PIO_PA19F_SMC_D14                          (_UINT32_(1) << 19) /**< SMC signal: SMC_D14 */
-#define PIN_PB9B_SMC_D14                           _UINT32_(41) /**< SMC signal: SMC_D14 on PB9 mux B */
-#define MUX_PB9B_SMC_D14                           _UINT32_(1)  /**< SMC signal line function value: SMC_D14 */
-#define PIO_PB9B_SMC_D14                           (_UINT32_(1) << 9) /**< SMC signal: SMC_D14 */
-#define PIN_PA20F_SMC_D15                          _UINT32_(20) /**< SMC signal: SMC_D15 on PA20 mux F */
-#define MUX_PA20F_SMC_D15                          _UINT32_(5)  /**< SMC signal line function value: SMC_D15 */
-#define PIO_PA20F_SMC_D15                          (_UINT32_(1) << 20) /**< SMC signal: SMC_D15 */
-#define PIN_PB10B_SMC_D15                          _UINT32_(42) /**< SMC signal: SMC_D15 on PB10 mux B */
-#define MUX_PB10B_SMC_D15                          _UINT32_(1)  /**< SMC signal line function value: SMC_D15 */
-#define PIO_PB10B_SMC_D15                          (_UINT32_(1) << 10) /**< SMC signal: SMC_D15 */
-#define PIN_PA8F_SMC_NANDNWE                       _UINT32_(8)  /**< SMC signal: SMC_NANDNWE on PA8 mux F */
-#define MUX_PA8F_SMC_NANDNWE                       _UINT32_(5)  /**< SMC signal line function value: SMC_NANDNWE */
-#define PIO_PA8F_SMC_NANDNWE                       (_UINT32_(1) << 8) /**< SMC signal: SMC_NANDNWE */
-#define PIN_PA30B_SMC_NANDNWE                      _UINT32_(30) /**< SMC signal: SMC_NANDNWE on PA30 mux B */
-#define MUX_PA30B_SMC_NANDNWE                      _UINT32_(1)  /**< SMC signal line function value: SMC_NANDNWE */
-#define PIO_PA30B_SMC_NANDNWE                      (_UINT32_(1) << 30) /**< SMC signal: SMC_NANDNWE */
-#define PIN_PA12F_SMC_NANDOE                       _UINT32_(12) /**< SMC signal: SMC_NANDOE on PA12 mux F */
-#define MUX_PA12F_SMC_NANDOE                       _UINT32_(5)  /**< SMC signal line function value: SMC_NANDOE */
-#define PIO_PA12F_SMC_NANDOE                       (_UINT32_(1) << 12) /**< SMC signal: SMC_NANDOE */
-#define PIN_PB2B_SMC_NANDOE                        _UINT32_(34) /**< SMC signal: SMC_NANDOE on PB2 mux B */
-#define MUX_PB2B_SMC_NANDOE                        _UINT32_(1)  /**< SMC signal line function value: SMC_NANDOE */
-#define PIO_PB2B_SMC_NANDOE                        (_UINT32_(1) << 2) /**< SMC signal: SMC_NANDOE */
-#define PIN_PA21F_SMC_NANDRDY                      _UINT32_(21) /**< SMC signal: SMC_NANDRDY on PA21 mux F */
-#define MUX_PA21F_SMC_NANDRDY                      _UINT32_(5)  /**< SMC signal line function value: SMC_NANDRDY */
-#define PIO_PA21F_SMC_NANDRDY                      (_UINT32_(1) << 21) /**< SMC signal: SMC_NANDRDY */
-#define PIN_PC8B_SMC_NANDRDY                       _UINT32_(72) /**< SMC signal: SMC_NANDRDY on PC8 mux B */
-#define MUX_PC8B_SMC_NANDRDY                       _UINT32_(1)  /**< SMC signal line function value: SMC_NANDRDY */
-#define PIO_PC8B_SMC_NANDRDY                       (_UINT32_(1) << 8) /**< SMC signal: SMC_NANDRDY */
-#define PIN_PD8F_SMC_NANDRDY                       _UINT32_(104) /**< SMC signal: SMC_NANDRDY on PD8 mux F */
-#define MUX_PD8F_SMC_NANDRDY                       _UINT32_(5)  /**< SMC signal line function value: SMC_NANDRDY */
-#define PIO_PD8F_SMC_NANDRDY                       (_UINT32_(1) << 8) /**< SMC signal: SMC_NANDRDY */
-#define PIN_PC5B_SMC_NCS0                          _UINT32_(69) /**< SMC signal: SMC_NCS0 on PC5 mux B */
-#define MUX_PC5B_SMC_NCS0                          _UINT32_(1)  /**< SMC signal line function value: SMC_NCS0 */
-#define PIO_PC5B_SMC_NCS0                          (_UINT32_(1) << 5) /**< SMC signal: SMC_NCS0 */
-#define PIN_PD4F_SMC_NCS0                          _UINT32_(100) /**< SMC signal: SMC_NCS0 on PD4 mux F */
-#define MUX_PD4F_SMC_NCS0                          _UINT32_(5)  /**< SMC signal line function value: SMC_NCS0 */
-#define PIO_PD4F_SMC_NCS0                          (_UINT32_(1) << 4) /**< SMC signal: SMC_NCS0 */
-#define PIN_PD5F_SMC_NCS1                          _UINT32_(101) /**< SMC signal: SMC_NCS1 on PD5 mux F */
-#define MUX_PD5F_SMC_NCS1                          _UINT32_(5)  /**< SMC signal line function value: SMC_NCS1 */
-#define PIO_PD5F_SMC_NCS1                          (_UINT32_(1) << 5) /**< SMC signal: SMC_NCS1 */
-#define PIN_PC7B_SMC_NCS2                          _UINT32_(71) /**< SMC signal: SMC_NCS2 on PC7 mux B */
-#define MUX_PC7B_SMC_NCS2                          _UINT32_(1)  /**< SMC signal line function value: SMC_NCS2 */
-#define PIO_PC7B_SMC_NCS2                          (_UINT32_(1) << 7) /**< SMC signal: SMC_NCS2 */
-#define PIN_PD6F_SMC_NCS2                          _UINT32_(102) /**< SMC signal: SMC_NCS2 on PD6 mux F */
-#define MUX_PD6F_SMC_NCS2                          _UINT32_(5)  /**< SMC signal line function value: SMC_NCS2 */
-#define PIO_PD6F_SMC_NCS2                          (_UINT32_(1) << 6) /**< SMC signal: SMC_NCS2 */
-#define PIN_PA9F_SMC_NCS3                          _UINT32_(9)  /**< SMC signal: SMC_NCS3 on PA9 mux F */
-#define MUX_PA9F_SMC_NCS3                          _UINT32_(5)  /**< SMC signal line function value: SMC_NCS3 */
-#define PIO_PA9F_SMC_NCS3                          (_UINT32_(1) << 9) /**< SMC signal: SMC_NCS3 */
-#define PIN_PA31B_SMC_NCS3                         _UINT32_(31) /**< SMC signal: SMC_NCS3 on PA31 mux B */
-#define MUX_PA31B_SMC_NCS3                         _UINT32_(1)  /**< SMC signal line function value: SMC_NCS3 */
-#define PIO_PA31B_SMC_NCS3                         (_UINT32_(1) << 31) /**< SMC signal: SMC_NCS3 */
-#define PIN_PC3B_SMC_NWAIT                         _UINT32_(67) /**< SMC signal: SMC_NWAIT on PC3 mux B */
-#define MUX_PC3B_SMC_NWAIT                         _UINT32_(1)  /**< SMC signal line function value: SMC_NWAIT */
-#define PIO_PC3B_SMC_NWAIT                         (_UINT32_(1) << 3) /**< SMC signal: SMC_NWAIT */
-#define PIN_PD3F_SMC_NWAIT                         _UINT32_(99) /**< SMC signal: SMC_NWAIT on PD3 mux F */
-#define MUX_PD3F_SMC_NWAIT                         _UINT32_(5)  /**< SMC signal line function value: SMC_NWAIT */
-#define PIO_PD3F_SMC_NWAIT                         (_UINT32_(1) << 3) /**< SMC signal: SMC_NWAIT */
-#define PIN_PC4B_SMC_NWR1                          _UINT32_(68) /**< SMC signal: SMC_NWR1 on PC4 mux B */
-#define MUX_PC4B_SMC_NWR1                          _UINT32_(1)  /**< SMC signal line function value: SMC_NWR1 */
-#define PIO_PC4B_SMC_NWR1                          (_UINT32_(1) << 4) /**< SMC signal: SMC_NWR1 */
-#define PIN_PD7F_SMC_NWR1                          _UINT32_(103) /**< SMC signal: SMC_NWR1 on PD7 mux F */
-#define MUX_PD7F_SMC_NWR1                          _UINT32_(5)  /**< SMC signal line function value: SMC_NWR1 */
-#define PIO_PD7F_SMC_NWR1                          (_UINT32_(1) << 7) /**< SMC signal: SMC_NWR1 */
+/* ========== PIO definition for HSMC peripheral ========== */
+#define PIN_PB12B_HSMC_A1                          _UINT32_(44) /**< HSMC signal: HSMC_A1 on PB12 mux B */
+#define MUX_PB12B_HSMC_A1                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A1 */
+#define PIO_PB12B_HSMC_A1                          (_UINT32_(1) << 12) /**< HSMC signal: HSMC_A1 */
+#define PIN_PC12C_HSMC_A1                          _UINT32_(76) /**< HSMC signal: HSMC_A1 on PC12 mux C */
+#define MUX_PC12C_HSMC_A1                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A1 */
+#define PIO_PC12C_HSMC_A1                          (_UINT32_(1) << 12) /**< HSMC signal: HSMC_A1 */
+#define PIN_PB13B_HSMC_A2                          _UINT32_(45) /**< HSMC signal: HSMC_A2 on PB13 mux B */
+#define MUX_PB13B_HSMC_A2                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A2 */
+#define PIO_PB13B_HSMC_A2                          (_UINT32_(1) << 13) /**< HSMC signal: HSMC_A2 */
+#define PIN_PC13C_HSMC_A2                          _UINT32_(77) /**< HSMC signal: HSMC_A2 on PC13 mux C */
+#define MUX_PC13C_HSMC_A2                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A2 */
+#define PIO_PC13C_HSMC_A2                          (_UINT32_(1) << 13) /**< HSMC signal: HSMC_A2 */
+#define PIN_PB14B_HSMC_A3                          _UINT32_(46) /**< HSMC signal: HSMC_A3 on PB14 mux B */
+#define MUX_PB14B_HSMC_A3                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A3 */
+#define PIO_PB14B_HSMC_A3                          (_UINT32_(1) << 14) /**< HSMC signal: HSMC_A3 */
+#define PIN_PC14C_HSMC_A3                          _UINT32_(78) /**< HSMC signal: HSMC_A3 on PC14 mux C */
+#define MUX_PC14C_HSMC_A3                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A3 */
+#define PIO_PC14C_HSMC_A3                          (_UINT32_(1) << 14) /**< HSMC signal: HSMC_A3 */
+#define PIN_PB15B_HSMC_A4                          _UINT32_(47) /**< HSMC signal: HSMC_A4 on PB15 mux B */
+#define MUX_PB15B_HSMC_A4                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A4 */
+#define PIO_PB15B_HSMC_A4                          (_UINT32_(1) << 15) /**< HSMC signal: HSMC_A4 */
+#define PIN_PC15C_HSMC_A4                          _UINT32_(79) /**< HSMC signal: HSMC_A4 on PC15 mux C */
+#define MUX_PC15C_HSMC_A4                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A4 */
+#define PIO_PC15C_HSMC_A4                          (_UINT32_(1) << 15) /**< HSMC signal: HSMC_A4 */
+#define PIN_PB16B_HSMC_A5                          _UINT32_(48) /**< HSMC signal: HSMC_A5 on PB16 mux B */
+#define MUX_PB16B_HSMC_A5                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A5 */
+#define PIO_PB16B_HSMC_A5                          (_UINT32_(1) << 16) /**< HSMC signal: HSMC_A5 */
+#define PIN_PC16C_HSMC_A5                          _UINT32_(80) /**< HSMC signal: HSMC_A5 on PC16 mux C */
+#define MUX_PC16C_HSMC_A5                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A5 */
+#define PIO_PC16C_HSMC_A5                          (_UINT32_(1) << 16) /**< HSMC signal: HSMC_A5 */
+#define PIN_PB17B_HSMC_A6                          _UINT32_(49) /**< HSMC signal: HSMC_A6 on PB17 mux B */
+#define MUX_PB17B_HSMC_A6                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A6 */
+#define PIO_PB17B_HSMC_A6                          (_UINT32_(1) << 17) /**< HSMC signal: HSMC_A6 */
+#define PIN_PC17C_HSMC_A6                          _UINT32_(81) /**< HSMC signal: HSMC_A6 on PC17 mux C */
+#define MUX_PC17C_HSMC_A6                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A6 */
+#define PIO_PC17C_HSMC_A6                          (_UINT32_(1) << 17) /**< HSMC signal: HSMC_A6 */
+#define PIN_PB18B_HSMC_A7                          _UINT32_(50) /**< HSMC signal: HSMC_A7 on PB18 mux B */
+#define MUX_PB18B_HSMC_A7                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A7 */
+#define PIO_PB18B_HSMC_A7                          (_UINT32_(1) << 18) /**< HSMC signal: HSMC_A7 */
+#define PIN_PC18C_HSMC_A7                          _UINT32_(82) /**< HSMC signal: HSMC_A7 on PC18 mux C */
+#define MUX_PC18C_HSMC_A7                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A7 */
+#define PIO_PC18C_HSMC_A7                          (_UINT32_(1) << 18) /**< HSMC signal: HSMC_A7 */
+#define PIN_PB19B_HSMC_A8                          _UINT32_(51) /**< HSMC signal: HSMC_A8 on PB19 mux B */
+#define MUX_PB19B_HSMC_A8                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A8 */
+#define PIO_PB19B_HSMC_A8                          (_UINT32_(1) << 19) /**< HSMC signal: HSMC_A8 */
+#define PIN_PC19C_HSMC_A8                          _UINT32_(83) /**< HSMC signal: HSMC_A8 on PC19 mux C */
+#define MUX_PC19C_HSMC_A8                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A8 */
+#define PIO_PC19C_HSMC_A8                          (_UINT32_(1) << 19) /**< HSMC signal: HSMC_A8 */
+#define PIN_PB20B_HSMC_A9                          _UINT32_(52) /**< HSMC signal: HSMC_A9 on PB20 mux B */
+#define MUX_PB20B_HSMC_A9                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A9 */
+#define PIO_PB20B_HSMC_A9                          (_UINT32_(1) << 20) /**< HSMC signal: HSMC_A9 */
+#define PIN_PC20C_HSMC_A9                          _UINT32_(84) /**< HSMC signal: HSMC_A9 on PC20 mux C */
+#define MUX_PC20C_HSMC_A9                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A9 */
+#define PIO_PC20C_HSMC_A9                          (_UINT32_(1) << 20) /**< HSMC signal: HSMC_A9 */
+#define PIN_PB21B_HSMC_A10                         _UINT32_(53) /**< HSMC signal: HSMC_A10 on PB21 mux B */
+#define MUX_PB21B_HSMC_A10                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A10 */
+#define PIO_PB21B_HSMC_A10                         (_UINT32_(1) << 21) /**< HSMC signal: HSMC_A10 */
+#define PIN_PC21C_HSMC_A10                         _UINT32_(85) /**< HSMC signal: HSMC_A10 on PC21 mux C */
+#define MUX_PC21C_HSMC_A10                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A10 */
+#define PIO_PC21C_HSMC_A10                         (_UINT32_(1) << 21) /**< HSMC signal: HSMC_A10 */
+#define PIN_PB22B_HSMC_A11                         _UINT32_(54) /**< HSMC signal: HSMC_A11 on PB22 mux B */
+#define MUX_PB22B_HSMC_A11                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A11 */
+#define PIO_PB22B_HSMC_A11                         (_UINT32_(1) << 22) /**< HSMC signal: HSMC_A11 */
+#define PIN_PC22C_HSMC_A11                         _UINT32_(86) /**< HSMC signal: HSMC_A11 on PC22 mux C */
+#define MUX_PC22C_HSMC_A11                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A11 */
+#define PIO_PC22C_HSMC_A11                         (_UINT32_(1) << 22) /**< HSMC signal: HSMC_A11 */
+#define PIN_PB23B_HSMC_A12                         _UINT32_(55) /**< HSMC signal: HSMC_A12 on PB23 mux B */
+#define MUX_PB23B_HSMC_A12                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A12 */
+#define PIO_PB23B_HSMC_A12                         (_UINT32_(1) << 23) /**< HSMC signal: HSMC_A12 */
+#define PIN_PC23C_HSMC_A12                         _UINT32_(87) /**< HSMC signal: HSMC_A12 on PC23 mux C */
+#define MUX_PC23C_HSMC_A12                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A12 */
+#define PIO_PC23C_HSMC_A12                         (_UINT32_(1) << 23) /**< HSMC signal: HSMC_A12 */
+#define PIN_PB24B_HSMC_A13                         _UINT32_(56) /**< HSMC signal: HSMC_A13 on PB24 mux B */
+#define MUX_PB24B_HSMC_A13                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A13 */
+#define PIO_PB24B_HSMC_A13                         (_UINT32_(1) << 24) /**< HSMC signal: HSMC_A13 */
+#define PIN_PC24C_HSMC_A13                         _UINT32_(88) /**< HSMC signal: HSMC_A13 on PC24 mux C */
+#define MUX_PC24C_HSMC_A13                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A13 */
+#define PIO_PC24C_HSMC_A13                         (_UINT32_(1) << 24) /**< HSMC signal: HSMC_A13 */
+#define PIN_PB25B_HSMC_A14                         _UINT32_(57) /**< HSMC signal: HSMC_A14 on PB25 mux B */
+#define MUX_PB25B_HSMC_A14                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A14 */
+#define PIO_PB25B_HSMC_A14                         (_UINT32_(1) << 25) /**< HSMC signal: HSMC_A14 */
+#define PIN_PC25C_HSMC_A14                         _UINT32_(89) /**< HSMC signal: HSMC_A14 on PC25 mux C */
+#define MUX_PC25C_HSMC_A14                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A14 */
+#define PIO_PC25C_HSMC_A14                         (_UINT32_(1) << 25) /**< HSMC signal: HSMC_A14 */
+#define PIN_PB26B_HSMC_A15                         _UINT32_(58) /**< HSMC signal: HSMC_A15 on PB26 mux B */
+#define MUX_PB26B_HSMC_A15                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A15 */
+#define PIO_PB26B_HSMC_A15                         (_UINT32_(1) << 26) /**< HSMC signal: HSMC_A15 */
+#define PIN_PC26C_HSMC_A15                         _UINT32_(90) /**< HSMC signal: HSMC_A15 on PC26 mux C */
+#define MUX_PC26C_HSMC_A15                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A15 */
+#define PIO_PC26C_HSMC_A15                         (_UINT32_(1) << 26) /**< HSMC signal: HSMC_A15 */
+#define PIN_PB27B_HSMC_A16                         _UINT32_(59) /**< HSMC signal: HSMC_A16 on PB27 mux B */
+#define MUX_PB27B_HSMC_A16                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A16 */
+#define PIO_PB27B_HSMC_A16                         (_UINT32_(1) << 27) /**< HSMC signal: HSMC_A16 */
+#define PIN_PC27C_HSMC_A16                         _UINT32_(91) /**< HSMC signal: HSMC_A16 on PC27 mux C */
+#define MUX_PC27C_HSMC_A16                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A16 */
+#define PIO_PC27C_HSMC_A16                         (_UINT32_(1) << 27) /**< HSMC signal: HSMC_A16 */
+#define PIN_PB28B_HSMC_A17                         _UINT32_(60) /**< HSMC signal: HSMC_A17 on PB28 mux B */
+#define MUX_PB28B_HSMC_A17                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A17 */
+#define PIO_PB28B_HSMC_A17                         (_UINT32_(1) << 28) /**< HSMC signal: HSMC_A17 */
+#define PIN_PC28C_HSMC_A17                         _UINT32_(92) /**< HSMC signal: HSMC_A17 on PC28 mux C */
+#define MUX_PC28C_HSMC_A17                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A17 */
+#define PIO_PC28C_HSMC_A17                         (_UINT32_(1) << 28) /**< HSMC signal: HSMC_A17 */
+#define PIN_PB29B_HSMC_A18                         _UINT32_(61) /**< HSMC signal: HSMC_A18 on PB29 mux B */
+#define MUX_PB29B_HSMC_A18                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A18 */
+#define PIO_PB29B_HSMC_A18                         (_UINT32_(1) << 29) /**< HSMC signal: HSMC_A18 */
+#define PIN_PC29C_HSMC_A18                         _UINT32_(93) /**< HSMC signal: HSMC_A18 on PC29 mux C */
+#define MUX_PC29C_HSMC_A18                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A18 */
+#define PIO_PC29C_HSMC_A18                         (_UINT32_(1) << 29) /**< HSMC signal: HSMC_A18 */
+#define PIN_PB30B_HSMC_A19                         _UINT32_(62) /**< HSMC signal: HSMC_A19 on PB30 mux B */
+#define MUX_PB30B_HSMC_A19                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A19 */
+#define PIO_PB30B_HSMC_A19                         (_UINT32_(1) << 30) /**< HSMC signal: HSMC_A19 */
+#define PIN_PC30C_HSMC_A19                         _UINT32_(94) /**< HSMC signal: HSMC_A19 on PC30 mux C */
+#define MUX_PC30C_HSMC_A19                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A19 */
+#define PIO_PC30C_HSMC_A19                         (_UINT32_(1) << 30) /**< HSMC signal: HSMC_A19 */
+#define PIN_PB31B_HSMC_A20                         _UINT32_(63) /**< HSMC signal: HSMC_A20 on PB31 mux B */
+#define MUX_PB31B_HSMC_A20                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_A20 */
+#define PIO_PB31B_HSMC_A20                         (_UINT32_(1) << 31) /**< HSMC signal: HSMC_A20 */
+#define PIN_PC31C_HSMC_A20                         _UINT32_(95) /**< HSMC signal: HSMC_A20 on PC31 mux C */
+#define MUX_PC31C_HSMC_A20                         _UINT32_(2)  /**< HSMC signal line function value: HSMC_A20 */
+#define PIO_PC31C_HSMC_A20                         (_UINT32_(1) << 31) /**< HSMC signal: HSMC_A20 */
+#define PIN_PC0B_HSMC_A23                          _UINT32_(64) /**< HSMC signal: HSMC_A23 on PC0 mux B */
+#define MUX_PC0B_HSMC_A23                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A23 */
+#define PIO_PC0B_HSMC_A23                          (_UINT32_(1) << 0) /**< HSMC signal: HSMC_A23 */
+#define PIN_PD0C_HSMC_A23                          _UINT32_(96) /**< HSMC signal: HSMC_A23 on PD0 mux C */
+#define MUX_PD0C_HSMC_A23                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A23 */
+#define PIO_PD0C_HSMC_A23                          (_UINT32_(1) << 0) /**< HSMC signal: HSMC_A23 */
+#define PIN_PC1B_HSMC_A24                          _UINT32_(65) /**< HSMC signal: HSMC_A24 on PC1 mux B */
+#define MUX_PC1B_HSMC_A24                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A24 */
+#define PIO_PC1B_HSMC_A24                          (_UINT32_(1) << 1) /**< HSMC signal: HSMC_A24 */
+#define PIN_PD1C_HSMC_A24                          _UINT32_(97) /**< HSMC signal: HSMC_A24 on PD1 mux C */
+#define MUX_PD1C_HSMC_A24                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A24 */
+#define PIO_PD1C_HSMC_A24                          (_UINT32_(1) << 1) /**< HSMC signal: HSMC_A24 */
+#define PIN_PC2B_HSMC_A25                          _UINT32_(66) /**< HSMC signal: HSMC_A25 on PC2 mux B */
+#define MUX_PC2B_HSMC_A25                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A25 */
+#define PIO_PC2B_HSMC_A25                          (_UINT32_(1) << 2) /**< HSMC signal: HSMC_A25 */
+#define PIN_PD2C_HSMC_A25                          _UINT32_(98) /**< HSMC signal: HSMC_A25 on PD2 mux C */
+#define MUX_PD2C_HSMC_A25                          _UINT32_(2)  /**< HSMC signal line function value: HSMC_A25 */
+#define PIO_PD2C_HSMC_A25                          (_UINT32_(1) << 2) /**< HSMC signal: HSMC_A25 */
+#define PIN_PB11B_HSMC_A0                          _UINT32_(43) /**< HSMC signal: HSMC_A0 on PB11 mux B */
+#define MUX_PB11B_HSMC_A0                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A0 */
+#define PIO_PB11B_HSMC_A0                          (_UINT32_(1) << 11) /**< HSMC signal: HSMC_A0 */
+#define PIN_PC11F_HSMC_A0                          _UINT32_(75) /**< HSMC signal: HSMC_A0 on PC11 mux F */
+#define MUX_PC11F_HSMC_A0                          _UINT32_(5)  /**< HSMC signal line function value: HSMC_A0 */
+#define PIO_PC11F_HSMC_A0                          (_UINT32_(1) << 11) /**< HSMC signal: HSMC_A0 */
+#define PIN_PA10F_HSMC_A21                         _UINT32_(10) /**< HSMC signal: HSMC_A21 on PA10 mux F */
+#define MUX_PA10F_HSMC_A21                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_A21 */
+#define PIO_PA10F_HSMC_A21                         (_UINT32_(1) << 10) /**< HSMC signal: HSMC_A21 */
+#define PIN_PB0B_HSMC_A21                          _UINT32_(32) /**< HSMC signal: HSMC_A21 on PB0 mux B */
+#define MUX_PB0B_HSMC_A21                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A21 */
+#define PIO_PB0B_HSMC_A21                          (_UINT32_(1) << 0) /**< HSMC signal: HSMC_A21 */
+#define PIN_PA11F_HSMC_A22                         _UINT32_(11) /**< HSMC signal: HSMC_A22 on PA11 mux F */
+#define MUX_PA11F_HSMC_A22                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_A22 */
+#define PIO_PA11F_HSMC_A22                         (_UINT32_(1) << 11) /**< HSMC signal: HSMC_A22 */
+#define PIN_PB1B_HSMC_A22                          _UINT32_(33) /**< HSMC signal: HSMC_A22 on PB1 mux B */
+#define MUX_PB1B_HSMC_A22                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_A22 */
+#define PIO_PB1B_HSMC_A22                          (_UINT32_(1) << 1) /**< HSMC signal: HSMC_A22 */
+#define PIN_PA0F_HSMC_D0                           _UINT32_(0)  /**< HSMC signal: HSMC_D0 on PA0 mux F */
+#define MUX_PA0F_HSMC_D0                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D0 */
+#define PIO_PA0F_HSMC_D0                           (_UINT32_(1) << 0) /**< HSMC signal: HSMC_D0 */
+#define PIN_PA22B_HSMC_D0                          _UINT32_(22) /**< HSMC signal: HSMC_D0 on PA22 mux B */
+#define MUX_PA22B_HSMC_D0                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D0 */
+#define PIO_PA22B_HSMC_D0                          (_UINT32_(1) << 22) /**< HSMC signal: HSMC_D0 */
+#define PIN_PA1F_HSMC_D1                           _UINT32_(1)  /**< HSMC signal: HSMC_D1 on PA1 mux F */
+#define MUX_PA1F_HSMC_D1                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D1 */
+#define PIO_PA1F_HSMC_D1                           (_UINT32_(1) << 1) /**< HSMC signal: HSMC_D1 */
+#define PIN_PA23B_HSMC_D1                          _UINT32_(23) /**< HSMC signal: HSMC_D1 on PA23 mux B */
+#define MUX_PA23B_HSMC_D1                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D1 */
+#define PIO_PA23B_HSMC_D1                          (_UINT32_(1) << 23) /**< HSMC signal: HSMC_D1 */
+#define PIN_PA2F_HSMC_D2                           _UINT32_(2)  /**< HSMC signal: HSMC_D2 on PA2 mux F */
+#define MUX_PA2F_HSMC_D2                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D2 */
+#define PIO_PA2F_HSMC_D2                           (_UINT32_(1) << 2) /**< HSMC signal: HSMC_D2 */
+#define PIN_PA24B_HSMC_D2                          _UINT32_(24) /**< HSMC signal: HSMC_D2 on PA24 mux B */
+#define MUX_PA24B_HSMC_D2                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D2 */
+#define PIO_PA24B_HSMC_D2                          (_UINT32_(1) << 24) /**< HSMC signal: HSMC_D2 */
+#define PIN_PA3F_HSMC_D3                           _UINT32_(3)  /**< HSMC signal: HSMC_D3 on PA3 mux F */
+#define MUX_PA3F_HSMC_D3                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D3 */
+#define PIO_PA3F_HSMC_D3                           (_UINT32_(1) << 3) /**< HSMC signal: HSMC_D3 */
+#define PIN_PA25B_HSMC_D3                          _UINT32_(25) /**< HSMC signal: HSMC_D3 on PA25 mux B */
+#define MUX_PA25B_HSMC_D3                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D3 */
+#define PIO_PA25B_HSMC_D3                          (_UINT32_(1) << 25) /**< HSMC signal: HSMC_D3 */
+#define PIN_PA4F_HSMC_D4                           _UINT32_(4)  /**< HSMC signal: HSMC_D4 on PA4 mux F */
+#define MUX_PA4F_HSMC_D4                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D4 */
+#define PIO_PA4F_HSMC_D4                           (_UINT32_(1) << 4) /**< HSMC signal: HSMC_D4 */
+#define PIN_PA26B_HSMC_D4                          _UINT32_(26) /**< HSMC signal: HSMC_D4 on PA26 mux B */
+#define MUX_PA26B_HSMC_D4                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D4 */
+#define PIO_PA26B_HSMC_D4                          (_UINT32_(1) << 26) /**< HSMC signal: HSMC_D4 */
+#define PIN_PA5F_HSMC_D5                           _UINT32_(5)  /**< HSMC signal: HSMC_D5 on PA5 mux F */
+#define MUX_PA5F_HSMC_D5                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D5 */
+#define PIO_PA5F_HSMC_D5                           (_UINT32_(1) << 5) /**< HSMC signal: HSMC_D5 */
+#define PIN_PA27B_HSMC_D5                          _UINT32_(27) /**< HSMC signal: HSMC_D5 on PA27 mux B */
+#define MUX_PA27B_HSMC_D5                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D5 */
+#define PIO_PA27B_HSMC_D5                          (_UINT32_(1) << 27) /**< HSMC signal: HSMC_D5 */
+#define PIN_PA6F_HSMC_D6                           _UINT32_(6)  /**< HSMC signal: HSMC_D6 on PA6 mux F */
+#define MUX_PA6F_HSMC_D6                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D6 */
+#define PIO_PA6F_HSMC_D6                           (_UINT32_(1) << 6) /**< HSMC signal: HSMC_D6 */
+#define PIN_PA28B_HSMC_D6                          _UINT32_(28) /**< HSMC signal: HSMC_D6 on PA28 mux B */
+#define MUX_PA28B_HSMC_D6                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D6 */
+#define PIO_PA28B_HSMC_D6                          (_UINT32_(1) << 28) /**< HSMC signal: HSMC_D6 */
+#define PIN_PA7F_HSMC_D7                           _UINT32_(7)  /**< HSMC signal: HSMC_D7 on PA7 mux F */
+#define MUX_PA7F_HSMC_D7                           _UINT32_(5)  /**< HSMC signal line function value: HSMC_D7 */
+#define PIO_PA7F_HSMC_D7                           (_UINT32_(1) << 7) /**< HSMC signal: HSMC_D7 */
+#define PIN_PA29B_HSMC_D7                          _UINT32_(29) /**< HSMC signal: HSMC_D7 on PA29 mux B */
+#define MUX_PA29B_HSMC_D7                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D7 */
+#define PIO_PA29B_HSMC_D7                          (_UINT32_(1) << 29) /**< HSMC signal: HSMC_D7 */
+#define PIN_PA13F_HSMC_D8                          _UINT32_(13) /**< HSMC signal: HSMC_D8 on PA13 mux F */
+#define MUX_PA13F_HSMC_D8                          _UINT32_(5)  /**< HSMC signal line function value: HSMC_D8 */
+#define PIO_PA13F_HSMC_D8                          (_UINT32_(1) << 13) /**< HSMC signal: HSMC_D8 */
+#define PIN_PB3B_HSMC_D8                           _UINT32_(35) /**< HSMC signal: HSMC_D8 on PB3 mux B */
+#define MUX_PB3B_HSMC_D8                           _UINT32_(1)  /**< HSMC signal line function value: HSMC_D8 */
+#define PIO_PB3B_HSMC_D8                           (_UINT32_(1) << 3) /**< HSMC signal: HSMC_D8 */
+#define PIN_PA14F_HSMC_D9                          _UINT32_(14) /**< HSMC signal: HSMC_D9 on PA14 mux F */
+#define MUX_PA14F_HSMC_D9                          _UINT32_(5)  /**< HSMC signal line function value: HSMC_D9 */
+#define PIO_PA14F_HSMC_D9                          (_UINT32_(1) << 14) /**< HSMC signal: HSMC_D9 */
+#define PIN_PB4B_HSMC_D9                           _UINT32_(36) /**< HSMC signal: HSMC_D9 on PB4 mux B */
+#define MUX_PB4B_HSMC_D9                           _UINT32_(1)  /**< HSMC signal line function value: HSMC_D9 */
+#define PIO_PB4B_HSMC_D9                           (_UINT32_(1) << 4) /**< HSMC signal: HSMC_D9 */
+#define PIN_PA15F_HSMC_D10                         _UINT32_(15) /**< HSMC signal: HSMC_D10 on PA15 mux F */
+#define MUX_PA15F_HSMC_D10                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_D10 */
+#define PIO_PA15F_HSMC_D10                         (_UINT32_(1) << 15) /**< HSMC signal: HSMC_D10 */
+#define PIN_PB5B_HSMC_D10                          _UINT32_(37) /**< HSMC signal: HSMC_D10 on PB5 mux B */
+#define MUX_PB5B_HSMC_D10                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D10 */
+#define PIO_PB5B_HSMC_D10                          (_UINT32_(1) << 5) /**< HSMC signal: HSMC_D10 */
+#define PIN_PA16F_HSMC_D11                         _UINT32_(16) /**< HSMC signal: HSMC_D11 on PA16 mux F */
+#define MUX_PA16F_HSMC_D11                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_D11 */
+#define PIO_PA16F_HSMC_D11                         (_UINT32_(1) << 16) /**< HSMC signal: HSMC_D11 */
+#define PIN_PB6B_HSMC_D11                          _UINT32_(38) /**< HSMC signal: HSMC_D11 on PB6 mux B */
+#define MUX_PB6B_HSMC_D11                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D11 */
+#define PIO_PB6B_HSMC_D11                          (_UINT32_(1) << 6) /**< HSMC signal: HSMC_D11 */
+#define PIN_PA17F_HSMC_D12                         _UINT32_(17) /**< HSMC signal: HSMC_D12 on PA17 mux F */
+#define MUX_PA17F_HSMC_D12                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_D12 */
+#define PIO_PA17F_HSMC_D12                         (_UINT32_(1) << 17) /**< HSMC signal: HSMC_D12 */
+#define PIN_PB7B_HSMC_D12                          _UINT32_(39) /**< HSMC signal: HSMC_D12 on PB7 mux B */
+#define MUX_PB7B_HSMC_D12                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D12 */
+#define PIO_PB7B_HSMC_D12                          (_UINT32_(1) << 7) /**< HSMC signal: HSMC_D12 */
+#define PIN_PA18F_HSMC_D13                         _UINT32_(18) /**< HSMC signal: HSMC_D13 on PA18 mux F */
+#define MUX_PA18F_HSMC_D13                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_D13 */
+#define PIO_PA18F_HSMC_D13                         (_UINT32_(1) << 18) /**< HSMC signal: HSMC_D13 */
+#define PIN_PB8B_HSMC_D13                          _UINT32_(40) /**< HSMC signal: HSMC_D13 on PB8 mux B */
+#define MUX_PB8B_HSMC_D13                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D13 */
+#define PIO_PB8B_HSMC_D13                          (_UINT32_(1) << 8) /**< HSMC signal: HSMC_D13 */
+#define PIN_PA19F_HSMC_D14                         _UINT32_(19) /**< HSMC signal: HSMC_D14 on PA19 mux F */
+#define MUX_PA19F_HSMC_D14                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_D14 */
+#define PIO_PA19F_HSMC_D14                         (_UINT32_(1) << 19) /**< HSMC signal: HSMC_D14 */
+#define PIN_PB9B_HSMC_D14                          _UINT32_(41) /**< HSMC signal: HSMC_D14 on PB9 mux B */
+#define MUX_PB9B_HSMC_D14                          _UINT32_(1)  /**< HSMC signal line function value: HSMC_D14 */
+#define PIO_PB9B_HSMC_D14                          (_UINT32_(1) << 9) /**< HSMC signal: HSMC_D14 */
+#define PIN_PA20F_HSMC_D15                         _UINT32_(20) /**< HSMC signal: HSMC_D15 on PA20 mux F */
+#define MUX_PA20F_HSMC_D15                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_D15 */
+#define PIO_PA20F_HSMC_D15                         (_UINT32_(1) << 20) /**< HSMC signal: HSMC_D15 */
+#define PIN_PB10B_HSMC_D15                         _UINT32_(42) /**< HSMC signal: HSMC_D15 on PB10 mux B */
+#define MUX_PB10B_HSMC_D15                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_D15 */
+#define PIO_PB10B_HSMC_D15                         (_UINT32_(1) << 10) /**< HSMC signal: HSMC_D15 */
+#define PIN_PA8F_HSMC_NANDNWE                      _UINT32_(8)  /**< HSMC signal: HSMC_NANDNWE on PA8 mux F */
+#define MUX_PA8F_HSMC_NANDNWE                      _UINT32_(5)  /**< HSMC signal line function value: HSMC_NANDNWE */
+#define PIO_PA8F_HSMC_NANDNWE                      (_UINT32_(1) << 8) /**< HSMC signal: HSMC_NANDNWE */
+#define PIN_PA30B_HSMC_NANDNWE                     _UINT32_(30) /**< HSMC signal: HSMC_NANDNWE on PA30 mux B */
+#define MUX_PA30B_HSMC_NANDNWE                     _UINT32_(1)  /**< HSMC signal line function value: HSMC_NANDNWE */
+#define PIO_PA30B_HSMC_NANDNWE                     (_UINT32_(1) << 30) /**< HSMC signal: HSMC_NANDNWE */
+#define PIN_PA12F_HSMC_NANDOE                      _UINT32_(12) /**< HSMC signal: HSMC_NANDOE on PA12 mux F */
+#define MUX_PA12F_HSMC_NANDOE                      _UINT32_(5)  /**< HSMC signal line function value: HSMC_NANDOE */
+#define PIO_PA12F_HSMC_NANDOE                      (_UINT32_(1) << 12) /**< HSMC signal: HSMC_NANDOE */
+#define PIN_PB2B_HSMC_NANDOE                       _UINT32_(34) /**< HSMC signal: HSMC_NANDOE on PB2 mux B */
+#define MUX_PB2B_HSMC_NANDOE                       _UINT32_(1)  /**< HSMC signal line function value: HSMC_NANDOE */
+#define PIO_PB2B_HSMC_NANDOE                       (_UINT32_(1) << 2) /**< HSMC signal: HSMC_NANDOE */
+#define PIN_PA21F_HSMC_NANDRDY                     _UINT32_(21) /**< HSMC signal: HSMC_NANDRDY on PA21 mux F */
+#define MUX_PA21F_HSMC_NANDRDY                     _UINT32_(5)  /**< HSMC signal line function value: HSMC_NANDRDY */
+#define PIO_PA21F_HSMC_NANDRDY                     (_UINT32_(1) << 21) /**< HSMC signal: HSMC_NANDRDY */
+#define PIN_PC8B_HSMC_NANDRDY                      _UINT32_(72) /**< HSMC signal: HSMC_NANDRDY on PC8 mux B */
+#define MUX_PC8B_HSMC_NANDRDY                      _UINT32_(1)  /**< HSMC signal line function value: HSMC_NANDRDY */
+#define PIO_PC8B_HSMC_NANDRDY                      (_UINT32_(1) << 8) /**< HSMC signal: HSMC_NANDRDY */
+#define PIN_PD8F_HSMC_NANDRDY                      _UINT32_(104) /**< HSMC signal: HSMC_NANDRDY on PD8 mux F */
+#define MUX_PD8F_HSMC_NANDRDY                      _UINT32_(5)  /**< HSMC signal line function value: HSMC_NANDRDY */
+#define PIO_PD8F_HSMC_NANDRDY                      (_UINT32_(1) << 8) /**< HSMC signal: HSMC_NANDRDY */
+#define PIN_PC5B_HSMC_NCS0                         _UINT32_(69) /**< HSMC signal: HSMC_NCS0 on PC5 mux B */
+#define MUX_PC5B_HSMC_NCS0                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_NCS0 */
+#define PIO_PC5B_HSMC_NCS0                         (_UINT32_(1) << 5) /**< HSMC signal: HSMC_NCS0 */
+#define PIN_PD4F_HSMC_NCS0                         _UINT32_(100) /**< HSMC signal: HSMC_NCS0 on PD4 mux F */
+#define MUX_PD4F_HSMC_NCS0                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_NCS0 */
+#define PIO_PD4F_HSMC_NCS0                         (_UINT32_(1) << 4) /**< HSMC signal: HSMC_NCS0 */
+#define PIN_PD5F_HSMC_NCS1                         _UINT32_(101) /**< HSMC signal: HSMC_NCS1 on PD5 mux F */
+#define MUX_PD5F_HSMC_NCS1                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_NCS1 */
+#define PIO_PD5F_HSMC_NCS1                         (_UINT32_(1) << 5) /**< HSMC signal: HSMC_NCS1 */
+#define PIN_PC7B_HSMC_NCS2                         _UINT32_(71) /**< HSMC signal: HSMC_NCS2 on PC7 mux B */
+#define MUX_PC7B_HSMC_NCS2                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_NCS2 */
+#define PIO_PC7B_HSMC_NCS2                         (_UINT32_(1) << 7) /**< HSMC signal: HSMC_NCS2 */
+#define PIN_PD6F_HSMC_NCS2                         _UINT32_(102) /**< HSMC signal: HSMC_NCS2 on PD6 mux F */
+#define MUX_PD6F_HSMC_NCS2                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_NCS2 */
+#define PIO_PD6F_HSMC_NCS2                         (_UINT32_(1) << 6) /**< HSMC signal: HSMC_NCS2 */
+#define PIN_PA9F_HSMC_NCS3                         _UINT32_(9)  /**< HSMC signal: HSMC_NCS3 on PA9 mux F */
+#define MUX_PA9F_HSMC_NCS3                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_NCS3 */
+#define PIO_PA9F_HSMC_NCS3                         (_UINT32_(1) << 9) /**< HSMC signal: HSMC_NCS3 */
+#define PIN_PA31B_HSMC_NCS3                        _UINT32_(31) /**< HSMC signal: HSMC_NCS3 on PA31 mux B */
+#define MUX_PA31B_HSMC_NCS3                        _UINT32_(1)  /**< HSMC signal line function value: HSMC_NCS3 */
+#define PIO_PA31B_HSMC_NCS3                        (_UINT32_(1) << 31) /**< HSMC signal: HSMC_NCS3 */
+#define PIN_PC3B_HSMC_NWAIT                        _UINT32_(67) /**< HSMC signal: HSMC_NWAIT on PC3 mux B */
+#define MUX_PC3B_HSMC_NWAIT                        _UINT32_(1)  /**< HSMC signal line function value: HSMC_NWAIT */
+#define PIO_PC3B_HSMC_NWAIT                        (_UINT32_(1) << 3) /**< HSMC signal: HSMC_NWAIT */
+#define PIN_PD3F_HSMC_NWAIT                        _UINT32_(99) /**< HSMC signal: HSMC_NWAIT on PD3 mux F */
+#define MUX_PD3F_HSMC_NWAIT                        _UINT32_(5)  /**< HSMC signal line function value: HSMC_NWAIT */
+#define PIO_PD3F_HSMC_NWAIT                        (_UINT32_(1) << 3) /**< HSMC signal: HSMC_NWAIT */
+#define PIN_PC4B_HSMC_NWR1                         _UINT32_(68) /**< HSMC signal: HSMC_NWR1 on PC4 mux B */
+#define MUX_PC4B_HSMC_NWR1                         _UINT32_(1)  /**< HSMC signal line function value: HSMC_NWR1 */
+#define PIO_PC4B_HSMC_NWR1                         (_UINT32_(1) << 4) /**< HSMC signal: HSMC_NWR1 */
+#define PIN_PD7F_HSMC_NWR1                         _UINT32_(103) /**< HSMC signal: HSMC_NWR1 on PD7 mux F */
+#define MUX_PD7F_HSMC_NWR1                         _UINT32_(5)  /**< HSMC signal line function value: HSMC_NWR1 */
+#define PIO_PD7F_HSMC_NWR1                         (_UINT32_(1) << 7) /**< HSMC signal: HSMC_NWR1 */
 /* ========== PIO definition for SPI0 peripheral ========== */
 #define PIN_PA16A_SPI0_MISO                        _UINT32_(16) /**< SPI0 signal: SPI0_MISO on PA16 mux A */
 #define MUX_PA16A_SPI0_MISO                        _UINT32_(0)  /**< SPI0 signal line function value: SPI0_MISO */

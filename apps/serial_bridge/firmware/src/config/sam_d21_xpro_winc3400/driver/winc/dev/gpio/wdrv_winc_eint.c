@@ -48,8 +48,13 @@
 #endif
 #elif defined(WDRV_WINC_INT_SOURCE)
 #define WDRV_INT_SOURCE WDRV_WINC_INT_SOURCE
+#elif defined WDRV_WINC_GPIO_SOURCE
+static void WDRV_WINC_GPIOCallback(GPIO_PIN pin, uintptr_t context)
+{
+    WDRV_WINC_ISR(context);
+}
 #elif defined WDRV_WINC_PIO_SOURCE
-static void WDRV_WINC_PIOCallback( PIO_PIN pin, uintptr_t context)
+static void WDRV_WINC_PIOCallback(PIO_PIN pin, uintptr_t context)
 {
     WDRV_WINC_ISR(context);
 }
@@ -62,11 +67,12 @@ static void WDRV_WINC_PIOCallback( PIO_PIN pin, uintptr_t context)
 void WDRV_WINC_INTInitialize(SYS_MODULE_OBJ object, int intSrc)
 {
 #ifdef WDRV_WINC_EIC_SOURCE
-    EIC_CallbackRegister(intSrc, (EIC_CALLBACK)WDRV_WINC_ISR, object);
+    EIC_CallbackRegister(intSrc, WDRV_WINC_ISR, object);
     EIC_InterruptEnable(intSrc);
 #elif defined WDRV_WINC_GPIO_SOURCE
-    GPIO_PinInterruptCallbackRegister(intSrc, (GPIO_PIN_CALLBACK)WDRV_WINC_ISR, object);
+    GPIO_PinInterruptCallbackRegister(intSrc, WDRV_WINC_GPIOCallback, object);
     GPIO_PinInterruptEnable(intSrc);
+    GPIO_PinIntEnable(intSrc, GPIO_INTERRUPT_ON_FALLING_EDGE);
 #elif defined WDRV_WINC_PIO_SOURCE
     PIO_PinInterruptCallbackRegister(intSrc, WDRV_WINC_PIOCallback, object);
     PIO_PinInterruptEnable(intSrc);

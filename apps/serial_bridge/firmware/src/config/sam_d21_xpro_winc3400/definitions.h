@@ -51,8 +51,8 @@
 #include "peripheral/sercom/usart/plib_sercom3_usart.h"
 #include "peripheral/nvmctrl/plib_nvmctrl.h"
 #include "peripheral/sercom/spi_master/plib_sercom1_spi_master.h"
-#include "peripheral/sercom/spi_master/plib_sercom0_spi_master.h"
 #include "peripheral/evsys/plib_evsys.h"
+#include "peripheral/sercom/spi_master/plib_sercom0_spi_master.h"
 #include "driver/winc/include/wdrv_winc_api.h"
 #include "peripheral/port/plib_port.h"
 #include "peripheral/clock/plib_clock.h"
@@ -76,6 +76,12 @@ extern "C" {
 
 #endif
 // DOM-IGNORE-END
+
+/* Device Information */
+#define DEVICE_NAME			 "ATSAMD21J18A"
+#define DEVICE_ARCH			 "CORTEX-M0PLUS"
+#define DEVICE_FAMILY		 "SAMD"
+#define DEVICE_SERIES		 "SAMD21"
 
 /* CPU clock frequency */
 #define CPU_CLOCK_FREQUENCY 48000000

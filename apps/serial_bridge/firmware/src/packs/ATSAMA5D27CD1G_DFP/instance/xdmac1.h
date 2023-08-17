@@ -1,5 +1,5 @@
 /*
- * Instance header file for ATSAMA5D28CLD2G
+ * Instance header file for ATSAMA5D29
  *
  * Copyright (c) 2022 Microchip Technology Inc. and its subsidiaries.
  *
@@ -20,13 +20,13 @@
  *
  */
 
-/* file generated from device description version 2022-02-21T21:02:22Z */
-#ifndef _SAMA5D2_XDMAC1_INSTANCE_
-#define _SAMA5D2_XDMAC1_INSTANCE_
+/* file generated from device description version 2022-10-04T10:37:14Z */
+#ifndef _SAMA5D_XDMAC1_INSTANCE_
+#define _SAMA5D_XDMAC1_INSTANCE_
 
 
 /* ========== Instance Parameter definitions for XDMAC1 peripheral ========== */
 #define XDMAC1_INSTANCE_ID                       (7)        
 #define XDMAC1_CLOCK_ID                          (7)        
 
-#endif /* _SAMA5D2_XDMAC1_INSTANCE_ */
+#endif /* _SAMA5D_XDMAC1_INSTANCE_ */

@@ -66,6 +66,8 @@ uint32_t WDRV_WINC_LocalTimeToUTC(const tstrSystemTime *const pSysTime)
     {
         return 0;
     }
+    
+    memset(&t, 0, sizeof(struct tm));
 
     t.tm_sec  = pSysTime->u8Second;
     t.tm_min  = pSysTime->u8Minute;

@@ -40,6 +40,7 @@
 // DOM-IGNORE-END
 
 #include "device.h"
+#include "plib_mmu.h"
 
 /* TTB descriptor type for Section descriptor */
 #define TTB_TYPE_SECT              (2UL << 0U)
@@ -87,7 +88,7 @@ __ALIGNED(16384) static uint32_t tlb[4096];
 static void mmu_configure(void *p_tlb)
 {
     /* Translation Table Base Register 0 */
-    __set_TTBR0((uint32_t)p_tlb);
+    __set_TTBR0((uint32_t)(uint8_t*)p_tlb);
 
     /* Domain Access Register */
     /* only domain 15: access are not checked */
@@ -150,9 +151,9 @@ void MMU_Initialize(void)
 
     /* Reset table entries */
     for (addr = 0U; addr < 4096U; addr++)
-	{
+    {
         tlb[addr] = 0;
-	}
+    }
 
 
     /* 0x00000000: IROM */
@@ -161,7 +162,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC
                   | TTB_SECT_CACHEABLE_WB
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00100000: NFC RAM */
     tlb[0x001] = TTB_SECT_ADDR(0x00100000U)
@@ -169,7 +170,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00200000: SRAM */
     tlb[0x002] = TTB_SECT_ADDR(0x00200000U)
@@ -177,7 +178,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC
                   | TTB_SECT_CACHEABLE_WB
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00300000: UDPHS RAM */
     tlb[0x003] = TTB_SECT_ADDR(0x00300000U)
@@ -185,7 +186,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00400000: UHPHS OHCI */
     tlb[0x004] = TTB_SECT_ADDR(0x00400000U)
@@ -193,7 +194,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00500000: UHPHS EHCI */
     tlb[0x005] = TTB_SECT_ADDR(0x00500000U)
@@ -201,7 +202,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00600000: AXIMX */
     tlb[0x006] = TTB_SECT_ADDR(0x00600000U)
@@ -209,7 +210,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00700000: DAP */
     tlb[0x007] = TTB_SECT_ADDR(0x00700000U)
@@ -217,7 +218,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00800000: PTCMEM */
     tlb[0x008] = TTB_SECT_ADDR(0x00800000U)
@@ -225,7 +226,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_SHAREABLE_DEVICE
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x00A00000: L2CC */
     for (addr = 0x00AU; addr < 0x00CU; addr++)
@@ -321,7 +322,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_STRONGLY_ORDERED
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0xB0000000: SDMMC1 */
     tlb[0xB00] = TTB_SECT_ADDR(0xB0000000U)
@@ -329,7 +330,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_STRONGLY_ORDERED
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0xC0000000: NFC */
     for (addr = 0xC00U; addr < 0xD00U; addr++)
@@ -370,7 +371,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_STRONGLY_ORDERED
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0xF8000000: PERIPHERALS 1 */
     tlb[0xF80] = TTB_SECT_ADDR(0xF8000000U)
@@ -378,7 +379,7 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_STRONGLY_ORDERED
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0xFC000000: PERIPHERALS 2 */
     tlb[0xFC0] = TTB_SECT_ADDR(0xFC000000U)
@@ -386,34 +387,33 @@ void MMU_Initialize(void)
                   | TTB_SECT_DOMAIN(0xFU)
                   | TTB_SECT_EXEC_NEVER
                   | TTB_SECT_STRONGLY_ORDERED
-                  | TTB_TYPE_SECT; 
+                  | TTB_TYPE_SECT;
 
     /* 0x20000000: DDR Chip Select */
     /* (16MB strongly ordered) */
     for (addr = 0x200U; addr < 0x210U; addr++)
-		{   
-	       tlb[addr] = TTB_SECT_ADDR(addr << 20)
-                      | TTB_SECT_AP_FULL_ACCESS
-                      | TTB_SECT_DOMAIN(0xfU)
-                      | TTB_SECT_EXEC
-                      | TTB_SECT_STRONGLY_ORDERED
-                      | TTB_TYPE_SECT;
-		}
+    {
+        tlb[addr] = TTB_SECT_ADDR(addr << 20)
+                    | TTB_SECT_AP_FULL_ACCESS
+                    | TTB_SECT_DOMAIN(0xfU)
+                    | TTB_SECT_EXEC
+                    | TTB_SECT_STRONGLY_ORDERED
+                    | TTB_TYPE_SECT;
+    }
 
-    /*Remainder of the DRAM is configured as cacheable */          
+    /*Remainder of the DRAM is configured as cacheable */
     for (addr = 0x210U; addr < 0x280U; addr++)
-        {
-	        tlb[addr] = TTB_SECT_ADDR(addr << 20)
-                      | TTB_SECT_AP_FULL_ACCESS
-                      | TTB_SECT_DOMAIN(0xfU)
-                      | TTB_SECT_EXEC
-                      | TTB_SECT_CACHEABLE_WB
-                      | TTB_TYPE_SECT;
-		}
+    {
+        tlb[addr] = TTB_SECT_ADDR(addr << 20)
+                    | TTB_SECT_AP_FULL_ACCESS
+                    | TTB_SECT_DOMAIN(0xfU)
+                    | TTB_SECT_EXEC
+                    | TTB_SECT_CACHEABLE_WB
+                    | TTB_TYPE_SECT;
+    }
 
     /* Enable MMU, I-Cache and D-Cache */
     mmu_configure(tlb);
     icache_Enable();
     MMU_Enable();
-
 }

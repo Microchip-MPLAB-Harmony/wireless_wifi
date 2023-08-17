@@ -80,7 +80,7 @@
 // *****************************************************************************
 
 /* Maximum length of an SSID. */
-#define WDRV_WINC_MAX_SSID_LEN              32
+#define WDRV_WINC_MAX_SSID_LEN              32U
 
 /* Address of a MAC address. */
 #define WDRV_WINC_MAC_ADDR_LEN              6

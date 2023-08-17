@@ -1,4 +1,4 @@
-<config configName="sam_d21_xpro_winc3400" projectName="serial_bridge_sam_d21_xpro_winc3400" configVersion="1.1" device="ATSAMD21J18A" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.14">
+<config configName="sam_d21_xpro_winc3400" projectName="serial_bridge_sam_d21_xpro_winc3400" configVersion="1.1" device="ATSAMD21J18A" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.5.7">
    <usedPackages class="java.util.ArrayList"/>
    <usedClasses class="java.util.TreeMap">
       <entry>
@@ -59,7 +59,7 @@
       </entry>
    </usedClasses>
    <usedLibraries class="java.util.ArrayList">
-      <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.harmony.Harmony3Library" version="1.1.4"/>
+      <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.harmony.Harmony3Library" version="1.2.0"/>
    </usedLibraries>
    <tokenMap class="java.util.TreeMap">
       <entry>
@@ -771,6 +771,19 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="appWincSerialBridge" name="APP_PLATFORM_SERCOM_FILE_SRC"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;appWincSerialBridge&gt;
+  &lt;appWincSerialBridge dnOrder=&quot;0&quot; id=&quot;APP_PLATFORM_SERCOM_FILE_SRC&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
+  &lt;/appWincSerialBridge&gt;
+&lt;/appWincSerialBridge&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="appWincSerialBridge" name="APP_PLIB"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;appWincSerialBridge&gt;
   &lt;appWincSerialBridge dnOrder=&quot;0&quot; id=&quot;APP_PLIB&quot;&gt;
@@ -896,8 +909,7 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;GraphSettings canvasHeight=&quot;516&quot; canvasWidth=&quot;795&quot; dnOrder=&quot;0&quot;/&gt;
-    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;HarmonyCore&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;appWincSerialBridge&quot; x=&quot;306&quot; y=&quot;340&quot;/&gt;
@@ -915,6 +927,7 @@
         &lt;ElementPosition dnOrder=&quot;13&quot; id=&quot;tc3&quot; x=&quot;0&quot; y=&quot;184&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
+    &lt;GraphSettings canvasHeight=&quot;516&quot; canvasWidth=&quot;795&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -8728,7 +8741,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\toolchain_specifics.h</file>
-         <hash>c93f9d68b1623668727be21b4449250a7e4a5d7040776d6f6d604a7528ffc9eb</hash>
+         <hash>a4f1774c6f1f8c6cd522567536c9e9d75ca63259b868015ac9b0fb0aeeffe1f4</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc.h</file>
@@ -8752,7 +8765,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\usart\plib_sercom3_usart.c</file>
-         <hash>32153d6a6d259f5130472a9884a054ec713d41b6c8948acde3c19bec3a549ab3</hash>
+         <hash>7035ba2cba065bc16918ff6fb9d0555015e9c927af0f4a0ad68f8ebf9cef25d2</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\platform\platform_sercom.c</file>
@@ -8760,7 +8773,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\usart\plib_sercom3_usart.h</file>
-         <hash>13c295e42aec8b53666ffd5fe85d5d5b47f9a75b94c1b1ca466d53e7b47942d2</hash>
+         <hash>bdb7a2a6a892bbf75e432ff0874a6903193ef29952e3a75570a5c06e10c9b3bd</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\driver_common.h</file>
@@ -8780,7 +8793,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\drv\driver\nmspi.c</file>
-         <hash>c34909a2f0134a475f26a6d103937b206f59745d2e31357fc7aac03e306c5ad0</hash>
+         <hash>31bb8958766c1f767993536a64f25963247bbaa21f2f7d2368c257354aa6c297</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc_enterprise.c</file>
@@ -8796,7 +8809,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\eic\plib_eic.c</file>
-         <hash>714444fa24c398e354510219d264c37e3f70e07d0444fcedb15470a31d80fd7d</hash>
+         <hash>31492c1d345a493e41fde308c44ccfe9725fba317179fa7820be97ac29b610e1</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\sercom.h</file>
@@ -8816,7 +8829,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\drv\driver\m2m_ota.c</file>
-         <hash>57f7fe01514a4704d9dcdd9308699a1a0b4daf133d3acad3d8f8444970e7728c</hash>
+         <hash>2ea104cd305e3d7a0e6a55c03911b292bc414e5dd0d7575e360c69d32445c872</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\mpu_armv7.h</file>
@@ -8824,7 +8837,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\definitions.h</file>
-         <hash>03b6cb445c0a607ec3ed16d28db6975e827469e6c0b132fac99bd8f0ed1b4fc6</hash>
+         <hash>d350c7aa626393d817bd1ddc7dac64808293928b3fed5532ff57dbea9feb2a60</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\cmsis_armcc.h</file>
@@ -8832,7 +8845,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom0_spi_master.c</file>
-         <hash>a64c316ceace2a879ea93a69af98749666874d456727c18d3ea92f7eaafa95dc</hash>
+         <hash>151cb82a81a43e083ceb4813620b6375091e33c549bc98caf5e36fe3456c4707</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\sercom3.h</file>
@@ -8876,7 +8889,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\dev\gpio\wdrv_winc_eint.c</file>
-         <hash>8ffc0f79262c44908c380a3ad15d46449d63fc532e94c8a4d10156b2a1d42493</hash>
+         <hash>9d7e11b389ab9470a61164bb931c05e9f36aa091d17cd31137bfeeaead8bda3b</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\dsu.h</file>
@@ -8888,7 +8901,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\clock\plib_clock.c</file>
-         <hash>2ad6f9d1cae96fd650267dcd14aed3d3b4e70877a4447e90752ada21fb7c3484</hash>
+         <hash>b42adfc4c75ab38824918ea34840259ac36d959391be7f9be21ad9fc6fcf5b16</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\device_cache.h</file>
@@ -8952,11 +8965,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\initialization.c</file>
-         <hash>27204700957dd3684ca931f416889300627e81bab1828f7c47f722bed44eb4e9</hash>
+         <hash>6eacf5c78ebd57585796727d76b0288922285c2b8acdfe610516e5ab102423a7</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc_debug.h</file>
-         <hash>d4ee725f3f1e4c9baa8afae67f1cbba9df0181b0f0d54c99a3c602316dc262c7</hash>
+         <hash>3ea694c9642b100ef8e86c1d11df308a82742012e56b9b8478feb16c638e122c</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\wdt.h</file>
@@ -9004,11 +9017,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\startup_xc32.c</file>
-         <hash>d7ba451f4fffc267a5da6a83377b2b935a88cd73342f8a1f38ea8c39a86d963f</hash>
+         <hash>e6227d89e36b74af1bc21e00e80b390502c97aaaa65796291f63b2d96cf0678e</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\time\src\sys_time.c</file>
-         <hash>b722ac0c5d955d289bd906609ab6f302342166c5ba66f87b30cac17ac6bfdcd9</hash>
+         <hash>fa2d85ab967b80157caf8483f6e28a23b12b548844a1d80f2fef760cd9b99271</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\cmsis_armclang_ltm.h</file>
@@ -9020,7 +9033,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\time\sys_time.h</file>
-         <hash>f21b100d8f0b8b79af9217315098d51df855d9015f05a7e25ad77414cd19b2c3</hash>
+         <hash>6357468f7670698b16bfb6439d9919ed38eba99d4f03277a8b43ac34586fa1b3</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\device_vectors.h</file>
@@ -9056,7 +9069,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\system_common.h</file>
-         <hash>0dbf2f60b29c97426e70187bc59c652ab5a355f51cfbe3f195ff1c8c6c0b1602</hash>
+         <hash>c9f34bd226f8efab12f5766e77f8355996cd0430b50e0f6ee30258664c494984</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc_softap.h</file>
@@ -9080,7 +9093,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\dma\sys_dma.h</file>
-         <hash>84a40b4972b6e6ba60df4780d0d2f6867fb84f496a5621d80e6e96c42fa7c16e</hash>
+         <hash>c55258a896f6f017bf61aa76eca7602cc8162a984b0d440f79e8b6b4bb5818f1</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\tc6.h</file>
@@ -9092,7 +9105,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\dma\sys_dma.c</file>
-         <hash>857103c3cdd998ea45f31516f435a01901a28afe894c8cce719240297d6c7546</hash>
+         <hash>b898eb7b174f17cd7dcaff8afef4fa2b878dcbc3b4db44b23810c78af55ffd6b</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\drv\driver\m2m_periph.c</file>
@@ -9100,7 +9113,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\tc\plib_tc3.c</file>
-         <hash>f53a8bb7e7604eb9eb726eb1a711a0c03adfa90fa5aa0cc64ee5c27048201209</hash>
+         <hash>1f3a8e522d1e9b4af3595ef33a40dd23c27d8f49ba1a12176f002766127ae511</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\ptc.h</file>
@@ -9120,15 +9133,15 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\dma\sys_dma_mapping.h</file>
-         <hash>f40fd52b9e96c213abb3996b309103da33f134a85f90c874a99d2184c61c0ece</hash>
+         <hash>ce3b0fb5a381953a0804e467742d198578a5abb4b419c667565553953c4d27c7</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\tasks.c</file>
-         <hash>4ab0eddf747f80f9d1881872212368f8fb765362d7f20104bd92aeee82f27b17</hash>
+         <hash>5833e38f74d4e3f078cbc5241c957f4bcf436ae3eacaf1f67238138260acc214</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\nvic\plib_nvic.c</file>
-         <hash>85d07cd5847ad10592c2334ea3c54fe9a5672a3a7cf78f43da5d8baf95ac6049</hash>
+         <hash>96a9413126e9716f7fb69f1d888014560954058bc5d17662f1ac7354c9295898</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\cachel1_armv7.h</file>
@@ -9136,7 +9149,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\osal\osal_impl_basic.h</file>
-         <hash>0c388837ef1d4e207a028ed31bfe07f1aac7ea8b0505caff58f737667ccbeaee</hash>
+         <hash>67ce72d34fd1e4dee0b6937fa026ab2c7bd285f82a24da09742c68333adaf0fc</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\drv\socket\m2m_socket_host_if.h</file>
@@ -9192,7 +9205,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\nvmctrl\plib_nvmctrl.c</file>
-         <hash>6c9ddcb7ec64839add93ea8a9cd943432a114d11298e08c32f7e689d2329161a</hash>
+         <hash>bdcdd09324aabfee99d83053fce34298dc5705207e02afee581b952bf60ffe6e</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\usb.h</file>
@@ -9204,7 +9217,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\system_module.h</file>
-         <hash>981fac23277aa77f682e7a9a28d436f892006cd5b4c7f23f50941b6d9a30e740</hash>
+         <hash>96c74368801b0a7aaa25aec3ec2cb0d483250385f103ffc1ff64089b4ca2c6d9</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\sbmatrix.h</file>
@@ -9252,7 +9265,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\exceptions.c</file>
-         <hash>cc07b84902bf881b410bee8cd4463b438ad2997c8fd8d3f308a16d926f75d601</hash>
+         <hash>3d788ce1bd25caaaf6b533ec5b06e4b1e753044c1a217dd5cdf8629628ae85a9</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc_assoc.c</file>
@@ -9268,11 +9281,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\drv\driver\m2m_ssl.h</file>
-         <hash>b13ee80b6122127e305f3b089c2e4667f56736777da1432debebb9e68e1b3da2</hash>
+         <hash>c6c6048bdf4e0ad47c395a9b647fe676550fbe9fc283fabaa5ba1149f86629f7</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc_systime.c</file>
-         <hash>740bfa85d241095598526c40510657ad8191665ca2c14ac7820ef1d879a4f575</hash>
+         <hash>72f9857f960620714c1f8687eff2d1da604622288b30ce2e93395ab51b530699</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\tc4.h</file>
@@ -9280,11 +9293,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\debug\sys_debug.h</file>
-         <hash>222cdc284bd651e83188b9641cc57c133cf86563dbeb5d5523766d4a36087165</hash>
+         <hash>bc6fa321b0be542d074e4564065b7fd69f52556486ac3d892d315b51c434f9ec</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\usart\plib_sercom_usart_common.h</file>
-         <hash>1dbf674e2bc9708afe2cacc75141707c42b89f166e0f1d6f81c04b1b2fa166b8</hash>
+         <hash>63c6e89936ba47e8989478a8be0fa40b406361f2f0dcc1b6cfcd801b50a4bf92</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\i2s.h</file>
@@ -9296,7 +9309,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\osal\osal.h</file>
-         <hash>d42702188d00d3e1d7219d7eef030485896bf8b5ebe55318656e82f0fbb89788</hash>
+         <hash>8404fbe44807fa0484ffb38843a72cb9af8e31c9c30bd1b2594e609b8ea317d9</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\user.h</file>
@@ -9319,12 +9332,16 @@
          <hash>f9c160397e5be642fc62b8280eff0610bf2cee4de50de9bbe52acbb8ef163a15</hash>
       </entry>
       <entry>
+         <file>..\src\config\sam_d21_xpro_winc3400\sys_tasks.h</file>
+         <hash>21f254f497a18a024cd00128d06c4776c2643f867a460c1ba9880a7dd41a8d56</hash>
+      </entry>
+      <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc_softap.c</file>
          <hash>b1e1b7f5d7a9abe62b709e6b1435c0dfcabca6f8f21e385bbf2ee4dbd1e90f8e</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\drv\driver\m2m_ssl.c</file>
-         <hash>8dca4f22a4cde936ac1360c6080e0809ea0f61c0909f61ab4a1e81560098f898</hash>
+         <hash>34c0846be9be8f69f0f6b5ad9fda29119c82906b72a63f4e9c75646a13a951af</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\tcc0.h</file>
@@ -9332,7 +9349,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom1_spi_master.c</file>
-         <hash>78c010c3a5114a6e857979f5850557308a05857ce4937a7542eb1fc1aa116269</hash>
+         <hash>af7ed1fa87e71314087b17c9a4cdfe2303b05673959d69077c84a1c60affdf9b</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\sercom4.h</file>
@@ -9376,7 +9393,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\interrupts.c</file>
-         <hash>9191d07903160fbd783f00eb9c1e108715eb6ca656045a305ec89e27ab032d11</hash>
+         <hash>2de3f49453bc9fb22133fffec9206f18dab76ad0a3eee50f1768b6ec2d1a4c26</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\dmac.h</file>
@@ -9408,7 +9425,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\drv\common\nm_debug.h</file>
-         <hash>9ef40ae17adcd32b8331f98a46bfbbb90f331304c696358278a175b2648d3bf5</hash>
+         <hash>8ecc04fcf24b1c643e053b17b08d6673ad2dc0cdf9e122fa4ed6480272965f00</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\drv\driver\nmbus.h</file>
@@ -9424,7 +9441,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc_common.h</file>
-         <hash>313498377406dad481bdb8ca07cea79f6d57fdf0367c3476f9a11f4ee7d3d292</hash>
+         <hash>103c6730573037d611a99219655848f3cbb21491568c8ed4a68de03255dd816c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\driver.h</file>
@@ -9440,7 +9457,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\dmac\plib_dmac.c</file>
-         <hash>246fd5d6768855a19cdffaf661bb17b361089e9fe483488be77feb70024be7b2</hash>
+         <hash>eaef053b68f40ed0dbe40058e3c72194755aac7c849c6199100eb4156ba2c952</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\eic\plib_eic.h</file>
@@ -9460,7 +9477,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\int\sys_int_mapping.h</file>
-         <hash>660e7081f93de17660144721849acf269925988a4f6510028d25903aaa866ea1</hash>
+         <hash>5abf8528dabc1b17378f5d137870597037214fddf33880fa40e9263352da3008</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\instance\sercom5.h</file>
@@ -9468,7 +9485,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\dev\spi\wdrv_winc_spi.c</file>
-         <hash>5405c186771185a75647a71709eb2f580f1f1a7c39a05eee640c715d0d1a310e</hash>
+         <hash>7ac868a11d0b158ae95cd108d3a7fe2820e18add5127405d5c838923fa61f6ad</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAMD21J18A_DFP\component\rtc.h</file>
@@ -9488,7 +9505,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\time\sys_time_definitions.h</file>
-         <hash>8a02a9fe9638f0afd2e1b4c65f4d4265cd34d8814defa74f9af6d75f52cd317d</hash>
+         <hash>b8c332f36f8a6ed230dc25b1f9f7f2970699947567f80cb06534d405b7a0dd9d</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\drv\driver\nmasic.h</file>
@@ -9504,11 +9521,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\time\src\sys_time_local.h</file>
-         <hash>d3ef06b59d9a89efe9e8eb54fcf3b75120d56156cc21f6847ca4f9e902eb7c9d</hash>
+         <hash>df56f970664902417d798760e44978cf4b84c108cf0761647a383e91db76980c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\osal\osal_definitions.h</file>
-         <hash>0a5ca28c4812bb37babfebc1fe30a90b13583504d81910ad159feb746a5b002c</hash>
+         <hash>5f0a2513a093b6d228e2b50646b204923a82047335a47f3d35a2938309ab6f37</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\drv\driver\m2m_types.h</file>
@@ -9528,11 +9545,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\int\src\sys_int.c</file>
-         <hash>23e798871ce6f7b4b0e0dbd5cb2cad7b43bd2dd1f38152f28d14f5a5b7a2938b</hash>
+         <hash>4281667cc2b84c9e4be1f0dfb3f7d42b77d36c5dcf6513d29ff40262f746cfc6</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\system\int\sys_int.h</file>
-         <hash>71e36331ee689ae305b3d8ec49948e3dde0324b65f51bf38f4472b900a421ed6</hash>
+         <hash>dc104ae181fd5309e1bb42896246644fae95915a8e639b23ecfccc8840850274</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\osal\wdrv_winc_osal.c</file>
@@ -9544,7 +9561,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc.c</file>
-         <hash>ad1ee1cc4c9591b5390c2609898cadf5fafd09141c4e8dd25e648eb00a0e2c4d</hash>
+         <hash>d7123238c21cf18006b4d6cda07ee26dbfb0203d821149365263ed26a3743fea</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc_assoc.h</file>
@@ -9552,7 +9569,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\pin_configurations.csv</file>
-         <hash>504d9c6c9b05ea3be68c1e1a5582863b2221de82d5694dc03d0aa7c3a3b8323b</hash>
+         <hash>358de6fa426616778cdfe320363cb6dc071535f996449afb7c7a6422c9fa805c</hash>
       </entry>
    </generatedFileHashHistoryMap>
 </config>

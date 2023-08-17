@@ -57,6 +57,16 @@
 // *****************************************************************************
 // *****************************************************************************
 
+void XDMAC0_InterruptHandler (void);
+void PIOA_InterruptHandler (void);
+void FLEXCOM4_InterruptHandler (void);
+void UART1_InterruptHandler (void);
+void TC0_InterruptHandler (void);
+void PIOB_InterruptHandler (void);
+
+
+/* Interrupt Handler for spurious interrupts */
+void SPURIOUS_INTERRUPT_Handler (void);
 
 
 #endif // INTERRUPTS_H

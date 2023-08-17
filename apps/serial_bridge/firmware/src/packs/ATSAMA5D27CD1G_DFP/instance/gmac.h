@@ -1,5 +1,5 @@
 /*
- * Instance header file for ATSAMA5D28CLD2G
+ * Instance header file for ATSAMA5D29
  *
  * Copyright (c) 2022 Microchip Technology Inc. and its subsidiaries.
  *
@@ -20,13 +20,15 @@
  *
  */
 
-/* file generated from device description version 2022-02-21T21:02:22Z */
-#ifndef _SAMA5D2_GMAC_INSTANCE_
-#define _SAMA5D2_GMAC_INSTANCE_
+/* file generated from device description version 2022-10-04T10:37:14Z */
+#ifndef _SAMA5D_GMAC_INSTANCE_
+#define _SAMA5D_GMAC_INSTANCE_
 
 
 /* ========== Instance Parameter definitions for GMAC peripheral ========== */
-#define GMAC_INSTANCE_ID                         (5)        
+#define GMAC_INSTANCE_ID                         (5)        /* Ethernet MAC */
 #define GMAC_CLOCK_ID                            (5)        
+#define GMAC_INSTANCE_ID_Q1                      (66)       /* GMAC Queue 1 Interrupt */
+#define GMAC_INSTANCE_ID_Q2                      (67)       /* GMAC Queue 2 Interrupt */
 
-#endif /* _SAMA5D2_GMAC_INSTANCE_ */
+#endif /* _SAMA5D_GMAC_INSTANCE_ */

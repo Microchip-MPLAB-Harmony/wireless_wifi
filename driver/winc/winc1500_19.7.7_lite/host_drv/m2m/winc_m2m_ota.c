@@ -245,7 +245,7 @@ int8_t m2m_ota_start_update(unsigned char *pcDownloadUrl)
         strOtaStart.u8SSLFlags |= WIFI_OTA_SSL_FLAG_SNI_VALIDATION;
     }
 
-    memcpy(&strOtaStart.acSNI, gu8SNIServerName, strlen((char *)gu8SNIServerName));
+    memcpy(&strOtaStart.acSNI, gu8SNIServerName, strnlen((char *)gu8SNIServerName, sizeof(gu8SNIServerName)));
 
     strOtaStart.u32TotalLen = sizeof(strOtaStart);
 
@@ -414,7 +414,7 @@ int8_t m2m_ota_host_file_erase(uint8_t u8Handler, tpfFileEraseCb pfHFDEraseCb)
 
 int8_t m2m_ota_set_ssl_option(tenuOTASSLOption enuOptionName, const void *pOptionValue, size_t OptionLen)
 {
-    if ((pOptionValue == NULL) && (OptionLen > 0))
+    if ((pOptionValue == NULL) || (0 == OptionLen))
     {
         return M2M_ERR_INVALID_ARG;
     }
@@ -423,7 +423,7 @@ int8_t m2m_ota_set_ssl_option(tenuOTASSLOption enuOptionName, const void *pOptio
     {
         case WIFI_OTA_SSL_OPT_SNI_SERVERNAME:
         {
-            if ((OptionLen > 64) || (NULL == pOptionValue))
+            if ((OptionLen > sizeof(gu8SNIServerName)) || (NULL == pOptionValue))
             {
                 return M2M_ERR_INVALID_ARG;
             }
@@ -501,7 +501,7 @@ int8_t m2m_ota_get_ssl_option(tenuOTASSLOption enuOptionName, void *pOptionValue
 
         case WIFI_OTA_SSL_OPT_SNI_SERVERNAME:
         {
-            uint16_t sni_len = (uint16_t)strlen((char *)gu8SNIServerName) + 1;
+            uint16_t sni_len = (uint16_t)strnlen((char *)gu8SNIServerName, sizeof(gu8SNIServerName)) + 1;
 
             if (*pOptionLen < sni_len)
             {

@@ -78,6 +78,12 @@ extern "C" {
 #endif
 // DOM-IGNORE-END
 
+/* Device Information */
+#define DEVICE_NAME			 "ATSAMA5D27CD1G"
+#define DEVICE_ARCH			 "CORTEX-A5"
+#define DEVICE_FAMILY		 "SAMA5"
+#define DEVICE_SERIES		 "SAMA5D2"
+
 /* CPU clock frequency */
 #define CPU_CLOCK_FREQUENCY 498000000
 

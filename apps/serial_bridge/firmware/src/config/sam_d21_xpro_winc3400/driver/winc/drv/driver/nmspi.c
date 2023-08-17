@@ -96,7 +96,9 @@ static OSAL_MUTEX_HANDLE_TYPE s_spiLock;
 static inline int8_t spi_read(uint8_t *b, uint16_t sz)
 {
     if (true == WDRV_WINC_SPIReceive((unsigned char *const) b, sz))
+    {
         return N_OK;
+    }
 
     return N_FAIL;
 }
@@ -104,7 +106,9 @@ static inline int8_t spi_read(uint8_t *b, uint16_t sz)
 static inline int8_t spi_write(uint8_t *b, uint16_t sz)
 {
     if (true == WDRV_WINC_SPISend((unsigned char *const) b, sz))
+    {
         return N_OK;
+    }
 
     return N_FAIL;
 }
@@ -158,7 +162,9 @@ static uint8_t crc7_byte(uint8_t crc, uint8_t data)
 static uint8_t crc7(uint8_t crc, const uint8_t *buffer, uint32_t len)
 {
     while (len--)
+    {
         crc = crc7_byte(crc, *buffer++);
+    }
     return crc;
 }
 
@@ -186,7 +192,9 @@ static int8_t spi_cmd(uint8_t cmd, uint32_t adr, uint32_t u32data, uint32_t sz, 
         case CMD_INTERNAL_READ:         /* internal register read */
             bc[1] = (uint8_t)(adr >> 8);
             if(clockless)
+            {
                 bc[1] |= (1 << 7);
+            }
             bc[2] = (uint8_t)adr;
             bc[3] = 0x00;
             len = 5;
@@ -237,7 +245,10 @@ static int8_t spi_cmd(uint8_t cmd, uint32_t adr, uint32_t u32data, uint32_t sz, 
 
         case CMD_INTERNAL_WRITE:        /* internal register write */
             bc[1] = (uint8_t)(adr >> 8);
-            if(clockless)  bc[1] |= (1 << 7);
+            if(clockless)
+            {
+                bc[1] |= (1 << 7);
+            }
             bc[2] = (uint8_t)(adr);
             bc[3] = (uint8_t)(u32data >> 24);
             bc[4] = (uint8_t)(u32data >> 16);
@@ -261,7 +272,7 @@ static int8_t spi_cmd(uint8_t cmd, uint32_t adr, uint32_t u32data, uint32_t sz, 
             return N_FAIL;
     }
 
-    if (!gu8Crc_off)
+    if (gu8Crc_off == 0)
     {
         bc[len-1] = (crc7(0x7f, (const uint8_t *)&bc[0], len-1)) << 1;
     }
@@ -297,7 +308,9 @@ static int8_t spi_cmd_rsp(uint8_t cmd, uint8_t clockless)
         )
     {
         if (N_OK != spi_read(&rsp, 1))
+        {
             return N_FAIL;
+        }
     }
 
     /* wait for response */
@@ -344,8 +357,8 @@ static int8_t spi_cmd_rsp(uint8_t cmd, uint8_t clockless)
 static void spi_reset(void)
 {
     nm_sleep(1);
-    spi_cmd(CMD_RESET, 0, 0, 0, 0);
-    spi_cmd_rsp(CMD_RESET, 0);
+    (void)spi_cmd(CMD_RESET, 0, 0, 0, 0);
+    (void)spi_cmd_rsp(CMD_RESET, 0);
     nm_sleep(1);
 }
 
@@ -368,9 +381,13 @@ static int8_t spi_data_read(uint8_t *b, uint16_t sz,uint8_t clockless)
     ix = 0;
     do {
         if (sz <= DATA_PKT_SZ)
+        {
             nbytes = sz;
+        }
         else
+        {
             nbytes = DATA_PKT_SZ;
+        }
 
         /**
             Data Response header
@@ -385,12 +402,16 @@ static int8_t spi_data_read(uint8_t *b, uint16_t sz,uint8_t clockless)
                 break;
             }
             if ((rsp & 0xf0) == 0xf0)
+            {
                 break;
+            }
         }
         while (retry--);
 
         if (result == N_FAIL)
+        {
             break;
+        }
 
         if ((retry <= 0) && (!clockless))
         {
@@ -413,7 +434,7 @@ static int8_t spi_data_read(uint8_t *b, uint16_t sz,uint8_t clockless)
             /**
             Read Crc
             **/
-            if (!gu8Crc_off)
+            if (gu8Crc_off == 0)
             {
                 if (N_OK != spi_read(crc, 2))
                 {
@@ -445,9 +466,13 @@ static int8_t spi_data_write(uint8_t *b, uint16_t sz)
     do
     {
         if (sz <= DATA_PKT_SZ)
+        {
             nbytes = sz;
+        }
         else
+        {
             nbytes = DATA_PKT_SZ;
+        }
 
         /**
             Write command
@@ -456,16 +481,24 @@ static int8_t spi_data_write(uint8_t *b, uint16_t sz)
         if (ix == 0)
         {
             if (sz <= DATA_PKT_SZ)
+            {
                 order = 0x3;
+            }
             else
+            {
                 order = 0x1;
+            }
         }
         else
         {
             if (sz <= DATA_PKT_SZ)
+            {
                 order = 0x3;
+            }
             else
+            {
                 order = 0x2;
+            }
         }
 
         cmd |= order;
@@ -489,7 +522,7 @@ static int8_t spi_data_write(uint8_t *b, uint16_t sz)
         /**
             Write Crc
         **/
-        if (!gu8Crc_off)
+        if (gu8Crc_off == 0)
         {
             if (N_OK != spi_write(crc, 2))
             {
@@ -573,10 +606,14 @@ static int8_t spi_write_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
     /**
         Data RESP
     **/
-    if (!gu8Crc_off)
+    if (gu8Crc_off == 0)
+    {
         len = 2;
+    }
     else
+    {
         len = 3;
+    }
 
     if (N_OK != spi_read(&rsp[0], len))
     {
@@ -679,8 +716,9 @@ static void spi_init_pkt_sz(void)
         case 2048: val32 |= (3 << 4); break;
         case 4096: val32 |= (4 << 4); break;
         case 8192: val32 |= (5 << 4); break;
+        default: return;
     }
-    nm_spi_write_reg(SPI_BASE+0x24, val32);
+    (void)nm_spi_write_reg(SPI_BASE+0x24, val32);
 }
 
 /********************************************
@@ -692,12 +730,14 @@ static void spi_init_pkt_sz(void)
 int8_t nm_spi_reset(void)
 {
     if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
+    {
         return M2M_ERR_BUS_FAIL;
+    }
 
-    spi_cmd(CMD_RESET, 0, 0, 0, 0);
-    spi_cmd_rsp(CMD_RESET, 0);
+    (void)spi_cmd(CMD_RESET, 0, 0, 0, 0);
+    (void)spi_cmd_rsp(CMD_RESET, 0);
 
-    OSAL_MUTEX_Unlock(&s_spiLock);
+    (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
     return M2M_SUCCESS;
 }
@@ -789,9 +829,9 @@ int8_t nm_spi_deinit(void)
 */
 uint32_t nm_spi_read_reg(uint32_t u32Addr)
 {
-    uint32_t u32Val;
+    uint32_t u32Val = 0;
 
-    nm_spi_read_reg_with_ret(u32Addr, &u32Val);
+    (void)nm_spi_read_reg_with_ret(u32Addr, &u32Val);
 
     return u32Val;
 }
@@ -810,13 +850,15 @@ int8_t nm_spi_read_reg_with_ret(uint32_t u32Addr, uint32_t* pu32RetVal)
     uint8_t retry = SPI_RETRY_COUNT;
 
     if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
+    {
         return M2M_ERR_BUS_FAIL;
+    }
 
-    while(retry--)
+    while(retry-- > 0)
     {
         if (spi_read_reg(u32Addr, pu32RetVal) == N_OK)
         {
-            OSAL_MUTEX_Unlock(&s_spiLock);
+            (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
             return M2M_SUCCESS;
         }
@@ -825,7 +867,7 @@ int8_t nm_spi_read_reg_with_ret(uint32_t u32Addr, uint32_t* pu32RetVal)
         spi_reset();
     }
 
-    OSAL_MUTEX_Unlock(&s_spiLock);
+    (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
     return M2M_ERR_BUS_FAIL;
 }
@@ -844,13 +886,15 @@ int8_t nm_spi_write_reg(uint32_t u32Addr, uint32_t u32Val)
     uint8_t retry = SPI_RETRY_COUNT;
 
     if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
+    {
         return M2M_ERR_BUS_FAIL;
+    }
 
-    while(retry--)
+    while(retry-- > 0)
     {
         if (spi_write_reg(u32Addr, u32Val) == N_OK)
         {
-            OSAL_MUTEX_Unlock(&s_spiLock);
+            (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
             return M2M_SUCCESS;
         }
@@ -859,7 +903,7 @@ int8_t nm_spi_write_reg(uint32_t u32Addr, uint32_t u32Val)
         spi_reset();
     }
 
-    OSAL_MUTEX_Unlock(&s_spiLock);
+    (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
     return M2M_ERR_BUS_FAIL;
 }
@@ -882,7 +926,9 @@ int8_t nm_spi_read_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
     uint8_t *puTmpBuf;
 
     if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
+    {
         return M2M_ERR_BUS_FAIL;
+    }
 
     if (u16Sz == 1)
     {
@@ -894,14 +940,16 @@ int8_t nm_spi_read_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
         puTmpBuf = puBuf;
     }
 
-    while(retry--)
+    while(retry-- > 0)
     {
         if (spi_read_block(u32Addr, puTmpBuf, u16Sz) == N_OK)
         {
-            OSAL_MUTEX_Unlock(&s_spiLock);
+            (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
             if (puTmpBuf == tmpBuf)
+            {
                 *puBuf = *tmpBuf;
+            }
 
             return M2M_SUCCESS;
         }
@@ -910,7 +958,7 @@ int8_t nm_spi_read_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
         spi_reset();
     }
 
-    OSAL_MUTEX_Unlock(&s_spiLock);
+    (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
     return M2M_ERR_BUS_FAIL;
 }
@@ -931,17 +979,21 @@ int8_t nm_spi_write_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
     uint8_t retry = SPI_RETRY_COUNT;
 
     if (OSAL_RESULT_TRUE != OSAL_MUTEX_Lock(&s_spiLock, OSAL_WAIT_FOREVER))
+    {
         return M2M_ERR_BUS_FAIL;
+    }
 
     //Workaround hardware problem with single byte transfers over SPI bus
     if (u16Sz == 1)
+    {
         u16Sz = 2;
+    }
 
-    while(retry--)
+    while(retry-- > 0)
     {
         if (spi_write_block(u32Addr, puBuf, u16Sz) == N_OK)
         {
-            OSAL_MUTEX_Unlock(&s_spiLock);
+            (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
             return M2M_SUCCESS;
         }
@@ -950,7 +1002,7 @@ int8_t nm_spi_write_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
         spi_reset();
     }
 
-    OSAL_MUTEX_Unlock(&s_spiLock);
+    (void)OSAL_MUTEX_Unlock(&s_spiLock);
 
     return M2M_ERR_BUS_FAIL;
 }

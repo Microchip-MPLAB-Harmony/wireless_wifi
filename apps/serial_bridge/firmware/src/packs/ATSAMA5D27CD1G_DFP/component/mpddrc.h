@@ -20,9 +20,9 @@
  *
  */
 
-/* file generated from device description version 2022-02-21T21:02:22Z */
-#ifndef _SAMA5D2_MPDDRC_COMPONENT_H_
-#define _SAMA5D2_MPDDRC_COMPONENT_H_
+/* file generated from device description version 2022-10-04T10:37:14Z */
+#ifndef _SAMA5D_MPDDRC_COMPONENT_H_
+#define _SAMA5D_MPDDRC_COMPONENT_H_
 
 /* ************************************************************************** */
 /*   SOFTWARE API DEFINITION FOR MPDDRC                                       */
@@ -1414,4 +1414,4 @@ typedef struct
 
 
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
-#endif /* _SAMA5D2_MPDDRC_COMPONENT_H_ */
+#endif /* _SAMA5D_MPDDRC_COMPONENT_H_ */

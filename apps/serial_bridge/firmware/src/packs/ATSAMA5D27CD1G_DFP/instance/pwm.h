@@ -1,5 +1,5 @@
 /*
- * Instance header file for ATSAMA5D28CLD2G
+ * Instance header file for ATSAMA5D29
  *
  * Copyright (c) 2022 Microchip Technology Inc. and its subsidiaries.
  *
@@ -20,9 +20,9 @@
  *
  */
 
-/* file generated from device description version 2022-02-21T21:02:22Z */
-#ifndef _SAMA5D2_PWM_INSTANCE_
-#define _SAMA5D2_PWM_INSTANCE_
+/* file generated from device description version 2022-10-04T10:37:14Z */
+#ifndef _SAMA5D_PWM_INSTANCE_
+#define _SAMA5D_PWM_INSTANCE_
 
 
 /* ========== Instance Parameter definitions for PWM peripheral ========== */
@@ -36,4 +36,4 @@
 #define PWM_FAULT_PWM_ID4                        (0x4)      /* Fault 4 - TIMER0 */
 #define PWM_FAULT_PWM_ID5                        (0x5)      /* Fault 5 - TIMER1 */
 
-#endif /* _SAMA5D2_PWM_INSTANCE_ */
+#endif /* _SAMA5D_PWM_INSTANCE_ */

@@ -20,7 +20,7 @@
  *
  */
 
-/* File generated from device description version 2022-02-21T21:01:56Z */
+/* File generated from device description version 2022-10-04T10:37:12Z */
 #ifndef _SAMA5D27CD1G_H_
 #define _SAMA5D27CD1G_H_
 
@@ -90,7 +90,7 @@ typedef enum IRQn
   MATRIX1_IRQn              =  14, /* 14  AHB Bus Matrix (MATRIX1)            */
   MATRIX0_IRQn              =  15, /* 15  AHB Bus Matrix (MATRIX0)            */
   SECUMOD_IRQn              =  16, /* 16  Security Module (SECUMOD)           */
-  HSMC_IRQn                 =  17, /* 17  HSMC (HSMC)                         */
+  HSMC_IRQn                 =  17, /* 17  Static Memory Controller (HSMC)     */
   PIOA_IRQn                 =  18, /* 18  Parallel Input/Output Controller (PIOA) */
   FLEXCOM0_IRQn             =  19, /* 19  Flexible Serial Communication (FLEXCOM0) */
   FLEXCOM1_IRQn             =  20, /* 20  Flexible Serial Communication (FLEXCOM1) */
@@ -141,8 +141,8 @@ typedef enum IRQn
   PIOD_IRQn                 =  70, /* 70  Parallel Input/Output Controller (PIOD) */
   SDMMC0_TIMER_IRQn         =  71, /* 71  Secure Digital MultiMedia Card Controller (SDMMC0) */
   SDMMC1_TIMER_IRQn         =  72, /* 72  Secure Digital MultiMedia Card Controller (SDMMC1) */
-  RTC_IRQn                  =  74, /* 74  Shared between PMC RSTC RTC (RTC)   */
   RSTC_IRQn                 =  74, /* 74  Shared between PMC RSTC RTC (RSTC)  */
+  RTC_IRQn                  =  74, /* 74  Shared between PMC RSTC RTC (RTC)   */
   PMC_IRQn                  =  74, /* 74  Shared between PMC RSTC RTC (PMC)   */
   ACC_IRQn                  =  75, /* 75  Analog Comparator Controller (ACC)  */
   RXLP_IRQn                 =  76, /* 76  Low Power Asynchronous Receiver (RXLP) */
@@ -234,6 +234,7 @@ typedef enum IRQn
 #include "instance/flexcom3.h"
 #include "instance/flexcom4.h"
 #include "instance/gmac.h"
+#include "instance/hsmc.h"
 #include "instance/i2sc0.h"
 #include "instance/i2sc1.h"
 #include "instance/icm.h"
@@ -266,7 +267,6 @@ typedef enum IRQn
 #include "instance/sfrbu.h"
 #include "instance/sha.h"
 #include "instance/shdwc.h"
-#include "instance/smc.h"
 #include "instance/spi0.h"
 #include "instance/spi1.h"
 #include "instance/ssc0.h"
@@ -304,7 +304,7 @@ typedef enum IRQn
 #define ID_MATRIX1       ( 14) /* AHB Bus Matrix (MATRIX1) */
 #define ID_MATRIX0       ( 15) /* AHB Bus Matrix (MATRIX0) */
 #define ID_SECUMOD       ( 16) /* Security Module (SECUMOD) */
-#define ID_SMC           ( 17) /* Static Memory Controller (SMC) */
+#define ID_HSMC          ( 17) /* Static Memory Controller (HSMC) */
 #define ID_PIOA          ( 18) /* Parallel Input/Output Controller (PIOA) */
 #define ID_FLEXCOM0      ( 19) /* Flexible Serial Communication (FLEXCOM0) */
 #define ID_FLEXCOM1      ( 20) /* Flexible Serial Communication (FLEXCOM1) */
@@ -406,7 +406,7 @@ typedef enum IRQn
 #define SFRBU_REGS                       ((sfrbu_registers_t*)0xfc05c000)              /* SFRBU Registers Address      */
 #define SHA_REGS                         ((sha_registers_t*)0xf0028000)                /* SHA Registers Address        */
 #define SHDWC_REGS                       ((shdwc_registers_t*)0xf8048010)              /* SHDWC Registers Address      */
-#define HSMC_REGS                        ((smc_registers_t*)0xf8014000)                /* SMC Registers Address        */
+#define HSMC_REGS                        ((smc_registers_t*)0xf8014000)                /* HSMC Registers Address       */
 #define SPI0_REGS                        ((spi_registers_t*)0xf8000000)                /* SPI0 Registers Address       */
 #define SPI1_REGS                        ((spi_registers_t*)0xfc000000)                /* SPI1 Registers Address       */
 #define SSC0_REGS                        ((ssc_registers_t*)0xf8004000)                /* SSC0 Registers Address       */
@@ -477,7 +477,7 @@ typedef enum IRQn
 #define SFRBU_BASE_ADDRESS               _UINT32_(0xfc05c000)                          /* SFRBU Base Address */
 #define SHA_BASE_ADDRESS                 _UINT32_(0xf0028000)                          /* SHA Base Address */
 #define SHDWC_BASE_ADDRESS               _UINT32_(0xf8048010)                          /* SHDWC Base Address */
-#define HSMC_BASE_ADDRESS                _UINT32_(0xf8014000)                          /* SMC Base Address */
+#define HSMC_BASE_ADDRESS                _UINT32_(0xf8014000)                          /* HSMC Base Address */
 #define SPI0_BASE_ADDRESS                _UINT32_(0xf8000000)                          /* SPI0 Base Address */
 #define SPI1_BASE_ADDRESS                _UINT32_(0xfc000000)                          /* SPI1 Base Address */
 #define SSC0_BASE_ADDRESS                _UINT32_(0xf8004000)                          /* SSC0 Base Address */
