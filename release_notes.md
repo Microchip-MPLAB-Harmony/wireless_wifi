@@ -3,6 +3,64 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.9.0
+This release includes additions and improvements to the **PIC32MZW1 and WINC** devices.
+
+### New Features
+
+- PIC32MZW1:
+    - Enterprise - support EAP-TTLSv0/MSCHAPv2 method.
+    - RF Code versioning.
+    - Implement Fast join - initiate authentication automatically after scan(don't wait for beacon/TBTT).
+    - Support for WiFI/BT Co-existence.
+    - STA/AP mode code optimisations for reduced code size.
+    
+### Bug fixes
+
+- WINC: Fix for GPIO interrupts using incorrect callback function.
+- WINC: Fix corrupted variable when calling WDRV_WINC_SSLRetrieveCert().
+- WINC: Fix issue with WDRV_WINC_SPIReceive transmitting last received bytes.
+- PIC32MZW1: Process plaintext handshake messages(M3) after installing keys.
+- PIC32MZW1: De-authenticate with reason code REASON_CIPHER_OUT_OF_POLICY if a second RSNE is received from an AP.
+- PIC32MZW1: Fix issue where PSK was computed for Enterprise/WPA3 without checking the support of PSK AKM suite.
+- PIC32MZW1: Cleanup MAC MIB initialisation.
+- PIC32MZW1: Fix an issue where STA enters power save before 4-way handshake.
+- PIC32MZW1: Fix regression where STA ignores M1 received from the AP.
+
+### Known Issues/Limitations
+
+- PIC32MZW1 - Our Release is tied to crypto v3.7.6 and wolfssl v4.7.0 versions as minor, low risk issues were observed with specific test applications when using the combination of latest versions(crypto v3.8.0 and wolfssl v5.4.0) repos.
+
+    - Issue 1: Build failure due to Struct wolfSSL_Ref undefined. Seen in cases where a project does not define macro ```SINGLE_THREADED``` (most RTOS cases).
+        - Workaround: Add ```#define SINGLE_THREADED``` to project configuration or remove code block using Struct wolfSSL_Ref in wc_port.c. No side effects with either approach.
+
+    - Issue 2: Significant increase in usage of session cache and client cache in wolfssl code v5.4.0. Causes significant increase in Data mem usage. 
+        - Workaround: Add ```#define SMALL_SESSION_CACHE``` to project configuration to workaround the problem.
+
+- Both these issues are low risk as they have known workarounds, are project configuration dependent hence not necessarily seen in all apps and also because SSL enhancements from v5.x are not required for PIC32MZW1.
+
+- PIC32MZW1 - For those sticking to v3.7.6 crypto, a failure is observed with the xc32 v4.21: ```implicit declaration of function 'min' [-Werror=implicit-function-declaration]```. This can be fixed by defining min() in drv_ba414e.c as shown below:
+
+```
+#ifndef min 
+#define	min(a,b)	(((a) < (b)) ? (a) : (b))
+#endif
+```
+
+- WINC MISRA warnings/false positives(same as previous releases):
+    - driver/winc/drv/driver/m2m_wifi.c(1039) 	644 	9.1 	Variable 'strNetworkId' (line 1030) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/wdrv_winc_authctx.c(122) 	530 	9.1 	Symbol 'PKCS1_RSA_PRIVATE_KEY' (line 105) not initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/driver/nmspi.c(928) 	644 	9.1 	Variable 'tmpBuf' (line 905) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+    - driver/winc/drv/socket/socket.c(574) 	644 	9.1 	Variable 'pstrSock' (line 535) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
+
+### Development Tools
+
+- [MPLAB® X IDE v6.10](https://www.microchip.com/mplab/mplab-x-ide)
+- [MPLAB® XC32 C/C++ Compiler v4.21](https://www.microchip.com/mplab/compilers)
+- MPLAB® X IDE plug-ins:
+- [MPLAB® Code Configurator 5.3.0 or higher](https://www.microchip.com/en-us/tools-resources/configure/mplab-code-configurator)
+
+
 ## Wireless_wifi Release v3.8.0
 This release contains improvements to the serial bridge application to add support for SAMA5D27 host.
 
