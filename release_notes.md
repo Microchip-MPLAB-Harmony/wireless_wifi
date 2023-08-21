@@ -29,9 +29,9 @@ This release includes additions and improvements to the **PIC32MZW1 and WINC** d
 
 ### Known Issues/Limitations
 
-- PIC32MZW1 - Our Release is tied to crypto v3.7.6 and wolfssl v4.7.0 versions as minor, low risk issues were observed with specific test applications when using the combination of latest versions(crypto v3.8.0 and wolfssl v5.4.0) repos.
+- PIC32MZW1 - Our Release is tied to crypto v3.7.6 and wolfssl v4.7.0 versions as minor, low risk observations were made with specific test applications when using the combination of latest versions(crypto v3.8.0 and wolfssl v5.4.0) repos.
 
-    - Issue 1: Build failure due to Struct wolfSSL_Ref undefined. Seen in cases where a project does not define macro ```SINGLE_THREADED``` (most RTOS cases).
+    - Issue 1: Build failure due to Struct wolfSSL_Ref undefined. Seen in cases where a project does not define macro ```SINGLE_THREADED```.
         - Workaround: Add ```#define SINGLE_THREADED``` to project configuration or remove code block using Struct wolfSSL_Ref in wc_port.c. No side effects with either approach.
 
     - Issue 2: Significant increase in usage of session cache and client cache in wolfssl code v5.4.0. Causes significant increase in Data mem usage. 

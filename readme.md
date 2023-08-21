@@ -46,7 +46,7 @@ reference information.
 <br />
 ____
 
-[![License](https://img.shields.io/badge/license-Harmony%20license-orange.svg)](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/blob/master/mplab_harmony_license.md)
+[![License](https://img.shields.io/badge/license-Harmony%20license-orange.svg)](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/blob/master/Microchip_SLA001.md)
 [![Latest release](https://img.shields.io/github/release/Microchip-MPLAB-Harmony/wireless_wifi.svg)](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/releases/latest)
 [![Latest release date](https://img.shields.io/github/release-date/Microchip-MPLAB-Harmony/wireless_wifi.svg)](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/releases/latest)
 [![Commit activity](https://img.shields.io/github/commit-activity/y/Microchip-MPLAB-Harmony/wireless_wifi.svg)](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/graphs/commit-activity)
