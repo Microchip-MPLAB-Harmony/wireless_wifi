@@ -30,6 +30,7 @@ This release includes additions and improvements to the **PIC32MZW1 and WINC** d
 ### Known Issues/Limitations
 
 - PIC32MZW1 - Our Release is tied to crypto v3.7.6 and wolfssl v4.7.0 versions as minor, low risk observations were made with specific test applications when using the combination of latest versions(crypto v3.8.0 and wolfssl v5.4.0) repos.
+    -  Below observations on PIC32MZW1 will be addressed in a subsequent dot release.
 
     - Issue 1: Build failure due to Struct wolfSSL_Ref undefined. Seen in cases where a project does not define macro ```SINGLE_THREADED```.
         - Workaround: Add ```#define SINGLE_THREADED``` to project configuration or remove code block using Struct wolfSSL_Ref in wc_port.c. No side effects with either approach.
@@ -46,12 +47,6 @@ This release includes additions and improvements to the **PIC32MZW1 and WINC** d
 #define	min(a,b)	(((a) < (b)) ? (a) : (b))
 #endif
 ```
-
-- WINC MISRA warnings/false positives(same as previous releases):
-    - driver/winc/drv/driver/m2m_wifi.c(1039) 	644 	9.1 	Variable 'strNetworkId' (line 1030) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
-    - driver/winc/wdrv_winc_authctx.c(122) 	530 	9.1 	Symbol 'PKCS1_RSA_PRIVATE_KEY' (line 105) not initialized [MISRA 2012 Rule 9.1, mandatory]
-    - driver/winc/drv/driver/nmspi.c(928) 	644 	9.1 	Variable 'tmpBuf' (line 905) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
-    - driver/winc/drv/socket/socket.c(574) 	644 	9.1 	Variable 'pstrSock' (line 535) may not have been initialized [MISRA 2012 Rule 9.1, mandatory]
 
 ### Development Tools
 
