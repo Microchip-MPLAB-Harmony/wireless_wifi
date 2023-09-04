@@ -3,6 +3,16 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.9.1
+
+### Dot Release Update for v3.9.1:
+- PIC32MZW1: WLAN library update to support XC32 v4.30 compiler version.
+- PIC32MZW1: This release has been verified with the latest crypto v3.8.0 and wolfssl v5.4.0 repos(using workarounds mentioned in v3.9.0 release notes).
+    - Applications/Demos can use the wireless release with these latest crypto and wolfssl versions.
+    - Please refer to section "Known Issues/Limitations" of the release notes of v3.9.0 release for more details.
+
+**Other release notes for v3.9.0 apply here too**
+
 ## Wireless_wifi Release v3.9.0
 This release includes additions and improvements to the **PIC32MZW1 and WINC** devices.
 
