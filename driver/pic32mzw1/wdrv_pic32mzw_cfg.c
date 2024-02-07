@@ -128,6 +128,7 @@ bool DRV_PIC32MZW_MultiWIDInit(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t bufferLen)
 
     if (NULL == pCtx->buffer)
     {
+        pCtx->error  = true;
         pCtx->pInPtr = NULL;
         return false;
     }
@@ -319,7 +320,7 @@ bool DRV_PIC32MZW_MultiWIDAddQuery(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid)
     return true;
 }
 
-bool DRV_PIC32MZW_MultiWid_Write(DRV_PIC32MZW_WIDCTX *pCtx)
+bool DRV_PIC32MZW_MultiWIDWrite(DRV_PIC32MZW_WIDCTX *pCtx)
 {
     uint16_t length;
 

@@ -70,7 +70,7 @@ Microchip or any third party.
 
   Description:
     Specifies the country code length, country code associated with the
-    regulatory domain, supported channels, major and minor values of 
+    regulatory domain, supported channels, major and minor values of
     RF PHY version.
 
   Remarks:

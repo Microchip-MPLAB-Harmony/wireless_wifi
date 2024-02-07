@@ -22,5 +22,13 @@ Microchip or any third party.
 -->
 
     /* Initialize the PIC32MZW1 Driver */
-    CRYPT_RNG_Initialize(&wdrvRngCtx);
-    sysObj.drvWifiPIC32MZW1 = WDRV_PIC32MZW_Initialize(WDRV_PIC32MZW_SYS_IDX_0, (SYS_MODULE_INIT*)&wdrvPIC32MZW1InitData);
+    if (CRYPT_RNG_Initialize(&wdrvRngCtx) >= 0)
+    {
+        sysObj.drvWifiPIC32MZW1 = WDRV_PIC32MZW_Initialize(WDRV_PIC32MZW_SYS_IDX_0, (SYS_MODULE_INIT*)&wdrvPIC32MZW1InitData);
+
+        SYS_ASSERT(sysObj.drvWifiPIC32MZW1 != SYS_MODULE_OBJ_INVALID, "WDRV_PIC32MZW_Initialize Failed");
+    }
+    else
+    {
+        SYS_ASSERT(false, "CRYPT_RNG_Initialize Failed");
+    }

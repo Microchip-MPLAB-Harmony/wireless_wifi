@@ -33,7 +33,7 @@ def loadModule():
     drvWifiWincLiteComponent.addCapability('wdrv_winc', 'WDRV_WINC', True)
     drvWifiWincLiteComponent.addCapability('libdrvWincMac', 'MAC')
 
-    if 'PIC32MZ1025W104132' in Variables.get('__PROCESSOR') or 'PIC32MZ2051W104132' in Variables.get('__PROCESSOR') or 'WFI32E01' in Variables.get('__PROCESSOR'):
+    if 'PIC32MZ1025W104132' in Variables.get('__PROCESSOR') or 'PIC32MZ2051W104132' in Variables.get('__PROCESSOR') or 'WFI32E01' in Variables.get('__PROCESSOR') or 'WFI32E02' in Variables.get('__PROCESSOR') or 'WFI32E03' in Variables.get('__PROCESSOR'):
         drvWifiPic32mzw1Component = Module.CreateComponent('drvWifiPic32mzw1', 'PIC32MZW1', '/Wireless/Drivers/', 'driver/pic32mzw1/config/drv_pic32mzw1.py')
         drvWifiPic32mzw1Component.addCapability('wdrv_pic32mzw1', 'WDRV_PIC32MZW1', True)
         drvWifiPic32mzw1Component.addCapability('libdrvPic32mzw1Mac', 'MAC')

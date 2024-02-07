@@ -114,10 +114,10 @@ Microchip or any third party.
 #define WDRV_PIC32MZW_ENT_AUTH_SERVER_DOMAIN_LEN_MAX    255
 /* The maximum length (in ASCII characters) of username for enterprise authentication.
 */
-#define WDRV_PIC32MZW_ENT_AUTH_USERNAME_LEN_MAX    255
+#define WDRV_PIC32MZW_ENT_AUTH_USERNAME_LEN_MAX         255
 /* The maximum length (in ASCII characters) of password for enterprise authentication.
 */
-#define WDRV_PIC32MZW_ENT_AUTH_PASSWORD_LEN_MAX    255
+#define WDRV_PIC32MZW_ENT_AUTH_PASSWORD_LEN_MAX         255
 #endif
 
 // *****************************************************************************

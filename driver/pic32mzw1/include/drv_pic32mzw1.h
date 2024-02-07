@@ -21,6 +21,7 @@ implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
 */
 
+
 #ifndef _DRV_PIC32MZW1_H
 #define _DRV_PIC32MZW1_H
 
@@ -34,7 +35,7 @@ extern const uint8_t pic32mzw_rsr_pkt_num;
 #define DRV_PIC32MZW_DEFAULT_ACTIVE_SCAN_TIME       20
 #define DRV_PIC32MZW_DEFAULT_PASSIVE_SCAN_TIME      120
 #define DRV_PIC32MZW_DEFAULT_SCAN_NUM_SLOT          1
-#define DRV_PIC32MZW_DEFAULT_SCAN_NUM_PROBE         1
+#define DRV_PIC32MZW_DEFAULT_SCAN_NUM_PROBE         2
 #define DRV_PIC32MZW_SCAN_MIN_NUM_SLOT              1
 #define DRV_PIC32MZW_SCAN_MIN_NUM_PROBE             1
 #define DRV_PIC32MZW_SCAN_MAX_NUM_PROBE             2
@@ -67,23 +68,24 @@ extern const uint8_t pic32mzw_rsr_pkt_num;
 */
 typedef enum
 {
-  DRV_WIFI_WID_CHAR     = 0,
-  DRV_WIFI_WID_SHORT    = 1,
-  DRV_WIFI_WID_INT      = 2,
-  DRV_WIFI_WID_STR      = 3,
-  DRV_WIFI_WID_BIN_DATA = 4
+    DRV_WIFI_WID_CHAR     = 0,
+    DRV_WIFI_WID_SHORT    = 1,
+    DRV_WIFI_WID_INT      = 2,
+    DRV_WIFI_WID_STR      = 3,
+    DRV_WIFI_WID_BIN_DATA = 4
 } DRV_WIFI_WID_TYPE_T;
 
 /* This Enum contains the various priority levels supported by the Memory    */
 /* Manager for allocating Packet Memory. Lower index in the priority table   */
 /* indicates higher priority.                                                */
 
-typedef enum {MEM_PRI_CONFIG = 0,
-              MEM_PRI_HPTX   = 1,
-              MEM_PRI_HPRX   = 2,
-              MEM_PRI_RX     = 3,
-              MEM_PRI_TX     = 4,
-              NUM_MEM_PRI_LEVELS = 5
+typedef enum {
+    MEM_PRI_CONFIG = 0,
+    MEM_PRI_HPTX   = 1,
+    MEM_PRI_HPRX   = 2,
+    MEM_PRI_RX     = 3,
+    MEM_PRI_TX     = 4,
+    NUM_MEM_PRI_LEVELS = 5
 } MEM_PRIORITY_LEVEL_T;
 
 /* Structure used to maintain packet reservation related information for */
@@ -135,13 +137,14 @@ bool wdrv_pic32mzw_init(DRV_PIC32MZW_INIT *pInitData);
 void wdrv_pic32mzw_user_main(void);
 void wdrv_pic32mzw_user_stop(void);
 void wdrv_pic32mzw_process_cfg_message(uint8_t* cfgmsg);
+
 void wdrv_pic32mzw_wlan_send_packet(uint8_t* pBuf, uint16_t pktlen, uint32_t tos, uint8_t offset);
 void wdrv_pic32mzw_mac_controller_task(void);
-int wdrv_pic32mzw_hook_wlan_event_handle(DRV_PIC32MZW_WLAN_EVENT_FPTR wlan_event_handle);
 void wdrv_pic32mzw_mac_isr(unsigned int vector);
 void wdrv_pic32mzw_timer_tick_isr(unsigned int param);
 void wdrv_pic32mzw_smc_isr(unsigned int param);
 uint8_t wdrv_pic32mzw_qmu_get_tx_count(void);
+void wdrv_pic32mzw_send_to_wlan(uint32_t pBuf);
 
 /* Library to Harmony calls */
 
@@ -169,9 +172,9 @@ typedef struct
 } DRV_PIC32MZW_SCAN_RESULTS;
 
 #ifdef DRV_PIC32MZW_TRACK_MEMORY_ALLOC
-#define DRV_PIC32MZW_ALLOC_OPT_ARGS  const char *pFuncName, uint32_t line, 
-#define DRV_PIC32MZW_ALLOC_OPT_PARAMS __FUNCTION__, __LINE__, 
-#define DRV_PIC32MZW_ALLOC_OPT_PARAMS_V pFuncName, line, 
+#define DRV_PIC32MZW_ALLOC_OPT_ARGS  const char *pFuncName, uint32_t line,
+#define DRV_PIC32MZW_ALLOC_OPT_PARAMS __FUNCTION__, __LINE__,
+#define DRV_PIC32MZW_ALLOC_OPT_PARAMS_V pFuncName, line,
 #else
 #define DRV_PIC32MZW_ALLOC_OPT_ARGS
 #define DRV_PIC32MZW_ALLOC_OPT_PARAMS

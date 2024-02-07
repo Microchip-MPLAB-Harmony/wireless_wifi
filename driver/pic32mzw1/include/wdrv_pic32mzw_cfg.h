@@ -211,7 +211,7 @@ Microchip or any third party.
 
 */
 #define DRV_WIFI_WID_POWER_MANAGEMENT                0x000B
-      
+
 // *****************************************************************************
 /*
     Summary:
@@ -383,12 +383,12 @@ Microchip or any third party.
     Summary:
         WID for setting frame filter.
     Description:
-        DRV_WIFI_WID_VSIE_FRAME used for setting frame filter to choose frame 
+        DRV_WIFI_WID_VSIE_FRAME used for setting frame filter to choose frame
         types on which custom IE tag can be added for TX and the frame types
         from which vendor specific IE tag data can be extracted at RX.
 */
 #define DRV_WIFI_WID_VSIE_FRAME                     0x0050
-        
+
 // *****************************************************************************
 /*
     Summary:
@@ -558,7 +558,9 @@ Microchip or any third party.
         WID for COEX priority flags.
     Description:
         DRV_WIFI_WID_COEX_PRIORITY_FLAGS is used to set the CoEx priority flags.
-        It indicates WLAN TX priority grater than BT LP.
+        The possible values are:
+          Bit 0: It indicates WLAN TX priority higher than BT LP if set, lower otherwise.
+          Bit 1: It indicates WLAN RX priority higher than BT LP if set, lower otherwise.
 */
 #define DRV_WIFI_WID_COEX_PRIORITY_FLAGS                 0x00E1
 
@@ -773,7 +775,7 @@ Microchip or any third party.
 */
 #define DRV_WIFI_WID_USER_SCAN_CHANNEL                          0x1022
 
-// *****************************************************************************        
+// *****************************************************************************
 /*
     Summary:
         WID for listen interval.
@@ -781,18 +783,18 @@ Microchip or any third party.
         This field contains the Listen Interval value to be used by a BSS-STA.
 */
 #define DRV_WIFI_WID_LISTEN_INTERVAL                            0x1023
-        
+
 // *****************************************************************************
 /*
     Summary:
         WID for sleep inactivity(assoc-timeout) limit/threshold.
     Description:
-        This field contains the sleep inactivity limit/threshold value to be 
+        This field contains the sleep inactivity limit/threshold value to be
         used by a BSS-STA.
-        During powersave if there is no activity in the BSS for the number of 
+        During powersave if there is no activity in the BSS for the number of
         beacons specified by this WID, a NULL frame will be sent to the AP.
 */
-#define DRV_WIFI_WID_SLEEP_INACT_IND_THRESHOLD           		0x1024
+#define DRV_WIFI_WID_SLEEP_INACT_IND_THRESHOLD                  0x1024
 
 // *****************************************************************************
 /*
@@ -804,8 +806,8 @@ Microchip or any third party.
  *      1 - EAP-TLS
  *      2 - EAP-TTLSv0/MSCHAPv2
 */
-#define DRV_WIFI_WID_SUPP_1X_AUTH_METHOD                 		0x1090        
-        
+#define DRV_WIFI_WID_SUPP_1X_AUTH_METHOD                        0x1090
+
 
 // *****************************************************************************
 /*
@@ -971,7 +973,7 @@ Microchip or any third party.
         This field indicates the total number of frames received without PHY level errors.
 */
 #define DRV_WIFI_WID_HW_RX_COUNT                             0x2015
-        
+
 // *****************************************************************************
 /*
     Summary:
@@ -1137,7 +1139,7 @@ Microchip or any third party.
         This field gives the MAC address of the device.
         The length of this field is 6 bytes. Note that in all the modes a GET access is allowed for this parameter.
 */
-#define DRV_WIFI_WID_MAC_ADDR                           0x300C    
+#define DRV_WIFI_WID_MAC_ADDR                           0x300C
 
 // *****************************************************************************
 /*
@@ -1173,7 +1175,7 @@ Microchip or any third party.
         The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
 */
 #define DRV_WIFI_WID_SUPP_DOMAIN_USERNAME                   0x3035
-        
+
 // *****************************************************************************
 /*
     Summary:
@@ -1184,7 +1186,7 @@ Microchip or any third party.
         The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
 */
 #define DRV_WIFI_WID_SUPP_USERNAME                          0x3010
-        
+
 // *****************************************************************************
 /*
     Summary:
@@ -1194,7 +1196,7 @@ Microchip or any third party.
         specify the password for MSCHAPv2(phase2) enterprise authentication.
         The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
 */
-#define DRV_WIFI_WID_SUPP_PASSWORD                          0x3011         
+#define DRV_WIFI_WID_SUPP_PASSWORD                          0x3011
 
 // *****************************************************************************
 /*
@@ -1206,11 +1208,11 @@ Microchip or any third party.
         WLAN -> Driver - Report of SMC sleep state entry and exit information
         Byte:
             0           - Current power-save mode.
-            1           - SMC sleep entry/exit state. 
-                          1 = SMC(WSM/WDS mode) sleep entry, 0 = Exit of WSM/WDS powersave cycle.                     
+            1           - SMC sleep entry/exit state.
+                          1 = SMC(WSM/WDS mode) sleep entry, 0 = Exit of WSM/WDS powersave cycle.
             2 to 5      - 4 bytes contain the SMC(WSM/WDS mode) sleep duration.
 */
-#define DRV_WIFI_WID_POWER_MANAGEMENT_INFO           	    0x3036
+#define DRV_WIFI_WID_POWER_MANAGEMENT_INFO                  0x3036
 
 // *****************************************************************************
 /*
@@ -1332,7 +1334,7 @@ Microchip or any third party.
         For example: beacon frames in Soft-AP mode.
 */
 #define DRV_WIFI_WID_VSIE_TX_DATA                           0x4085
-        
+
 // *****************************************************************************
 /*
     Summary:
@@ -1341,8 +1343,8 @@ Microchip or any third party.
         DRV_WIFI_WID_VSIE_RX_DATA is used to place request for received vendor
         IEs specified by application provided OUI.
 */
-#define DRV_WIFI_WID_VSIE_RX_DATA                           0x4086        
-        
+#define DRV_WIFI_WID_VSIE_RX_DATA                           0x4086
+
 
 typedef enum
 {
@@ -1368,7 +1370,7 @@ bool DRV_PIC32MZW_MultiWIDAddValue(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid, uint
 bool DRV_PIC32MZW_MultiWIDAddData(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid, const uint8_t *pData, uint16_t length);
 bool DRV_PIC32MZW_MultiWIDAddString(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid, const char * val);
 bool DRV_PIC32MZW_MultiWIDAddQuery(DRV_PIC32MZW_WIDCTX *pCtx, uint16_t wid);
-bool DRV_PIC32MZW_MultiWid_Write(DRV_PIC32MZW_WIDCTX *pCtx);
+bool DRV_PIC32MZW_MultiWIDWrite(DRV_PIC32MZW_WIDCTX *pCtx);
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus

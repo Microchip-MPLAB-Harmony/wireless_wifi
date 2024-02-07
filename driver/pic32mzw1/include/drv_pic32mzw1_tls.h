@@ -38,31 +38,31 @@ typedef uintptr_t DRV_PIC32MZW1_TLS_SESSION_HANDLE;
 
 /* TLS event type */
 typedef enum
-{			
-    /* 
-	There is a TLS packet ready for transmission. The upper layer is responsible for calling 
-	the corresponding transport API for sending the TLS packets to the other TLS party.
+{
+    /*
+    There is a TLS packet ready for transmission. The upper layer is responsible for calling
+    the corresponding transport API for sending the TLS packets to the other TLS party.
     */
     DRV_PIC32MZW1_TLS_EVENT_TX_PKT_READY,
     /*
-	TLS session is terminated either locally or by the remote peer.
-    */ 
+    TLS session is terminated either locally or by the remote peer.
+    */
     DRV_PIC32MZW1_TLS_EVENT_SESSION_TERMINATED,
     /*
      TLS session is successfully established with the peer and the handshake is complete.
     */
     DRV_PIC32MZW1_TLS_EVENT_SESSION_ESTABLISHED,
     /*
-     There is a TLS application data received. The upper layer is responsible for calling 
-	the corresponding receive API for receiving the decrypted TLS application data packet.
+     There is a TLS application data received. The upper layer is responsible for calling
+    the corresponding receive API for receiving the decrypted TLS application data packet.
      */
-    DRV_PIC32MZW1_TLS_EVENT_RX_APPLICATION_DATA        
+    DRV_PIC32MZW1_TLS_EVENT_RX_APPLICATION_DATA
 }DRV_PIC32MZW1_TLS_EVENT;
 
 /* Callback function type through which TLS events will be notified */
 typedef void (*DRV_PIC32MZW1_TLS_EVENT_CB)
 (
-    DRV_PIC32MZW1_TLS_EVENT	tlsEvent,
+    DRV_PIC32MZW1_TLS_EVENT tlsEvent,
     void  *pvEventData,
     uint32_t userData
 );
@@ -72,10 +72,10 @@ typedef enum
 {
     DRV_PIC32MZW1_TLS_RECORD_TYPE_UNKNOWN = 0,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_HELLO,
-    DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_CERTIFICATE, 
+    DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_CERTIFICATE,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_CERTIFICATE_REQUEST,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_CERTIFICATE_VERIFY,
-    DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_KEY_EXCHANGE,       
+    DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_KEY_EXCHANGE,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_HANDSHAKE_CLIENT_FINISHED,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_CLIENT_CHANGE_CIPHER_SPEC,
     DRV_PIC32MZW1_TLS_RECORD_TYPE_ALERT,
@@ -109,7 +109,7 @@ bool DRV_PIC32MZW1_TLS_DeInit
 /* Creates Wolfssl TLS session */
 DRV_PIC32MZW1_TLS_SESSION_HANDLE DRV_PIC32MZW1_TLS_CreateSession
 (
-    DRV_PIC32MZW1_TLS_EVENT_CB	fpSessionCb,
+    DRV_PIC32MZW1_TLS_EVENT_CB  fpSessionCb,
     uint32_t userArg
 );
 
@@ -124,7 +124,7 @@ bool DRV_PIC32MZW1_TLS_ReadTxBuffer
 (
     DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
     uint16_t reqBufferSize,
-    uint8_t	**pDataBuff
+    uint8_t **pDataBuff
 );
 
 /* Write to Wolfssl TLS Rx buffer queue */
@@ -132,7 +132,7 @@ bool DRV_PIC32MZW1_TLS_WriteRxBuffer
 (
     DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
     uint16_t bufferSize,
-    uint8_t	*pDataBuff
+    uint8_t *pDataBuff
 );
 
 /* Derive keying material required for EAP-TLS and EAP-TTLS */
@@ -141,7 +141,7 @@ bool DRV_PIC32MZW1_TLS_GenerateKey
     DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
     uint8_t *pMsk,
     uint16_t keyLen,
-    const char *pLabel        
+    const char *pLabel
 );
 
 /* Write Application data to encrypt and send to server */
@@ -149,7 +149,7 @@ int32_t DRV_PIC32MZW1_TLS_WriteAppData
 (
     DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
     uint8_t *pAppData,
-    uint16_t AppDataLen      
+    uint16_t AppDataLen
 );
 
 /* Read Application data - decrypted and received from server */
@@ -157,7 +157,7 @@ int32_t DRV_PIC32MZW1_TLS_ReadAppData
 (
     DRV_PIC32MZW1_TLS_SESSION_HANDLE tlsSessHandle,
     uint8_t *pAppData,
-    uint16_t AppDataLen      
+    uint16_t AppDataLen
 );
 
 #endif /* _DRV_PIC32MZW1_TLS_H */

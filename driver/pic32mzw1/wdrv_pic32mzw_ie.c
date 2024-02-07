@@ -129,7 +129,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IECustTxDataSet
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
     /* Write the wids. */
-    if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
+    if (false == DRV_PIC32MZW_MultiWIDWrite(&wids))
     {
         OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 
@@ -218,7 +218,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_IERxDataGet
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
     /* Write the wids. */
-    if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
+    if (false == DRV_PIC32MZW_MultiWIDWrite(&wids))
     {
         OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 

@@ -157,10 +157,10 @@ typedef enum
 */
 #define WDRV_PIC32MZW_COEX_CONFIG_DISABLE                   0x0
 #define WDRV_PIC32MZW_COEX_CONFIG_ENABLE                    0x1
-                                                            
+
 #define WDRV_PIC32MZW_COEX_CONFIG_IF_3WIRE                  0x0
 #define WDRV_PIC32MZW_COEX_CONFIG_IF_2WIRE                  0x2
-                                                            
+
 #define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_LT_BTLP      0x0
 #define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_GT_BTLP      0x4
 
@@ -184,7 +184,7 @@ typedef struct
     CRYPT_RNG_CTX *pCryptRngCtx;
 
     /* Pointer to regulatory domain string. */
-    char *const pRegDomName;
+    const char *pRegDomName;
 
     /* Power-Save Mode. */
     WDRV_PIC32MZW_POWERSAVE_MODE powerSaveMode;

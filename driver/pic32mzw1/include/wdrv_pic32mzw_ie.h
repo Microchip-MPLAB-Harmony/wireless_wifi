@@ -1,5 +1,5 @@
 /*******************************************************************************
-  PIC32MZW Driver IE Header File 
+  PIC32MZW Driver IE Header File
 
   Company:
     Microchip Technology Inc.
@@ -61,7 +61,7 @@ Microchip or any third party.
 // *****************************************************************************
 
 // *****************************************************************************
-/*  Vendor IE frame filter mask for Rx and Tx of management frames 
+/*  Vendor IE frame filter mask for Rx and Tx of management frames
 
   Summary:
     Defines frame filter mask values which is used while Rx/Tx of vendor IE tags.
@@ -81,20 +81,20 @@ typedef enum
      * added to the beacon frames while transmitting beacons. If set in Rx API,
      * the vendor specific IE data from the received beacon frames will be
      * passed to the application. */
-    WDRV_PIC32MZW_VENDOR_IE_BEACON       = 0x01,  
-    
+    WDRV_PIC32MZW_VENDOR_IE_BEACON       = 0x01,
+
     /* If set in Tx API, the custom IE data provided by the application will be
-     * added to the probe request frames while transmitting probe requests. If 
+     * added to the probe request frames while transmitting probe requests. If
      * set in Rx API, the vendor specific IE data from the received probe request
-     * frames will be passed to the application. */            
+     * frames will be passed to the application. */
     WDRV_PIC32MZW_VENDOR_IE_PROBE_REQ    = 0x02,
-    
+
     /* If set in Tx API the custom IE data provided by the application will be
      * added to the probe response frames while transmitting probe responses. If
      * set in Rx API, the vendor specific IE data from the received probe
      * response frames will be passed to the application. */
     WDRV_PIC32MZW_VENDOR_IE_PROBE_RSP    = 0x04
-            
+
 } WDRV_PIC32MZW_IE_FRAME_TYPE_MASK;
 
 // *****************************************************************************
@@ -105,7 +105,7 @@ typedef enum
 
   Description:
     Provides more information on the received vendor specific IE such as MAC
-    address of the source, frame type on which the IE was received and RSSI of 
+    address of the source, frame type on which the IE was received and RSSI of
     the received frame.
 
   Remarks:
@@ -117,7 +117,7 @@ typedef struct
 {
     uint8_t sa[6];
     int8_t rssi;
-    WDRV_PIC32MZW_IE_FRAME_TYPE_MASK frameType; 
+    WDRV_PIC32MZW_IE_FRAME_TYPE_MASK frameType;
 } WDRV_PIC32MZW_VENDORIE_INFO;
 
 // *****************************************************************************
@@ -142,7 +142,7 @@ typedef struct
     None.
 
   Remarks:
-    The callback has to be set to start receiving vendor specific IEs. The IEs 
+    The callback has to be set to start receiving vendor specific IEs. The IEs
     are received based on the vendor OUI and frame filter mask set using the API
     WDRV_PIC32MZW_CustIEGetRxData.
 
@@ -188,7 +188,7 @@ typedef void (*WDRV_PIC32MZW_IE_RX_CALLBACK)
 
   Parameters:
     handle     - Client handle obtained by a call to WDRV_PIC32MZW_Open.
-    frameMask  - Frame filter mask to add custom IE store.   
+    frameMask  - Frame filter mask to add custom IE store.
     pCustIECtx - Pointer to custom IE store context.
 
   Returns:

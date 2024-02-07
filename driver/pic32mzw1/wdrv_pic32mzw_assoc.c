@@ -313,7 +313,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AssocRSSIGet
 
             critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
-            if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
+            if (false == DRV_PIC32MZW_MultiWIDWrite(&wids))
             {
                 OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 
@@ -359,7 +359,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AssocDisconnect(WDRV_PIC32MZW_ASSOC_HANDLE as
 {
     DRV_PIC32MZW_WIDCTX wids;
     WDRV_PIC32MZW_CTRLDCPT *pCtrl;
-	WDRV_PIC32MZW_DCPT *pDcpt;
+    WDRV_PIC32MZW_DCPT *pDcpt;
     OSAL_CRITSECT_DATA_TYPE critSect;
 
     WDRV_PIC32MZW_ASSOC_INFO *const pAssocInfo = (WDRV_PIC32MZW_ASSOC_INFO *const)assocHandle;
@@ -419,7 +419,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_AssocDisconnect(WDRV_PIC32MZW_ASSOC_HANDLE as
 
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
-    if (false == DRV_PIC32MZW_MultiWid_Write(&wids))
+    if (false == DRV_PIC32MZW_MultiWIDWrite(&wids))
     {
         OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
 
