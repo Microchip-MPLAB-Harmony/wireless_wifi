@@ -42,6 +42,7 @@ def loadModule():
         drvPic32mEthmacComponent = Module.CreateComponent('drvPic32mEthmac', 'ETHMAC', '/Harmony/Drivers/MAC Driver/Internal/', 'driver/ethmac/config/drv_intmac_ethmac.py')
         drvPic32mEthmacComponent.addCapability('libdrvPic32mEthmac','MAC')
         drvPic32mEthmacComponent.addDependency('ETHMAC_PHY_Dependency', 'PHY', None, False, True)
+        drvPic32mEthmacComponent.setDisplayType("MAC Layer")
 
     ## Serial Bridge Application
     appSerBridge = Module.CreateComponent('appWincSerialBridge', 'Serial Bridge Application', '/Wireless/SerialBridge/', 'apps/serial_bridge/config/app_winc_serial_bridge.py')

@@ -22,7 +22,7 @@ Microchip or any third party.
 -->
 /*** ETH MAC Initialization Data ***/
 const TCPIP_MODULE_MAC_PIC32INT_CONFIG tcpipMACPIC32INTInitData =
-{ 
+{
     .nTxDescriptors         = TCPIP_EMAC_TX_DESCRIPTORS,
     .rxBuffSize             = TCPIP_EMAC_RX_BUFF_SIZE,
     .nRxDescriptors         = TCPIP_EMAC_RX_DESCRIPTORS,
@@ -30,17 +30,17 @@ const TCPIP_MODULE_MAC_PIC32INT_CONFIG tcpipMACPIC32INTInitData =
     .nRxInitBuffers         = TCPIP_EMAC_RX_INIT_BUFFERS,
     .rxLowThreshold         = TCPIP_EMAC_RX_LOW_THRESHOLD,
     .rxLowFill              = TCPIP_EMAC_RX_LOW_FILL,
-    .linkInitDelay          = DRV_${DRV_INTMAC_PHY_TYPE}_PHY_LINK_INIT_DELAY, 
+    .linkInitDelay          = DRV_${DRV_INTMAC_PHY_TYPE}_PHY_LINK_INIT_DELAY,
     .ethFlags               = TCPIP_EMAC_ETH_OPEN_FLAGS,
     .ethModuleId            = TCPIP_INTMAC_MODULE_ID,
 <#if (drvExtPhyLan9303.TCPIP_EMAC_PHY_TYPE)?has_content && (drvExtPhyLan9303.TCPIP_EMAC_PHY_TYPE) == "SMSC_LAN9303">
     .pPhyBase               = &DRV_ETHPHY_OBJECT_BASE_smsc9303,
 <#elseif (drvExtPhyKsz8863.TCPIP_EMAC_PHY_TYPE)?has_content && (drvExtPhyKsz8863.TCPIP_EMAC_PHY_TYPE) == "KSZ8863">
     .pPhyBase           = &DRV_ETHPHY_OBJECT_BASE_ksz8863,
+<#elseif (drvExtPhyLan9354.TCPIP_EMAC_PHY_TYPE)?has_content && (drvExtPhyLan9354.TCPIP_EMAC_PHY_TYPE) == "LAN9354">
+    .pPhyBase               = &DRV_ETHPHY_OBJECT_BASE_lan9354,
 <#else>
     .pPhyBase               = &DRV_ETHPHY_OBJECT_BASE_Default,
 </#if>
     .pPhyInit               = &tcpipPhyInitData_${DRV_INTMAC_PHY_TYPE},
 };
-
-
