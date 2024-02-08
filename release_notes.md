@@ -3,6 +3,39 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.10.0
+This release includes improvements to the **PIC32MZW1** device.
+
+### New Features
+- Link Time Optimisation enabled in the PIC32MZW1 WLAN library.
+
+### Bug fixes/Improvements(PIC32MZW1 only)
+- Recertification of PIC32MZW1 device with latest library.
+- Addition of WID to enable/disable roaming.
+- Improvements in the autorate algorithm.
+- Fix behaviour where device is deauthenticated after WPA3 Personal AP performs GTK rekeying.
+- Frame parsing and IE library optimization.
+- Enable short guard interval.
+- Add changes to support EAPOL V3.
+- Allow CoEx to be enabled in AP mode.
+- Fix mandatory MISRA issue in the wireless driver.
+
+# WINC: No functionality changes
+    - Adding Digicert global G2 root certificate.
+
+### Known Issues/Limitations
+- Some known WINC1500 MISRA C-2012 Rule 9.1-Mandatory issues in release.
+    - driver/winc/drv/driver/nmspi.c(405)	Using uninitialized value "rsp"
+    - driver/winc/drv/driver/nmspi.c(327)	Using uninitialized value "tmp[0]"
+    - driver/winc/drv/driver/nmspi.c(673)	Using uninitialized value "rsp"	
+
+### Development Tools
+
+- [MPLAB® X IDE v6.15](https://www.microchip.com/mplab/mplab-x-ide)
+- [MPLAB® XC32 C/C++ Compiler v4.35](https://www.microchip.com/mplab/compilers)
+- MPLAB® X IDE plug-ins:
+- [MPLAB® Code Configurator 5.7.0](https://www.microchip.com/en-us/tools-resources/configure/mplab-code-configurator)
+
 ## Wireless_wifi Release v3.9.1
 
 ### Dot Release Update for v3.9.1:
