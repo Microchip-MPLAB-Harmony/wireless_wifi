@@ -3,6 +3,13 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.10.1
+
+### Dot Release Update for v3.10.1:
+- PIC32MZW1: redefine wlan data buffer area based on part used.
+
+**Other release notes for v3.10.0 apply here too**
+
 ## Wireless_wifi Release v3.10.0
 This release includes improvements to the **PIC32MZW1** device.
 
