@@ -22,6 +22,16 @@ Microchip or any third party.
 -->
 
 /*** WiFi PIC32MZW1 Driver Configuration ***/
+
+<#-- TODO: move to linker script -->
+<#if __PROCESSOR == "PIC32MZ1025W104132" ||  __PROCESSOR == "WFI32E01" >
+#pragma region name="wlan_mem" origin=0xa0040000 size=0x10000
+#define PIC32MZW_RSR_PKT_NUM    (0x10000 / sizeof(WDRV_PIC32MZW_PKT_LIST_NODE))
+<#elseif __PROCESSOR == "PIC32MZ2051W104132" ||  __PROCESSOR == "WFI32E03" >
+#pragma region name="wlan_mem" origin=0xa0080000 size=0x20000
+#define PIC32MZW_RSR_PKT_NUM    (0x20000 / sizeof(WDRV_PIC32MZW_PKT_LIST_NODE))
+</#if>
+
 <#if sys_debug?? && sys_debug.SYS_DEBUG_USE_CONSOLE?? && DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG && sys_debug.SYS_DEBUG_USE_CONSOLE>
     <#lt>#define WDRV_PIC32MZW1_DEVICE_USE_SYS_DEBUG
 <#elseif DRV_WIFI_PIC32MZW1_LOG_LEVEL == "None">

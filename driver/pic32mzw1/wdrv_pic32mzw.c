@@ -55,9 +55,6 @@ Microchip or any third party.
 #include "tcpip/src/tcpip_manager_control.h"
 #include <sys/kmem.h>
 
-#pragma region name="wlan_mem" origin=0xa0040000 size=0x10000
-#define PIC32MZW_RSR_PKT_NUM    (0x10000 / sizeof(WDRV_PIC32MZW_PKT_LIST_NODE))
-
 extern pktmem_priority_t g_pktmem_pri[NUM_MEM_PRI_LEVELS];
 
 bool DRV_PIC32MZW_StoreBSSScanResult(const DRV_PIC32MZW_SCAN_RESULTS *const pScanResult);
