@@ -3,6 +3,20 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.11.0
+This release introduces Harmony driver support for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com.
+
+### New Features
+- **New part support** - **WINCS02** Wifi Network Controller.
+- Exposes the functionality of WINCS02 device firmware v2.0.
+
+### Known Issues/Limitations
+- WINCS02: Wi-Fi Hotspot limited to channels 1-11, regardless of selected regulatory domain.
+
+### Development Tools
+- [MPLAB® X IDE v6.20](https://www.microchip.com/mplab/mplab-x-ide)
+- [MPLAB® XC32 C/C++ Compiler v4.35](https://www.microchip.com/mplab/compilers)
+
 ## Wireless_wifi Release v3.10.1
 
 ### Dot Release Update for v3.10.1:
