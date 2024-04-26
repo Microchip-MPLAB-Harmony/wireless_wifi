@@ -40,7 +40,6 @@ body {
  */
 .wh_publication_title > a {
   padding: 0.1em 0;
-  text-transform: uppercase;
   font-weight: bold;
   line-height: 1em;
   font-size: 1.8em;
@@ -50,6 +49,22 @@ body {
     padding: 0;
   }
 }
+
+/* 
+ * Edit/Comment button in webhelp
+ */
+
+.editbutton {
+  border: 2px solid green;
+  border-radius: 5px;
+  width: 200px;
+  text-align: center;
+  padding: 7px;
+  background-color: #04aa6d;
+  color: #ffffff;
+  font-weight: bold;
+  }
+
 
 /*
  * ------------------------------------------------------------------
@@ -516,6 +531,9 @@ table.table .vertical-left span, table.table .vertical-center span, table.table 
   writing-mode: tb;
   transform: rotate(180deg);
 }
+.entry.rotate {
+  writing-mode: initial;
+}
 table.table .vertical-left {
   vertical-align: bottom;
   text-align: left;
@@ -713,4 +731,65 @@ kbd {
 
 .keyword.option {
   font-style: italic;
+}
+
+/* Styling for custom list */
+.custom_list li > p:nth-child(2) {
+    margin-left: 2.5em;
+    color: #555 !important;
+}
+
+/* Styling for noboldlist */
+
+dl.noboldlist dt {
+  float: left;
+  clear: left;
+  /* width: 100px; */
+  font-weight: normal;
+}
+dl.noboldlist dd {
+  margin: 0 0 0 100px;
+  padding: 0 0 0.5em 0;
+}
+
+/* Disclaimer */
+.mchp_disclaimer {
+  padding: 0 10px;
+  text-align: center;
+}
+.mchp_disclaimer > .mchp_disclaimer_text {
+  font-size: .8em;
+  margin: 0;
+  color: #000;
+}
+.wh_footer {
+  margin-top: 0 !important;
+}
+
+.table-container{
+  /* max-height: 500px; */
+  /* overflow: auto !important; */
+  overflow-x: unset;
+}
+
+.table-container tr:nth-child(1) th{
+  position: sticky;
+  top: 111px;
+  z-index: 1;
+}
+
+.table-container tr:nth-child(2) th{
+  position: sticky;
+  /* top: 29px; */
+  top: 140px;
+  z-index: 1;
+}
+
+/* preserve line breaks */
+.wh_publication_title a, .header_title {
+  white-space: pre-line;
+}
+
+.wh_publication_title a {
+  text-align: left;
 }

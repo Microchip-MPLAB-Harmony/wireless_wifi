@@ -1,4 +1,4 @@
 /*Maps current topic to its parent: "topicIndex:parentIndex". -1 represents the map.*/
 define(function () {
-return {180:16,21:16,16:-1,203:16,109:16,7:16,209:16,1:16,33:16};
+return {2:30,391:30,59:30,209:30,36:30,349:30,403:30,10:30,30:-1};
 });

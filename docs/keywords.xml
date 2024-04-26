@@ -1,22 +1,1122 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <keywords publicationid="GUID-8B137D7B-852A-471A-8E47-463DF557852F"
           language="en-US"
-          version="2"
-          documenttitle="MPLAB Harmony Wireless WiFi Software"
+          version="3"
+          documenttitle="MPLAB® Harmony Wireless WiFi"
           pubtype="Online Reference"
           pubsubtype=""
           pubuserguidesubtype=""
-          pubproductheirarchy=""
+          pubproducthierarchy=""
           devices=""
-          revisiondate="15/02/2023 00:00:00"
-          revisionletter="2"
+          revisiondate="23/04/2024 00:00:00"
+          revisionletter="C"
           isbn=""
           pubid=""
           reachid=""
           description=""
-          lastmodified="20/02/2023 07:27:35"
-          covertitle="MPLAB Harmony Wireless WiFi"
+          lastmodified="25/04/2024 18:47:36"
+          covertitle="MPLAB® Harmony Wireless WiFi"
           frontcover="">
+   <keyworditem topicid="GUID-1D79FE90-0DEE-4D16-889A-67C596585DCD"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ASSOC_INFO</register>
+      <title>WDRV_WINC_ASSOC_INFO</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ASSOC_H</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-69E04F49-B2F4-4793-9174-5B0D2D0A7C0F"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ASSOC_CALLBACK Typedef</register>
+      <title>WDRV_WINC_ASSOC_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ASSOC_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-B56FF47C-AEC8-4E63-9FC7-783709431BBC"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ASSOC_HANDLE; Typedef</register>
+      <title>WDRV_WINC_ASSOC_HANDLE; Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ASSOC_HANDLE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-B56FF47C-AEC8-4E63-9FC7-783709431BBC"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ASSOC_HANDLE; Typedef</register>
+      <title>WDRV_WINC_ASSOC_HANDLE; Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ASSOC_HANDLE;</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-F1B1F042-5BC2-45FC-850E-792C58024027"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ASSOC_HANDLE_INVALID Macro</register>
+      <title>WDRV_WINC_ASSOC_HANDLE_INVALID Macro</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ASSOC_HANDLE_INVALID</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-9618C4E6-B0B4-4B40-8D1A-74E9D953DB32"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ASSOC_RSSI_CALLBACK Typedef</register>
+      <title>WDRV_WINC_ASSOC_RSSI_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ASSOC_RSSI_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-DF8699E1-859E-498A-A2B2-14BA484F15AA"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AssocAuthTypeGet Function</register>
+      <title>WDRV_WINC_AssocAuthTypeGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AssocAuthTypeGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-D2767F7F-A339-48EE-B082-78588D0B6CA3"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AssocPeerAddressGet Function</register>
+      <title>WDRV_WINC_AssocPeerAddressGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AssocPeerAddressGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-59578B0F-C244-4349-9F81-8229B80F04E4"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AssocRSSIGet Function</register>
+      <title>WDRV_WINC_AssocRSSIGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AssocRSSIGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-0A67F966-29BA-410D-8D51-EF1CAF875F33"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AssocSSIDGet Function</register>
+      <title>WDRV_WINC_AssocSSIDGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AssocSSIDGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-DE8FA814-FDE4-430A-9B99-2A68C30F0233"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BLEIsStarted Function</register>
+      <title>WDRV_WINC_BLEIsStarted Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BLEIsStarted</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-C97E4EFB-3FAB-4629-B94E-1F1DE8350984"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BLEStart Function</register>
+      <title>WDRV_WINC_BLEStart Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BLEStart</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-8D63200E-D1CF-4D36-AC0D-23570973580F"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BLEStop Function</register>
+      <title>WDRV_WINC_BLEStop Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BLEStop</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-07F5A862-34A2-4A48-B24D-3A6966AC24A4"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFIND_NOTIFY_CALLBACK Typedef</register>
+      <title>WDRV_WINC_BSSFIND_NOTIFY_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFIND_NOTIFY_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-0EB59C36-8667-47E0-BB7E-585BA68CFC88"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindFirst Function</register>
+      <title>WDRV_WINC_BSSFindFirst Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindFirst</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-62609FEA-0339-4187-9435-88CE00E65018"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindGetInfo Function</register>
+      <title>WDRV_WINC_BSSFindGetInfo Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindGetInfo</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-D77087B6-33AC-472C-AD7D-0EB6F30F123E"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindGetNumBSSResults Function</register>
+      <title>WDRV_WINC_BSSFindGetNumBSSResults Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindGetNumBSSResults</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-8BE8380E-360A-4D3B-AC0B-5B87D4B6A60B"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindInProgress Function</register>
+      <title>WDRV_WINC_BSSFindInProgress Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindInProgress</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-4E25D2C0-21B1-43D6-B3F1-33DE1D7CDC6E"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindNext Function</register>
+      <title>WDRV_WINC_BSSFindNext Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindNext</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-C0A91481-BE29-4CE6-9520-B9999BCC19E3"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindReset Function</register>
+      <title>WDRV_WINC_BSSFindReset Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindReset</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-C0858BB2-B95A-4B25-B5BD-4B19C6E09ED9"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindSetEnabledChannels Function</register>
+      <title>WDRV_WINC_BSSFindSetEnabledChannels Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindSetEnabledChannels</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-D21AD79C-567A-4A01-993A-82FC7E3611CA"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindSetRSSIThreshold Function</register>
+      <title>WDRV_WINC_BSSFindSetRSSIThreshold Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindSetRSSIThreshold</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-F63B27BC-58CA-410B-89D2-FC5221B921AD"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindSetScanMatchMode Function</register>
+      <title>WDRV_WINC_BSSFindSetScanMatchMode Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindSetScanMatchMode</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-35AEB7EE-B0EA-45A7-884F-6C1A05971FBF"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSFindSetScanParameters Function</register>
+      <title>WDRV_WINC_BSSFindSetScanParameters Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSFindSetScanParameters</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-0B377484-72D9-4299-AE14-DFBE284E0BC3"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxIsValid Function</register>
+      <title>WDRV_WINC_AuthCtxIsValid Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxIsValid</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-97F4B27C-55F0-422F-A3D6-A58842D09E97"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxSetDefaults Function</register>
+      <title>WDRV_WINC_AuthCtxSetDefaults Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxSetDefaults</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-3744A796-97FD-42E1-91E5-6AC2632D5607"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxSetOpen Function</register>
+      <title>WDRV_WINC_AuthCtxSetOpen Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxSetOpen</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-C29F6564-0F47-4455-A4E3-FE68DFC51C49"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxSetWEP Function</register>
+      <title>WDRV_WINC_AuthCtxSetWEP Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxSetWEP</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-2C98CE0C-BC5E-4875-842C-2D591C000F85"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxSetWPA Function</register>
+      <title>WDRV_WINC_AuthCtxSetWPA Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxSetWPA</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-BB0DEC1B-642C-486F-8155-29DEF7A538D0"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxSetWPAEnterpriseMSCHAPv2 Function</register>
+      <title>WDRV_WINC_AuthCtxSetWPAEnterpriseMSCHAPv2 Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxSetWPAEnterpriseMSCHAPv2</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-2335ACBC-3CA0-4AE1-A842-59F55DC0B149"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_AuthCtxSetWPAEnterpriseTLS Function</register>
+      <title>WDRV_WINC_AuthCtxSetWPAEnterpriseTLS Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_AuthCtxSetWPAEnterpriseTLS</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-70CC6D2C-E661-472B-A9FC-C8B2BAD88832"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_HTTP_PROV_CONTEXT Struct</register>
+      <title>WDRV_WINC_HTTP_PROV_CONTEXT Struct</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_HTTP_PROV_CONTEXT</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-7A3FD52F-3099-49A8-A6AC-7461BC124ED8"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_HTTPPROV_INFO_CALLBACK Typedef</register>
+      <title>WDRV_WINC_HTTPPROV_INFO_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_HTTPPROV_INFO_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-7E8B70A2-A1F9-4F83-89F8-5450933B7D77"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_HTTPProvCtxSetConnectCallback Function</register>
+      <title>WDRV_WINC_HTTPProvCtxSetConnectCallback Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_HTTPProvCtxSetConnectCallback</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-5F105463-B28D-4D4E-BD09-365304360143"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_HTTPProvCtxSetDefaults Function</register>
+      <title>WDRV_WINC_HTTPProvCtxSetDefaults Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_HTTPProvCtxSetDefaults</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-237690AC-9D9D-4CE1-A4BE-BE2A0A41ABE1"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_HTTPProvCtxSetDomainName Function</register>
+      <title>WDRV_WINC_HTTPProvCtxSetDomainName Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_HTTPProvCtxSetDomainName</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-833E3062-0EF5-4C7B-90AA-244A02494757"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_HTTPProvCtxSetURLWildcard Function</register>
+      <title>WDRV_WINC_HTTPProvCtxSetURLWildcard Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_HTTPProvCtxSetURLWildcard</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-313368DE-CCC8-459C-99DE-47762D5731CC"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Close Function</register>
+      <title>WDRV_WINC_Close Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Close</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-DEDB8880-71DA-46D9-8223-C2C95F6D3B18"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Open Function</register>
+      <title>WDRV_WINC_Open Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Open</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-76364FA8-610F-4BB3-9C29-1E7474982DA1"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER Typedef</register>
+      <title>WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-BBC5C177-4BC4-4472-A19A-C60261121CF0"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ICMP_ECHO_STATUS Enum</register>
+      <title>WDRV_WINC_ICMP_ECHO_STATUS Enum</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ICMP_ECHO_STATUS</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-C03897C9-8CB4-4452-BDC3-06FA1DA4EB82"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_ICMPEchoRequest Function</register>
+      <title>WDRV_WINC_ICMPEchoRequest Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_ICMPEchoRequest</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-7CFCDC19-0A74-4164-A437-BEFE7061053A"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPAddressGet Function</register>
+      <title>WDRV_WINC_IPAddressGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPAddressGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-66583817-8C3B-4CBE-9F01-E862ACDFAD70"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPAddressSet Function</register>
+      <title>WDRV_WINC_IPAddressSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPAddressSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-4CB9E571-2A08-47B5-B3F3-76C0CEB81767"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPDefaultGatewaySet Function</register>
+      <title>WDRV_WINC_IPDefaultGatewaySet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPDefaultGatewaySet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-44FF5A20-CD27-40EC-9DBE-EE5848F6C6B2"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPDHCPServerConfigure Function</register>
+      <title>WDRV_WINC_IPDHCPServerConfigure Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPDHCPServerConfigure</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-02ED2A09-D42F-4CD2-B87A-FE433F01370D"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPDNSServerAddressSet Function</register>
+      <title>WDRV_WINC_IPDNSServerAddressSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPDNSServerAddressSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-78C1D07E-0BA2-472F-8F67-C19B29C2FA50"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPLinkActive Function</register>
+      <title>WDRV_WINC_IPLinkActive Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPLinkActive</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-F8DEA63C-71E7-4553-A3D4-94CA8A3B4691"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPUseDHCPGet Function</register>
+      <title>WDRV_WINC_IPUseDHCPGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPUseDHCPGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-5E4DE35D-0E4D-4D34-A4EF-4464B592F400"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_IPUseDHCPSet Function</register>
+      <title>WDRV_WINC_IPUseDHCPSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_IPUseDHCPSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-5195123C-F0F4-4B6F-8424-A8B39E368881"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SocketRegisterEventCallback Function</register>
+      <title>WDRV_WINC_SocketRegisterEventCallback Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SocketRegisterEventCallback</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-0459459F-E39F-4FB8-B936-C97285F171CA"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SocketRegisterResolverCallback Function</register>
+      <title>WDRV_WINC_SocketRegisterResolverCallback Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SocketRegisterResolverCallback</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-BB86DF33-DA59-40AC-AFCD-F3BAED76EA26"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_NVM_REGION Enum</register>
+      <title>WDRV_WINC_NVM_REGION Enum</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_NVM_REGION</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-21FC15BA-6E5E-4210-B81A-A0DED32516AD"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_NVMEraseSector Function</register>
+      <title>WDRV_WINC_NVMEraseSector Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_NVMEraseSector</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-39D1EB75-81FB-421B-874F-D79CD542D967"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_NVMRead Function</register>
+      <title>WDRV_WINC_NVMRead Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_NVMRead</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-C79465BA-38BB-4ABC-A45C-5FDCB79FA3A1"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_NVMWrite Function</register>
+      <title>WDRV_WINC_NVMWrite Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_NVMWrite</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-BE9A0977-3616-4935-92BF-8FCEF7F121D8"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_PowerSaveGetMode Function</register>
+      <title>WDRV_WINC_PowerSaveGetMode Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_PowerSaveGetMode</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-7F977039-8978-42C8-B827-41D3F34D3DF5"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_PowerSaveManualSleep Function</register>
+      <title>WDRV_WINC_PowerSaveManualSleep Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_PowerSaveManualSleep</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-4FAD93E9-85FB-4180-908D-DDB94AB6F6BB"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_PowerSaveSetBeaconInterval Function</register>
+      <title>WDRV_WINC_PowerSaveSetBeaconInterval Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_PowerSaveSetBeaconInterval</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-DB718ADE-4DFD-4A28-A968-C4354594BAD1"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_PowerSaveSetMode Function</register>
+      <title>WDRV_WINC_PowerSaveSetMode Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_PowerSaveSetMode</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-D45FD002-4D1F-482A-A111-4FEED907F099"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_PS_MODE Enum</register>
+      <title>WDRV_WINC_PS_MODE Enum</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_PS_MODE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-EFEFA06B-16BD-412C-A3B1-F37AA66E9AC4"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Deinitialize Function</register>
+      <title>WDRV_WINC_Deinitialize Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Deinitialize</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-E98C2F70-A211-4437-A69D-23612AE87FC6"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Initialize Function</register>
+      <title>WDRV_WINC_Initialize Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Initialize</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-4D0F629D-36BF-4205-91F0-AC0118A3D665"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Reinitialize Function</register>
+      <title>WDRV_WINC_Reinitialize Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Reinitialize</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-31497D4C-2D61-42B6-8218-BBB69E77EE97"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Status Function</register>
+      <title>WDRV_WINC_Status Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Status</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-CA4F7F1B-CAE2-4AB7-AE45-CB45ADCD997A"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_Tasks Function</register>
+      <title>WDRV_WINC_Tasks Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_Tasks</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-214624A4-2C2B-4A50-BE42-92CEBF57DAC5"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_APSetCustIE Function</register>
+      <title>WDRV_WINC_APSetCustIE Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_APSetCustIE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-34039A6A-F27D-4BF6-BD76-9F47983D235A"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_APStart Function</register>
+      <title>WDRV_WINC_APStart Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_APStart</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-81C3F83D-6E88-45F1-B6E2-C741D612AA1C"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_APStop Function</register>
+      <title>WDRV_WINC_APStop Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_APStop</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-E4146D37-A9A1-40C9-B0AD-6A8E31C00666"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_CUST_IE Struct</register>
+      <title>WDRV_WINC_CUST_IE Struct</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_CUST_IE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-162AD5A9-148E-430D-AA31-347A7A68CD96"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_CUST_IE_STORE_CONTEXT Struct</register>
+      <title>WDRV_WINC_CUST_IE_STORE_CONTEXT Struct</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_CUST_IE_STORE_CONTEXT</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-1A48B726-35D9-4E22-B034-1B6B6817DD6D"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_CustIEStoreCtxAddIE Function</register>
+      <title>WDRV_WINC_CustIEStoreCtxAddIE Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_CustIEStoreCtxAddIE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-146944D1-7D0A-4266-854C-D839862B736B"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_CustIEStoreCtxRemoveIE Function</register>
+      <title>WDRV_WINC_CustIEStoreCtxRemoveIE Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_CustIEStoreCtxRemoveIE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-6BC88511-923D-4CFA-B5E5-6049DAC630CF"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_CustIEStoreCtxSetStorage Function</register>
+      <title>WDRV_WINC_CustIEStoreCtxSetStorage Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_CustIEStoreCtxSetStorage</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-895E65D1-1C90-408D-B617-2D86C45A3D2A"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSCON_NOTIFY_CALLBACK Typedef</register>
+      <title>WDRV_WINC_BSSCON_NOTIFY_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSCON_NOTIFY_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-929FF129-78D9-4158-83C6-9955EA09D304"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSConnect Function</register>
+      <title>WDRV_WINC_BSSConnect Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSConnect</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-10E4E4C5-848E-45F6-ABDB-2819383B122D"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSDisconnect Function</register>
+      <title>WDRV_WINC_BSSDisconnect Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSDisconnect</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-A4E8E317-B698-4D3F-8D00-90FC31D9D540"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_BSSReconnect Function</register>
+      <title>WDRV_WINC_BSSReconnect Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_BSSReconnect</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-F2CEE7DB-50AA-4BC1-8D8D-8EA6D79A42E2"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK Typedef</register>
+      <title>WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-8732F5D7-740A-4281-B519-0C7FBB34D3B8"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSL_REQ_ECC_CALLBACK Typedef</register>
+      <title>WDRV_WINC_SSL_REQ_ECC_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSL_REQ_ECC_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-63DB669E-47A5-4F30-A608-EEC3B1E9F690"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLActiveCipherSuitesSet Function</register>
+      <title>WDRV_WINC_SSLActiveCipherSuitesSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLActiveCipherSuitesSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-96DBC350-57DA-4EF6-8881-1F29C9F630B5"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLCTXCipherSuitesGet Function</register>
+      <title>WDRV_WINC_SSLCTXCipherSuitesGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLCTXCipherSuitesGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-99863FC4-6091-4701-8325-4FBBD63272E1"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLCTXCipherSuitesSet Function</register>
+      <title>WDRV_WINC_SSLCTXCipherSuitesSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLCTXCipherSuitesSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-F7E5FF2D-5176-49B5-AC28-14FA4DD63E5D"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLCTXDefault Function</register>
+      <title>WDRV_WINC_SSLCTXDefault Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLCTXDefault</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-05AADD1D-076A-4AB2-8465-29237FE131A4"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLECCHandShakeRsp Function</register>
+      <title>WDRV_WINC_SSLECCHandShakeRsp Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLECCHandShakeRsp</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-17871A56-C6F1-48C2-8AC7-D046367FC6FB"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLECCReqCallbackSet Function</register>
+      <title>WDRV_WINC_SSLECCReqCallbackSet Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLECCReqCallbackSet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-CF1824B4-C6B8-4EC6-B91B-9DACFA4D7266"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLRetrieveCert Function</register>
+      <title>WDRV_WINC_SSLRetrieveCert Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLRetrieveCert</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-668664E2-A646-4F05-9143-BAE55D2F1A47"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLRetrieveHash Function</register>
+      <title>WDRV_WINC_SSLRetrieveHash Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLRetrieveHash</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-E7DAC95F-81BE-4A52-82E8-79727587D282"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SSLStopRetrieveCert Function</register>
+      <title>WDRV_WINC_SSLStopRetrieveCert Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SSLStopRetrieveCert</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-A4CE3571-0C52-4623-B10E-359D31196E20"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_LocalTimeToUTC Function</register>
+      <title>WDRV_WINC_LocalTimeToUTC Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_LocalTimeToUTC</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-A9327FAB-1701-421D-9A6F-62663C4D90AF"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SystemTimeGetCurrent Function</register>
+      <title>WDRV_WINC_SystemTimeGetCurrent Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SystemTimeGetCurrent</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-B01C8839-A321-4547-B3D6-858923953A23"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SystemTimeSetCurrent Function</register>
+      <title>WDRV_WINC_SystemTimeSetCurrent Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SystemTimeSetCurrent</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-222005DE-D1BE-4FB6-8648-B96294057BA8"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SystemTimeSNTPClientDisable Function</register>
+      <title>WDRV_WINC_SystemTimeSNTPClientDisable Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SystemTimeSNTPClientDisable</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-F649E22F-F2D5-4BE9-9A50-0889D0B40464"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SystemTimeSNTPClientEnable Function</register>
+      <title>WDRV_WINC_SystemTimeSNTPClientEnable Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SystemTimeSNTPClientEnable</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-2486F605-C69E-4182-B038-F6EE43956CD2"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_SYSTIME_CURRENT_CALLBACK Typedef</register>
+      <title>WDRV_WINC_SYSTIME_CURRENT_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_SYSTIME_CURRENT_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-21224849-4465-4BA5-80C4-ED03DF1E9AC7"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_UTCToLocalTime Function</register>
+      <title>WDRV_WINC_UTCToLocalTime Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_UTCToLocalTime</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-46257952-2442-458D-9867-DA5BC4393601"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_WPS_DISC_CALLBACK Typedef</register>
+      <title>WDRV_WINC_WPS_DISC_CALLBACK Typedef</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_WPS_DISC_CALLBACK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-5FEA436C-D1ED-49A2-A76F-230B2D381A4C"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_WPSEnrolleeDiscoveryStartPBC Function</register>
+      <title>WDRV_WINC_WPSEnrolleeDiscoveryStartPBC Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_WPSEnrolleeDiscoveryStartPBC</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-95CBABB3-B66F-40EA-BA9F-530831BA707B"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_WPSEnrolleeDiscoveryStartPIN Function</register>
+      <title>WDRV_WINC_WPSEnrolleeDiscoveryStartPIN Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_WPSEnrolleeDiscoveryStartPIN</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-7FA7287D-419D-46FD-8260-C519F4244966"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_WINC_WPSEnrolleeDiscoveryStop Function</register>
+      <title>WDRV_WINC_WPSEnrolleeDiscoveryStop Function</title>
+      <bitfield/>
+      <keyword>WDRV_WINC_WPSEnrolleeDiscoveryStop</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-271CC4C5-196A-4BF0-BAF9-9A95284A87D7"
                 nocomponent="true"
                 parent="">
@@ -422,7 +1522,7 @@
       <register>WDRV_PIC32MZW_AuthCtxConfigureMfp Function</register>
       <title>WDRV_PIC32MZW_AuthCtxConfigureMfp Function</title>
       <bitfield/>
-      <keyword>WDRV_PIC32MZW_AUTH_TYPE</keyword>
+      <keyword>WDRV_PIC32MZW_AuthCtxConfigureMfp</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-118D6516-8539-44C8-9655-2A37845C9849"
                 nocomponent="true"
@@ -864,6 +1964,50 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_IERxDataGet</keyword>
    </keyworditem>
+   <keyworditem topicid="GUID-BC2CF70D-B995-4831-8AE7-85E53E02A57D"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_CHANNEL_ID Enum</register>
+      <title>WDRV_PIC32MZW_CHANNEL_ID Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_CHANNEL_ID</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-DD1B8C31-2334-40FA-B562-83563A4A8933"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_CHANNEL24_MASK Enum</register>
+      <title>WDRV_PIC32MZW_CHANNEL24_MASK Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_CHANNEL24_MASK</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-08FC43FF-5ACA-46F3-AEA6-8F5EFAD077EB"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_CONN_STATE Enum</register>
+      <title>WDRV_PIC32MZW_CONN_STATE Enum</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_CONN_STATE</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-3D1E32DB-4425-4009-9267-8617566212CD"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_GetStatistics Function</register>
+      <title>WDRV_PIC32MZW_GetStatistics Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_GetStatistics</keyword>
+   </keyworditem>
    <keyworditem topicid="GUID-FF05BAE1-E2E0-4281-A31D-9659BC2F604D"
                 nocomponent="true"
                 parent="">
@@ -874,6 +2018,17 @@
       <title>WDRV_PIC32MZW_InfoDeviceMACAddressGet Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_InfoDeviceMACAddressGet</keyword>
+   </keyworditem>
+   <keyworditem topicid="GUID-537E27A2-F053-4056-861D-7A2157C17DE6"
+                nocomponent="true"
+                parent="">
+      <device/>
+      <module/>
+      <component/>
+      <register>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</register>
+      <title>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</title>
+      <bitfield/>
+      <keyword>WDRV_PIC32MZW_InfoEnabledChannelsGet</keyword>
    </keyworditem>
    <keyworditem topicid="GUID-577EB4F3-C11B-4D1A-BB91-0CFDB6EF6FB7"
                 nocomponent="true"
@@ -897,17 +2052,6 @@
       <bitfield/>
       <keyword>WDRV_PIC32MZW_InfoRfMacConfigGet</keyword>
    </keyworditem>
-   <keyworditem topicid="GUID-3D1E32DB-4425-4009-9267-8617566212CD"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_GetStatistics Function</register>
-      <title>WDRV_PIC32MZW_GetStatistics Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_GetStatistics</keyword>
-   </keyworditem>
    <keyworditem topicid="GUID-F7D866DC-091E-4AC3-AA41-268779AF490A"
                 nocomponent="true"
                 parent="">
@@ -918,49 +2062,5 @@
       <title>WDRV_PIC32MZW_PMKCacheFlush Function</title>
       <bitfield/>
       <keyword>WDRV_PIC32MZW_PMKCacheFlush</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-BC2CF70D-B995-4831-8AE7-85E53E02A57D"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_CHANNEL_ID Enum</register>
-      <title>WDRV_PIC32MZW_CHANNEL_ID Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_CHANNEL_ID</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-DD1B8C31-2334-40FA-B562-83563A4A8933"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_CHANNEL24_MASK Enum</register>
-      <title>WDRV_PIC32MZW_CHANNEL24_MASK Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_CHANNEL24_MASK</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-537E27A2-F053-4056-861D-7A2157C17DE6"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</register>
-      <title>WDRV_PIC32MZW_InfoEnabledChannelsGet Function</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_InfoEnabledChannelsGet</keyword>
-   </keyworditem>
-   <keyworditem topicid="GUID-08FC43FF-5ACA-46F3-AEA6-8F5EFAD077EB"
-                nocomponent="true"
-                parent="">
-      <device/>
-      <module/>
-      <component/>
-      <register>WDRV_PIC32MZW_CONN_STATE Enum</register>
-      <title>WDRV_PIC32MZW_CONN_STATE Enum</title>
-      <bitfield/>
-      <keyword>WDRV_PIC32MZW_CONN_STATE</keyword>
    </keyworditem>
 </keywords>
