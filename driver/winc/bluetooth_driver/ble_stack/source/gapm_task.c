@@ -97,13 +97,17 @@ static uint8_t gapm_get_address_type(uint8_t *pu8Addr, uint8_t u8AddrType)
 
 uint8_t gapm_reset_req_handler (void)
 {
-    uint8_t u8Operation, u8Status;
+    uint8_t u8Operation = GAPM_RESET;
+    uint8_t u8Status;
 
     INTERFACE_MSG_INIT(GAPM_RESET_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_RESET);
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
-    INTERFACE_UNPACK_UINT8(&u8Operation);
-    INTERFACE_UNPACK_UINT8(&u8Status);
+    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
+    if(u8Status == AT_BLE_SUCCESS)
+    {
+        INTERFACE_UNPACK_UINT8(&u8Operation);
+        INTERFACE_UNPACK_UINT8(&u8Status);
+    }
     INTERFACE_MSG_DONE();
     if(u8Operation!=GAPM_RESET)
         return AT_BLE_FAILURE;
@@ -113,15 +117,19 @@ uint8_t gapm_reset_req_handler (void)
 uint8_t gapm_set_dev_name_handler(uint8_t len, uint8_t* name)
 {
 
-    uint8_t u8Operation, u8Status;
+    uint8_t u8Operation = GAPM_SET_DEV_NAME;
+    uint8_t u8Status;
 
     INTERFACE_MSG_INIT(GAPM_SET_DEV_NAME_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_SET_DEV_NAME);
     INTERFACE_PACK_ARG_UINT8(len);
     INTERFACE_PACK_ARG_BLOCK(name, len);
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
-    INTERFACE_UNPACK_UINT8(&u8Operation);
-    INTERFACE_UNPACK_UINT8(&u8Status);
+    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
+    if(u8Status == AT_BLE_SUCCESS)
+    {
+        INTERFACE_UNPACK_UINT8(&u8Operation);
+        INTERFACE_UNPACK_UINT8(&u8Status);
+    }
     INTERFACE_MSG_DONE();
     if(u8Operation!=GAPM_SET_DEV_NAME)
         return AT_BLE_FAILURE;
@@ -186,7 +194,8 @@ uint8_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key,
                 uint16_t u16ConIntMin, uint16_t u16ConIntMax, uint16_t u16ConLatency,
                 uint16_t u16SupervTo, uint8_t u8Flags)
 {
-    uint8_t u8Operation, u8Status;
+    uint8_t u8Operation = GAPM_SET_DEV_CONFIG;
+    uint8_t u8Status;
 
     INTERFACE_MSG_INIT(GAPM_SET_DEV_CONFIG_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_SET_DEV_CONFIG);
@@ -204,9 +213,12 @@ uint8_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key,
         INTERFACE_PACK_ARG_UINT16(u16SupervTo);
         INTERFACE_PACK_ARG_UINT8(u8Flags);
     }
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
-    INTERFACE_UNPACK_UINT8(&u8Operation);
-    INTERFACE_UNPACK_UINT8(&u8Status);
+    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
+    if(u8Status == AT_BLE_SUCCESS)
+    {
+        INTERFACE_UNPACK_UINT8(&u8Operation);
+        INTERFACE_UNPACK_UINT8(&u8Status);
+    }
     INTERFACE_MSG_DONE();
     if(u8Operation!=GAPM_SET_DEV_CONFIG)
         return AT_BLE_FAILURE;
@@ -307,7 +319,7 @@ void gapm_resolv_addr_cmd_handler(uint8_t nb_key , uint8_t* rand_addr , uint8_t*
 uint8_t gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* address)
 {
     // To do check complete effect operation or not
-    uint8_t u8Status = AT_BLE_SUCCESS;
+    uint8_t u8Status;
     INTERFACE_MSG_INIT(GAPM_WHITE_LIST_MGT_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_ADD_DEV_IN_WLIST);
     /// Number of device information present in command
@@ -317,7 +329,7 @@ uint8_t gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* a
         INTERFACE_PACK_ARG_BLOCK(address, AT_BLE_ADDR_LEN);
         INTERFACE_PACK_ARG_UINT8(addr_type);
     }
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
+    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
     INTERFACE_MSG_DONE();
     return u8Status;
 }

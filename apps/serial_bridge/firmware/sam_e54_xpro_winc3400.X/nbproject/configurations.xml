@@ -18,36 +18,36 @@
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/dev/wdrv_winc_gpio.h</itemPath>
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/dev/wdrv_winc_spi.h</itemPath>
                 </logicalFolder>
-                <logicalFolder name="f2" displayName="drv" projectFiles="true">
-                  <logicalFolder name="f1" displayName="bsp" projectFiles="true">
+                <logicalFolder name="drv" displayName="drv" projectFiles="true">
+                  <logicalFolder name="bsp" displayName="bsp" projectFiles="true">
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/bsp/nm_bsp.h</itemPath>
                   </logicalFolder>
-                  <logicalFolder name="f2" displayName="common" projectFiles="true">
+                  <logicalFolder name="common" displayName="common" projectFiles="true">
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/common/nm_common.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/common/nm_debug.h</itemPath>
                   </logicalFolder>
-                  <logicalFolder name="f3" displayName="driver" projectFiles="true">
+                  <logicalFolder name="driver" displayName="driver" projectFiles="true">
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_periph.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmspi.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_types.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmdrv.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/ecc_types.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_ssl.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmbus.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_wifi.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_flash.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_hif.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_periph.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_types.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_wifi.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmasic.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmbus.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmdrv.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/nmspi.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_ota.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/m2m_ssl.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/driver/ecc_types.h</itemPath>
                   </logicalFolder>
-                  <logicalFolder name="f4" displayName="socket" projectFiles="true">
+                  <logicalFolder name="socket" displayName="socket" projectFiles="true">
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/socket/netinet_in.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/socket/m2m_socket_host_if.h</itemPath>
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/socket/socket.h</itemPath>
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/socket/netinet_in.h</itemPath>
                   </logicalFolder>
-                  <logicalFolder name="f5" displayName="spi_flash" projectFiles="true">
-                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/spi_flash/spi_flash.h</itemPath>
+                  <logicalFolder name="spi_flash" displayName="spi_flash" projectFiles="true">
                     <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/spi_flash/spi_flash_map.h</itemPath>
+                    <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/drv/spi_flash/spi_flash.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>
                 <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/include/wdrv_winc.h</itemPath>
@@ -300,24 +300,7 @@
       <logicalFolder name="f1"
                      displayName="sam_e54_xpro_winc3400.mhc"
                      projectFiles="true">
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/appWincSerialBridge.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/BSP_SAM_E54_Xplained_Pro.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/cmsis.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/core.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/dfp.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/drvWifiWinc.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/eic.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/evsys.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/GraphSettings.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/HarmonyCore.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/nvmctrl.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/project.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sercom2.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sercom4.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sercom6.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/settings.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/sys_time.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc3400/sam_e54_xpro_winc3400.mhc/tc3.yml</itemPath>
       </logicalFolder>
       <itemPath>Makefile</itemPath>
       <itemPath>../src/config/sam_e54_xpro_winc3400/harmony-manifest-success.yml</itemPath>
@@ -356,28 +339,28 @@
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/dev/spi/wdrv_winc_spi.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
-              <logicalFolder name="f2" displayName="drv" projectFiles="true">
-                <logicalFolder name="f1" displayName="common" projectFiles="true">
+              <logicalFolder name="drv" displayName="drv" projectFiles="true">
+                <logicalFolder name="common" displayName="common" projectFiles="true">
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/common/nm_common.c</itemPath>
                 </logicalFolder>
-                <logicalFolder name="f2" displayName="driver" projectFiles="true">
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_flash.c</itemPath>
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_hif.c</itemPath>
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_periph.c</itemPath>
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_wifi.c</itemPath>
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/nmasic.c</itemPath>
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/nmbus.c</itemPath>
+                <logicalFolder name="driver" displayName="driver" projectFiles="true">
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/nmdrv.c</itemPath>
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/nmspi.c</itemPath>
-                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_ota.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_periph.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_wifi.c</itemPath>
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_ssl.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/nmbus.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_flash.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_hif.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/m2m_ota.c</itemPath>
+                  <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/driver/nmasic.c</itemPath>
                 </logicalFolder>
-                <logicalFolder name="f3" displayName="socket" projectFiles="true">
+                <logicalFolder name="socket" displayName="socket" projectFiles="true">
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/socket/socket.c</itemPath>
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/socket/inet_ntop.c</itemPath>
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/socket/inet_addr.c</itemPath>
                 </logicalFolder>
-                <logicalFolder name="f4" displayName="spi_flash" projectFiles="true">
+                <logicalFolder name="spi_flash" displayName="spi_flash" projectFiles="true">
                   <itemPath>../src/config/sam_e54_xpro_winc3400/driver/winc/drv/spi_flash/spi_flash.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
@@ -491,12 +474,12 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.21</languageToolchainVersion>
+        <languageToolchainVersion>4.45</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
         <pack name="SAME54_DFP" vendor="Microchip" version="3.8.234"/>
+        <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>

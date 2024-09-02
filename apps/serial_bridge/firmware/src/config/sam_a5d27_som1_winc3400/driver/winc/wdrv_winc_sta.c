@@ -12,28 +12,28 @@
  *******************************************************************************/
 
 //DOM-IGNORE-BEGIN
-/*******************************************************************************
-* Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
-*
-* Subject to your compliance with these terms, you may use Microchip software
-* and any derivatives exclusively with Microchip products. It is your
-* responsibility to comply with third party license terms applicable to your
-* use of third party software (including open source software) that may
-* accompany Microchip software.
-*
-* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
-* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
-* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
-* PARTICULAR PURPOSE.
-*
-* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
-* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
-* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
-* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
-* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
-* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
-* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
-*******************************************************************************/
+/*
+Copyright (C) 2019, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+
+The software and documentation is provided by microchip and its contributors
+"as is" and any express, implied or statutory warranties, including, but not
+limited to, the implied warranties of merchantability, fitness for a particular
+purpose and non-infringement of third party intellectual property rights are
+disclaimed to the fullest extent permitted by law. In no event shall microchip
+or its contributors be liable for any direct, indirect, incidental, special,
+exemplary, or consequential damages (including, but not limited to, procurement
+of substitute goods or services; loss of use, data, or profits; or business
+interruption) however caused and on any theory of liability, whether in contract,
+strict liability, or tort (including negligence or otherwise) arising in any way
+out of the use of the software and documentation, even if advised of the
+possibility of such damage.
+
+Except as expressly permitted hereunder and subject to the applicable license terms
+for any third-party software incorporated in the software and any applicable open
+source software license terms, no license or other rights, whether express or
+implied, are granted under any patent or other intellectual property rights of
+Microchip or any third party.
+*/
 //DOM-IGNORE-END
 
 // *****************************************************************************
@@ -133,6 +133,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
     tstrNetworkId networkID;
 #endif
+    tenuCredStoreOption enuCredStoreOption;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pBSSCtx))
@@ -205,11 +206,18 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     networkID.enuChannel = channel;
 #endif
 
+    enuCredStoreOption = WIFI_CRED_DONTSAVE;
+
+    if ((NULL != pAuthCtx) && (false == pAuthCtx->oneTimeUse))
+    {
+        enuCredStoreOption = WIFI_CRED_SAVE_ENCRYPTED;
+    }
+
     if ((NULL == pAuthCtx) || (WDRV_WINC_AUTH_TYPE_OPEN == pAuthCtx->authType))
     {
         /* Connect using Open authentication. */
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
-        result = m2m_wifi_connect_open(WIFI_CRED_SAVE_ENCRYPTED, &networkID);
+        result = m2m_wifi_connect_open(enuCredStoreOption, &networkID);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
                                     WDRV_WINC_AUTH_TYPE_OPEN, NULL, channel);
@@ -237,7 +245,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
             pskParams.u8PassphraseLen = pskLength;
         }
 
-        result = m2m_wifi_connect_psk(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &pskParams);
+        result = m2m_wifi_connect_psk(enuCredStoreOption, &networkID, &pskParams);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
                                     pAuthCtx->authType, (void*)&pAuthCtx->authInfo.WPAPerPSK.key, channel);
@@ -254,7 +262,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         wepParams.u8KeySz   = pAuthCtx->authInfo.WEP.size;
         wepParams.u8KeyIndx = pAuthCtx->authInfo.WEP.idx;
 
-        result = m2m_wifi_connect_wep(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &wepParams);
+        result = m2m_wifi_connect_wep(enuCredStoreOption, &networkID, &wepParams);
 #else
         tstrM2mWifiWepParams wepParams;
 
@@ -309,7 +317,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
         ent1XParams.bUnencryptedUserName = pAuthCtx->authInfo.WPAEntMSCHAPv2.visibleUserName;
 
-        result = m2m_wifi_connect_1x_mschap2(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &ent1XParams);
+        result = m2m_wifi_connect_1x_mschap2(enuCredStoreOption, &networkID, &ent1XParams);
 #else
         result = WDRV_WINC_STATUS_CONNECT_FAIL;
 #endif
@@ -356,7 +364,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
         ent1XParams.bUnencryptedUserName = pAuthCtx->authInfo.WPAEntTLS.visibleUserName;
 
-        result = m2m_wifi_connect_1x_tls(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &ent1XParams);
+        result = m2m_wifi_connect_1x_tls(enuCredStoreOption, &networkID, &ent1XParams);
 #else
         result = WDRV_WINC_STATUS_CONNECT_FAIL;
 #endif // #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
@@ -395,7 +403,8 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     Reconnects to a BSS using stored credentials.
 
   Description:
-    Reconnects to the previous BSS using credentials stored from last time.
+    Reconnects to the previous BSS using credentials stored from last time
+    the authentication context indicated the credentials could be stored.
 
   Remarks:
     See wdrv_winc_sta.h for usage information.

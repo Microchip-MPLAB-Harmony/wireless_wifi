@@ -133,6 +133,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
     tstrNetworkId networkID;
 #endif
+    tenuCredStoreOption enuCredStoreOption;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pBSSCtx))
@@ -205,11 +206,18 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     networkID.enuChannel = channel;
 #endif
 
+    enuCredStoreOption = WIFI_CRED_DONTSAVE;
+
+    if ((NULL != pAuthCtx) && (false == pAuthCtx->oneTimeUse))
+    {
+        enuCredStoreOption = WIFI_CRED_SAVE_ENCRYPTED;
+    }
+
     if ((NULL == pAuthCtx) || (WDRV_WINC_AUTH_TYPE_OPEN == pAuthCtx->authType))
     {
         /* Connect using Open authentication. */
 #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
-        result = m2m_wifi_connect_open(WIFI_CRED_SAVE_ENCRYPTED, &networkID);
+        result = m2m_wifi_connect_open(enuCredStoreOption, &networkID);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
                                     WDRV_WINC_AUTH_TYPE_OPEN, NULL, channel);
@@ -237,7 +245,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
             pskParams.u8PassphraseLen = pskLength;
         }
 
-        result = m2m_wifi_connect_psk(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &pskParams);
+        result = m2m_wifi_connect_psk(enuCredStoreOption, &networkID, &pskParams);
 #else
         result = m2m_wifi_connect((char*)pBSSCtx->ssid.name, pBSSCtx->ssid.length,
                                     pAuthCtx->authType, (void*)&pAuthCtx->authInfo.WPAPerPSK.key, channel);
@@ -254,7 +262,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         wepParams.u8KeySz   = pAuthCtx->authInfo.WEP.size;
         wepParams.u8KeyIndx = pAuthCtx->authInfo.WEP.idx;
 
-        result = m2m_wifi_connect_wep(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &wepParams);
+        result = m2m_wifi_connect_wep(enuCredStoreOption, &networkID, &wepParams);
 #else
         tstrM2mWifiWepParams wepParams;
 
@@ -309,7 +317,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
         ent1XParams.bUnencryptedUserName = pAuthCtx->authInfo.WPAEntMSCHAPv2.visibleUserName;
 
-        result = m2m_wifi_connect_1x_mschap2(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &ent1XParams);
+        result = m2m_wifi_connect_1x_mschap2(enuCredStoreOption, &networkID, &ent1XParams);
 #else
         result = WDRV_WINC_STATUS_CONNECT_FAIL;
 #endif
@@ -356,7 +364,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
         ent1XParams.bUnencryptedUserName = pAuthCtx->authInfo.WPAEntTLS.visibleUserName;
 
-        result = m2m_wifi_connect_1x_tls(WIFI_CRED_SAVE_ENCRYPTED, &networkID, &ent1XParams);
+        result = m2m_wifi_connect_1x_tls(enuCredStoreOption, &networkID, &ent1XParams);
 #else
         result = WDRV_WINC_STATUS_CONNECT_FAIL;
 #endif // #ifdef WDRV_WINC_DEVICE_EXT_CONNECT_PARAMS
@@ -395,7 +403,8 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     Reconnects to a BSS using stored credentials.
 
   Description:
-    Reconnects to the previous BSS using credentials stored from last time.
+    Reconnects to the previous BSS using credentials stored from last time
+    the authentication context indicated the credentials could be stored.
 
   Remarks:
     See wdrv_winc_sta.h for usage information.

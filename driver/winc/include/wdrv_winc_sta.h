@@ -131,7 +131,8 @@ typedef enum
     WDRV_WINC_STATUS_CONNECT_FAIL    - The connection has failed.
 
   Remarks:
-    None.
+    If the authentication context is configured with oneTimeUse as false, this
+      connection will be stored for use again with WDRV_WINC_BSSReconnect.
 
 */
 
@@ -156,13 +157,13 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     Reconnects to a BSS using stored credentials.
 
   Description:
-    Reconnects to the previous BSS using credentials stored from last time.
+    Reconnects to a BSS using the most recently stored credentials.
 
   Precondition:
     WDRV_WINC_Initialize should have been called.
     WDRV_WINC_Open should have been called to obtain a valid handle.
     WDRV_WINC_BSSConnect must have previously been called to establish
-      connection.
+      connection with authentication context oneTimeUse set to false.
 
   Parameters:
     handle           - Client handle obtained by a call to WDRV_WINC_Open.
@@ -176,7 +177,8 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     WDRV_WINC_STATUS_CONNECT_FAIL    - The connection has failed.
 
   Remarks:
-    None.
+    Credentials would only have been stored if WDRV_WINC_BSSConnect was called
+      with an authentication context configured with oneTimeUse as false.
 
 */
 

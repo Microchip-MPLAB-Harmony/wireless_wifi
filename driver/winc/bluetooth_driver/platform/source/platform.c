@@ -40,7 +40,11 @@ Microchip or any third party.
 #include "platform.h"
 #include "osal/osal.h"
 
-#define TIMEOUT_VALUE 4000
+/* When communicating with ATWINC3400, the interface may be unavailable for  */
+/* up to 5 seconds in some situations (during WPA2 connection or TLS         */
+/* certificate verification). Thus it is recommended that this communication */
+/* timeout is set greater than 4000 ms.                                      */
+#define TIMEOUT_VALUE 6000
 
 static OSAL_SEM_HANDLE_TYPE cmdCmplSemaphore;
 static OSAL_SEM_HANDLE_TYPE eventSemaphore;

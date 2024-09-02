@@ -433,6 +433,47 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetDefaults
     /* Ensure authentication type is a known invalid type. */
     pAuthCtx->authType = WDRV_WINC_AUTH_TYPE_INVALID;
 
+    /* Default is to not retain credentials after use. */
+    pAuthCtx->oneTimeUse = true;
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOneTimeUse
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        bool oneTimeUse
+    )
+
+  Summary:
+    Configures the credential retention policy.
+
+  Description:
+    Defines if the credentials are permitted to be stored within the device
+    for later use.
+
+  Remarks:
+    See wdrv_winc_authctx.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOneTimeUse
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    bool oneTimeUse
+)
+{
+    /* Ensure authentication context is valid. */
+    if (NULL == pAuthCtx)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    pAuthCtx->oneTimeUse = oneTimeUse;
+
     return WDRV_WINC_STATUS_OK;
 }
 

@@ -200,8 +200,8 @@ void SYS_Initialize ( void* data )
 
     SERCOM1_SPI_Initialize();
 
-
     SERCOM0_SPI_Initialize();
+
 
     DMAC_Initialize();
 

@@ -472,7 +472,7 @@ def instantiateComponent(drvWincComponent):
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
 
     # WINC3400 Version
-    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.1', '1.4.4'])
+    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.1', '1.4.6'])
     winc3400Version.setLabel('Firmware Version')
     winc3400Version.setVisible(False)
     winc3400Version.setDefaultValue('1.4.')
@@ -556,7 +556,7 @@ def instantiateComponent(drvWincComponent):
     flagWinc1500            = ((wincDevice.getValue() == 'WINC1500'))
     flagWinc3400_1_2_2      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.2.2'))
     flagWinc3400_1_3_1      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.3.1'))
-    flagWinc3400_1_4_4      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.4.4'))
+    flagWinc3400_1_4_6      = ((wincDevice.getValue() == 'WINC3400') and (winc3400Version.getValue() == '1.4.6'))
     flagWinc3400            = ((wincDevice.getValue() == 'WINC3400'))
 
     flagHostFileSupport     = (flagSocketMode and (flagWinc1500_19_6_1 or flagWinc1500_19_7_7))
@@ -575,7 +575,7 @@ def instantiateComponent(drvWincComponent):
     condWinc1500            = [flagWinc1500,            setEnableWinc1500,              ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_2_2      = [flagWinc3400_1_2_2,      setEnableWinc3400_1_2_2,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400_1_3_1      = [flagWinc3400_1_3_1,      setEnableWinc3400_1_3_1,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
-    condWinc3400_1_4_4      = [flagWinc3400_1_4_4,      setEnableWinc3400_1_4_4,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
+    condWinc3400_1_4_6      = [flagWinc3400_1_4_6,      setEnableWinc3400_1_4_6,        ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
     condWinc3400            = [flagWinc3400,            setEnableWinc3400,              ['DRV_WIFI_WINC_DEVICE', 'DRV_WIFI_WINC3400_VERSION', 'DRV_WIFI_WINC_DRIVER_MODE']]
 
     wdrvIncFiles = [
@@ -670,7 +670,7 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc3400_1_3_1, configName, incFileEntry, 'winc3400_1.3.1')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, flagWinc3400_1_4_4, configName, incFileEntry, 'winc3400_1.4.4')
+        importIncFile(drvWincComponent, flagWinc3400_1_4_6, configName, incFileEntry, 'winc3400_1.4.6')
 
     for incFileEntry in bledrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'bluetooth_driver')
@@ -754,7 +754,7 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, flagWinc3400_1_3_1, configName, srcFileEntry, 'winc3400_1.3.1')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, flagWinc3400_1_4_4, configName, srcFileEntry, 'winc3400_1.4.4')
+        importSrcFile(drvWincComponent, flagWinc3400_1_4_6, configName, srcFileEntry, 'winc3400_1.4.6')
 
     for srcFileEntry in bledrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'bluetooth_driver')
@@ -1044,13 +1044,13 @@ def setEnableWinc3400_1_3_1(symbol, event):
     else:
         symbol.setEnabled(False)
 
-def setEnableWinc3400_1_4_4(symbol, event):
+def setEnableWinc3400_1_4_6(symbol, event):
     component = symbol.getComponent()
 
     wincDevice  = component.getSymbolValue('DRV_WIFI_WINC_DEVICE')
     winc3400Ver = component.getSymbolValue('DRV_WIFI_WINC3400_VERSION')
 
-    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.4.4') and (checkPrefix(symbol))):
+    if ((wincDevice == 'WINC3400') and (winc3400Ver == '1.4.6') and (checkPrefix(symbol))):
         symbol.setEnabled(True)
     else:
         symbol.setEnabled(False)

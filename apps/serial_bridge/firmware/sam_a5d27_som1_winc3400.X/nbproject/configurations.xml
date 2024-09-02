@@ -308,6 +308,18 @@
       </logicalFolder>
       <itemPath>../src/app.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="true">
+      <logicalFolder name="f1"
+                     displayName="sam_a5d27_som1_winc3400.mhc"
+                     projectFiles="true">
+        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/settings.yml</itemPath>
+      </logicalFolder>
+      <itemPath>Makefile</itemPath>
+      <itemPath>../src/config/sam_a5d27_som1_winc3400/harmony-manifest-success.yml</itemPath>
+      <itemPath>serial_bridge_sam_a5d27_som1_winc3400.mc3</itemPath>
+    </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
@@ -455,32 +467,6 @@
       <itemPath>../src/main.c</itemPath>
       <itemPath>../src/config/sam_a5d27_som1_winc3400/pin_configurations.csv</itemPath>
     </logicalFolder>
-    <logicalFolder name="ExternalFiles"
-                   displayName="Important Files"
-                   projectFiles="false">
-      <logicalFolder name="f1"
-                     displayName="sam_a5d27_som1_winc3400.mhc"
-                     projectFiles="true">
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/appWincSerialBridge.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/cmsis.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/core.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/dfp.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/drvWifiWinc.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/drv_spi.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/flexcom4.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/GraphSettings.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/HarmonyCore.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/project.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/settings.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/sys_time.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/tc0.yml</itemPath>
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/uart1.yml</itemPath>
-      </logicalFolder>
-      <itemPath>Makefile</itemPath>
-      <itemPath>../src/config/sam_a5d27_som1_winc3400/pin_configurations.csv</itemPath>
-      <itemPath>../src/config/sam_a5d27_som1_winc3400/harmony-manifest-success.yml</itemPath>
-      <itemPath>serial_bridge_sam_a5d27_som1_winc3400.mc3</itemPath>
-    </logicalFolder>
   </logicalFolder>
   <sourceRootList>
     <Elem>../src</Elem>
@@ -493,13 +479,13 @@
         <targetDevice>ATSAMA5D27CD1G</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>jlink</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.21</languageToolchainVersion>
+        <languageToolchainVersion>4.45</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="SAMA5D2_DFP" vendor="Microchip" version="1.9.106"/>
+        <pack name="SAMA5D2_DFP" vendor="Microchip" version="1.10.213"/>
         <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
       </packs>
       <ScriptingSettings>
@@ -507,7 +493,7 @@
         <ScriptingSetting key="boot.use" value="true"/>
         <ScriptingSetting key="boot.entry_adr" value=""/>
         <ScriptingSetting key="boot.path"
-                          value="${ProjectDir}\..\at91bootstrap_sam_a5d27_som1_ek.X\binaries\at91bootstrap.elf"/>
+                          value="${ProjectDir}\..\..\..\..\..\deps\at91bootstrap_binaries_a5d27_som1_ek\at91bootstrap.elf"/>
         <ScriptingSetting key="boot.prj" value=""/>
       </ScriptingSettings>
       <compileType>
@@ -538,7 +524,7 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
+        <property key="appendMe" value="-marm"/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
@@ -563,6 +549,7 @@
         <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
+        <appendMe value="-marm"/>
       </C32>
       <C32-AR>
         <property key="additional-options-chop-files" value="false"/>
@@ -690,6 +677,9 @@
         <property key="communication.speed" value="4"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
+        <property key="event.recorder.enabled" value="false"/>
+        <property key="event.recorder.scvd.files" value=""/>
         <property key="jlink.override" value=""/>
         <property key="lastid" value=""/>
         <property key="loader.board_file" value="${ProjectDir}/board.xboard"/>
@@ -711,6 +701,8 @@
         <property key="programoptions.eraseb4program" value="false"/>
         <property key="programoptions.preservebootflash" value="false"/>
         <property key="programoptions.preserveprogrammemory" value="false"/>
+        <property key="programoptions.preserveprogrammemory.ranges"
+                  value="0x200000-0x23ffff"/>
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveprogramrange.end" value="0x23ffff"/>
         <property key="programoptions.preserveprogramrange.ranges"
@@ -730,6 +722,9 @@
         <property key="communication.speed" value="4"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
+        <property key="event.recorder.enabled" value="false"/>
+        <property key="event.recorder.scvd.files" value=""/>
         <property key="jlink.override" value=""/>
         <property key="lastid" value=""/>
         <property key="loader.board_file" value="${ProjectDir}/board.xboard"/>
@@ -745,7 +740,7 @@
         <property key="programoptions.eraseb4program" value="false"/>
         <property key="programoptions.preservebootflash" value="false"/>
         <property key="programoptions.preserveprogrammemory" value="false"/>
-        <property key="programoptions.preserveprogramrange.ranges"
+        <property key="programoptions.preserveprogrammemory.ranges"
                   value="0x200000-0x23ffff"/>
         <property key="programoptions.resetafterprogram" value="true"/>
         <property key="script.has_reset" value="true"/>

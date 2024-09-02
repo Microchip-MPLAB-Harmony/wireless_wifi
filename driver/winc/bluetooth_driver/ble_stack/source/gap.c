@@ -1,7 +1,7 @@
 // DOM-IGNORE-BEGIN
 /*
 Copyright (c) RivieraWaves 2009-2014
-Copyright (C) 2017, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -651,6 +651,10 @@ at_ble_status_t at_ble_whitelist_clear(void)
 at_ble_status_t at_ble_disconnect(at_ble_handle_t handle, at_ble_disconnect_reason_t reason)
 {
     uint8_t gapc_reason ;
+
+    if (device.conn_handle != handle)
+        return AT_BLE_INVALID_PARAM; 
+
     switch(reason)
     {
         case AT_BLE_TERMINATED_BY_USER:

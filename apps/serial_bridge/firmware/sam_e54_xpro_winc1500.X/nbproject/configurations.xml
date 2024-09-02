@@ -301,24 +301,7 @@
       <logicalFolder name="f1"
                      displayName="sam_e54_xpro_winc1500.mhc"
                      projectFiles="true">
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/appWincSerialBridge.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/BSP_SAM_E54_Xplained_Pro.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/cmsis.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/core.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/dfp.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/drvWifiWinc.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/eic.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/evsys.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/GraphSettings.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/HarmonyCore.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/nvmctrl.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/project.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/sercom2.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/sercom4.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/sercom6.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/settings.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/sys_time.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro_winc1500/sam_e54_xpro_winc1500.mhc/tc3.yml</itemPath>
       </logicalFolder>
       <itemPath>Makefile</itemPath>
       <itemPath>../src/config/sam_e54_xpro_winc1500/harmony-manifest-success.yml</itemPath>
@@ -490,7 +473,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.21</languageToolchainVersion>
+        <languageToolchainVersion>4.45</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>

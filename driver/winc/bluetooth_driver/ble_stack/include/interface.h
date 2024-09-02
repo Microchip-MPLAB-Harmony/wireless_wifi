@@ -92,12 +92,13 @@ do{\
     INTERFACE_PACK_LEN();\
     interface_send(interface_send_msg, __len)
 
-#define INTERFACE_SEND_WAIT(msg, src)\
+#define INTERFACE_SEND_WAIT(msg, src, status)\
     watched_event.msg_id = msg;\
     watched_event.src_id = src;\
     INTERFACE_PACK_LEN();\
     interface_send(interface_send_msg, __len);\
-    if(platform_cmd_cmpl_wait()){return AT_BLE_FAILURE;}\
+    *status = AT_BLE_SUCCESS;\
+    if(platform_cmd_cmpl_wait()){*status = AT_BLE_FAILURE;}\
     __ptr = watched_event.params;\
 
 #define INTERFACE_MSG_DONE()\

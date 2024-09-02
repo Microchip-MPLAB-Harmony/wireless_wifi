@@ -1,7 +1,7 @@
 // DOM-IGNORE-BEGIN
 /*
 Copyright (c) RivieraWaves 2009-2014
-Copyright (C) 2017, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -190,7 +190,7 @@ static at_ble_events_t handle_ble_event(uint16_t msg_id, uint16_t src_id, uint8_
 
         case GAPC_PARAM_UPDATE_REQ_IND:
         {
-            evt_num = AT_BLE_CONN_PARAM_UPDATE_DONE;
+            evt_num = AT_BLE_CONN_PARAM_UPDATE_REQUEST;
             gapc_param_update_req_ind(src_id, data, (at_ble_conn_param_update_request_t *)params);
         }
         break;
@@ -215,6 +215,7 @@ static at_ble_events_t handle_ble_event(uint16_t msg_id, uint16_t src_id, uint8_
         {
             evt_num = AT_BLE_DISCONNECTED;
             gapc_disconnect_ind(data, (at_ble_disconnected_t*)params);
+            at_ble_reset_indi_noti_record(); 
         }
         break;
 

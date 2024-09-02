@@ -91,149 +91,149 @@
 
 
 /*** Macros for WDRV_WINC_RESETN_EXT1 pin ***/
-#define WDRV_WINC_RESETN_EXT1_Set()               (PIOB_REGS->PIO_SODR = (1<<2))
-#define WDRV_WINC_RESETN_EXT1_Clear()             (PIOB_REGS->PIO_CODR = (1<<2))
+#define WDRV_WINC_RESETN_EXT1_Set()               (PIOB_REGS->PIO_SODR = ((uint32_t)1U<<2U))
+#define WDRV_WINC_RESETN_EXT1_Clear()             (PIOB_REGS->PIO_CODR = ((uint32_t)1U<<2U))
 #define WDRV_WINC_RESETN_EXT1_Toggle()            do {\
-                                            PIOB_REGS->PIO_MSKR = (1<<2); \
-                                            PIOB_REGS->PIO_ODSR ^= (1<<2);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<2U); \
+                                            PIOB_REGS->PIO_ODSR ^= ((uint32_t)1U<<2U);\
                                         } while (0)
 #define WDRV_WINC_RESETN_EXT1_OutputEnable()      do {\
-                                            PIOB_REGS->PIO_MSKR = (1<<2); \
-                                            PIOB_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<2U); \
+                                            PIOB_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define WDRV_WINC_RESETN_EXT1_InputEnable()       do { \
-                                            PIOB_REGS->PIO_MSKR = (1<<2); \
-                                            PIOB_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<2U); \
+                                            PIOB_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define WDRV_WINC_RESETN_EXT1_Get()               ((PIOB_REGS->PIO_PDSR >> 2) & 0x1)
+#define WDRV_WINC_RESETN_EXT1_Get()               ((PIOB_REGS->PIO_PDSR >> 2U) & 0x1U)
 #define WDRV_WINC_RESETN_EXT1_PIN                  PIO_PIN_PB2
 
 /*** Macros for WDRV_WINC_CHIP_EN_EXT1 pin ***/
-#define WDRV_WINC_CHIP_EN_EXT1_Set()               (PIOB_REGS->PIO_SODR = (1<<1))
-#define WDRV_WINC_CHIP_EN_EXT1_Clear()             (PIOB_REGS->PIO_CODR = (1<<1))
+#define WDRV_WINC_CHIP_EN_EXT1_Set()               (PIOB_REGS->PIO_SODR = ((uint32_t)1U<<1U))
+#define WDRV_WINC_CHIP_EN_EXT1_Clear()             (PIOB_REGS->PIO_CODR = ((uint32_t)1U<<1U))
 #define WDRV_WINC_CHIP_EN_EXT1_Toggle()            do {\
-                                            PIOB_REGS->PIO_MSKR = (1<<1); \
-                                            PIOB_REGS->PIO_ODSR ^= (1<<1);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<1U); \
+                                            PIOB_REGS->PIO_ODSR ^= ((uint32_t)1U<<1U);\
                                         } while (0)
 #define WDRV_WINC_CHIP_EN_EXT1_OutputEnable()      do {\
-                                            PIOB_REGS->PIO_MSKR = (1<<1); \
-                                            PIOB_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<1U); \
+                                            PIOB_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define WDRV_WINC_CHIP_EN_EXT1_InputEnable()       do { \
-                                            PIOB_REGS->PIO_MSKR = (1<<1); \
-                                            PIOB_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<1U); \
+                                            PIOB_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define WDRV_WINC_CHIP_EN_EXT1_Get()               ((PIOB_REGS->PIO_PDSR >> 1) & 0x1)
+#define WDRV_WINC_CHIP_EN_EXT1_Get()               ((PIOB_REGS->PIO_PDSR >> 1U) & 0x1U)
 #define WDRV_WINC_CHIP_EN_EXT1_PIN                  PIO_PIN_PB1
 
 /*** Macros for WDRV_WINC_INT_EXT1 pin ***/
-#define WDRV_WINC_INT_EXT1_Set()               (PIOB_REGS->PIO_SODR = (1<<0))
-#define WDRV_WINC_INT_EXT1_Clear()             (PIOB_REGS->PIO_CODR = (1<<0))
+#define WDRV_WINC_INT_EXT1_Set()               (PIOB_REGS->PIO_SODR = ((uint32_t)1U<<0U))
+#define WDRV_WINC_INT_EXT1_Clear()             (PIOB_REGS->PIO_CODR = ((uint32_t)1U<<0U))
 #define WDRV_WINC_INT_EXT1_Toggle()            do {\
-                                            PIOB_REGS->PIO_MSKR = (1<<0); \
-                                            PIOB_REGS->PIO_ODSR ^= (1<<0);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<0U); \
+                                            PIOB_REGS->PIO_ODSR ^= ((uint32_t)1U<<0U);\
                                         } while (0)
 #define WDRV_WINC_INT_EXT1_OutputEnable()      do {\
-                                            PIOB_REGS->PIO_MSKR = (1<<0); \
-                                            PIOB_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<0U); \
+                                            PIOB_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define WDRV_WINC_INT_EXT1_InputEnable()       do { \
-                                            PIOB_REGS->PIO_MSKR = (1<<0); \
-                                            PIOB_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOB_REGS->PIO_MSKR = ((uint32_t)1U<<0U); \
+                                            PIOB_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define WDRV_WINC_INT_EXT1_Get()               ((PIOB_REGS->PIO_PDSR >> 0) & 0x1)
+#define WDRV_WINC_INT_EXT1_Get()               ((PIOB_REGS->PIO_PDSR >> 0U) & 0x1U)
 #define WDRV_WINC_INT_EXT1_PIN                  PIO_PIN_PB0
 #define WDRV_WINC_INT_EXT1_InterruptEnable()   (PIOB_REGS->PIO_IER = (1<<0))
 #define WDRV_WINC_INT_EXT1_InterruptDisable()  (PIOB_REGS->PIO_IDR = (1<<0))
 
 /*** Macros for MIKROBUS1_AN pin ***/
-#define MIKROBUS1_AN_Set()               (PIOD_REGS->PIO_SODR = (1<<25))
-#define MIKROBUS1_AN_Clear()             (PIOD_REGS->PIO_CODR = (1<<25))
+#define MIKROBUS1_AN_Set()               (PIOD_REGS->PIO_SODR = ((uint32_t)1U<<25U))
+#define MIKROBUS1_AN_Clear()             (PIOD_REGS->PIO_CODR = ((uint32_t)1U<<25U))
 #define MIKROBUS1_AN_Toggle()            do {\
-                                            PIOD_REGS->PIO_MSKR = (1<<25); \
-                                            PIOD_REGS->PIO_ODSR ^= (1<<25);\
+                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
+                                            PIOD_REGS->PIO_ODSR ^= ((uint32_t)1U<<25U);\
                                         } while (0)
 #define MIKROBUS1_AN_OutputEnable()      do {\
-                                            PIOD_REGS->PIO_MSKR = (1<<25); \
-                                            PIOD_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
+                                            PIOD_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define MIKROBUS1_AN_InputEnable()       do { \
-                                            PIOD_REGS->PIO_MSKR = (1<<25); \
-                                            PIOD_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
+                                            PIOD_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define MIKROBUS1_AN_Get()               ((PIOD_REGS->PIO_PDSR >> 25) & 0x1)
+#define MIKROBUS1_AN_Get()               ((PIOD_REGS->PIO_PDSR >> 25U) & 0x1U)
 #define MIKROBUS1_AN_PIN                  PIO_PIN_PD25
 
 /*** Macros for WDRV_WINC_CHIP_EN_EXT2 pin ***/
-#define WDRV_WINC_CHIP_EN_EXT2_Set()               (PIOA_REGS->PIO_SODR = (1<<31))
-#define WDRV_WINC_CHIP_EN_EXT2_Clear()             (PIOA_REGS->PIO_CODR = (1<<31))
+#define WDRV_WINC_CHIP_EN_EXT2_Set()               (PIOA_REGS->PIO_SODR = ((uint32_t)1U<<31U))
+#define WDRV_WINC_CHIP_EN_EXT2_Clear()             (PIOA_REGS->PIO_CODR = ((uint32_t)1U<<31U))
 #define WDRV_WINC_CHIP_EN_EXT2_Toggle()            do {\
-                                            PIOA_REGS->PIO_MSKR = (1<<31); \
-                                            PIOA_REGS->PIO_ODSR ^= (1<<31);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<31U); \
+                                            PIOA_REGS->PIO_ODSR ^= ((uint32_t)1U<<31U);\
                                         } while (0)
 #define WDRV_WINC_CHIP_EN_EXT2_OutputEnable()      do {\
-                                            PIOA_REGS->PIO_MSKR = (1<<31); \
-                                            PIOA_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<31U); \
+                                            PIOA_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define WDRV_WINC_CHIP_EN_EXT2_InputEnable()       do { \
-                                            PIOA_REGS->PIO_MSKR = (1<<31); \
-                                            PIOA_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<31U); \
+                                            PIOA_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define WDRV_WINC_CHIP_EN_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 31) & 0x1)
+#define WDRV_WINC_CHIP_EN_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 31U) & 0x1U)
 #define WDRV_WINC_CHIP_EN_EXT2_PIN                  PIO_PIN_PA31
 
 /*** Macros for WDRV_WINC_RESETN_EXT2 pin ***/
-#define WDRV_WINC_RESETN_EXT2_Set()               (PIOA_REGS->PIO_SODR = (1<<26))
-#define WDRV_WINC_RESETN_EXT2_Clear()             (PIOA_REGS->PIO_CODR = (1<<26))
+#define WDRV_WINC_RESETN_EXT2_Set()               (PIOA_REGS->PIO_SODR = ((uint32_t)1U<<26U))
+#define WDRV_WINC_RESETN_EXT2_Clear()             (PIOA_REGS->PIO_CODR = ((uint32_t)1U<<26U))
 #define WDRV_WINC_RESETN_EXT2_Toggle()            do {\
-                                            PIOA_REGS->PIO_MSKR = (1<<26); \
-                                            PIOA_REGS->PIO_ODSR ^= (1<<26);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
+                                            PIOA_REGS->PIO_ODSR ^= ((uint32_t)1U<<26U);\
                                         } while (0)
 #define WDRV_WINC_RESETN_EXT2_OutputEnable()      do {\
-                                            PIOA_REGS->PIO_MSKR = (1<<26); \
-                                            PIOA_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
+                                            PIOA_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define WDRV_WINC_RESETN_EXT2_InputEnable()       do { \
-                                            PIOA_REGS->PIO_MSKR = (1<<26); \
-                                            PIOA_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
+                                            PIOA_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define WDRV_WINC_RESETN_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 26) & 0x1)
+#define WDRV_WINC_RESETN_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 26U) & 0x1U)
 #define WDRV_WINC_RESETN_EXT2_PIN                  PIO_PIN_PA26
 
 /*** Macros for MIKROBUS2_AN pin ***/
-#define MIKROBUS2_AN_Set()               (PIOD_REGS->PIO_SODR = (1<<26))
-#define MIKROBUS2_AN_Clear()             (PIOD_REGS->PIO_CODR = (1<<26))
+#define MIKROBUS2_AN_Set()               (PIOD_REGS->PIO_SODR = ((uint32_t)1U<<26U))
+#define MIKROBUS2_AN_Clear()             (PIOD_REGS->PIO_CODR = ((uint32_t)1U<<26U))
 #define MIKROBUS2_AN_Toggle()            do {\
-                                            PIOD_REGS->PIO_MSKR = (1<<26); \
-                                            PIOD_REGS->PIO_ODSR ^= (1<<26);\
+                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
+                                            PIOD_REGS->PIO_ODSR ^= ((uint32_t)1U<<26U);\
                                         } while (0)
 #define MIKROBUS2_AN_OutputEnable()      do {\
-                                            PIOD_REGS->PIO_MSKR = (1<<26); \
-                                            PIOD_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
+                                            PIOD_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define MIKROBUS2_AN_InputEnable()       do { \
-                                            PIOD_REGS->PIO_MSKR = (1<<26); \
-                                            PIOD_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
+                                            PIOD_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define MIKROBUS2_AN_Get()               ((PIOD_REGS->PIO_PDSR >> 26) & 0x1)
+#define MIKROBUS2_AN_Get()               ((PIOD_REGS->PIO_PDSR >> 26U) & 0x1U)
 #define MIKROBUS2_AN_PIN                  PIO_PIN_PD26
 
 /*** Macros for WDRV_WINC_INT_EXT2 pin ***/
-#define WDRV_WINC_INT_EXT2_Set()               (PIOA_REGS->PIO_SODR = (1<<25))
-#define WDRV_WINC_INT_EXT2_Clear()             (PIOA_REGS->PIO_CODR = (1<<25))
+#define WDRV_WINC_INT_EXT2_Set()               (PIOA_REGS->PIO_SODR = ((uint32_t)1U<<25U))
+#define WDRV_WINC_INT_EXT2_Clear()             (PIOA_REGS->PIO_CODR = ((uint32_t)1U<<25U))
 #define WDRV_WINC_INT_EXT2_Toggle()            do {\
-                                            PIOA_REGS->PIO_MSKR = (1<<25); \
-                                            PIOA_REGS->PIO_ODSR ^= (1<<25);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
+                                            PIOA_REGS->PIO_ODSR ^= ((uint32_t)1U<<25U);\
                                         } while (0)
 #define WDRV_WINC_INT_EXT2_OutputEnable()      do {\
-                                            PIOA_REGS->PIO_MSKR = (1<<25); \
-                                            PIOA_REGS->PIO_CFGR |=(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
+                                            PIOA_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         }while(0)
 #define WDRV_WINC_INT_EXT2_InputEnable()       do { \
-                                            PIOA_REGS->PIO_MSKR = (1<<25); \
-                                            PIOA_REGS->PIO_CFGR &= ~(1 << PIO_CFGR_DIR_Pos);\
+                                            PIOA_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
+                                            PIOA_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
                                         } while (0)
-#define WDRV_WINC_INT_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 25) & 0x1)
+#define WDRV_WINC_INT_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 25U) & 0x1U)
 #define WDRV_WINC_INT_EXT2_PIN                  PIO_PIN_PA25
 #define WDRV_WINC_INT_EXT2_InterruptEnable()   (PIOA_REGS->PIO_IER = (1<<25))
 #define WDRV_WINC_INT_EXT2_InterruptDisable()  (PIOA_REGS->PIO_IDR = (1<<25))

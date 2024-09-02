@@ -117,6 +117,9 @@ typedef struct
     /* Authentication type of context. */
     WDRV_WINC_AUTH_TYPE authType;
 
+    /* Flag indicating if these credentials can be stored and reused. */
+    bool oneTimeUse;
+
     /* Union of data structures for each authentication type. */
     union
     {
@@ -237,6 +240,46 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetDefaults
 //*******************************************************************************
 /*
   Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOneTimeUse
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        bool oneTimeUse
+    )
+
+  Summary:
+    Configures the credential retention policy.
+
+  Description:
+    Defines if the credentials are permitted to be stored within the device
+    for later use.
+
+  Precondition:
+    WDRV_WINC_AuthCtxSetDefaults should have been called on pAuthCtx.
+
+  Parameters:
+    pAuthCtx   - Pointer to an authentication context.
+    oneTimeUse - Flag indicating if credentials can only be used once.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The context has been configured.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    When used with WDRV_WINC_BSSConnect the WINC may store the credentials for
+    later use. The oneTimeUse setting determines if these credentials can be
+    stored (value is false) or must be discarded after use (true).
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOneTimeUse
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    bool oneTimeUse
+);
+
+//*******************************************************************************
+/*
+  Function:
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx
@@ -250,7 +293,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetDefaults
       authentication.
 
   Precondition:
-    None.
+    WDRV_WINC_AuthCtxSetDefaults should have been called on pAuthCtx.
 
   Parameters:
     pAuthCtx - Pointer to an authentication context.
@@ -375,7 +418,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWPA
       authentication.
 
   Precondition:
-    None.
+    WDRV_WINC_AuthCtxSetDefaults should have been called on pAuthCtx.
 
   Parameters:
     pAuthCtx        - Pointer to an authentication context.
@@ -428,7 +471,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWPAEnterpriseMSCHAPv2
       authentication.
 
   Precondition:
-    None.
+    WDRV_WINC_AuthCtxSetDefaults should have been called on pAuthCtx.
 
   Parameters:
     pAuthCtx         - Pointer to an authentication context.

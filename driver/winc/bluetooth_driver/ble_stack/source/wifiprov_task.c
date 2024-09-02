@@ -59,8 +59,11 @@ at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
 #endif    
     INTERFACE_PACK_ARG_UINT8(lname_len);
     INTERFACE_PACK_ARG_BLOCK(lname,lname_len);
-    INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV);
-    INTERFACE_UNPACK_UINT8(&status);
+    INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV, &status);
+    if(status == AT_BLE_SUCCESS)
+    {
+        INTERFACE_UNPACK_UINT8(&status);
+    }
     if (status == 0) status = AT_BLE_SUCCESS;
     INTERFACE_MSG_DONE();
     return status;
@@ -73,8 +76,11 @@ at_ble_status_t wifiprov_create_db(void)
 
     INTERFACE_MSG_INIT(WIFIPROV_CREATE_DB_REQ, TASK_WIFIPROV);
     INTERFACE_PACK_ARG_UINT8(1|2); // We support both scanning and connection
-    INTERFACE_SEND_WAIT(WIFIPROV_CREATE_DB_CFM, TASK_WIFIPROV);
-    INTERFACE_UNPACK_UINT8(&status);
+    INTERFACE_SEND_WAIT(WIFIPROV_CREATE_DB_CFM, TASK_WIFIPROV, &status);
+    if(status == AT_BLE_SUCCESS)
+    {
+        INTERFACE_UNPACK_UINT8(&status);
+    }
     //GTODO: Export status define from wifiprov to header file
     if (status == 0) status = AT_BLE_SUCCESS;
     INTERFACE_MSG_DONE();

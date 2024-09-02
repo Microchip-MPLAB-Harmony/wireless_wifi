@@ -1,7 +1,7 @@
 // DOM-IGNORE-BEGIN
 /*
 Copyright (c) RivieraWaves 2009-2014
-Copyright (C) 2017, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -38,6 +38,7 @@ Microchip or any third party.
 #include "error.h"
 
 #include "cmn_defs.h"
+#include "ble_device.h"
 
 static uint8_t primary_service_uuid[] = {0x00, 0x28};
 static uint8_t secondary_service_uuid[] = {0x01, 0x28};
@@ -49,6 +50,18 @@ static uint8_t user_desc_uuid[] = {0x01, 0x29};
 static uint8_t client_conf_uuid[] = {0x02, 0x29};
 static uint8_t server_conf_uuid[] = {0x03, 0x29};
 static uint8_t presentation_format_uuid[] = {0x04, 0x29};
+#define MAX_IND_NOTI_QUEUE_NO   20
+static struct
+    {
+        uint8_t write_idx;
+        uint8_t read_idx;
+        struct
+        {
+            bool active;
+            at_ble_handle_t conn_handle;
+            at_ble_handle_t char_handle;
+        }record[MAX_IND_NOTI_QUEUE_NO];
+    }noti_queue = {0}, indi_queue = {0};
 
 static bool is_extended_properties_defined(
                         at_ble_characteristic_t *characteristic)
@@ -344,6 +357,65 @@ static uint8_t uuid_size(at_ble_uuid_t* uuid)
     }
 
     return size;
+}
+
+static at_ble_status_t at_ble_set_indi_noti_record(bool is_notify, at_ble_handle_t conn_handle,
+    at_ble_handle_t attr_handle)
+{
+    if (is_notify)
+    {
+        if (noti_queue.record[noti_queue.write_idx].active)
+            return AT_BLE_COMMAND_DISALLOWED;
+        noti_queue.record[noti_queue.write_idx].active = true;
+        noti_queue.record[noti_queue.write_idx].conn_handle = conn_handle;
+        noti_queue.record[noti_queue.write_idx].char_handle = attr_handle;
+        noti_queue.write_idx = (noti_queue.write_idx + 1) % MAX_IND_NOTI_QUEUE_NO;
+    }
+    else
+    {
+        if (indi_queue.record[indi_queue.write_idx].active)
+            return AT_BLE_COMMAND_DISALLOWED;
+        indi_queue.record[indi_queue.write_idx].active = true;
+        indi_queue.record[indi_queue.write_idx].conn_handle = conn_handle;
+        indi_queue.record[indi_queue.write_idx].char_handle = attr_handle;
+        indi_queue.write_idx = (indi_queue.write_idx + 1) % MAX_IND_NOTI_QUEUE_NO;;
+     }
+
+    return AT_BLE_SUCCESS;
+}
+
+void at_ble_retrieve_indi_noti_record(bool is_notify, at_ble_handle_t *conn_handle,
+    at_ble_handle_t *attr_handle)
+{
+    if (is_notify)
+    {
+        noti_queue.record[noti_queue.read_idx].active = false;
+        *conn_handle = noti_queue.record[noti_queue.read_idx].conn_handle;
+        *attr_handle = noti_queue.record[noti_queue.read_idx].char_handle;
+        noti_queue.read_idx = (noti_queue.read_idx + 1) % MAX_IND_NOTI_QUEUE_NO;
+    }
+    else
+    {
+        indi_queue.record[indi_queue.read_idx].active = false;
+        *conn_handle = indi_queue.record[indi_queue.read_idx].conn_handle;
+        *attr_handle = indi_queue.record[indi_queue.read_idx].char_handle;
+        indi_queue.read_idx = (indi_queue.read_idx + 1) % MAX_IND_NOTI_QUEUE_NO;
+    }
+}
+
+void at_ble_reset_indi_noti_record()
+{
+    uint8_t i;
+
+    noti_queue.read_idx = 0;
+    noti_queue.write_idx = 0;
+    indi_queue.read_idx = 0;
+    indi_queue.write_idx = 0;
+    for (i = 0; i < MAX_IND_NOTI_QUEUE_NO; i++)
+    {
+        noti_queue.record[i].active = false;
+        indi_queue.record[i].active = false;
+    }
 }
 
 at_ble_status_t at_ble_secondary_service_define(at_ble_uuid_t* uuid, at_ble_handle_t* service_handle,
@@ -747,8 +819,18 @@ at_ble_status_t at_ble_notification_send(at_ble_handle_t conn_handle,
 at_ble_status_t at_ble_indication_send(at_ble_handle_t conn_handle,
     at_ble_handle_t attr_handle)
 {
-    gattc_send_evt_cmd_handler(GATTC_INDICATE, attr_handle, conn_handle);
-    return AT_BLE_SUCCESS;
+    if (conn_handle != device.conn_handle)
+        {
+            return AT_BLE_INVALID_PARAM;
+        }
+
+    at_ble_status_t status = at_ble_set_indi_noti_record(false, conn_handle, attr_handle);
+    if (AT_BLE_SUCCESS == status)
+    {
+        gattc_send_evt_cmd_handler(GATTC_INDICATE, attr_handle, conn_handle);
+        return AT_BLE_SUCCESS;
+    }
+    return status;
 }
 
 at_ble_status_t at_ble_service_changed_notification_send(at_ble_handle_t conn_handle, at_ble_handle_t start_handle, at_ble_handle_t end_handle)

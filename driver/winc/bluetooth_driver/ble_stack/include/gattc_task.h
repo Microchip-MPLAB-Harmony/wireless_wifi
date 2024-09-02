@@ -1,7 +1,7 @@
 // DOM-IGNORE-BEGIN
 /*
 Copyright (c) RivieraWaves 2009-2014
-Copyright (C) 2017, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 Microchip licenses to you the right to use, modify, copy and distribute
 Software only when embedded on a Microchip microcontroller or digital signal
@@ -91,6 +91,11 @@ at_ble_events_t gattc_event_ind_parser(uint16_t src, uint8_t* data, void* params
 at_ble_events_t gattc_complete_evt_handler(uint16_t src, uint8_t* data, void* params);
 
 void gattc_mtu_cmd_handler(uint16_t u16ConHdl);
+
+void at_ble_retrieve_indi_noti_record(bool is_notify, at_ble_handle_t *conn_handle,
+    at_ble_handle_t *attr_handle);
+
+void at_ble_reset_indi_noti_record(void);
 
 /// GATT Task messages
 enum gattc_msg_id
@@ -295,6 +300,8 @@ enum {
     ATT_ERR_UNSUPP_GRP_TYPE,
     /// 0x11: Resources not sufficient to complete the request
     ATT_ERR_INSUFF_RESOURCE,
+    /// 0x12: Timed out waiting to send
+    ATT_ERR_TIMEOUT,
     /// 0x80: Application Error
     ATT_ERR_APP_ERROR = 0x80,
     /// Maximum attribute defined errors
