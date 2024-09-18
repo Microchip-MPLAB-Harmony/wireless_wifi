@@ -1,5 +1,5 @@
 /*******************************************************************************
-  PIC32MZW Driver Custom IE Header File 
+  PIC32MZW Driver Custom IE Header File
 
   Company:
     Microchip Technology Inc.
@@ -11,7 +11,7 @@
     PIC32MZW wireless driver custom IE.
 
   Description:
-    This file provides an interface for manipulating the vendor specific 
+    This file provides an interface for manipulating the vendor specific
     information element store. Custom IE's can be added to management frames and
     also IEs can be received from management frames.
  ******************************************************************************/

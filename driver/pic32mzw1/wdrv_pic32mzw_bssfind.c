@@ -158,7 +158,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindFirst
     }
     else
     {
-        if(!((1<<(channel-1)) & pDcpt->pCtrl->scanChannelMask24))
+        if(!((1<<(channel-1)) & pDcpt->pCtrl->regulatoryChannelMask24))
         {
             return WDRV_PIC32MZW_STATUS_INVALID_ARG;
         }
@@ -666,25 +666,26 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
 //*******************************************************************************
 /*
   Function:
-    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetEnabledChannels24
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanChannels24
     (
         DRV_HANDLE handle,
         WDRV_PIC32MZW_CHANNEL24_MASK channelMask24
     )
 
   Summary:
-    Set the enabled channels list for 2.4GHz.
+    Set the multi-channel list for scanning in 2.4GHz.
 
   Description:
-    To comply with regulatory domains certain channels must not be scanned.
-      This function configures which channels are enabled to be used.
+    In some scenarios an application may want to scan on a subset of channels.
+      This function configures which channels are set to be scanned when issuing
+      a multi-channel scan (when WDRV_PIC32MZW_CID_ANY is passed as channel).
 
   Remarks:
     See wdrv_pic32mzw_bssfind.h for usage information.
 
 */
 
-WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetEnabledChannels24
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanChannels24
 (
     DRV_HANDLE handle,
     WDRV_PIC32MZW_CHANNEL24_MASK channelMask24
@@ -704,12 +705,60 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetEnabledChannels24
         return WDRV_PIC32MZW_STATUS_NOT_OPEN;
     }
 
-    if (0 != (channelMask24 & ~WDRV_PIC32MZW_CM_2_4G_ALL))
+    if (0 != (channelMask24 & ~(pDcpt->pCtrl->regulatoryChannelMask24)))
     {
         return WDRV_PIC32MZW_STATUS_INVALID_ARG;
     }
 
     pDcpt->pCtrl->scanChannelMask24 = channelMask24;
+
+    return WDRV_PIC32MZW_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindGetScanChannels24
+    (
+        DRV_HANDLE handle,
+        WDRV_PIC32MZW_CHANNEL24_MASK *const pChannelMask
+    )
+
+  Summary:
+    Retrieves the multi-channel list for scanning in 2.4GHz.
+
+  Remarks:
+    See wdrv_pic32mzw_bssfind.h for usage information.
+
+*/
+
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindGetScanChannels24
+(
+    DRV_HANDLE handle,
+    WDRV_PIC32MZW_CHANNEL24_MASK *const pChannelMask
+)
+{
+    const WDRV_PIC32MZW_DCPT *const pDcpt = (const WDRV_PIC32MZW_DCPT *const)handle;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pChannelMask))
+    {
+        return WDRV_PIC32MZW_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure pointer is valid */
+    if (NULL == pDcpt->pCtrl)
+    {
+        return WDRV_PIC32MZW_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_PIC32MZW_STATUS_NOT_OPEN;
+    }
+
+    *pChannelMask = pDcpt->pCtrl->scanChannelMask24;
 
     return WDRV_PIC32MZW_STATUS_OK;
 }

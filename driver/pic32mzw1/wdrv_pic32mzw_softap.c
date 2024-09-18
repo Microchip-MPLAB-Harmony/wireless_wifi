@@ -96,8 +96,8 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
 {
     WDRV_PIC32MZW_DCPT *pDcpt = (WDRV_PIC32MZW_DCPT *)handle;
     DRV_PIC32MZW_WIDCTX wids;
+    uint8_t i, channel;
     DRV_PIC32MZW_11I_MASK dot11iInfo = 0;
-    int i;
     OSAL_CRITSECT_DATA_TYPE critSect;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -147,8 +147,12 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
                 pAuthCtx->authMod & ~WDRV_PIC32MZW_AUTH_MOD_STA_TD);
     }
 
-    /* Indicate that the dot11i settings are intended for AP mode. */
-    dot11iInfo |= DRV_PIC32MZW_AP;
+    channel = pBSSCtx->channel;
+
+    if(!((1<<(channel-1)) & pDcpt->pCtrl->regulatoryChannelMask24))
+    {
+        return WDRV_PIC32MZW_STATUS_INVALID_ARG;
+    }
 
     /* Ensure PIC32MZW is not already configured for Soft-AP. */
     if (false != pDcpt->pCtrl->isAP)
@@ -161,6 +165,9 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
     {
         return WDRV_PIC32MZW_STATUS_REQUEST_ERROR;
     }
+
+    /* Indicate that the dot11i settings are intended for AP mode. */
+    dot11iInfo |= DRV_PIC32MZW_AP;
 
     /* Allocate memory for the WIDs. */
     DRV_PIC32MZW_MultiWIDInit(&wids, 512);
@@ -178,7 +185,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_APStart
     DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SSID, pBSSCtx->ssid.name, pBSSCtx->ssid.length);
 
     /* Set channel. */
-    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_USER_PREF_CHANNEL, pBSSCtx->channel);
+    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_USER_PREF_CHANNEL, channel);
 
     /* Set 11i info as derived above. */
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_11I_SETTINGS, (int)dot11iInfo);

@@ -514,18 +514,19 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
 //*******************************************************************************
 /*
   Function:
-    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetEnabledChannels24
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanChannels24
     (
         DRV_HANDLE handle,
         WDRV_PIC32MZW_CHANNEL24_MASK channelMask24
     )
 
   Summary:
-    Set the enabled channels list for 2.4GHz.
+    Set the multi-channel list for scanning in 2.4GHz.
 
   Description:
-    To comply with regulatory domains certain channels must not be scanned.
-      This function configures which channels are enabled to be used.
+    In some scenarios an application may want to scan on a subset of channels.
+      This function configures which channels are set to be scanned when issuing
+      a multi-channel scan (when WDRV_PIC32MZW_CID_ANY is passed as channel).
 
   Precondition:
     WDRV_PIC32MZW_Initialize must have been called.
@@ -533,7 +534,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
 
   Parameters:
     handle        - Client handle obtained by a call to WDRV_PIC32MZW_Open.
-    channelMask24 - A 2.4GHz channel mask detailing all the enabled channels.
+    channelMask24 - A 2.4GHz channel mask detailing which channels to scan.
 
   Returns:
     WDRV_PIC32MZW_STATUS_OK             - The request was accepted.
@@ -546,10 +547,52 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanParameters
 
 */
 
-WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetEnabledChannels24
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindSetScanChannels24
 (
     DRV_HANDLE handle,
     WDRV_PIC32MZW_CHANNEL24_MASK channelMask24
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindGetScanChannels24
+    (
+        DRV_HANDLE handle,
+        WDRV_PIC32MZW_CHANNEL24_MASK *const pChannelMask
+    )
+
+  Summary:
+    Retrieves the multi-channel list for scanning in 2.4GHz.
+
+  Description:
+    In some scenarios an application may want to scan on a subset of channels.
+      This function retrieves the bitmask which indicates which channels are set
+      to be scanned when issuing a multi-channel scan (when WDRV_PIC32MZW_CID_ANY
+      is passed as channel).
+
+  Precondition:
+    WDRV_PIC32MZW_Initialize should have been called.
+    WDRV_PIC32MZW_Open should have been called to obtain a valid handle.
+
+  Parameters:
+    handle       - Client handle obtained by a call to WDRV_PIC32MZW_Open.
+    pChannelMask - Pointer to variable to receive the enabled channels.
+
+  Returns:
+    WDRV_PIC32MZW_STATUS_OK             - The information has been returned.
+    WDRV_PIC32MZW_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_PIC32MZW_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSFindGetScanChannels24
+(
+    DRV_HANDLE handle,
+    WDRV_PIC32MZW_CHANNEL24_MASK *const pChannelMask
 );
 
 //*******************************************************************************

@@ -21,7 +21,6 @@ implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
 */
 
-
 #ifndef _DRV_PIC32MZW1_H
 #define _DRV_PIC32MZW1_H
 
@@ -34,7 +33,7 @@ extern const uint8_t pic32mzw_rsr_pkt_num;
 #define DRV_PIC32MZW_MIN_SCAN_TIME                  10
 #define DRV_PIC32MZW_DEFAULT_ACTIVE_SCAN_TIME       20
 #define DRV_PIC32MZW_DEFAULT_PASSIVE_SCAN_TIME      120
-#define DRV_PIC32MZW_DEFAULT_SCAN_NUM_SLOT          1
+#define DRV_PIC32MZW_DEFAULT_SCAN_NUM_SLOT          2
 #define DRV_PIC32MZW_DEFAULT_SCAN_NUM_PROBE         2
 #define DRV_PIC32MZW_SCAN_MIN_NUM_SLOT              1
 #define DRV_PIC32MZW_SCAN_MIN_NUM_PROBE             1
@@ -43,7 +42,7 @@ extern const uint8_t pic32mzw_rsr_pkt_num;
 #define DRV_PIC32MZW_REGDOMAIN_MAX_NAME_LEN         6
 #define DRV_PIC32MZW_REGDOMAIN_RES_LEN              16
 #define DRV_PIC32MZW_PS_INFO_LEN                    6
-#define DRV_PIC32MZW_DEFAULT_PS_LISTEN_INTERVAL     10
+#define DRV_PIC32MZW_DEFAULT_PS_LISTEN_INTERVAL     1
 #define DRV_PIC32MZW_MAX_HIDDEN_SITES               4
 #define DRV_PIC32MZW_AP_REKEY_MIN_PERIOD            60
 #define DRV_PIC32MZW_PKT_BUFF_NUM                   pic32mzw_rsr_pkt_num

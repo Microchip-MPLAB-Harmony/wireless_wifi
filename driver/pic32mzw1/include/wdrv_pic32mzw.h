@@ -164,8 +164,11 @@ typedef struct _WDRV_PIC32MZW_CTRLDCPT
     /* Main event semaphore. */
     OSAL_SEM_HANDLE_TYPE drvEventSemaphore;
 
-    /* Bitmap of enabled 2.4GHz channels for scanning. */
+    /* Bitmap of enabled 2.4GHz channels for multi-channel scanning. */
     WDRV_PIC32MZW_CHANNEL24_MASK scanChannelMask24;
+
+    /* Bitmap of enabled 2.4GHz channels for the PIC32MZW. */
+    WDRV_PIC32MZW_CHANNEL24_MASK regulatoryChannelMask24;
 
     /* Current operating channel. */
     WDRV_PIC32MZW_CHANNEL_ID opChannel;

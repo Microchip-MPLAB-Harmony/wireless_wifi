@@ -436,6 +436,14 @@ Microchip or any third party.
 */
 #define DRV_WIFI_WID_SCAN_STOP_ON_FIRST             0x005d
 
+// *****************************************************************************
+/*
+    Summary:
+        WID for roaming configuration.
+    Description:
+        WID_ROAMING_ENABLED used to enable or disable roaming.
+*/
+#define DRV_WIFI_WID_ROAMING_ENABLED                0x005E
 
 // *****************************************************************************
 /*
@@ -552,6 +560,7 @@ Microchip or any third party.
           1 for 2-wire (BT_Prio, WLAN_Act) interface
 */
 #define DRV_WIFI_WID_COEX_INTERFACE_TYPE                 0x00E0
+
 // *****************************************************************************
 /*
     Summary:
@@ -563,6 +572,18 @@ Microchip or any third party.
           Bit 1: It indicates WLAN RX priority higher than BT LP if set, lower otherwise.
 */
 #define DRV_WIFI_WID_COEX_PRIORITY_FLAGS                 0x00E1
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for COEX antenna mode.
+    Description:
+        DRV_WIFI_WID_COEX_ANTENNA_MODE is used to select the antenna mode.
+        The possible values are:
+          0: Dedicated antenna.
+          1: Shared antenna.
+*/
+#define DRV_WIFI_WID_COEX_ANTENNA_MODE                  0x00E2
 
 // *****************************************************************************
 /*

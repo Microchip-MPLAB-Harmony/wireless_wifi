@@ -928,6 +928,8 @@ static bool _WDRV_PIC32MZW_ValidateInitData
     pCtrl->powerSaveMode           = pInitData->powerSaveMode;
     pCtrl->powerSavePICCorrelation = pInitData->powerSavePICCorrelation;
     pCtrl->coexConfigFlags         = pInitData->coexConfigFlags;
+    pCtrl->scanChannelMask24       = WDRV_PIC32MZW_CM_2_4G_DEFAULT;
+    pCtrl->regulatoryChannelMask24 = WDRV_PIC32MZW_CM_2_4G_DEFAULT;
 
     return true;
 }
@@ -2856,7 +2858,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_InfoEnabledChannelsGet
         return WDRV_PIC32MZW_STATUS_NOT_OPEN;
     }
 
-    *pChannelMask = pDcpt->pCtrl->scanChannelMask24;
+    *pChannelMask = pDcpt->pCtrl->regulatoryChannelMask24;
 
     return WDRV_PIC32MZW_STATUS_OK;
 }
@@ -3166,7 +3168,15 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
                     }
                 }
             }
-
+            else if (((2 == *pData) || (3 == *pData)) && (WDRV_PIC32MZW_CONN_STATE_CONNECTED == pCtrl->connectedState))
+            {
+                if (NULL != pCtrl->pfConnectNotifyCB)
+                {
+                    /* Update user application via callback if set. */
+                    WDRV_PIC32MZW_CONN_STATE currentState = (2 == *pData) ? WDRV_PIC32MZW_CONN_STATE_ROAMED : WDRV_PIC32MZW_CONN_STATE_RECONNECTED;
+                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_PIC32MZW_ASSOC_HANDLE)&pCtrl->assocInfoSTA, currentState);
+                }
+            }
             break;
         }
 
@@ -3224,10 +3234,15 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
 
             if (NULL != pScanRes)
             {
-                if((NULL != pCtrl->pfBSSFindNotifyCB) && (0 == pScanRes->ofTotal))
+                if (0 == pScanRes->ofTotal)
                 {
-                    pCtrl->pfBSSFindNotifyCB(pCtrl->handle, 0, 0, NULL);
-                    pCtrl->pfBSSFindNotifyCB = NULL;
+                    if (NULL != pCtrl->pfBSSFindNotifyCB)
+                    {
+                        pCtrl->pfBSSFindNotifyCB(pCtrl->handle, 0, 0, NULL);
+                        pCtrl->pfBSSFindNotifyCB = NULL;
+                    }
+
+                    pCtrl->scanInProgress = false;
                     break;
                 }
 
@@ -3245,6 +3260,10 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
                 pCtrl->scanIndex--;
 
                 WDRV_PIC32MZW_BSSFindNext(pCtrl->handle, pCtrl->pfBSSFindNotifyCB);
+            }
+            else
+            {
+                pCtrl->scanInProgress = false;
             }
 
             break;
@@ -3326,6 +3345,7 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
 
         case DRV_WIFI_WID_REG_DOMAIN_INFO:
         {
+            bool current = false;
             const uint8_t *pChannel = NULL;
             WDRV_PIC32MZW_CHANNEL24_MASK channelMask;
 
@@ -3339,7 +3359,13 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
             channelMask = *(pChannel++);
             channelMask |= *(pChannel++) << 8;
 
-            pCtrl->scanChannelMask24 = channelMask;
+            if (1 == pData[2])
+            {
+                pCtrl->regulatoryChannelMask24 = (0 != channelMask) ? channelMask : WDRV_PIC32MZW_CM_2_4G_DEFAULT;
+                pCtrl->scanChannelMask24 = pCtrl->regulatoryChannelMask24;
+
+                current = true;
+            }
 
             if (NULL != pCtrl->pfRegDomCB)
             {
@@ -3349,20 +3375,10 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
                 }
                 else
                 {
-                    bool current;
                     const uint8_t *pVer = NULL;
                     WDRV_PIC32MZW_REGDOMAIN_INFO regDomInfo;
 
                     memset(&regDomInfo, 0, sizeof(WDRV_PIC32MZW_REGDOMAIN_INFO));
-
-                    if (1 == pData[2])
-                    {
-                        current = true;
-                    }
-                    else
-                    {
-                        current = false;
-                    }
 
                     regDomInfo.regDomainLen = pData[3];
                     memcpy(regDomInfo.regDomain, &pData[4], pData[3]);

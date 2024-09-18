@@ -319,7 +319,10 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1_a = drvPic32mzw1Component.createLibrarySymbol(None, None)
     pic32mzw1_a.setDestPath('driver/wifi/pic32mzw1/lib')
     pic32mzw1_a.setOutputName('pic32mzw1.a')
-    pic32mzw1_a.setSourcePath('driver/pic32mzw1/pic32mzw1.a')
+    if 'PIC32MZ2051W104132' in Variables.get('__PROCESSOR') or 'WFI32E03' in Variables.get('__PROCESSOR'):
+        pic32mzw1_a.setSourcePath('driver/pic32mzw1/pic32mzw1_E03.a')
+    else:
+        pic32mzw1_a.setSourcePath('driver/pic32mzw1/pic32mzw1.a')
 
     drvpic32mzw1SystemDefFile = drvPic32mzw1Component.createFileSymbol('DRV_WIFI_PIC32MZW1_DEF', None)
     drvpic32mzw1SystemDefFile.setType('STRING')

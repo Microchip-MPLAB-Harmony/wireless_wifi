@@ -307,7 +307,6 @@ bool WDRV_PIC32MZW_AuthCtxIsValid(const WDRV_PIC32MZW_AUTH_CONTEXT *const pAuthC
                 return false;
             }
 
-            
             if (WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2 == pAuthCtx->authInfo.enterprise.auth1xMethod)
             {
                 /* username and password is mandatory for MSCHAPv2 authentication */

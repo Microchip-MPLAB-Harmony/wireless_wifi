@@ -77,8 +77,8 @@ Microchip or any third party.
 
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
 typedef struct {
-    DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id;
-    DRV_BA414E_ECC_DOMAIN           curve_params;
+    DRV_PIC32MZW_CRYPTO_CURVE_T curve_id;
+    DRV_BA414E_ECC_DOMAIN       curve_params;
 } CURVE_INFO;
 
 typedef struct {
@@ -111,7 +111,7 @@ static const uint8_t CRYPT_ECC_Curve_secp256r1_b_le[32] __attribute__((aligned(4
 static const CURVE_INFO g_SupportedCurves[] = {
     /* Curve SecP256r1. */
     {
-        .curve_id                       = DRV_PIC32MZW_CRYPTO_FCG_CURVE_P256,
+        .curve_id                       = DRV_PIC32MZW_CRYPTO_CURVE_P256R1,
         .curve_params.keySize           = 32,
         .curve_params.opSize            = DRV_BA414E_OPSZ_256,
         .curve_params.primeField        = CRYPT_ECC_Curve_secp256r1_p_le,
@@ -180,7 +180,7 @@ static enum wc_HashType DRV_PIC32MZW_Crypto_Hash_GetWCHashType(DRV_PIC32MZW_CRYP
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
 static const CURVE_INFO *_DRV_PIC32MZW_GetCurve
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T curve_id
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id
 )
 {
     int i = NUM_CURVES;
@@ -197,7 +197,7 @@ static const CURVE_INFO *_DRV_PIC32MZW_GetCurve
 
 static const DRV_BA414E_ECC_DOMAIN *_DRV_PIC32MZW_GetDomain_Ba414e
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T curve_id
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id
 )
 {
     const CURVE_INFO *curve = _DRV_PIC32MZW_GetCurve(curve_id);
@@ -1191,7 +1191,7 @@ DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_BigIntMod
 /* out is a pointer to the field of the curve. */
 const uint8_t* DRV_PIC32MZW_Crypto_ECCGetField
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
@@ -1207,7 +1207,7 @@ const uint8_t* DRV_PIC32MZW_Crypto_ECCGetField
 /* out is a pointer to the order of the curve. */
 const uint8_t* DRV_PIC32MZW_Crypto_ECCGetOrder
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
@@ -1223,13 +1223,13 @@ const uint8_t* DRV_PIC32MZW_Crypto_ECCGetOrder
 /* is_notoncurve = false if p(x,y) is on curve, true otherwise. */
 DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCIsOnCurve
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id,
-        bool                            *is_notoncurve,
-        const uint8_t                   *px,
-        const uint8_t                   *py,
-        bool                            is_be,
-        DRV_PIC32MZW_CRYPTO_CB          callback,
-        uintptr_t                       context
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id,
+        bool                        *is_notoncurve,
+        const uint8_t               *px,
+        const uint8_t               *py,
+        bool                        is_be,
+        DRV_PIC32MZW_CRYPTO_CB      callback,
+        uintptr_t                   context
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
@@ -1345,11 +1345,11 @@ _ERR:
 /* Params must be little endian, of size equal to the curve's field size. */
 DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCBigIntModMultByA
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id,
-        uint8_t                         *out,
-        const uint8_t                   *in,
-        DRV_PIC32MZW_CRYPTO_CB          callback,
-        uintptr_t                       context
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id,
+        uint8_t                     *out,
+        const uint8_t               *in,
+        DRV_PIC32MZW_CRYPTO_CB      callback,
+        uintptr_t                   context
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
@@ -1381,11 +1381,11 @@ DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCBigIntModMultByA
 /* Params must be little endian, of size equal to the curve's field size. */
 DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCBigIntModAddB
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id,
-        uint8_t                         *out,
-        const uint8_t                   *in,
-        DRV_PIC32MZW_CRYPTO_CB          callback,
-        uintptr_t                       context
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id,
+        uint8_t                     *out,
+        const uint8_t               *in,
+        DRV_PIC32MZW_CRYPTO_CB      callback,
+        uintptr_t                   context
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
@@ -1417,17 +1417,17 @@ DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCBigIntModAddB
 /* infinity, is_infinity = true, and out(x,y) should be ignored.             */
 DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCAdd
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id,
-        bool                            *is_infinity,
-        uint8_t                         *outx,
-        uint8_t                         *outy,
-        const uint8_t                   *pinx,
-        const uint8_t                   *piny,
-        const uint8_t                   *qinx,
-        const uint8_t                   *qiny,
-        bool                            is_be,
-        DRV_PIC32MZW_CRYPTO_CB          callback,
-        uintptr_t                       context
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id,
+        bool                        *is_infinity,
+        uint8_t                     *outx,
+        uint8_t                     *outy,
+        const uint8_t               *pinx,
+        const uint8_t               *piny,
+        const uint8_t               *qinx,
+        const uint8_t               *qiny,
+        bool                        is_be,
+        DRV_PIC32MZW_CRYPTO_CB      callback,
+        uintptr_t                   context
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT
@@ -1576,16 +1576,16 @@ _ERR:
 /* infinity, is_infinity = true, and out(x,y) should be ignored.             */
 DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_ECCMultiply
 (
-        DRV_PIC32MZW_CRYPTO_FCG_ID_T    curve_id,
-        bool                            *is_infinity,
-        uint8_t                         *outx,
-        uint8_t                         *outy,
-        const uint8_t                   *pinx,
-        const uint8_t                   *piny,
-        const uint8_t                   *kin,
-        bool                            is_be,
-        DRV_PIC32MZW_CRYPTO_CB          callback,
-        uintptr_t                       context
+        DRV_PIC32MZW_CRYPTO_CURVE_T curve_id,
+        bool                        *is_infinity,
+        uint8_t                     *outx,
+        uint8_t                     *outy,
+        const uint8_t               *pinx,
+        const uint8_t               *piny,
+        const uint8_t               *kin,
+        bool                        is_be,
+        DRV_PIC32MZW_CRYPTO_CB      callback,
+        uintptr_t                   context
 )
 {
 #ifdef WDRV_PIC32MZW_BA414E_SUPPORT

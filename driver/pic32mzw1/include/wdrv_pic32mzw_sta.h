@@ -60,7 +60,6 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
-#ifdef WDRV_PIC32MZW_DEVICE_BSS_ROAMING
 // *****************************************************************************
 /*  BSS Roaming Configuration
 
@@ -78,13 +77,9 @@ typedef enum
     /* BSS Roaming is turned off. */
     WDRV_PIC32MZW_BSS_ROAMING_CFG_OFF,
 
-    /* BSS Roaming is turned on, no IP renew occurs. */
+    /* BSS Roaming is turned on. */
     WDRV_PIC32MZW_BSS_ROAMING_CFG_ON,
-
-    /* BSS Roaming is turned on, DHCP renew is request upon reconnection. */
-    WDRV_PIC32MZW_BSS_ROAMING_CFG_ON_IP_RENEW
 } WDRV_PIC32MZW_BSS_ROAMING_CFG;
-#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -214,12 +209,10 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSDisconnect(DRV_HANDLE handle);
 
 */
 
-#ifdef WDRV_PIC32MZW_DEVICE_BSS_ROAMING
 WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSRoamingConfigure
 (
     DRV_HANDLE handle,
     WDRV_PIC32MZW_BSS_ROAMING_CFG roamingCfg
 );
-#endif
 
 #endif /* _WDRV_PIC32MZW_STA_H */

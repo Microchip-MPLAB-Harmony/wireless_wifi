@@ -300,6 +300,11 @@ typedef enum
     /* Association state is connection failed. */
     WDRV_PIC32MZW_CONN_STATE_FAILED,
 
+    /* Association state is roamed. */
+    WDRV_PIC32MZW_CONN_STATE_ROAMED,
+
+    /* Association state is reconnected. */
+    WDRV_PIC32MZW_CONN_STATE_RECONNECTED,
 } WDRV_PIC32MZW_CONN_STATE;
 
 // *****************************************************************************

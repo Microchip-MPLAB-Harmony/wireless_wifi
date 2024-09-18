@@ -157,7 +157,7 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSConnect
     }
     else
     {
-        if(!((1<<(channel-1)) & pDcpt->pCtrl->scanChannelMask24))
+        if(!((1<<(channel-1)) & pDcpt->pCtrl->regulatoryChannelMask24))
         {
             return WDRV_PIC32MZW_STATUS_INVALID_ARG;
         }
@@ -348,6 +348,68 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSDisconnect(DRV_HANDLE handle)
     DRV_PIC32MZW_MultiWIDInit(&wids, 16);
     DRV_PIC32MZW_MultiWIDAddString(&wids, DRV_WIFI_WID_SSID, "\0");
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_DISCONNECT, 1);
+
+    critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
+
+    if (false == DRV_PIC32MZW_MultiWIDWrite(&wids))
+    {
+        OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
+
+        DRV_PIC32MZW_MultiWIDDestroy(&wids);
+
+        return WDRV_PIC32MZW_STATUS_DISCONNECT_FAIL;
+    }
+
+    OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
+
+    return WDRV_PIC32MZW_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSRoamingConfigure
+    (
+        DRV_HANDLE handle,
+        WDRV_PIC32MZW_BSS_ROAMING_CFG roamingCfg
+    )
+
+  Summary:
+    Configures BSS roaming support.
+
+  Description:
+    Enables or disables BSS roaming support.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSRoamingConfigure
+(
+    DRV_HANDLE handle,
+    WDRV_PIC32MZW_BSS_ROAMING_CFG roamingCfg
+)
+{
+    WDRV_PIC32MZW_DCPT *pDcpt = (WDRV_PIC32MZW_DCPT *)handle;
+    DRV_PIC32MZW_WIDCTX wids;
+    OSAL_CRITSECT_DATA_TYPE critSect;
+
+    /* Ensure the driver handle and roaming parameter are valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (roamingCfg > WDRV_PIC32MZW_BSS_ROAMING_CFG_ON))
+    {
+        return WDRV_PIC32MZW_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_PIC32MZW_STATUS_NOT_OPEN;
+    }
+
+    /* Send roaming setting to the WiFi layer. */
+    DRV_PIC32MZW_MultiWIDInit(&wids, 8);
+    DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_ROAMING_ENABLED, roamingCfg);
 
     critSect = OSAL_CRIT_Enter(OSAL_CRIT_TYPE_LOW);
 
