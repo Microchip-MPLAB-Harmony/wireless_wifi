@@ -395,6 +395,7 @@ at_ble_events_t gattc_complete_evt_handler(uint16_t src, uint8_t *data, void *pa
 {
     uint8_t req_type, status;
     at_ble_events_t evt = AT_BLE_UNDEFINED_EVENT;
+    at_ble_handle_t char_handle, conn_handle;
     (void)(src);
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&req_type);
@@ -433,10 +434,20 @@ at_ble_events_t gattc_complete_evt_handler(uint16_t src, uint8_t *data, void *pa
             break;
 
         case GATTC_NOTIFY:
+            at_ble_retrieve_indi_noti_record(true, &conn_handle, &char_handle);
+
+            ((at_ble_notification_confirmed_t*)params)->status = status;
+            ((at_ble_notification_confirmed_t*)params)->conn_handle = KE_IDX_GET(src);
+            ((at_ble_notification_confirmed_t*)params)->char_handle = char_handle;
             evt = AT_BLE_NOTIFICATION_CONFIRMED;
             break;
 
         case GATTC_INDICATE:
+            at_ble_retrieve_indi_noti_record(false, &conn_handle, &char_handle);
+
+            ((at_ble_indication_confirmed_t*)params)->status = status;
+            ((at_ble_indication_confirmed_t*)params)->conn_handle = KE_IDX_GET(src);
+            ((at_ble_indication_confirmed_t*)params)->char_handle = char_handle;
             evt = AT_BLE_INDICATION_CONFIRMED;
             break;
 

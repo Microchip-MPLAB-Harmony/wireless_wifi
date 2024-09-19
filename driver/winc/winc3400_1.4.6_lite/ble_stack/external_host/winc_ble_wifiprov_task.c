@@ -39,6 +39,7 @@ Microchip or any third party.
 at_ble_status_t wifiprov_configure_provisioning(uint8_t *lname, at_ble_auth_t lauthtype)
 {
     //TODO: check on platform error
+    at_ble_status_t status;
     uint8_t lname_len = 0;
     uint8_t u8Status;
 
@@ -54,39 +55,45 @@ at_ble_status_t wifiprov_configure_provisioning(uint8_t *lname, at_ble_auth_t la
 
 
     INTERFACE_MSG_INIT(WIFIPROV_CONFIGURE_REQ, TASK_WIFIPROV);
-	INTERFACE_PACK_ARG_UINT8(lauthtype);
+    INTERFACE_PACK_ARG_UINT8(lauthtype);
     INTERFACE_PACK_ARG_UINT8(lname_len);
-    INTERFACE_PACK_ARG_BLOCK(lname, lname_len);
-
-    if (INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV) != 0)
+    INTERFACE_PACK_ARG_BLOCK(lname,lname_len);
+    status = INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV);
+    if (status == 0)
     {
-        return AT_BLE_FAILURE;
+        INTERFACE_UNPACK_UINT8(&u8Status);
     }
-
-    INTERFACE_UNPACK_UINT8(&u8Status);
-
     INTERFACE_MSG_DONE();
-    return (at_ble_status_t)u8Status;
+
+    if (status == 0)
+    {
+        return (at_ble_status_t)u8Status;
+    }
+    return AT_BLE_FAILURE;
 }
 
 at_ble_status_t wifiprov_create_db(void)
 {
     //TODO: check on platform error
+    at_ble_status_t status;
     uint8_t u8Status;
 
     INTERFACE_MSG_INIT(WIFIPROV_CREATE_DB_REQ, TASK_WIFIPROV);
-    INTERFACE_PACK_ARG_UINT8(1 | 2); // We support both scanning and connection
-
-    if (INTERFACE_SEND_WAIT(WIFIPROV_CREATE_DB_CFM, TASK_WIFIPROV) != 0)
+    INTERFACE_PACK_ARG_UINT8(1|2); // We support both scanning and connection
+    status = INTERFACE_SEND_WAIT(WIFIPROV_CREATE_DB_CFM, TASK_WIFIPROV);
+    if (status == 0)
     {
-        return AT_BLE_FAILURE;
+        INTERFACE_UNPACK_UINT8(&u8Status);
+        //GTODO: Export status define from wifiprov to header file
     }
-
-    INTERFACE_UNPACK_UINT8(&u8Status);
-    //GTODO: Export status define from wifiprov to header file
-
     INTERFACE_MSG_DONE();
-    return (at_ble_status_t)u8Status;
+
+    if (status == 0)
+    {
+        return (at_ble_status_t)u8Status;
+    }
+    return AT_BLE_FAILURE;
+
 }
 
 at_ble_status_t wifiprov_start(uint8_t *pin, uint8_t len)

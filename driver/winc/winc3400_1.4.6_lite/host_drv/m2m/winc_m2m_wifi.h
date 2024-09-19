@@ -1234,7 +1234,9 @@ int8_t m2m_wifi_connect(char *pcSsid, uint8_t u8SsidLen, uint8_t u8SecType, void
             @ref M2M_DEFAULT_CONN_SCAN_MISMATCH.
 
 @param[in]  u8NoSaveCred
-            Option to store the access point SSID and password into the WINC flash memory or not.
+            Option to avoid storing the connection credentials in the WINC flash memory.
+            0: Connection credentials will be stored in the WINC flash memory.
+            1: Connection credentials will not be stored in the WINC flash memory.
 
 @pre
             Prior to a successful connection request, the WiFi driver must have been successfully initialized through the call of the @ref m2m_wifi_init function.

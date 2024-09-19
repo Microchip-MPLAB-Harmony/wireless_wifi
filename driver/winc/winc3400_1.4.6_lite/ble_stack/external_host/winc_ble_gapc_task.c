@@ -207,6 +207,7 @@ at_ble_status_t gapc_param_update_cfm_handler(uint16_t conn_handle,
 
     INTERFACE_MSG_INIT(GAPC_PARAM_UPDATE_CFM, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(1);
+    INTERFACE_PACK_ARG_UINT8(0);
     INTERFACE_PACK_ARG_UINT16(ce_len_min);
     INTERFACE_PACK_ARG_UINT16(ce_len_max);
     status = INTERFACE_SEND_NO_WAIT();
@@ -317,8 +318,8 @@ at_ble_status_t gapc_param_update_req_ind(uint16_t src, uint8_t *data,
     // To do check ce_min and ce_max
     param->handle = KE_IDX_GET(src);
     INTERFACE_UNPACK_INIT(data);
-    INTERFACE_UNPACK_UINT16(&(param->params.con_intv_max));
     INTERFACE_UNPACK_UINT16(&(param->params.con_intv_min));
+    INTERFACE_UNPACK_UINT16(&(param->params.con_intv_max));
     INTERFACE_UNPACK_UINT16(&(param->params.con_latency));
     INTERFACE_UNPACK_UINT16(&(param->params.superv_to));
     INTERFACE_UNPACK_DONE();

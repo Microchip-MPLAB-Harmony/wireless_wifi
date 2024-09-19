@@ -57,6 +57,10 @@ at_ble_status_t at_ble_att_error(ATT_ERR att_error_code)
             status = AT_BLE_INVALID_ATTRIBUTE_VAL_LEN;
             break;
 
+        case ATT_ERR_TIMEOUT:
+            status = AT_BLE_TIMEOUT;
+            break;
+
         default:
             status = AT_BLE_FAILURE;
             break;

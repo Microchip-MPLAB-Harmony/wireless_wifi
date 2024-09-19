@@ -43,6 +43,7 @@ Microchip or any third party.
 ATT_ERR gattm_add_svc_req_handler(uint16_t *start_hdl, uint16_t total_size, uint8_t nb_att_uuid_16,
                                   uint8_t nb_att_uuid_32, uint8_t nb_att_uuid_128)
 {
+    at_ble_status_t status;
     uint8_t u8Status;
 
     INTERFACE_MSG_INIT(GATTM_ADD_SVC_REQ, TASK_ATTM);
@@ -52,22 +53,25 @@ ATT_ERR gattm_add_svc_req_handler(uint16_t *start_hdl, uint16_t total_size, uint
     INTERFACE_PACK_ARG_UINT8(nb_att_uuid_16);
     INTERFACE_PACK_ARG_UINT8(nb_att_uuid_32);
     INTERFACE_PACK_ARG_UINT8(nb_att_uuid_128);
-
-    if (INTERFACE_SEND_WAIT(GATTM_ADD_SVC_RSP, TASK_ATTM) != 0)
+    status = (ATT_ERR)INTERFACE_SEND_WAIT(GATTM_ADD_SVC_RSP, TASK_ATTM);
+    if (status == 0)
     {
-        return (ATT_ERR) - 1;
+        INTERFACE_UNPACK_UINT16(start_hdl);
+        INTERFACE_UNPACK_UINT8(&u8Status);
     }
-
-    INTERFACE_UNPACK_UINT16(start_hdl);
-    INTERFACE_UNPACK_UINT8(&u8Status);
     INTERFACE_MSG_DONE();
 
-    return (ATT_ERR)u8Status;
+    if (status == 0)
+    {
+        return (ATT_ERR)u8Status;
+    }
+    return ATT_ERR_TIMEOUT;
 }
 
 ATT_ERR gattm_add_attribute_req_handler (uint16_t start_hdl, uint16_t max_data_size, uint16_t perm,
         uint8_t uuid_len, uint8_t *uuid, uint16_t *handle)
 {
+    at_ble_status_t status;
     uint8_t u8Status;
 
     INTERFACE_MSG_INIT(GATTM_ADD_ATTRIBUTE_REQ, TASK_ATTM);
@@ -76,21 +80,24 @@ ATT_ERR gattm_add_attribute_req_handler (uint16_t start_hdl, uint16_t max_data_s
     INTERFACE_PACK_ARG_UINT16(perm);
     INTERFACE_PACK_ARG_UINT8(uuid_len);
     INTERFACE_PACK_ARG_BLOCK(uuid, uuid_len);
-
-    if (INTERFACE_SEND_WAIT(GATTM_ADD_ATTRIBUTE_RSP, TASK_ATTM) != 0)
+    status = INTERFACE_SEND_WAIT(GATTM_ADD_ATTRIBUTE_RSP, TASK_ATTM);
+    if (status == 0)
     {
-        return (ATT_ERR) - 1;
+        INTERFACE_UNPACK_UINT16(handle);
+        INTERFACE_UNPACK_UINT8(&u8Status);
     }
-
-    INTERFACE_UNPACK_UINT16(handle);
-    INTERFACE_UNPACK_UINT8(&u8Status);
     INTERFACE_MSG_DONE();
 
-    return (ATT_ERR)u8Status;
+    if (status == 0)
+    {
+        return (ATT_ERR)u8Status;
+    }
+    return ATT_ERR_TIMEOUT;
 }
 
 ATT_ERR gattm_att_set_value_req_handler(uint16_t handle, uint16_t length, uint8_t *value)
 {
+    at_ble_status_t status;
     uint8_t u8Status;
     uint16_t u16RcvHandle;
 
@@ -98,42 +105,45 @@ ATT_ERR gattm_att_set_value_req_handler(uint16_t handle, uint16_t length, uint8_
     INTERFACE_PACK_ARG_UINT16(handle);
     INTERFACE_PACK_ARG_UINT16(length);
     INTERFACE_PACK_ARG_BLOCK(value, length);
-
-    if (INTERFACE_SEND_WAIT(GATTM_ATT_SET_VALUE_RSP, TASK_ATTM) != 0)
+    status = INTERFACE_SEND_WAIT(GATTM_ATT_SET_VALUE_RSP, TASK_ATTM);
+    if (status == 0)
     {
-        return (ATT_ERR) - 1;
+        INTERFACE_UNPACK_UINT16(&u16RcvHandle);
+        INTERFACE_UNPACK_UINT8(&u8Status);
     }
-
-    INTERFACE_UNPACK_UINT16(&u16RcvHandle);
-    INTERFACE_UNPACK_UINT8(&u8Status);
     INTERFACE_MSG_DONE();
 
-    return (ATT_ERR)u8Status;
+    if (status == 0)
+    {
+        return (ATT_ERR)u8Status;
+    }
+    return ATT_ERR_TIMEOUT;
 }
 
 ATT_ERR gattm_att_get_value_req_handler(uint16_t handle, uint16_t *length, uint8_t *value)
 {
+    at_ble_status_t status;
     uint16_t u16RcvHandle;
     uint8_t u8Status;
 
     INTERFACE_MSG_INIT(GATTM_ATT_GET_VALUE_REQ, TASK_ATTM);
     INTERFACE_PACK_ARG_UINT16(handle);
-
-    if (INTERFACE_SEND_WAIT(GATTM_ATT_GET_VALUE_RSP, TASK_ATTM) != 0)
+    status = INTERFACE_SEND_WAIT(GATTM_ATT_GET_VALUE_RSP, TASK_ATTM);
+    if (status == 0)
     {
-        return (ATT_ERR) - 1;
+        INTERFACE_UNPACK_UINT16(&u16RcvHandle);
+        INTERFACE_UNPACK_UINT16(length);
+        INTERFACE_UNPACK_UINT8(&u8Status);
+        INTERFACE_UNPACK_BLOCK(value, *length);
     }
-
-    INTERFACE_UNPACK_UINT16(&u16RcvHandle);
-    INTERFACE_UNPACK_UINT16(length);
-    INTERFACE_UNPACK_UINT8(&u8Status);
-    INTERFACE_UNPACK_BLOCK(value, *length);
     INTERFACE_MSG_DONE();
-
-    if (handle != u16RcvHandle)
+    if (status == 0)
     {
-        return (ATT_ERR) - 1;
+        if(handle != u16RcvHandle)
+        {
+            return ATT_ERR_INVALID_HANDLE;
+        }
+        return (ATT_ERR)u8Status;
     }
-
-    return (ATT_ERR)u8Status;
+    return ATT_ERR_TIMEOUT;
 }

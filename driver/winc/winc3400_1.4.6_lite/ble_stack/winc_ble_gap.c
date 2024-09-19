@@ -500,6 +500,9 @@ at_ble_status_t at_ble_disconnect(at_ble_handle_t handle, at_ble_disconnect_reas
     uint8_t gapc_reason = ((reason) ==  AT_BLE_TERMINATED_BY_USER) ?    0x13 :
                           ((reason) ==  AT_BLE_UNACCEPTABLE_INTERVAL) ? 0x3b :
                           0x1F;
+    if (device.conn_handle != handle)
+        return AT_BLE_INVALID_PARAM; 
+
     status = gapc_disconnect_cmd_handler(gapc_reason, handle);
     device.conn_handle = 0xFFFF;
 

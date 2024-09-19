@@ -1108,7 +1108,13 @@ typedef struct
     at_ble_handle_t conn_handle;
     at_ble_handle_t char_handle;
     at_ble_status_t status;
+} at_ble_notification_confirmed_t;
 
+typedef struct
+{
+    at_ble_handle_t conn_handle;
+    at_ble_handle_t char_handle;
+    at_ble_status_t status;
 } at_ble_indication_confirmed_t;
 
 typedef struct
@@ -1223,6 +1229,7 @@ typedef union
     at_ble_characteristic_write_response_t  at_ble_characteristic_write_response_t;
     at_ble_notification_recieved_t      at_ble_notification_recieved_t;
     at_ble_indication_recieved_t        at_ble_indication_recieved_t;
+    at_ble_notification_confirmed_t     at_ble_notification_confirmed_t;
     at_ble_indication_confirmed_t       at_ble_indication_confirmed_t;
     at_ble_characteristic_changed_t     at_ble_characteristic_changed_t;
     at_ble_service_changed_notification_confirmed_t at_ble_service_changed_notification_confirmed_t;
