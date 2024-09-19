@@ -4,13 +4,23 @@
 # Microchip MPLAB® Harmony 3 Release Notes
 
 ## Wireless_wifi Release v3.11.1
-This release includes additions and improvements to the **PIC32MZW1 and WINC** devices.
 
-### New Features
+This release includes improvements to the **PIC32MZW1 and WINC** devices.
 
-- WINC: Adds support for WINC3400 FW v1.4.6.
-- WINC: Adds new option to select storing of credentials in STA connect.
+### Dot Release Updates for v3.11.1:
+
+- WINC: Support for WINC3400 FW v1.4.6.
+- WINC: Adds option to select storing of credentials in STA connect.
 - WINC: Improvements to BLE API.
+- PIC32MZW1: Bug fixes and Customer support requests.
+- PIC32MZW1: Scan and auto rate adaptaion improvements.
+- PIC32MZW1: Reworked Tx/Rx buffer distribution.
+
+### Development Tools
+- [MPLAB® X IDE v6.20](https://www.microchip.com/mplab/mplab-x-ide)
+- [MPLAB® XC32 C/C++ Compiler v4.45](https://www.microchip.com/mplab/compilers)
+
+**Other release notes for v3.11.0 apply here too**
 
 ## Wireless_wifi Release v3.11.0
 This release introduces Harmony driver support for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com.
