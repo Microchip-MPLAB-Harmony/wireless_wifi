@@ -4,6 +4,9 @@
 
 global sort_alphanumeric
 global isDMAPresent
+global winc_help_keyword
+
+winc_help_keyword = "wireless_wifi_MPLAB_Harmony_WINC_WLAN"
 
 def handleMessage(messageID, args):
     return None
@@ -257,6 +260,7 @@ def sysDMAEnabled(symbol, event):
 
 def instantiateComponent(drvWincComponent):
     global isDMAPresent
+    global winc_help_keyword
 
     print('WINC Driver Component')
 
@@ -288,6 +292,7 @@ def instantiateComponent(drvWincComponent):
     wincDevice = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DEVICE', None, ['WINC1500', 'WINC3400'])
     wincDevice.setLabel('WiFi Device')
     wincDevice.setVisible(True)
+    wincDevice.setHelp(winc_help_keyword)
 
     # Use SYS_DEBUG Option
     wincUseSysDebug = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_SYS_DEBUG', None)
@@ -299,6 +304,7 @@ def instantiateComponent(drvWincComponent):
     wincLogLevel.setLabel('Driver Log Level')
     wincLogLevel.setVisible(True)
     wincLogLevel.setDependencies(setEnableLogLevel, ['DRV_WIFI_WINC_USE_SYS_DEBUG', 'sys_debug.SYS_DEBUG_USE_CONSOLE'])
+    wincLogLevel.setHelp(winc_help_keyword)
 
     # DRV_SPI Menu
     wincDrvSpiMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_DRV_SPI_MENU', None)
@@ -391,6 +397,7 @@ def instantiateComponent(drvWincComponent):
         wincIntSrc = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_INT_SRC', None, wincIntSrcList)
         wincIntSrc.setLabel('Interrupt Source')
         wincIntSrc.setVisible(True)
+        wincIntSrc.setHelp(winc_help_keyword)
 
     # External Interrupt Selection
     if eicNode:
@@ -470,6 +477,7 @@ def instantiateComponent(drvWincComponent):
     winc1500Version.setVisible(True)
     winc1500Version.setDefaultValue('19.7.7')
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
+    winc1500Version.setHelp(winc_help_keyword)
 
     # WINC3400 Version
     winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.2.2', '1.3.1', '1.4.6'])
@@ -477,6 +485,7 @@ def instantiateComponent(drvWincComponent):
     winc3400Version.setVisible(False)
     winc3400Version.setDefaultValue('1.4.')
     winc3400Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
+    winc3400Version.setHelp(winc_help_keyword)
 
     # WINC3400 BLE API Support
     winc3400UseBle = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400', None)
@@ -484,6 +493,7 @@ def instantiateComponent(drvWincComponent):
     winc3400UseBle.setDefaultValue(False)
     winc3400UseBle.setVisible(wincDevice.getValue() == 'WINC3400')
     winc3400UseBle.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
+    winc3400UseBle.setHelp("wireless_wifi_BLE_Operation")
 
     # WINC Driver Mode
     wincDriverMode = drvWincComponent.createComboSymbol('DRV_WIFI_WINC_DRIVER_MODE', None, ['Ethernet Mode', 'Socket Mode'])
@@ -492,6 +502,7 @@ def instantiateComponent(drvWincComponent):
     wincDriverMode.setVisible(wincDevice.getValue() == 'WINC3400' or wincDevice.getValue() == 'WINC1500')
     wincDriverMode.setDependencies(setVisibilityWincBypass, ['DRV_WIFI_WINC_DEVICE'])
     wincDriverMode.setDependencies(setVisibilityWincFWVersion, ['DRV_WIFI_WINC3400_VERSION'])
+    wincDriverMode.setHelp(winc_help_keyword)
 
     # WINC Use TCP/IP Stack
     wincUseTcpipStack = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_TCPIP_STACK', wincDriverMode)

@@ -4,6 +4,9 @@
 
 global sort_alphanumeric
 global isDMAPresent
+global wincs02_help_keyword
+
+wincs02_help_keyword = "wireless_wifi_MPLAB_Harmony_WINCS02_WLAN"
 
 def handleMessage(messageID, args):
     return None
@@ -195,6 +198,7 @@ def sysDMAEnabled(symbol, event):
 
 def instantiateComponent(drvWincComponent):
     global isDMAPresent
+    global wincs02_help_keyword
 
     print('WINCS02 Driver Component')
 
@@ -232,6 +236,7 @@ def instantiateComponent(drvWincComponent):
     wincLogLevel.setLabel('Driver Log Level')
     wincLogLevel.setVisible(True)
     wincLogLevel.setDependencies(setEnableLogLevel, ['DRV_WIFI_WINC_USE_SYS_DEBUG', 'sys_debug.SYS_DEBUG_USE_CONSOLE'])
+    wincLogLevel.setHelp(wincs02_help_keyword)
 
     # DRV_SPI Menu
     wincDrvSpiMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_DRV_SPI_MENU', None)

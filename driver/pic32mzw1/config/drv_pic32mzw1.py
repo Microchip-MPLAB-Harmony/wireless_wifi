@@ -24,6 +24,8 @@ Microchip or any third party.
 ################################################################################
 #### Global Variables ####
 ################################################################################
+global pic32mzw1_help_keyword
+pic32mzw1_help_keyword = "wireless_wifi_MPLAB_Harmony_PIC32MZW1_WLAN"
 
 global interruptsChildren
 interruptsChildren = ATDF.getNode('/avr-tools-device-file/devices/device/interrupts').getChildren()
@@ -126,6 +128,8 @@ def instantiateComponent(drvPic32mzw1Component):
     print('PIC32MZW1 Driver Component')
     configName = Variables.get('__CONFIGURATION_NAME')
 
+    global pic32mzw1_help_keyword
+
     Database.activateComponents(['HarmonyCore', 'lib_crypto', 'lib_wolfcrypt', 'tcpipNetConfig', 'tcpipStack', 'lib_wolfssl'])
 
     drvPic32mzw1Component.addDependency('Crypto_PIC32MZW1_Dependency', 'LIB_CRYPTO', True, True)
@@ -175,6 +179,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1LogLevel.setVisible(True)
     pic32mzw1LogLevel.setDefaultValue('Trace')
     pic32mzw1LogLevel.setDependencies(setEnableLogLevel, ['DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG', 'sys_debug.SYS_DEBUG_USE_CONSOLE'])
+    pic32mzw1LogLevel.setHelp(pic32mzw1_help_keyword)
 
     # RTOS Configuration
     pic32mzw1RtosMenu = drvPic32mzw1Component.createMenuSymbol('DRV_WIFI_PIC32MZW1_RTOS_MENU', None)
@@ -198,6 +203,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1TaskSize.setDescription('WiFi PIC32MZW1 Driver RTOS Task Stack Size')
     pic32mzw1TaskSize.setDefaultValue(1024)
     pic32mzw1TaskSize.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
+    pic32mzw1TaskSize.setHelp(pic32mzw1_help_keyword)
 
     # WiFi Driver Task Priority
     pic32mzw1TaskPriority = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_RTOS_TASK_PRIORITY', pic32mzw1RtosMenu)
@@ -206,6 +212,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1TaskPriority.setDescription('WiFi PIC32MZW1 Driver RTOS Task Priority')
     pic32mzw1TaskPriority.setDefaultValue(1)
     pic32mzw1TaskPriority.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
+    pic32mzw1TaskPriority.setHelp(pic32mzw1_help_keyword)
 
     # Support SAE (WPA3 Personal)?
     pic32mzw1SupportSae = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_SAE', None)
@@ -214,6 +221,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1SupportSae.setVisible(True)
     pic32mzw1SupportSae.setDefaultValue(True)
     pic32mzw1SupportSae.setDependencies(setWpa3dependency, ['DRV_WIFI_PIC32MZW1_SUPPORT_SAE'])
+    pic32mzw1SupportSae.setHelp("wireless_wifi_Client_Interface_Authentication_Context")
 
     # Require BA414E hardware driver?
     pic32mzw1RequireBa414e = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_BA414E', None)
@@ -233,6 +241,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1SupportEntSec.setDescription('Support for WPA, WPA2 and WPA3 Enterprise security. Requires wolfSSL support.')
     pic32mzw1SupportEntSec.setVisible(True)
     pic32mzw1SupportEntSec.setDefaultValue(False)
+    pic32mzw1SupportEntSec.setHelp("WDRV_PIC32MZW_AuthCtxSetEnterpriseTLS")
 
     # Require Wolfssl
     pic32mzw1RequireWolfssl = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_WOLFSSL', None)
@@ -245,6 +254,7 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1RegDomain.setLabel('Regulatory Domain')
     pic32mzw1RegDomain.setVisible(True)
     pic32mzw1RegDomain.setDefaultValue('GEN')
+    pic32mzw1RegDomain.setHelp("wireless_wifi_Client_Interface_Regulatory_Domain")
 
     pic32mzw1AlarmPeroid1ms = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_ALARM_PERIOD_1MS', None)
     pic32mzw1AlarmPeroid1ms.setVisible(False)
