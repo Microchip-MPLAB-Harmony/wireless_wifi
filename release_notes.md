@@ -3,6 +3,34 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.12.0
+
+This release includes improvements for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com.
+
+### New Features
+- WINCS02: Support for FreeRTOS.
+- WINCS02: Option for Sockets to be used in a non-Berkeley style.
+- WINCS02: Expose new v3.0 functionality of WINCS02 device firmware, including:
+    - Over-The-Air upgrade.
+    - Storage and retrieval of device configuration.
+    - TLS Server mode.
+    - Layer 2 Bypass mode.
+
+### Bug fixes/Improvements
+- WINCS02: Fixed Wi-Fi Hotspot channel map so that it is determined by selected regulatory domain.
+- WINCS02: Fixed reporting of association RSSI information.
+- WINCS02: Fixed stall on writing to Sockets in low memory conditions.
+- WINCS02: Added support for MQTT properties.
+- WINCS02: Added control to enable/disable Roaming.
+- WINCS02: Added control to modify Management Frame Protection setting.
+
+### Known Issues/Limitations
+- WINCS02: Unable to receive on sockets configured to be part of a multicast group.
+
+### Development Tools
+- [MPLAB® X IDE v6.20](https://www.microchip.com/mplab/mplab-x-ide)
+- [MPLAB® XC32 C/C++ Compiler v4.45](https://www.microchip.com/mplab/compilers)
+
 ## Wireless_wifi Release v3.11.1
 
 This release includes improvements to the **PIC32MZW1 and WINC** devices.
