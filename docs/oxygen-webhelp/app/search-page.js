@@ -9,7 +9,8 @@ define(["require", "config"], function() {
             'webhelp',
             'codeblock',
             'top-menu',
-            'template-module-loader'
+            'template-module-loader',
+            'wh-table'
         ];
         if(options.getBoolean("webhelp.enable.sticky.header")) {
         	jsModules.push('wh-sticky');

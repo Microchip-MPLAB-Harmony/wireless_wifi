@@ -76,10 +76,10 @@ Microchip or any third party.
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -135,14 +135,14 @@ static void extCryptoEXTCRYPTOCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
 
     if (NULL == pDcpt)
     {
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("EXTCRYPTO CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("EXTCRYPTO CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -153,7 +153,7 @@ static void extCryptoEXTCRYPTOCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -166,9 +166,16 @@ static void extCryptoEXTCRYPTOCmdRspCallbackHandler
         {
             break;
         }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("EXTCRYPTO CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
     }
 }
 
+#ifndef WDRV_WINC_MOD_DISABLE_TLS
 //*******************************************************************************
 /*
   Function:
@@ -197,28 +204,38 @@ static void extCryptoEXTCRYPTOCmdRspCallbackHandler
 
 static WDRV_WINC_EXTCRYPTO_SIG_ALGO extCryptoEcdsaCurveToSigAlgo(uint8_t curveId)
 {
+    WDRV_WINC_EXTCRYPTO_SIG_ALGO sigAlg = WDRV_WINC_EXTCRYPTO_SIG_ALGO_INVALID;
+
     switch (curveId)
     {
         case WINC_CONST_EXTCRYPTO_CURVE_SECP256R1:
         {
-            return WDRV_WINC_EXTCRYPTO_SIG_ALGO_ECDSA_SECP256R1;
+            sigAlg = WDRV_WINC_EXTCRYPTO_SIG_ALGO_ECDSA_SECP256R1;
+            break;
         }
+
         case WINC_CONST_EXTCRYPTO_CURVE_SECP384R1:
         {
-            return WDRV_WINC_EXTCRYPTO_SIG_ALGO_ECDSA_SECP384R1;
+            sigAlg = WDRV_WINC_EXTCRYPTO_SIG_ALGO_ECDSA_SECP384R1;
+            break;
         }
+
         case WINC_CONST_EXTCRYPTO_CURVE_SECP521R1:
         {
-            return WDRV_WINC_EXTCRYPTO_SIG_ALGO_ECDSA_SECP521R1;
+            sigAlg = WDRV_WINC_EXTCRYPTO_SIG_ALGO_ECDSA_SECP521R1;
+            break;
         }
+
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("ECDSA curve ID %d not handled\r\n", curveId);
             break;
         }
     }
 
-    return WDRV_WINC_EXTCRYPTO_SIG_ALGO_INVALID;
+    return sigAlg;
 }
+#endif
 
 //*******************************************************************************
 /*
@@ -227,7 +244,7 @@ static WDRV_WINC_EXTCRYPTO_SIG_ALGO extCryptoEcdsaCurveToSigAlgo(uint8_t curveId
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -245,7 +262,7 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
@@ -262,13 +279,13 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
             uint16_t extCryptoCxt;
             uint8_t opType;
 
-            if (pElems->numElems < 2)
+            if (pElems->numElems < 2U)
             {
-                return;
+                break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_UNSIGNED, &extCryptoCxt, sizeof(extCryptoCxt));
-            WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &opType, sizeof(opType));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_UNSIGNED, &extCryptoCxt, sizeof(extCryptoCxt));
+            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &opType, sizeof(opType));
 
             switch (opType)
             {
@@ -280,44 +297,49 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
                     uint8_t curveId;
                     uint8_t *pSignValue;
 
-                    if (pElems->numElems != 7)
+                    if (7U != pElems->numElems)
                     {
-                        return;
+                        break;
                     }
 
                     pSignValue = OSAL_Malloc(pElems->elems[6].length);
 
                     if (NULL == pSignValue)
                     {
-                        return;
+                        break;
                     }
 
-                    WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER_UNSIGNED, &opSrcType, sizeof(opSrcType));
-                    WINC_CmdReadParamElem(&pElems->elems[3], WINC_TYPE_INTEGER_UNSIGNED, &opSrcId, sizeof(opSrcId));
-                    WINC_CmdReadParamElem(&pElems->elems[4], WINC_TYPE_INTEGER_UNSIGNED, &signType, sizeof(signType));
-                    WINC_CmdReadParamElem(&pElems->elems[5], WINC_TYPE_INTEGER_UNSIGNED, &curveId, sizeof(curveId));
-                    WINC_CmdReadParamElem(&pElems->elems[6], WINC_TYPE_BYTE_ARRAY, pSignValue, pElems->elems[6].length);
+                    (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER_UNSIGNED, &opSrcType, sizeof(opSrcType));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[3], WINC_TYPE_INTEGER_UNSIGNED, &opSrcId, sizeof(opSrcId));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[4], WINC_TYPE_INTEGER_UNSIGNED, &signType, sizeof(signType));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[5], WINC_TYPE_INTEGER_UNSIGNED, &curveId, sizeof(curveId));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[6], WINC_TYPE_BYTE_ARRAY, pSignValue, pElems->elems[6].length);
 
+#ifndef WDRV_WINC_MOD_DISABLE_TLS
                     if (WINC_CONST_EXTCRYPTO_OP_SOURCE_TYPE_TLSC == opSrcType)
                     {
-                        if (NULL != pDcpt->pCtrl->tlscInfo[opSrcId-1].pfSignCB)
+                        if ((WDRV_WINC_TLS_INVALID_HANDLE != opSrcId) && (opSrcId <= WDRV_WINC_TLS_CTX_NUM))
                         {
-                            if (WINC_CONST_EXTCRYPTO_SIGN_TYPE_ECDSA == signType)
+                            if (NULL != pDcpt->pCtrl->tlscInfo[opSrcId-1U].pfSignCB)
                             {
-                                WDRV_WINC_EXTCRYPTO_SIG_ALGO signAlgo = extCryptoEcdsaCurveToSigAlgo(curveId);
-
-                                if (WDRV_WINC_EXTCRYPTO_SIG_ALGO_INVALID != signAlgo)
+                                if (WINC_CONST_EXTCRYPTO_SIGN_TYPE_ECDSA == signType)
                                 {
-                                    pDcpt->pCtrl->tlscInfo[opSrcId-1].pfSignCB(
-                                            context,
-                                            pDcpt->pCtrl->tlscInfo[opSrcId-1].signCbCtx,
-                                            signAlgo,
-                                            pSignValue, pElems->elems[6].length,
-                                            extCryptoCxt);
+                                    WDRV_WINC_EXTCRYPTO_SIG_ALGO signAlgo = extCryptoEcdsaCurveToSigAlgo(curveId);
+
+                                    if (WDRV_WINC_EXTCRYPTO_SIG_ALGO_INVALID != signAlgo)
+                                    {
+                                        pDcpt->pCtrl->tlscInfo[opSrcId-1U].pfSignCB(
+                                                context,
+                                                pDcpt->pCtrl->tlscInfo[opSrcId-1U].signCbCtx,
+                                                signAlgo,
+                                                pSignValue, pElems->elems[6].length,
+                                                extCryptoCxt);
+                                    }
                                 }
                             }
                         }
                     }
+#endif
 
                     OSAL_Free(pSignValue);
                     break;
@@ -325,14 +347,17 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
 
                 default:
                 {
+                    WDRV_DBG_VERBOSE_PRINT("EXTCRYPTO AECCB Op type &d not handled\r\n", opType);
                     break;
                 }
             }
+
             break;
         }
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("EXTCRYPTO AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -346,7 +371,7 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
         DRV_HANDLE handle,
         uintptr_t extCryptoCxt,
         bool status,
-        uint8_t *pSignature,
+        const uint8_t *const pSignature,
         size_t lenSignature
     );
 
@@ -367,13 +392,12 @@ WDRV_WINC_STATUS WDRV_WINC_EXTCRYPTOSignResult
         DRV_HANDLE handle,
         uintptr_t extCryptoCxt,
         bool status,
-        uint8_t *pSignature,
+        const uint8_t *const pSignature,
         size_t lenSignature
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -386,7 +410,7 @@ WDRV_WINC_STATUS WDRV_WINC_EXTCRYPTOSignResult
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    if (0xffff < extCryptoCxt)
+    if (0xffffU < extCryptoCxt)
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -397,26 +421,17 @@ WDRV_WINC_STATUS WDRV_WINC_EXTCRYPTOSignResult
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, extCryptoEXTCRYPTOCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenSignature, extCryptoEXTCRYPTOCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdEXTCRYPTO(cmdReqHandle, extCryptoCxt, status ? WINC_CONST_EXTCRYPTO_STATUS_SUCCESS : WINC_CONST_EXTCRYPTO_STATUS_FAILURE, pSignature, lenSignature);
+    (void)WINC_CmdEXTCRYPTO(cmdReqHandle, (uint16_t)extCryptoCxt, status ? WINC_CONST_EXTCRYPTO_STATUS_SUCCESS : WINC_CONST_EXTCRYPTO_STATUS_FAILURE, pSignature, lenSignature);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 

@@ -108,8 +108,8 @@ typedef enum
     Provides information for an external cryptographic signing operation.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle       - Client handle obtained by a call to WDRV_WINC_Open.
@@ -150,7 +150,7 @@ typedef void (*WDRV_WINC_EXTCRYPTO_SIGN_CB)
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -179,7 +179,7 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 );
 
 //*******************************************************************************
@@ -190,7 +190,7 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
         DRV_HANDLE handle,
         uintptr_t extCryptoCxt,
         bool status,
-        uint8_t *pSignature,
+        const uint8_t *const pSignature,
         size_t lenSignature
     );
 
@@ -202,9 +202,9 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
     externally, from the perspective of the WINC IC.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
     A request for an external signing operation must have been received via a
     WDRV_WINC_EXTCRYPTO_SIGN_CB function.
 
@@ -230,7 +230,7 @@ WDRV_WINC_STATUS WDRV_WINC_EXTCRYPTOSignResult
     DRV_HANDLE handle,
     uintptr_t extCryptoCxt,
     bool status,
-    uint8_t *pSignature,
+    const uint8_t *const pSignature,
     size_t lenSignature
 );
 

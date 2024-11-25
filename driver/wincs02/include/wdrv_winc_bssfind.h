@@ -65,19 +65,19 @@ Microchip or any third party.
 #include "wdrv_winc_bssctx.h"
 
 /* Maximum scan time in milliseconds. */
-#define DRV_WINC_MAX_SCAN_TIME                  1500
+#define DRV_WINC_MAX_SCAN_TIME                  1500U
 
 /* Minimum scan time in milliseconds. */
-#define DRV_WINC_MIN_SCAN_TIME                  10
+#define DRV_WINC_MIN_SCAN_TIME                  10U
 
 /* Minimum number of slots. */
-#define DRV_WINC_SCAN_MIN_NUM_SLOT              1
+#define DRV_WINC_SCAN_MIN_NUM_SLOT              1U
 
 /* Minimum number of scan probe requests. */
-#define DRV_WINC_SCAN_MIN_NUM_PROBE             1
+#define DRV_WINC_SCAN_MIN_NUM_PROBE             1U
 
 /* Maximum number of scan probe requests. */
-#define DRV_WINC_SCAN_MAX_NUM_PROBE             2
+#define DRV_WINC_SCAN_MAX_NUM_PROBE             2U
 
 // *****************************************************************************
 // *****************************************************************************
@@ -102,6 +102,8 @@ Microchip or any third party.
 
 typedef enum
 {
+    WDRV_WINC_CM_2_4G_NONE = 0x0000,
+
     /* 2.4GHz (2412 MHz) channel 1. */
     WDRV_WINC_CM_2_4G_CH1 = 0x0001,
 
@@ -161,28 +163,6 @@ typedef enum
 } WDRV_WINC_CHANNEL24_MASK;
 
 // *****************************************************************************
-/*  Scan Matching Mode.
-
-  Summary:
-    List of possible scan matching modes.
-
-  Description:
-    The scan matching mode can be to stop on first match or match all.
-
-  Remarks:
-    None.
-*/
-
-typedef enum
-{
-    /* Stop scan on first match. */
-    WDRV_WINC_SCAN_MATCH_MODE_STOP_ON_FIRST,
-
-    /* Scan for all matches. */
-    WDRV_WINC_SCAN_MATCH_MODE_FIND_ALL
-} WDRV_WINC_SCAN_MATCH_MODE;
-
-// *****************************************************************************
 /*  BSS Information
 
   Summary:
@@ -212,6 +192,15 @@ typedef struct
 // *****************************************************************************
 /*  BSS Discovery Notification Callback
 
+  Function:
+    bool (*WDRV_WINC_BSSFIND_NOTIFY_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        uint8_t index,
+        uint8_t ofTotal,
+        WDRV_WINC_BSS_INFO *pBSSInfo
+    )
+ 
   Summary:
     Callback to signal discovery of a BSS.
 
@@ -259,7 +248,7 @@ typedef bool (*WDRV_WINC_BSSFIND_NOTIFY_CALLBACK)
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -288,7 +277,7 @@ void WDRV_WINC_WSCNProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 );
 
 //*******************************************************************************
@@ -569,18 +558,19 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels
+    WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanChannels24
     (
         DRV_HANDLE handle,
         WDRV_WINC_CHANNEL_MASK channelMask24
     )
 
   Summary:
-    Configures the channels which can be scanned.
+    Set the multi-channel list for scanning in 2.4GHz.
 
   Description:
-    To comply with regulatory domains certain channels must not be scanned.
-      This function configures which channels are enabled to be used.
+    In some scenarios an application may want to scan on a subset of channels.
+      This function configures which channels are set to be scanned when issuing
+      a multi-channel scan (when WDRV_WINC_CID_ANY is passed as channel).
 
   Precondition:
     WDRV_WINC_Initialize must have been called.
@@ -588,7 +578,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
-    channelMask - A channel mask detailing all the enabled channels.
+    channelMask - A 2.4GHz channel mask detailing which channels to scan.
 
   Returns:
     WDRV_WINC_STATUS_OK            - The request was accepted.
@@ -601,7 +591,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels24
+WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanChannels24
 (
     DRV_HANDLE handle,
     WDRV_WINC_CHANNEL24_MASK channelMask24
@@ -610,42 +600,43 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels24
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanMatchMode
+    WDRV_WINC_STATUS WDRV_WINC_BSSFindGetScanChannels24
     (
         DRV_HANDLE handle,
-        WDRV_WINC_SCAN_MATCH_MODE matchMode
+        WDRV_WINC_CHANNEL24_MASK *const pChannelMask
     )
 
   Summary:
-    Configures the scan matching mode.
+    Retrieves the multi-channel list for scanning in 2.4GHz.
 
   Description:
-    This function configures the matching mode, either stop on first or
-      match all, used when scanning for SSIDs.
+    In some scenarios an application may want to scan on a subset of channels.
+      This function retrieves the bitmask which indicates which channels are set
+      to be scanned when issuing a multi-channel scan (when WDRV_WINC_CID_ANY
+      is passed as channel).
 
   Precondition:
     WDRV_WINC_Initialize must have been called.
     WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
-    handle    - Client handle obtained by a call to WDRV_WINC_Open.
-    matchMode - Required scan matching mode.
+    handle       - Client handle obtained by a call to WDRV_WINC_Open.
+    pChannelMask - Pointer to variable to receive the enabled channels.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - The request was accepted.
-    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
-    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
-    WDRV_WINC_STATUS_REQUEST_ERROR - The WINC was unable to accept this request.
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
 
   Remarks:
     None.
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanMatchMode
+WDRV_WINC_STATUS WDRV_WINC_BSSFindGetScanChannels24
 (
     DRV_HANDLE handle,
-    WDRV_WINC_SCAN_MATCH_MODE matchMode
+    WDRV_WINC_CHANNEL24_MASK *const pChannelMask
 );
 
 //*******************************************************************************

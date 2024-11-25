@@ -26,15 +26,29 @@
 <#if (HarmonyCore.SELECT_RTOS)?? && HarmonyCore.SELECT_RTOS != "BareMetal">
     <#lt>/*** WiFi WINC Driver RTOS Configuration ***/
     <#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
-        <#lt>#define WDRV_WINC_RTOS_STACK_SIZE          ${DRV_WIFI_WINC_RTOS_STACK_SIZE / 4}
+        <#lt>#define WDRV_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE / 4}
     <#else>
-        <#lt>#define WDRV_WINC_RTOS_STACK_SIZE          ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
+        <#lt>#define WDRV_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
     </#if>
-    <#lt>#define WDRV_WINC_RTOS_TASK_PRIORITY       ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY}
+    <#lt>#define WDRV_WINC_RTOS_TASK_PRIORITY        ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY}
 </#if>
 #define WDRV_WINC_DEV_RX_BUFF_SZ            ${DRV_WIFI_WINC_RX_BUFF_SZ}
 #define WDRV_WINC_DEV_SOCK_SLAB_NUM         ${DRV_WIFI_WINC_SOCKET_SLAB_NUM}
 #define WDRV_WINC_DEV_SOCK_SLAB_SZ          ${DRV_WIFI_WINC_SOCKET_SLAB_SZ}
 #define WINC_SOCK_NUM_SOCKETS               ${DRV_WIFI_WINC_SOCKET_NUM}
-#define WINC_SOCK_BUF_RX_SZ                 ${DRV_WIFI_WINC_SOCKET_TX_BUF_SZ}
-#define WINC_SOCK_BUF_TX_SZ                 ${DRV_WIFI_WINC_SOCKET_RX_BUF_SZ}
+#define WINC_SOCK_BUF_RX_SZ                 ${DRV_WIFI_WINC_SOCKET_RX_BUF_SZ}
+#define WINC_SOCK_BUF_TX_SZ                 ${DRV_WIFI_WINC_SOCKET_TX_BUF_SZ}
+#define WINC_SOCK_BUF_RX_PKT_BUF_NUM        ${DRV_WIFI_WINC_SOCKET_RX_PKT_BUF_NUM}
+#define WINC_SOCK_BUF_TX_PKT_BUF_NUM        ${DRV_WIFI_WINC_SOCKET_TX_PKT_BUF_NUM}
+<#if DRV_WIFI_WINC_MODULE_MQTT_EN == false>
+#define WDRV_WINC_MOD_DISABLE_MQTT
+</#if>
+<#if DRV_WIFI_WINC_MODULE_OTA_EN == false>
+#define WDRV_WINC_MOD_DISABLE_OTA
+</#if>
+<#if DRV_WIFI_WINC_MODULE_NVM_EN == false>
+#define WDRV_WINC_MOD_DISABLE_NVM
+</#if>
+<#if DRV_WIFI_WINC_L3_SUPPORT == false>
+#define WDRV_WINC_DISABLE_L3_SUPPORT
+</#if>

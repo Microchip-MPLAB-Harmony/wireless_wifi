@@ -9,6 +9,7 @@ define(function() {
         "permalink": "core/permalink",
         "polyfill": "core/polyfill",
         "wh-sticky": "core/wh-sticky",
+        "wh-table": "core/wh-table",
         "dom-sanitizer": "core/wh-dom-sanitizer", 
         // context sensitive help
         "context-help" : "context-help/context-help",
@@ -114,7 +115,7 @@ define(function() {
         	
             if(id === 'index-1' || id === 'index-2' || id === 'index-3' || id === 'stopwords' 
             ||id === 'htmlFileInfoList' || id === 'keywords') {
-                args = '20240425184925';
+                args = '20241122160012';
         	} 
 	
 	        return (url.indexOf('?') === -1 ? '?' : '&') + args;

@@ -42,6 +42,8 @@ Microchip or any third party.
 #ifndef WDRV_WINC_DHCPS_H
 #define WDRV_WINC_DHCPS_H
 
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: File includes
@@ -51,7 +53,6 @@ Microchip or any third party.
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -133,8 +134,8 @@ typedef enum
     Callback to be used to convey DHCP server events.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle     - Client handle obtained by a call to WDRV_WINC_Open.
@@ -159,7 +160,7 @@ typedef void (*WDRV_WINC_DHCPS_EVENT_HANDLER)
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -188,7 +189,7 @@ void WDRV_WINC_DHCPSProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 );
 
 //*******************************************************************************
@@ -209,8 +210,8 @@ void WDRV_WINC_DHCPSProcessAEC
     Enables or disables the DHCP server.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle         - Client handle obtained by a call to WDRV_WINC_Open.
@@ -219,7 +220,7 @@ void WDRV_WINC_DHCPSProcessAEC
     pfDHCPSEventCB - Pointer to callback to receive event notifications.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - DHCP server state was set.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -254,8 +255,8 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSEnableSet
     Configures the starting IP address of the selected DHCP server pool.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle     - Client handle obtained by a call to WDRV_WINC_Open.
@@ -263,7 +264,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSEnableSet
     pStartAddr - Pointer to starting IP address.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - DHCP server pool was set.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -297,8 +298,8 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSPoolAddressSet
     Configures the default gateway IP address of a DHCP server pool.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -306,7 +307,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSPoolAddressSet
     pGWAddr - Pointer to gateway IP address.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - The DHCP server gateways was set.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -340,8 +341,8 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSGatewaySet
     Assigns a DHCP server pool to the specified network interface.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -349,7 +350,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSGatewaySet
     ifIdx   - Network interface index.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - The network interface was updated.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -372,4 +373,5 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSNetIfBind
 #endif
 // DOM-IGNORE-END
 
+#endif /* WDRV_WINC_MOD_DISABLE_DHCPS */
 #endif /* WDRV_WINC_DHCPS_H */

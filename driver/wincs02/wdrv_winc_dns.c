@@ -43,6 +43,8 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_dns.h"
 
+#ifndef WDRV_WINC_MOD_DISABLE_DNS
+
 //*******************************************************************************
 /*
   Function:
@@ -62,10 +64,10 @@ Microchip or any third party.
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -121,14 +123,14 @@ static void dnsCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
 
     if (NULL == pDcpt)
     {
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("DNS CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("DNS CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -139,7 +141,7 @@ static void dnsCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -152,6 +154,12 @@ static void dnsCmdRspCallbackHandler
         {
             break;
         }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("DNS CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
     }
 }
 
@@ -162,7 +170,7 @@ static void dnsCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -176,11 +184,11 @@ static void dnsCmdRspCallbackHandler
 
 */
 
-void WDRV_WINC_DNSProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+void WDRV_WINC_DNSProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
     uint8_t recordType;
-    char domain[WINC_CMD_PARAM_ID_DNS_DOMAIN_NAME_SZ];
+    char domain[WINC_CMD_PARAM_SZ_DNS_DOMAIN_NAME];
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
     {
@@ -193,22 +201,22 @@ void WDRV_WINC_DNSProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, WI
         {
             WDRV_WINC_IP_MULTI_TYPE_ADDRESS addr;
 
-            if (pElems->numElems != 3)
+            if (3U != pElems->numElems)
             {
-                return;
+                break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
-            WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, &domain, sizeof(domain));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
+            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, &domain, sizeof(domain));
 
             if (WINC_TYPE_IPV4ADDR == pElems->elems[2].type)
             {
-                WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_IPV4ADDR, &addr.addr, sizeof(WDRV_WINC_IPV4_ADDR));
+                (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_IPV4ADDR, &addr.addr, sizeof(WDRV_WINC_IPV4_ADDR));
                 addr.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
             }
             else if (WINC_TYPE_IPV6ADDR == pElems->elems[2].type)
             {
-                WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_IPV6ADDR, &addr.addr, sizeof(WDRV_WINC_IPV6_ADDR));
+                (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_IPV6ADDR, &addr.addr, sizeof(WDRV_WINC_IPV6_ADDR));
                 addr.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
             }
             else
@@ -228,14 +236,14 @@ void WDRV_WINC_DNSProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, WI
         {
             uint16_t status;
 
-            if (pElems->numElems != 3)
+            if (3U != pElems->numElems)
             {
-                return;
+                break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_STATUS, &status, sizeof(status));
-            WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
-            WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_STRING, &domain, sizeof(domain));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_STATUS, &status, sizeof(status));
+            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
+            (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_STRING, &domain, sizeof(domain));
 
             if (NULL != pDcpt->pCtrl->pfDNSResolveResponseCB)
             {
@@ -248,6 +256,7 @@ void WDRV_WINC_DNSProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, WI
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("DNS AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -278,7 +287,6 @@ WDRV_WINC_STATUS WDRV_WINC_DNSAutoSet(DRV_HANDLE handle, bool enabled)
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -292,26 +300,17 @@ WDRV_WINC_STATUS WDRV_WINC_DNSAutoSet(DRV_HANDLE handle, bool enabled)
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, dnsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dnsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_AUTO, WINC_TYPE_BOOL, enabled, 1);
+    (void)WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_AUTO, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 1);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -348,8 +347,7 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
-    int i;
+    uint8_t i;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -364,7 +362,7 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
     }
 
     /* Limit servers */
-    if (numServers > WINC_CFG_PARAM_ID_DNS_DNS_SVR_NUM)
+    if (numServers > WINC_CFG_PARAM_NUM_DNS_DNS_SVR)
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -380,22 +378,14 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
         }
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 3, dnsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit((unsigned int)1U+numServers, sizeof(WDRV_WINC_IPV6_ADDR)*numServers, dnsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_SVR, WINC_TYPE_INTEGER, 0, 0);
+    (void)WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_SVR, WINC_TYPE_INTEGER, 0, 0);
 
     if (NULL != pServerAddr)
     {
@@ -415,13 +405,12 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
                 lenVal  = sizeof(WDRV_WINC_IPV6_ADDR);
             }
 
-            WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_SVR, typeVal, (uintptr_t)&pServerAddr[i].addr, lenVal);
+            (void)WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_SVR, typeVal, (uintptr_t)&pServerAddr[i].addr, lenVal);
         }
     }
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -462,7 +451,6 @@ WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
     size_t addressLen;
 
     /* Ensure the driver handle is valid. */
@@ -483,34 +471,25 @@ WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    addressLen = strnlen(pDomainName, WINC_CMD_PARAM_ID_DNS_DOMAIN_NAME_SZ+1);
+    addressLen = strnlen(pDomainName, WINC_CMD_PARAM_SZ_DNS_DOMAIN_NAME+1U);
 
-    if ((0 == addressLen) || (addressLen > WINC_CMD_PARAM_ID_DNS_DOMAIN_NAME_SZ))
+    if ((0U == addressLen) || (addressLen > WINC_CMD_PARAM_SZ_DNS_DOMAIN_NAME))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256+addressLen);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256+addressLen, 2, dnsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, addressLen, dnsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_TIMEOUT, WINC_TYPE_INTEGER_UNSIGNED, timeoutMs, sizeof(timeoutMs));
-    WINC_CmdDNSRESOLV(cmdReqHandle, recordType, (uint8_t*)pDomainName, addressLen);
+    (void)WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_TIMEOUT, WINC_TYPE_INTEGER_UNSIGNED, timeoutMs, sizeof(timeoutMs));
+    (void)WINC_CmdDNSRESOLV(cmdReqHandle, recordType, (const uint8_t*)pDomainName, addressLen);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -520,3 +499,4 @@ WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
 }
 
 //DOM-IGNORE-END
+#endif /* WDRV_WINC_MOD_DISABLE_DNS */

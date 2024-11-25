@@ -49,6 +49,8 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_tls.h"
 
+#ifndef WDRV_WINC_MOD_DISABLE_TLS
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: WINC Driver TLS Context Implementation
@@ -58,7 +60,7 @@ Microchip or any third party.
 //*******************************************************************************
 /*
   Function:
-    static void tlsProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+    static void tlsProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 
   Summary:
     Process command responses.
@@ -67,7 +69,7 @@ Microchip or any third party.
     Processes command responses received via WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED events.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
     handle - WINC device handle.
@@ -81,7 +83,7 @@ Microchip or any third party.
 
 */
 
-static void tlsProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+static void tlsProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
 
@@ -96,22 +98,22 @@ static void tlsProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems
         {
             WINC_DEV_FRACT_INT_TYPE id;
 
-            if (2 != pElems->numElems)
+            if (2U != pElems->numElems)
             {
                 break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
 
             if (-1 == id.f)
             {
-                WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pDcpt->pCtrl->tlsCipherSuites.numAlgorithms, sizeof(pDcpt->pCtrl->tlsCipherSuites.numAlgorithms));
+                (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pDcpt->pCtrl->tlsCipherSuites.numAlgorithms, sizeof(pDcpt->pCtrl->tlsCipherSuites.numAlgorithms));
             }
             else
             {
                 uint16_t cs;
 
-                WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &cs, sizeof(cs));
+                (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &cs, sizeof(cs));
 
                 pDcpt->pCtrl->tlsCipherSuites.algorithms[id.f] = cs;
             }
@@ -121,6 +123,7 @@ static void tlsProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("TLS CmdRspCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -145,10 +148,10 @@ static void tlsProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -211,7 +214,7 @@ static void tlsCmdRspCallbackHandler
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("TLSC CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("TLSC CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -222,7 +225,7 @@ static void tlsCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            int i;
+            unsigned int i;
 
             for (i=0; i<WDRV_WINC_TLS_CIPHER_SUITE_NUM; i++)
             {
@@ -234,7 +237,7 @@ static void tlsCmdRspCallbackHandler
 
                         if (NULL != pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB)
                         {
-                            pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB((DRV_HANDLE)pDcpt, i+i, NULL, 0, true);
+                            pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB((DRV_HANDLE)pDcpt, i+1U, NULL, 0, true);
                         }
 
                         pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB = NULL;
@@ -242,7 +245,7 @@ static void tlsCmdRspCallbackHandler
                 }
             }
 
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -264,7 +267,7 @@ static void tlsCmdRspCallbackHandler
                             break;
                         }
 
-                        if (pStatusInfo->srcCmd.numParams < 1)
+                        if (pStatusInfo->srcCmd.numParams < 1U)
                         {
                             break;
                         }
@@ -274,11 +277,11 @@ static void tlsCmdRspCallbackHandler
                             break;
                         }
 
-                        WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &tlsCsHandle, sizeof(tlsCsHandle));
+                        (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &tlsCsHandle, sizeof(tlsCsHandle));
 
-                        if (2 == pStatusInfo->srcCmd.numParams)
+                        if (2U == pStatusInfo->srcCmd.numParams)
                         {
-                            if (WDRV_WINC_STATUS_OK == pStatusInfo->status)
+                            if (WDRV_WINC_STATUS_OK == (WDRV_WINC_STATUS)pStatusInfo->status)
                             {
                                 pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB((DRV_HANDLE)pDcpt, tlsCsHandle, pDcpt->pCtrl->tlsCipherSuites.algorithms, pDcpt->pCtrl->tlsCipherSuites.numAlgorithms, true);
                             }
@@ -289,16 +292,20 @@ static void tlsCmdRspCallbackHandler
 
                             pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB = NULL;
                         }
-                        else if (3 == pStatusInfo->srcCmd.numParams)
+                        else if (3U == pStatusInfo->srcCmd.numParams)
                         {
-                            if (WDRV_WINC_STATUS_OK != pStatusInfo->status)
+                            if (WDRV_WINC_STATUS_OK != (WDRV_WINC_STATUS)pStatusInfo->status)
                             {
                                 uint16_t cs;
 
-                                WINC_CmdReadParamElem(&elems[2], WINC_TYPE_INTEGER, &cs, sizeof(cs));
+                                (void)WINC_CmdReadParamElem(&elems[2], WINC_TYPE_INTEGER, &cs, sizeof(cs));
 
                                 pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB((DRV_HANDLE)pDcpt, tlsCsHandle, &cs, 1, false);
                             }
+                        }
+                        else
+                        {
+                            /* Do nothing. */
                         }
 
                         break;
@@ -306,6 +313,7 @@ static void tlsCmdRspCallbackHandler
 
                     default:
                     {
+                        WDRV_DBG_VERBOSE_PRINT("TLS CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
                         break;
                     }
                 }
@@ -316,13 +324,19 @@ static void tlsCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-            WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
+            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
 
             if (NULL != pRspElems)
             {
                 tlsProcessCmdRsp((DRV_HANDLE)pDcpt, pRspElems);
             }
 
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("TLS CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
             break;
         }
     }
@@ -347,7 +361,7 @@ static void tlsCmdRspCallbackHandler
 WDRV_WINC_TLS_HANDLE WDRV_WINC_TLSCtxOpen(DRV_HANDLE handle)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
-    int i;
+    unsigned int i;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -366,7 +380,7 @@ WDRV_WINC_TLS_HANDLE WDRV_WINC_TLSCtxOpen(DRV_HANDLE handle)
         if (false == pDcpt->pCtrl->tlscInfo[i].idxInUse)
         {
             pDcpt->pCtrl->tlscInfo[i].idxInUse = true;
-            return i+1;
+            return (uint8_t)i+1U;
         }
     }
 
@@ -410,14 +424,40 @@ void WDRV_WINC_TLSCtxClose(DRV_HANDLE handle, WDRV_WINC_TLS_HANDLE tlsHandle)
         return;
     }
 
-    if (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse)
+    if (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse)
     {
         return;
     }
 
-    pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse = false;
+    pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse = false;
 
     return;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    uint8_t WDRV_WINC_TLSCtxHandleToCfgIdx(WDRV_WINC_TLS_HANDLE tlsHandle)
+
+  Summary:
+    Convert TLS handle to index.
+
+  Description:
+    Convert TLS context handle to configuration index.
+
+  Remarks:
+    See wdrv_winc_tls.h for usage information.
+
+*/
+
+uint8_t WDRV_WINC_TLSCtxHandleToCfgIdx(WDRV_WINC_TLS_HANDLE tlsHandle)
+{
+    if (WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle)
+    {
+        return 0;
+    }
+
+    return (uint8_t)tlsHandle;
 }
 
 //*******************************************************************************
@@ -452,7 +492,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCACertFileSet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pCACertName))
@@ -461,7 +500,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCACertFileSet
     }
 
     /* Ensure the TLS handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -472,27 +511,18 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCACertFileSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(384);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 384, 2, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, WINC_CFG_PARAM_SZ_TLS_CTX_CA_CERT_NAME, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PEER_AUTH, WINC_TYPE_BOOL, (true == peerAuth) ? 1 : 0, 0);
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_CA_CERT_NAME, WINC_TYPE_STRING, (uintptr_t)pCACertName, strnlen(pCACertName, WINC_CFG_PARAM_ID_TLS_CTX_CA_CERT_NAME_SZ));
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PEER_AUTH, WINC_TYPE_BOOL, (true == peerAuth) ? 1U : 0U, 0);
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_CA_CERT_NAME, WINC_TYPE_STRING, (uintptr_t)pCACertName, strnlen(pCACertName, WINC_CFG_PARAM_SZ_TLS_CTX_CA_CERT_NAME));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -529,7 +559,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertFileSet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pCertName))
@@ -538,7 +567,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertFileSet
     }
 
     /* Ensure the TLS handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -549,26 +578,17 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertFileSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, WINC_CFG_PARAM_SZ_TLS_CTX_CERT_NAME, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_CERT_NAME, WINC_TYPE_STRING, (uintptr_t)pCertName, strnlen(pCertName, WINC_CFG_PARAM_ID_TLS_CTX_CERT_NAME_SZ));
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_CERT_NAME, WINC_TYPE_STRING, (uintptr_t)pCertName, strnlen(pCertName, WINC_CFG_PARAM_SZ_TLS_CTX_CERT_NAME));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -607,7 +627,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxPrivKeySet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pPrivKeyName))
@@ -616,7 +635,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxPrivKeySet
     }
 
     /* Ensure the TLS handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -627,35 +646,92 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxPrivKeySet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 2, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, WINC_CFG_PARAM_SZ_TLS_CTX_PRI_KEY_NAME+WINC_CFG_PARAM_SZ_TLS_CTX_PRI_KEY_PASSWORD , tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_NAME, WINC_TYPE_STRING, (uintptr_t)pPrivKeyName, strnlen(pPrivKeyName, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_NAME_SZ));
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_NAME, WINC_TYPE_STRING, (uintptr_t)pPrivKeyName, strnlen(pPrivKeyName, WINC_CFG_PARAM_SZ_TLS_CTX_PRI_KEY_NAME));
 
     if (NULL != pPrivKeyPassword)
     {
-        WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_PASSWORD, WINC_TYPE_STRING, (uintptr_t)pPrivKeyPassword, strnlen(pPrivKeyPassword, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_PASSWORD_SZ));
+        (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_PASSWORD, WINC_TYPE_STRING, (uintptr_t)pPrivKeyPassword, strnlen(pPrivKeyPassword, WINC_CFG_PARAM_SZ_TLS_CTX_PRI_KEY_PASSWORD));
     }
     else
     {
-        WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_PASSWORD, WINC_TYPE_STRING, 0, 0);
+        (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PRI_KEY_PASSWORD, WINC_TYPE_STRING, 0, 0);
     }
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_TLSCtxDHParamtersFileSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_TLS_HANDLE tlsHandle,
+        const char *pDHParamId
+    )
+
+  Summary:
+    Sets the Diffie-Hellman parameters field of a TLS context.
+
+  Description:
+    Sets the Diffie-Hellman parameters field of a TLS context.
+
+  Remarks:
+    See wdrv_winc_tls.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_TLSCtxDHParamtersFileSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_TLS_HANDLE tlsHandle,
+    const char *pDHParamId
+)
+{
+    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    WINC_CMD_REQ_HANDLE cmdReqHandle;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pDHParamId))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the TLS handle is valid and the context is in use. */
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, WINC_CFG_PARAM_SZ_TLS_CTX_DH_PARAM_NAME, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_DH_PARAM_NAME, WINC_TYPE_STRING, (uintptr_t)pDHParamId, strnlen(pDHParamId, WINC_CFG_PARAM_SZ_TLS_CTX_DH_PARAM_NAME));
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -692,7 +768,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSNISet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pServerName))
@@ -701,7 +776,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSNISet
     }
 
     /* Ensure the TLS handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -712,26 +787,17 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSNISet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, WINC_CFG_PARAM_SZ_TLS_CTX_SERVER_NAME, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_SERVER_NAME, WINC_TYPE_STRING, (uintptr_t)pServerName, strnlen(pServerName, WINC_CFG_PARAM_ID_TLS_CTX_SERVER_NAME_SZ));
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_SERVER_NAME, WINC_TYPE_STRING, (uintptr_t)pServerName, strnlen(pServerName, WINC_CFG_PARAM_SZ_TLS_CTX_SERVER_NAME));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -770,16 +836,21 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxHostnameCheckSet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
-    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pDomainName))
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
     /* Ensure the TLS handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure domain name is set if verify is true. */
+    if ((true == verifyDomain) && (NULL == pDomainName))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -790,27 +861,22 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxHostnameCheckSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(384);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 384, 2, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, WINC_CFG_PARAM_SZ_TLS_CTX_DOMAIN_NAME, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PEER_DOMAIN_VERIFY, WINC_TYPE_BOOL, (true == verifyDomain) ? 1 : 0, 0);
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_DOMAIN_NAME, WINC_TYPE_STRING, (uintptr_t)pDomainName, strnlen(pDomainName, WINC_CFG_PARAM_ID_TLS_CTX_DOMAIN_NAME_SZ));
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_PEER_DOMAIN_VERIFY, WINC_TYPE_BOOL, (true == verifyDomain) ? 1U : 0U, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (NULL != pDomainName)
     {
-        OSAL_Free(pCmdReqBuffer);
+        (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_DOMAIN_NAME, WINC_TYPE_STRING, (uintptr_t)pDomainName, strnlen(pDomainName, WINC_CFG_PARAM_SZ_TLS_CTX_DOMAIN_NAME));
+    }
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -849,7 +915,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSetSignCallback
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
     uint8_t extCryptoOps = 0;
 
     /* Ensure the driver handle is valid. */
@@ -859,7 +924,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSetSignCallback
     }
 
     /* Ensure the TLS handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsHandle > WDRV_WINC_TLS_CTX_NUM) || (false == pDcpt->pCtrl->tlscInfo[tlsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -870,34 +935,25 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSetSignCallback
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pDcpt->pCtrl->tlscInfo[tlsHandle-1].pfSignCB  = pfSignCb;
-    pDcpt->pCtrl->tlscInfo[tlsHandle-1].signCbCtx = signCbCtx;
+    pDcpt->pCtrl->tlscInfo[tlsHandle-1U].pfSignCB  = pfSignCb;
+    pDcpt->pCtrl->tlscInfo[tlsHandle-1U].signCbCtx = signCbCtx;
 
     if (NULL != pfSignCb)
     {
         extCryptoOps = 1;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_EXTCRYPTO_OPS, WINC_TYPE_INTEGER, extCryptoOps, 0);
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_EXTCRYPTO_OPS, WINC_TYPE_INTEGER, extCryptoOps, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -934,7 +990,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCipherSuiteSet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
      /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -942,28 +997,19 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCipherSuiteSet
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    pDcpt->pCtrl->tlscInfo[tlsHandle-1].tlsCsHandle = tlsCsHandle;
+    pDcpt->pCtrl->tlscInfo[tlsHandle-1U].tlsCsHandle = tlsCsHandle;
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_CIPHER_SUITES_IDX, WINC_TYPE_INTEGER, tlsCsHandle, 1);
+    (void)WINC_CmdTLSC(cmdReqHandle, tlsHandle, WINC_CFG_PARAM_ID_TLS_CTX_CIPHER_SUITES_IDX, WINC_TYPE_INTEGER, tlsCsHandle, 1);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -990,7 +1036,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCipherSuiteSet
 WDRV_WINC_TLS_CS_HANDLE WDRV_WINC_TLSCipherSuiteOpen(DRV_HANDLE handle)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
-    int i;
+    unsigned int i;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -1010,7 +1056,7 @@ WDRV_WINC_TLS_CS_HANDLE WDRV_WINC_TLSCipherSuiteOpen(DRV_HANDLE handle)
         {
             pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[i].idxInUse        = true;
             pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[i].setCmdReqHandle = WINC_CMD_REQ_INVALID_HANDLE;
-            return i+1;
+            return (WDRV_WINC_TLS_CS_HANDLE)(i+1U);
         }
     }
 
@@ -1062,12 +1108,12 @@ void WDRV_WINC_TLSCipherSuiteClose
         return;
     }
 
-    if (false == pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1].idxInUse)
+    if (false == pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1U].idxInUse)
     {
         return;
     }
 
-    pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1].idxInUse = false;
+    pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1U].idxInUse = false;
 
     return;
 }
@@ -1079,7 +1125,7 @@ void WDRV_WINC_TLSCipherSuiteClose
     (
         DRV_HANDLE handle,
         WDRV_WINC_TLS_CS_HANDLE tlsCsHandle,
-        uint16_t *pAlgorithms,
+        const uint16_t *const pAlgorithms,
         uint8_t numAlgorithms,
         const WDRV_WINC_TLS_CS_CALLBACK pfTlsCsResponseCB
     )
@@ -1099,14 +1145,14 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgSet
 (
     DRV_HANDLE handle,
     WDRV_WINC_TLS_CS_HANDLE tlsCsHandle,
-    uint16_t *pAlgorithms,
+    const uint16_t *const pAlgorithms,
     uint8_t numAlgorithms,
     const WDRV_WINC_TLS_CS_CALLBACK pfTlsCsResponseCB
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
+    uint8_t i;
 
      /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pAlgorithms))
@@ -1115,7 +1161,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgSet
     }
 
     /* Ensure the TLS cipher suite handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_CS_INVALID_HANDLE == tlsCsHandle) || (tlsCsHandle > WDRV_WINC_TLS_CIPHER_SUITE_NUM) || (false == pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_CS_INVALID_HANDLE == tlsCsHandle) || (tlsCsHandle > WDRV_WINC_TLS_CIPHER_SUITE_NUM) || (false == pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -1125,35 +1171,26 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgSet
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128+(70*numAlgorithms));
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128+(70*numAlgorithms), 1+numAlgorithms, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(((unsigned int)numAlgorithms)+1U, 0, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSCSC(cmdReqHandle, tlsCsHandle, 1, WINC_TYPE_INTEGER, 0, 1);
+    (void)WINC_CmdTLSCSC(cmdReqHandle, tlsCsHandle, 1, WINC_TYPE_INTEGER, 0, 1);
 
-    for (int i=0; i<numAlgorithms; i++)
+    for (i=0; i<numAlgorithms; i++)
     {
-        WINC_CmdTLSCSC(cmdReqHandle, tlsCsHandle, 1, WINC_TYPE_INTEGER, pAlgorithms[i], 1);
+        (void)WINC_CmdTLSCSC(cmdReqHandle, tlsCsHandle, 1, WINC_TYPE_INTEGER, pAlgorithms[i], 1);
     }
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1].setCmdReqHandle = cmdReqHandle;
+    pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1U].setCmdReqHandle = cmdReqHandle;
 
     pDcpt->pCtrl->tlsCipherSuites.pfTlsCsResponseCB = pfTlsCsResponseCB;
 
@@ -1192,7 +1229,6 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgGet
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
      /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -1201,7 +1237,7 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgGet
     }
 
     /* Ensure the TLS cipher suite handle is valid and the context is in use. */
-    if ((WDRV_WINC_TLS_CS_INVALID_HANDLE == tlsCsHandle) || (tlsCsHandle > WDRV_WINC_TLS_CIPHER_SUITE_NUM) || (false == pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1].idxInUse))
+    if ((WDRV_WINC_TLS_CS_INVALID_HANDLE == tlsCsHandle) || (tlsCsHandle > WDRV_WINC_TLS_CIPHER_SUITE_NUM) || (false == pDcpt->pCtrl->tlsCipherSuites.tlsCsInfo[tlsCsHandle-1U].idxInUse))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -1211,26 +1247,17 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgGet
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, tlsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTLSCSC(cmdReqHandle, tlsCsHandle, (true == getDefaults) ? WINC_CFG_PARAM_ID_TLS_CSL_CIPHER_SUITES_AVAIL : WINC_CFG_PARAM_ID_TLS_CSL_CIPHER_SUITES, WINC_TYPE_INVALID, 0, 0);
+    (void)WINC_CmdTLSCSC(cmdReqHandle, tlsCsHandle, (true == getDefaults) ? WINC_CFG_PARAM_ID_TLS_CSL_CIPHER_SUITES_AVAIL : WINC_CFG_PARAM_ID_TLS_CSL_CIPHER_SUITES, WINC_TYPE_INVALID, 0, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -1238,3 +1265,5 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgGet
 
     return WDRV_WINC_STATUS_OK;
 }
+
+#endif /* WDRV_WINC_MOD_DISABLE_TLS */

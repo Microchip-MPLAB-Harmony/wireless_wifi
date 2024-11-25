@@ -46,6 +46,8 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_dhcps.h"
 
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: WINC Driver DHCP Server Implementation
@@ -71,10 +73,10 @@ Microchip or any third party.
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -130,14 +132,14 @@ static void dhcpsCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("DHCPS CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("DHCPS CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -148,7 +150,7 @@ static void dhcpsCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -161,6 +163,12 @@ static void dhcpsCmdRspCallbackHandler
         {
             break;
         }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("DHCPS CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
     }
 }
 
@@ -171,7 +179,7 @@ static void dhcpsCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -189,22 +197,14 @@ void WDRV_WINC_DHCPSProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT *)context;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
     {
         return;
-    }
-
-    switch (pElems->rspId)
-    {
-        default:
-        {
-            break;
-        }
     }
 }
 
@@ -240,7 +240,6 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSEnableSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -254,26 +253,17 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSEnableSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDHCPSC(cmdReqHandle, poolIdx, WINC_CFG_PARAM_ID_DHCPS_ENABLED, WINC_TYPE_BOOL, enabled, 0);
+    (void)WINC_CmdDHCPSC(cmdReqHandle, (int32_t)poolIdx, WINC_CFG_PARAM_ID_DHCPS_ENABLED, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -312,7 +302,6 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSPoolAddressSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -326,26 +315,17 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSPoolAddressSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDHCPSC(cmdReqHandle, poolIdx, WINC_CFG_PARAM_ID_DHCPS_POOL_START, WINC_TYPE_IPV4ADDR, (uintptr_t)pStartAddr, sizeof(WDRV_WINC_IPV4_ADDR));
+    (void)WINC_CmdDHCPSC(cmdReqHandle, (int32_t)poolIdx, WINC_CFG_PARAM_ID_DHCPS_POOL_START, WINC_TYPE_IPV4ADDR, (uintptr_t)pStartAddr, sizeof(WDRV_WINC_IPV4_ADDR));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -382,7 +362,6 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSGatewaySet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -396,26 +375,17 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSGatewaySet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDHCPSC(cmdReqHandle, poolIdx, WINC_CFG_PARAM_ID_DHCPS_GATEWAY, WINC_TYPE_IPV4ADDR, (uintptr_t)pGWAddr, sizeof(WDRV_WINC_IPV4_ADDR));
+    (void)WINC_CmdDHCPSC(cmdReqHandle, (int32_t)poolIdx, WINC_CFG_PARAM_ID_DHCPS_GATEWAY, WINC_TYPE_IPV4ADDR, (uintptr_t)pGWAddr, sizeof(WDRV_WINC_IPV4_ADDR));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -452,7 +422,6 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSNetIfBind
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -466,28 +435,21 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSNetIfBind
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdDHCPSC(cmdReqHandle, poolIdx, WINC_CFG_PARAM_ID_DHCPS_NETIF_IDX, WINC_TYPE_INTEGER, ifIdx, 0);
+    (void)WINC_CmdDHCPSC(cmdReqHandle, (int32_t)poolIdx, WINC_CFG_PARAM_ID_DHCPS_NETIF_IDX, WINC_TYPE_INTEGER, (uintptr_t)ifIdx, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     return WDRV_WINC_STATUS_OK;
 }
+
+#endif /* WDRV_WINC_MOD_DISABLE_DHCPS */

@@ -62,10 +62,10 @@ Microchip or any third party.
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -121,14 +121,14 @@ static void timeCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
 
     if (NULL == pDcpt)
     {
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("TIME CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("TIME CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -139,7 +139,7 @@ static void timeCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -152,6 +152,12 @@ static void timeCmdRspCallbackHandler
         {
             break;
         }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("TIME CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
     }
 }
 
@@ -162,7 +168,7 @@ static void timeCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -180,7 +186,7 @@ void WDRV_WINC_TIMEProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
@@ -195,14 +201,14 @@ void WDRV_WINC_TIMEProcessAEC
     {
         case WINC_AEC_ID_TIME:
         {
-            if (pElems->numElems != 1)
+            if (1U != pElems->numElems)
             {
-                return;
+                break;
             }
 
             if (NULL != pDcpt->pCtrl->pfSystemTimeGetCurrentCB)
             {
-                WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_UNSIGNED, &timeUTC, sizeof(timeUTC));
+                (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_UNSIGNED, &timeUTC, sizeof(timeUTC));
 
                 pDcpt->pCtrl->pfSystemTimeGetCurrentCB((DRV_HANDLE)pDcpt, timeUTC);
             }
@@ -212,6 +218,7 @@ void WDRV_WINC_TIMEProcessAEC
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("TIME AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -241,7 +248,6 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeSetCurrent(DRV_HANDLE handle, uint32_t curT
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt))
@@ -255,26 +261,17 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeSetCurrent(DRV_HANDLE handle, uint32_t curT
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, timeCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, timeCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTIMEUTCSEC(cmdReqHandle, WINC_CONST_TIME_FORMAT_UTC_NTP, curTime);
+    (void)WINC_CmdTIMEUTCSEC(cmdReqHandle, WINC_CONST_TIME_FORMAT_UTC_UNIX, curTime);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -309,7 +306,6 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeGetCurrent
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -323,26 +319,17 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeGetCurrent
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, timeCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, timeCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdTIME(cmdReqHandle, WINC_CONST_TIME_FORMAT_UTC_NTP);
+    (void)WINC_CmdTIME(cmdReqHandle, WINC_CONST_TIME_FORMAT_UTC_UNIX);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 

@@ -58,9 +58,9 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
-#define WDRV_WINC_FILE_INVALID_HANDLE                   0
+#define WDRV_WINC_FILE_INVALID_HANDLE                   0U
 
-#define WDRV_WINC_FILE_LOAD_BUF_SZ                      128
+#define WDRV_WINC_FILE_LOAD_BUF_SZ                      128U
 
 // *****************************************************************************
 // *****************************************************************************
@@ -106,6 +106,12 @@ typedef enum
 
     /* Private keys. */
     WDRV_WINC_FILE_TYPE_PRIKEYS = WINC_CONST_FS_FILETYPE_PRIKEY,
+
+    /* DH parameters. */
+    WDRV_WINC_FILE_TYPE_DHPARAM = WINC_CONST_FS_FILETYPE_DHPARAM,
+
+    /* Configurations. */
+    WDRV_WINC_FILE_TYPE_CFG = WINC_CONST_FS_FILETYPE_CFG
 } WDRV_WINC_FILE_TYPE;
 
 // *****************************************************************************
@@ -179,10 +185,6 @@ typedef enum
     Definition of file status callback, used to indicate the status of a file
     transfer operation.
 
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
     fHandle - File transfer handle.
@@ -234,10 +236,6 @@ typedef void (*WDRV_WINC_FILE_STATUS_CALLBACK)
     Definition of file find callback, used to indicate found files and operation
     status.
 
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-
   Parameters:
     handle    - Client handle obtained by a call to WDRV_WINC_Open.
     userCtx   - User context supplied to WDRV_WINC_FileFind.
@@ -285,10 +283,6 @@ typedef void (*WDRV_WINC_FILE_FIND_CALLBACK)
     Definition of file delete callback, used to indicate the status of a file
     delete operation.
 
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-
   Parameters:
     handle    - Client handle obtained by a call to WDRV_WINC_Open.
     userCtx   - User context supplied to WDRV_WINC_FileFind.
@@ -299,7 +293,7 @@ typedef void (*WDRV_WINC_FILE_FIND_CALLBACK)
 
   Remarks:
     WDRV_WINC_FILE_STATUS_OK:
-        Indicate the file delete operation succeeded.
+        Indicates the file delete operation succeeded.
 
     WDRV_WINC_FILE_STATUS_ERROR:
         Indicates the file delete operation failed.
@@ -361,7 +355,7 @@ typedef struct
         struct
         {
             /* Last known block number. */
-            uint16_t blockNum;
+            uint8_t blockNum;
 
             /* Pointer to user supplied data buffer. */
             const uint8_t *pData;
@@ -405,8 +399,8 @@ typedef struct
     Open a file transfer between user application and WINC device.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle      - WINC driver handle obtained from WDRV_WINC_Open.
@@ -452,16 +446,16 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
     Close a file transfer between user application and WINC device.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_FileOpen should have been called to obtain a valid file handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_FileOpen must have been called to obtain a valid file handle.
 
   Parameters:
     handle  - WINC driver handle obtained from WDRV_WINC_Open.
     fHandle - File handle received from WDRV_WINC_FileOpen.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - The file was closed.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -496,9 +490,9 @@ WDRV_WINC_STATUS WDRV_WINC_FileClose
     Write data to a file from user application to WINC device.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_FileOpen should have been called to obtain a valid file handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_FileOpen must have been called to obtain a valid file handle.
 
   Parameters:
     handle  - WINC driver handle obtained from WDRV_WINC_Open.
@@ -507,7 +501,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileClose
     lenData - Length of data to write.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - A file write was sent.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -544,8 +538,8 @@ WDRV_WINC_STATUS WDRV_WINC_FileWrite
     Requests the WINC device send a list of a particular file type.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle    - WINC driver handle obtained from WDRV_WINC_Open.
@@ -554,7 +548,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileWrite
     findCbCtx - User context value to pass to callback.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - A file find request was sent.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -576,7 +570,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_FILE_HANDLE WDRV_WINC_FileDelete
+    WDRV_WINC_STATUS WDRV_WINC_FileDelete
     (
         DRV_HANDLE handle,
         const char *pFilename,
@@ -592,8 +586,8 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
     Requests the WINC device deletes a file of a particular name and type.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle      - WINC driver handle obtained from WDRV_WINC_Open.
@@ -603,7 +597,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
     deleteCbCtx - User context value to pass to callback.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - A scan was initiated.
+    WDRV_WINC_STATUS_OK             - A file delete request was sent.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
@@ -614,7 +608,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
 
 */
 
-WDRV_WINC_FILE_HANDLE WDRV_WINC_FileDelete
+WDRV_WINC_STATUS WDRV_WINC_FileDelete
 (
     DRV_HANDLE handle,
     const char *pFilename,

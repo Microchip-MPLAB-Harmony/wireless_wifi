@@ -124,16 +124,17 @@ typedef struct
     WDRV_WINC_SPIInitialize must have been called.
 
   Parameters:
-    pTransmitData - buffer pointer of output data
-    pReceiveData  - buffer pointer of input data
-    size          - the input data size
+    pTransmitData - Pointer to buffer containing data to send, or NULL.
+    pReceiveData  - Pointer to buffer to receive data into, of NULL.
+    size          - The size of the data transfer.
 
   Returns:
-    true  - Indicates success
-    false - Indicates failure
+    true  - Indicates success.
+    false - Indicates failure.
 
   Remarks:
-    None.
+    Only half-duplex operation is required, so either pTransmitData or pReceiveData
+    will be valid pointers while the other is set to NULL.
  */
 
 bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t size);
@@ -150,7 +151,7 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
     This function opens the SPI object for the WiFi driver.
 
   Precondition:
-    None.
+    WDRV_WINC_SPIInitialize must have been called.
 
   Parameters:
     None.
@@ -179,7 +180,7 @@ bool WDRV_WINC_SPIOpen(void);
     None.
 
   Parameters:
-    pInitData - Pointer to initialization data
+    pInitData - Pointer to initialization data.
 
   Returns:
     None.
@@ -202,7 +203,7 @@ void WDRV_WINC_SPIInitialize(const WDRV_WINC_SPI_CFG *const pInitData);
     This function deinitializes the SPI object for the WiFi driver.
 
   Precondition:
-    None.
+    WDRV_WINC_SPIInitialize must have been called.
 
   Parameters:
     None.

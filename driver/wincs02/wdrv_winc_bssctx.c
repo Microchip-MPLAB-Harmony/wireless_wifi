@@ -112,7 +112,7 @@ bool WDRV_WINC_BSSCtxIsValid
     /* Ensure the BSSID is non-zero, if valid. */
     if (true == pBSSCtx->bssid.valid)
     {
-        int i;
+        unsigned int i;
         uint8_t macAddrChk;
 
         macAddrChk = 0;
@@ -121,7 +121,7 @@ bool WDRV_WINC_BSSCtxIsValid
             macAddrChk |= pBSSCtx->bssid.addr[i];
         }
 
-        if (0 == macAddrChk)
+        if (0U == macAddrChk)
         {
             return false;
         }
@@ -130,7 +130,7 @@ bool WDRV_WINC_BSSCtxIsValid
     if (true == ssidValid)
     {
         /* If requested, check the SSID is present. */
-        if (0 == pBSSCtx->ssid.length)
+        if (0U == pBSSCtx->ssid.length)
         {
             return false;
         }
@@ -169,13 +169,12 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetDefaults
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    memset(pBSSCtx->bssid.addr, 0, WDRV_WINC_MAC_ADDR_LEN);
+    (void)memset(pBSSCtx->bssid.addr, 0, WDRV_WINC_MAC_ADDR_LEN);
     pBSSCtx->bssid.valid = false;
 
-    /* Set context to have no SSID, all channels and not cloaked. */
+    /* Set context to have no SSID and all channels. */
     pBSSCtx->ssid.length = 0;
     pBSSCtx->channel     = WDRV_WINC_CID_ANY;
-    pBSSCtx->cloaked     = false;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -216,8 +215,8 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSID
     }
 
     /* Copy the SSID ensure unused space is zeroed. */
-    memset(&pBSSCtx->ssid.name, 0, WDRV_WINC_MAX_SSID_LEN);
-    memcpy(&pBSSCtx->ssid.name, pSSID, ssidLength);
+    (void)memset(&pBSSCtx->ssid.name, 0, WDRV_WINC_MAX_SSID_LEN);
+    (void)memcpy(&pBSSCtx->ssid.name, pSSID, ssidLength);
     pBSSCtx->ssid.length = ssidLength;
 
     /* Validate context. */
@@ -264,12 +263,12 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetBSSID
     if (NULL != pBSSID)
     {
         /* Copy the BSSID. */
-        memcpy(&pBSSCtx->bssid, pBSSID, WDRV_WINC_MAC_ADDR_LEN);
+        (void)memcpy((uint8_t*)&pBSSCtx->bssid, pBSSID, WDRV_WINC_MAC_ADDR_LEN);
         pBSSCtx->bssid.valid = true;
     }
     else
     {
-        memset(&pBSSCtx->bssid, 0, WDRV_WINC_MAC_ADDR_LEN);
+        (void)memset(&pBSSCtx->bssid, 0, WDRV_WINC_MAC_ADDR_LEN);
         pBSSCtx->bssid.valid = false;
     }
 
@@ -316,51 +315,6 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetChannel
 
     /* Copy channel. */
     pBSSCtx->channel = channel;
-
-    /* Validate context. */
-    if (false == WDRV_WINC_BSSCtxIsValid(pBSSCtx, false))
-    {
-        return WDRV_WINC_STATUS_INVALID_CONTEXT;
-    }
-
-    return WDRV_WINC_STATUS_OK;
-}
-
-//*******************************************************************************
-/*
-  Function:
-    WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSIDVisibility
-    (
-        WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
-        bool visible
-    )
-
-  Summary:
-    Configures the visibility of the BSS context.
-
-  Description:
-    Specific to Soft-AP mode this flag defines if the BSS context will create a
-      visible presence on air.
-
-  Remarks:
-    See wdrv_winc_bssctx.h for usage information.
-
-*/
-
-WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSIDVisibility
-(
-    WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
-    bool visible
-)
-{
-    /* Ensure BSS context is valid. */
-    if (NULL == pBSSCtx)
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Set cloaked state. */
-    pBSSCtx->cloaked = visible ? false : true;
 
     /* Validate context. */
     if (false == WDRV_WINC_BSSCtxIsValid(pBSSCtx, false))

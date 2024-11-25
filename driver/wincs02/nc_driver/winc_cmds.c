@@ -61,7 +61,8 @@ static bool cmdIsInt(WINC_TYPE typeVal)
 
         default:
         {
-            return false;
+            /* All other types are non integers. */
+            break;
         }
     }
 
@@ -98,7 +99,7 @@ static bool cmdParamBuilder(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, const
     }
 
     /* Determine the padding required to align value data to 32-bits. */
-    valPad = (4 - (lenVal & 3)) & 3;
+    valPad = (uint8_t)((4U - (lenVal & 3U)) & 3U);
 
     if ((NULL == pSendReqState->pCmdReq) || (NULL == pSendReqState->pPtr) || (pSendReqState->space < (sizeof(WINC_TLV_ELEMENT) + lenVal + valPad)))
     {
@@ -109,10 +110,10 @@ static bool cmdParamBuilder(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, const
 
     /* Encode the TLV header with type, padding and length. */
     pTlvElem = (WINC_TLV_ELEMENT*)pSendReqState->pPtr;
-    pTlvElem->type     = typeVal;
+    pTlvElem->type     = (uint8_t)typeVal;
     pTlvElem->flags    = valPad;
-    pTlvElem->length_h = lenVal >> 8;
-    pTlvElem->length_l = lenVal & 0xff;
+    pTlvElem->length_h = (uint8_t)(lenVal >> 8);
+    pTlvElem->length_l = (uint8_t)(lenVal & 0xffU);
 
     if (NULL != pVal)
     {
@@ -120,10 +121,10 @@ static bool cmdParamBuilder(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, const
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         if (true == cmdIsInt(typeVal))
         {
-            int i;
+            size_t i;
             const uint8_t *pByte = pVal;
 
-            pByte += lenVal;
+            pByte = pByte + lenVal;
 
             for (i=0; i<lenVal; i++)
             {
@@ -134,25 +135,25 @@ static bool cmdParamBuilder(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, const
         else
 #endif
         {
-            memcpy(pTlvElem->data, pVal, lenVal);
+            (void)memcpy(pTlvElem->data, (const uint8_t*)pVal, lenVal);
         }
     }
 
     /* Clear padding area. */
-    if (valPad > 0)
+    if (valPad > 0U)
     {
-        memset(&pTlvElem->data[lenVal], 0, valPad);
+        (void)memset(&pTlvElem->data[lenVal], 0, valPad);
     }
 
     /* Update send request state for next command or parameter. */
     lenVal += valPad;
 
     pSendReqState->pPtr  += (sizeof(WINC_TLV_ELEMENT) + lenVal);
-    pSendReqState->space -= (sizeof(WINC_TLV_ELEMENT) + lenVal);
+    pSendReqState->space -= (uint16_t)(sizeof(WINC_TLV_ELEMENT) + lenVal);
 
     pSendReqState->pCmdReq->numParams++;
 
-    pSendReqState->pCurHdrElem->length               += (sizeof(WINC_TLV_ELEMENT) + lenVal);
+    pSendReqState->pCurHdrElem->length               += (uint16_t)(sizeof(WINC_TLV_ELEMENT) + lenVal);
     pSendReqState->cmds[pSendReqState->numCmds].size += (sizeof(WINC_TLV_ELEMENT) + lenVal);
 
     return true;
@@ -183,11 +184,17 @@ static bool cmdMultiValueBuilder(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, 
     {
         if (true == cmdIsInt(typeVal))
         {
+#if UINTPTR_MAX != UINT32_MAX
+            uint32_t val32 = (uint32_t)val;
+
+            return cmdParamBuilder(handle, typeVal, &val32, sizeof(uint32_t));
+#else
             return cmdParamBuilder(handle, typeVal, &val, sizeof(uintptr_t));
+#endif
         }
         else
         {
-            return cmdParamBuilder(handle, typeVal, (void*)val, lenVal);
+            return cmdParamBuilder(handle, typeVal, (const uint8_t*)val, lenVal);
         }
     }
 
@@ -214,7 +221,7 @@ static bool cmdMultiValueBuilder(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, 
 
 static bool cmdFractValueBuilder(WINC_CMD_REQ_HANDLE handle, uint32_t val)
 {
-    if ((val >> 16) > 1)
+    if ((val >> 16U) > 1U)
     {
         return cmdParamBuilder(handle, WINC_TYPE_INTEGER_FRAC, &val, 4);
     }
@@ -246,7 +253,7 @@ static bool cmdFractValueBuilder(WINC_CMD_REQ_HANDLE handle, uint32_t val)
 
 static bool cmdCheckFractType(uint32_t val, uint16_t maxVal)
 {
-    if (((0 == (val >> 16)) && (val > maxVal)) || ((val >> 16) > maxVal))
+    if (((0U == (val >> 16U)) && (val > maxVal)) || ((val >> 16U) > maxVal))
     {
         return false;
     }
@@ -293,7 +300,7 @@ static WINC_COMMAND_REQUEST* cmdBuildCommandReq(WINC_CMD_REQ_HANDLE handle, uint
     {
         WINC_ERROR_PRINT("error: too many commands\n");
         pSendReqState->pPtr = NULL;
-        return false;
+        return NULL;
     }
 
     /* Ensure there is enough space at least a message request header. */
@@ -307,16 +314,16 @@ static WINC_COMMAND_REQUEST* cmdBuildCommandReq(WINC_CMD_REQ_HANDLE handle, uint
 
     /* Command request header of message comes next, initialise it. */
     pSendReqState->pCmdReq = (WINC_COMMAND_REQUEST*)pSendReqState->pPtr;
-    pSendReqState->pCmdReq->msgType   = WINC_COMMAND_MSG_TYPE_REQ;
-    pSendReqState->pCmdReq->id_h      = msgId >> 8;
-    pSendReqState->pCmdReq->id_l      = msgId & 0xff;
+    pSendReqState->pCmdReq->msgType   = (uint8_t)WINC_COMMAND_MSG_TYPE_REQ;
+    pSendReqState->pCmdReq->id_h      = (uint8_t)(msgId >> 8);
+    pSendReqState->pCmdReq->id_l      = (uint8_t)(msgId & 0xffU);
     pSendReqState->pCmdReq->numParams = 0;
 
     pSendReqState->pPtr  += sizeof(WINC_COMMAND_REQUEST);
-    pSendReqState->space -= sizeof(WINC_COMMAND_REQUEST);
+    pSendReqState->space -= (uint16_t)sizeof(WINC_COMMAND_REQUEST);
 
     /* Initialise the length in the send request header list. */
-    pSendReqState->pCurHdrElem->length = sizeof(WINC_COMMAND_REQUEST);
+    pSendReqState->pCurHdrElem->length = (uint16_t)sizeof(WINC_COMMAND_REQUEST);
     pSendReqState->pCurHdrElem->flags |= WINC_FLAG_FIRST_IN_BURST;
 
     WINC_VERBOSE_PRINT("Built: %08x %08x\n", pSendReqState->pCurHdrElem, pSendReqState->pCmdReq);
@@ -357,8 +364,8 @@ static bool cmdCompleteCommandReq(WINC_CMD_REQ_HANDLE handle)
 
     WINC_VERBOSE_PRINT("Compl: %08x %d\n", pSendReqState->pCmdReq, pSendReqState->cmds[pSendReqState->numCmds].size);
 
-    pSendReqState->pCmdReq->length_h = pSendReqState->cmds[pSendReqState->numCmds].size >> 8;
-    pSendReqState->pCmdReq->length_l = pSendReqState->cmds[pSendReqState->numCmds].size & 0xff;
+    pSendReqState->pCmdReq->length_h = (uint8_t)(pSendReqState->cmds[pSendReqState->numCmds].size >> 8);
+    pSendReqState->pCmdReq->length_l = (uint8_t)(pSendReqState->cmds[pSendReqState->numCmds].size & 0xffU);
 
     pSendReqState->pCurHdrElem->flags |= WINC_FLAG_LAST_IN_BURST;
 
@@ -399,12 +406,19 @@ static bool cmdCompleteCommandReq(WINC_CMD_REQ_HANDLE handle)
 
  *****************************************************************************/
 
-size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void *pVal, size_t lenVal)
+size_t WINC_CmdReadParamElem(const WINC_DEV_PARAM_ELEM *const pElem, WINC_TYPE typeVal, void *pVal, size_t lenVal)
 {
     size_t retVal = lenVal;
     uint8_t* pDstVal = pVal;
 
-    if ((NULL == pElem) || (NULL == pVal))
+    if (NULL == pVal)
+    {
+        return 0;
+    }
+
+    (void)memset(pVal, 0, lenVal);
+
+    if (NULL == pElem)
     {
         return 0;
     }
@@ -419,9 +433,9 @@ size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void
         /* If type is a signed integer then prepare for sign extension. */
         if (WINC_TYPE_INTEGER == pElem->type)
         {
-            if (0 != (pElem->pData[0] & 0x80))
+            if (0U != (pElem->pData[0] & 0x80U))
             {
-                signByte = 0xff;
+                signByte = 0xffU;
             }
         }
 
@@ -432,10 +446,10 @@ size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void
 
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         lenSrcVal = pElem->length;
-        pSrcVal   = &pElem->pData[pElem->length-1];
+        pSrcVal   = &pElem->pData[pElem->length-1U];
 
         /* Copy integer in reverse, big to little endian. */
-        while ((lenVal > 0) && (lenSrcVal > 0))
+        while ((lenVal > 0U) && (lenSrcVal > 0U))
         {
             *pDstVal++ = *pSrcVal--;
             lenVal--;
@@ -443,7 +457,7 @@ size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void
         }
 
         /* Pad remaining length of destination with sign byte. */
-        while (lenVal > 0)
+        while (lenVal > 0U)
         {
             *pDstVal++ = signByte;
             lenVal--;
@@ -456,12 +470,12 @@ size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void
 
             if (WINC_TYPE_INTEGER_FRAC == pElem->type)
             {
-                pFIVal->i = (localUint >> 16) & 0xFFFF;
-                pFIVal->f = localUint & 0xFFFF;
+                pFIVal->i = (uint16_t)((localUint >> 16U) & 0xFFFFU);
+                pFIVal->f = (uint16_t)(localUint & 0xFFFFU);
             }
-            else if (localUint <= 0xFFFF)
+            else if (localUint <= 0xFFFFU)
             {
-                pFIVal->i = localUint;
+                pFIVal->i = (uint16_t)localUint;
                 pFIVal->f = -1;
             }
             else
@@ -478,10 +492,14 @@ size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void
         }
         else if (lenVal > pElem->length)
         {
-            memset(&pDstVal[pElem->length], 0, lenVal-pElem->length);
+            (void)memset(&pDstVal[pElem->length], 0, lenVal-pElem->length);
+        }
+        else
+        {
+            /* Do nothing. */
         }
 
-        memcpy(pDstVal, pElem->pData, pElem->length);
+        (void)memcpy(pDstVal, pElem->pData, pElem->length);
 
         retVal = pElem->length;
     }
@@ -492,27 +510,86 @@ size_t WINC_CmdReadParamElem(WINC_DEV_PARAM_ELEM *pElem, WINC_TYPE typeVal, void
             return 0;
         }
 
-        memcpy(pDstVal, pElem->pData, lenVal);
+        (void)memcpy(pDstVal, pElem->pData, lenVal);
     }
 
     return retVal;
 }
 
 /*****************************************************************************
+  Description:
+    Send an already formatted command request.
+
+  Parameters:
+    handle  - Command request session handle
+    pCmdReq - Pointer to command request
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+
  *****************************************************************************/
 
+bool WINC_CmdReqSend(WINC_CMD_REQ_HANDLE handle, WINC_COMMAND_REQUEST *pCmdReq)
+{
+    WINC_COMMAND_REQUEST *pCmdReqToSend;
+    WINC_SEND_REQ_STATE *pSendReqState;
+    uint16_t payloadLength;
+    uint16_t payloadLengthAligned;
+
+    if ((0U == handle) || (NULL == pCmdReq))
+    {
+        return false;
+    }
+
+    pCmdReqToSend = cmdBuildCommandReq(handle, 0);
+
+    if (NULL == pCmdReqToSend)
+    {
+        return false;
+    }
+
+    payloadLength = ((uint16_t)pCmdReq->length_h << 8) | pCmdReq->length_l;
+    payloadLengthAligned = ((payloadLength + 3U) & (~0x0003U));
+
+    pSendReqState = (WINC_SEND_REQ_STATE*)handle;
+
+    if ((NULL == pSendReqState->pCmdReq) || (NULL == pSendReqState->pPtr) || (pSendReqState->space < payloadLengthAligned))
+    {
+        WINC_ERROR_PRINT("error: send request state failure, possible no space\n");
+        pSendReqState->pPtr = NULL;
+        return false;
+    }
+
+    (void)memcpy(pCmdReqToSend, pCmdReq, sizeof(WINC_COMMAND_REQUEST) + payloadLength);
+
+    if (payloadLengthAligned > payloadLength)
+    {
+        (void)memset(&((uint8_t*)pCmdReqToSend)[sizeof(WINC_COMMAND_REQUEST)+payloadLength], 0, (payloadLengthAligned-payloadLength));
+    }
+
+    pSendReqState->pPtr  += payloadLengthAligned;
+    pSendReqState->space -= payloadLengthAligned;
+
+    pSendReqState->pCurHdrElem->length               += payloadLengthAligned;
+    pSendReqState->cmds[pSendReqState->numCmds].size += payloadLengthAligned;
+
+    return cmdCompleteCommandReq(handle);
+}
+
 /*****************************************************************************
-   Description:
-     This command requests manufacturer identification
+  Description:
+    This command requests manufacturer identification.
 
-   Parameters:
-     handle - Command request session handle
+  Parameters:
+    handle - Command request session handle
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -520,7 +597,7 @@ bool WINC_CmdGMI(WINC_CMD_REQ_HANDLE handle)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -536,17 +613,17 @@ bool WINC_CmdGMI(WINC_CMD_REQ_HANDLE handle)
 }
 
 /*****************************************************************************
-   Description:
-     This command requests model identification
+  Description:
+    This command requests model identification.
 
-   Parameters:
-     handle - Command request session handle
+  Parameters:
+    handle - Command request session handle
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -554,7 +631,7 @@ bool WINC_CmdGMM(WINC_CMD_REQ_HANDLE handle)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -570,17 +647,17 @@ bool WINC_CmdGMM(WINC_CMD_REQ_HANDLE handle)
 }
 
 /*****************************************************************************
-   Description:
-     This command requests revision identification
+  Description:
+    This command requests revision identification.
 
-   Parameters:
-     handle - Command request session handle
+  Parameters:
+    handle - Command request session handle
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -588,7 +665,7 @@ bool WINC_CmdGMR(WINC_CMD_REQ_HANDLE handle)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -604,18 +681,22 @@ bool WINC_CmdGMR(WINC_CMD_REQ_HANDLE handle)
 }
 
 /*****************************************************************************
-   Description:
-     This command sets the DTE serial port baud rate
+  Description:
+    This command sets the host serial port baud rate.
 
-   Parameters:
-     handle      - Command request session handle
-     optBaudRate - Baud rate
+  Parameters:
+    handle      - Command request session handle
+    optBaudRate - Baud rate
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optBaudRate will be ignored if its value is WINC_CMDIPR_BAUD_RATE_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -623,7 +704,7 @@ bool WINC_CmdIPR(WINC_CMD_REQ_HANDLE handle, uint32_t optBaudRate)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -635,30 +716,34 @@ bool WINC_CmdIPR(WINC_CMD_REQ_HANDLE handle, uint32_t optBaudRate)
         return false;
     }
 
-    if (0 != optBaudRate)
+    if (0U != optBaudRate)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optBaudRate, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optBaudRate, 4);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the system configuration
+  Description:
+    This command is used to read or set the system configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDCFG_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -666,7 +751,7 @@ bool WINC_CmdCFG(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVa
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -683,33 +768,81 @@ bool WINC_CmdCFG(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVa
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the DHCP server configuration
+  Description:
+    This command is used to copy configurations to/from storage.
 
-   Parameters:
-     handle     - Command request session handle
-     optIdx     - Pool index
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    typeCfgsrc - Type of cfgsrc
+    cfgsrc     - Configuration source
+    lenCfgsrc  - Length of cfgsrc
+    typeCfgdst - Type of cfgdst
+    cfgdst     - Configuration destination
+    lenCfgdst  - Length of cfgdst
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdCFGCP(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeCfgsrc, uintptr_t cfgsrc, size_t lenCfgsrc, WINC_TYPE typeCfgdst, uintptr_t cfgdst, size_t lenCfgdst)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_CFGCP);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdMultiValueBuilder(handle, typeCfgsrc, cfgsrc, lenCfgsrc);
+    (void)cmdMultiValueBuilder(handle, typeCfgdst, cfgdst, lenCfgdst);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command is used to read or set the DHCP server configuration.
+
+  Parameters:
+    handle     - Command request session handle
+    optIdx     - Pool index
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optIdx will be ignored if its value is WINC_CMDDHCPSC_IDX_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDDHCPSC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -717,7 +850,7 @@ bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, 
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -741,35 +874,38 @@ bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, 
 
     if (-1 != optIdx)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optIdx, 4);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optIdx, 4);
 
-    if (0 != optId)
-    {
-        cmdFractValueBuilder(handle, optId);
+        if (0U != optId)
+        {
+            (void)cmdFractValueBuilder(handle, optId);
+            (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+        }
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the DNS configuration
+  Description:
+    This command is used to read or set the DNS configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDDNSC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -777,7 +913,7 @@ bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -794,31 +930,30 @@ bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to resolve domain names via DNS
+  Description:
+    This command is used to resolve domain names via DNS.
 
-   Parameters:
-     handle        - Command request session handle
-     type          - Type of record
-     pDomainName   - Domain name to resolve
-     lenDomainName - Length of pDomainName
+  Parameters:
+    handle        - Command request session handle
+    type          - Type of record
+    pDomainName   - Domain name to resolve
+    lenDomainName - Length of pDomainName
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -826,17 +961,17 @@ bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* 
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((1 != type) && (28 != type))
+    if ((1U != type) && (28U != type))
     {
         return false;
     }
 
-    if ((NULL == pDomainName) || (lenDomainName > 128))
+    if ((NULL == pDomainName) || (lenDomainName > 128U))
     {
         return false;
     }
@@ -848,28 +983,34 @@ bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* 
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &type, 1);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pDomainName, lenDomainName);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &type, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pDomainName, lenDomainName);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command performs a filesystem operation
+  Description:
+    This command performs a filesystem operation.
 
-   Parameters:
-     handle         - Command request session handle
-     op             - Operation
-     optFiletype    - File type
-     pOptFilename   - The name of the file
-     lenOptFilename - Length of pOptFilename
+  Parameters:
+    handle         - Command request session handle
+    op             - Operation
+    optFiletype    - File type
+    pOptFilename   - The name of the file
+    lenOptFilename - Length of pOptFilename
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optFiletype will be ignored if its value is WINC_CMDFSOP_FILETYPE_IGNORE_VAL.
+
+    pOptFilename will be ignored if its value is NULL.
 
  *****************************************************************************/
 
@@ -877,22 +1018,22 @@ bool WINC_CmdFSOP(WINC_CMD_REQ_HANDLE handle, uint8_t op, uint8_t optFiletype, c
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((op < 1) || (op > 4))
+    if ((op < 1U) || (op > 4U))
     {
         return false;
     }
 
-    if (optFiletype > 2)
+    if ((optFiletype > 3U) && (20U != optFiletype))
     {
         return false;
     }
 
-    if ((NULL != pOptFilename) && (lenOptFilename > 32))
+    if ((NULL != pOptFilename) && (lenOptFilename > 32U))
     {
         return false;
     }
@@ -904,62 +1045,69 @@ bool WINC_CmdFSOP(WINC_CMD_REQ_HANDLE handle, uint8_t op, uint8_t optFiletype, c
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &op, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &op, 1);
 
-    if (0 != optFiletype)
+    if (0U != optFiletype)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFiletype, 1);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFiletype, 1);
 
-    if (NULL != pOptFilename)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_STRING, pOptFilename, lenOptFilename);
+        if (NULL != pOptFilename)
+        {
+            (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pOptFilename, lenOptFilename);
+        }
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command performs a filesystem operation
+  Description:
+    This command performs a filesystem operation.
 
-   Parameters:
-     handle        - Command request session handle
-     filetype      - File type
-     tsfrprot      - Transfer protocol
-     pFilename     - The name of the file
-     lenFilename   - Length of pFilename
-     optFilelength - File length
+  Parameters:
+    handle         - Command request session handle
+    filetype       - File type
+    tsfrprot       - Transfer protocol
+    pOptFilename   - The name of the file
+    lenOptFilename - Length of pOptFilename
+    optFilelength  - File length
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    pOptFilename will be ignored if its value is NULL.
+
+    optFilelength will be ignored if its value is WINC_CMDFSLOAD_FILELENGTH_IGNORE_VAL.
 
  *****************************************************************************/
 
-bool WINC_CmdFSLOAD(WINC_CMD_REQ_HANDLE handle, uint8_t filetype, uint8_t tsfrprot, const uint8_t* pFilename, size_t lenFilename, uint16_t optFilelength)
+bool WINC_CmdFSLOAD(WINC_CMD_REQ_HANDLE handle, uint8_t filetype, uint8_t tsfrprot, const uint8_t* pOptFilename, size_t lenOptFilename, uint16_t optFilelength)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
     const uint8_t op = 1;
-    if (0 == handle)
+
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((filetype < 1) || (filetype > 2))
+    if (((filetype < 1U) || (filetype > 3U)) && (20U != filetype))
     {
         return false;
     }
 
-    if ((tsfrprot < 1) || (tsfrprot > 5))
+    if ((tsfrprot < 1U) || (tsfrprot > 5U))
     {
         return false;
     }
 
-    if ((NULL == pFilename) || (lenFilename > 32))
+    if ((NULL != pOptFilename) && (lenOptFilename > 32U))
     {
         return false;
     }
@@ -971,36 +1119,50 @@ bool WINC_CmdFSLOAD(WINC_CMD_REQ_HANDLE handle, uint8_t filetype, uint8_t tsfrpr
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &op, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &filetype, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &tsfrprot, 1);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pFilename, lenFilename);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &op, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &filetype, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &tsfrprot, 1);
 
-    if (0 != optFilelength)
+    if (NULL != pOptFilename)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFilelength, 2);
+        (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pOptFilename, lenOptFilename);
+
+        if (0U != optFilelength)
+        {
+            (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFilelength, 2);
+        }
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command performs a filesystem transfer operation
+  Description:
+    This command performs a filesystem transfer operation.
 
-   Parameters:
-     handle        - Command request session handle
-     optTsfrHandle - Transfer handle
-     optBlockNum   - Block number
-     pOptData      - Transfer data
-     lenOptData    - Length of pOptData
-     optCrc        - Transfer CRC-16
+  Parameters:
+    handle        - Command request session handle
+    optTsfrHandle - Transfer handle
+    optBlockNum   - Block number
+    pOptData      - Transfer data
+    lenOptData    - Length of pOptData
+    optCrc        - Transfer CRC-16
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optTsfrHandle will be ignored if its value is WINC_CMDFSTSFR_TSFR_HANDLE_IGNORE_VAL.
+
+    optBlockNum will be ignored if its value is WINC_CMDFSTSFR_BLOCK_NUM_IGNORE_VAL.
+
+    pOptData will be ignored if its value is NULL.
+
+    optCrc will be ignored if its value is WINC_CMDFSTSFR_CRC_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1008,7 +1170,7 @@ bool WINC_CmdFSTSFR(WINC_CMD_REQ_HANDLE handle, uint16_t optTsfrHandle, uint8_t 
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1025,45 +1187,49 @@ bool WINC_CmdFSTSFR(WINC_CMD_REQ_HANDLE handle, uint16_t optTsfrHandle, uint8_t 
         return false;
     }
 
-    if (0 != optTsfrHandle)
+    if (0U != optTsfrHandle)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optTsfrHandle, 2);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optTsfrHandle, 2);
 
-    if (0 != optBlockNum)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optBlockNum, 1);
-    }
+        if (0U != optBlockNum)
+        {
+            (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optBlockNum, 1);
 
-    if (NULL != pOptData)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pOptData, lenOptData);
-    }
+            if (NULL != pOptData)
+            {
+                (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pOptData, lenOptData);
 
-    if (-1 != optCrc)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optCrc, 4);
+                if (-1 != optCrc)
+                {
+                    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optCrc, 4);
+                }
+            }
+        }
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the MQTT configuration
+  Description:
+    This command is used to read or set the MQTT configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDMQTTC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1071,7 +1237,7 @@ bool WINC_CmdMQTTC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1088,29 +1254,32 @@ bool WINC_CmdMQTTC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to connect to an MQTT broker
+  Description:
+    This is used to connect to an MQTT broker.
 
-   Parameters:
-     handle   - Command request session handle
-     optClean - Clean Session
+  Parameters:
+    handle   - Command request session handle
+    optClean - Clean Session
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optClean will be ignored if its value is WINC_CMDMQTTCONN_CLEAN_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1118,7 +1287,7 @@ bool WINC_CmdMQTTCONN(WINC_CMD_REQ_HANDLE handle, int32_t optClean)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1137,27 +1306,27 @@ bool WINC_CmdMQTTCONN(WINC_CMD_REQ_HANDLE handle, int32_t optClean)
 
     if (-1 != optClean)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optClean, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optClean, 4);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to subscribe to an MQTT topic
+  Description:
+    This is used to subscribe to an MQTT topic.
 
-   Parameters:
-     handle       - Command request session handle
-     pTopicName   - Topic Name
-     lenTopicName - Length of pTopicName
-     maxQos       - Maximum QoS
+  Parameters:
+    handle       - Command request session handle
+    pTopicName   - Topic Name
+    lenTopicName - Length of pTopicName
+    maxQos       - Maximum QoS
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -1165,7 +1334,7 @@ bool WINC_CmdMQTTSUB(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, size
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1175,7 +1344,7 @@ bool WINC_CmdMQTTSUB(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, size
         return false;
     }
 
-    if (maxQos > 2)
+    if (maxQos > 2U)
     {
         return false;
     }
@@ -1187,24 +1356,24 @@ bool WINC_CmdMQTTSUB(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, size
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &maxQos, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &maxQos, 1);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to list MQTT topic subscriptions
+  Description:
+    This is used to list MQTT topic subscriptions.
 
-   Parameters:
-     handle - Command request session handle
+  Parameters:
+    handle - Command request session handle
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -1212,7 +1381,7 @@ bool WINC_CmdMQTTSUBLST(WINC_CMD_REQ_HANDLE handle)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1228,21 +1397,21 @@ bool WINC_CmdMQTTSUBLST(WINC_CMD_REQ_HANDLE handle)
 }
 
 /*****************************************************************************
-   Description:
-     This is used receive data from subscriptions
+  Description:
+    This is used receive data from subscriptions.
 
-   Parameters:
-     handle       - Command request session handle
-     pTopicName   - Topic Name
-     lenTopicName - Length of pTopicName
-     msgId        - Message Identifier
-     length       - The number of bytes to receive
+  Parameters:
+    handle       - Command request session handle
+    pTopicName   - Topic Name
+    lenTopicName - Length of pTopicName
+    msgId        - Message Identifier
+    length       - The number of bytes to receive
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -1250,7 +1419,7 @@ bool WINC_CmdMQTTSUBRD(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, si
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1267,27 +1436,27 @@ bool WINC_CmdMQTTSUBRD(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, si
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &msgId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &msgId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to unsubscribe from an MQTT topic
+  Description:
+    This is used to unsubscribe from an MQTT topic.
 
-   Parameters:
-     handle       - Command request session handle
-     pTopicName   - Topic Name
-     lenTopicName - Length of pTopicName
+  Parameters:
+    handle       - Command request session handle
+    pTopicName   - Topic Name
+    lenTopicName - Length of pTopicName
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -1295,7 +1464,7 @@ bool WINC_CmdMQTTUNSUB(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, si
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1312,58 +1481,54 @@ bool WINC_CmdMQTTUNSUB(WINC_CMD_REQ_HANDLE handle, const uint8_t* pTopicName, si
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to publish a message
+  Description:
+    This is used to publish a message.
 
-   Parameters:
-     handle          - Command request session handle
-     dup             - Duplicate Message
-     qos             - QoS
-     retain          - Retain Message
-     pTopicName      - Topic Name
-     lenTopicName    - Length of pTopicName
-     pTopicPayload   - Topic Payload
-     lenTopicPayload - Length of pTopicPayload
+  Parameters:
+    handle          - Command request session handle
+    dup             - Duplicate Message
+    qos             - QoS
+    retain          - Retain Message
+    typeTopicNameId - Type of topicNameId
+    topicNameId     - Topic Name or Alias
+    lenTopicNameId  - Length of topicNameId
+    pTopicPayload   - Topic Payload
+    lenTopicPayload - Length of pTopicPayload
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPUB(WINC_CMD_REQ_HANDLE handle, uint8_t dup, uint8_t qos, uint8_t retain, const uint8_t* pTopicName, size_t lenTopicName, const uint8_t* pTopicPayload, size_t lenTopicPayload)
+bool WINC_CmdMQTTPUB(WINC_CMD_REQ_HANDLE handle, uint8_t dup, uint8_t qos, uint8_t retain, WINC_TYPE typeTopicNameId, uintptr_t topicNameId, size_t lenTopicNameId, const uint8_t* pTopicPayload, size_t lenTopicPayload)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (dup > 1)
+    if (dup > 1U)
     {
         return false;
     }
 
-    if (qos > 2)
+    if (qos > 2U)
     {
         return false;
     }
 
-    if (retain > 1)
-    {
-        return false;
-    }
-
-    if (NULL == pTopicName)
+    if (retain > 1U)
     {
         return false;
     }
@@ -1380,33 +1545,33 @@ bool WINC_CmdMQTTPUB(WINC_CMD_REQ_HANDLE handle, uint8_t dup, uint8_t qos, uint8
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &dup, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &qos, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &retain, 1);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicPayload, lenTopicPayload);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &dup, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &qos, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &retain, 1);
+    (void)cmdMultiValueBuilder(handle, typeTopicNameId, topicNameId, lenTopicNameId);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicPayload, lenTopicPayload);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to define a last will message
+  Description:
+    This is used to define a last will message.
 
-   Parameters:
-     handle          - Command request session handle
-     qos             - QoS
-     retain          - Retain Message
-     pTopicName      - Topic Name
-     lenTopicName    - Length of pTopicName
-     pTopicPayload   - Topic Payload
-     lenTopicPayload - Length of pTopicPayload
+  Parameters:
+    handle          - Command request session handle
+    qos             - QoS
+    retain          - Retain Message
+    pTopicName      - Topic Name
+    lenTopicName    - Length of pTopicName
+    pTopicPayload   - Topic Payload
+    lenTopicPayload - Length of pTopicPayload
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -1414,17 +1579,17 @@ bool WINC_CmdMQTTLWT(WINC_CMD_REQ_HANDLE handle, uint8_t qos, uint8_t retain, co
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (qos > 2)
+    if (qos > 2U)
     {
         return false;
     }
 
-    if (retain > 1)
+    if (retain > 1U)
     {
         return false;
     }
@@ -1446,27 +1611,31 @@ bool WINC_CmdMQTTLWT(WINC_CMD_REQ_HANDLE handle, uint8_t qos, uint8_t retain, co
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &qos, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &retain, 1);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicPayload, lenTopicPayload);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &qos, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &retain, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicName, lenTopicName);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pTopicPayload, lenTopicPayload);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to disconnect from a broker
+  Description:
+    This is used to disconnect from a broker.
 
-   Parameters:
-     handle        - Command request session handle
-     optReasonCode - Reason Code
+  Parameters:
+    handle        - Command request session handle
+    optReasonCode - Reason Code
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optReasonCode will be ignored if its value is WINC_CMDMQTTDISCONN_REASON_CODE_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1474,7 +1643,7 @@ bool WINC_CmdMQTTDISCONN(WINC_CMD_REQ_HANDLE handle, int32_t optReasonCode)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1493,28 +1662,32 @@ bool WINC_CmdMQTTDISCONN(WINC_CMD_REQ_HANDLE handle, int32_t optReasonCode)
 
     if (-1 != optReasonCode)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optReasonCode, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optReasonCode, 4);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the MQTT transmit properties
+  Description:
+    This command is used to read or set the MQTT transmit properties.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDMQTTPROPTX_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1522,7 +1695,7 @@ bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE ty
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1539,51 +1712,50 @@ bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE ty
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the MQTT transmit properties
+  Description:
+    This command is used to read or set the MQTT transmit properties.
 
-   Parameters:
-     handle  - Command request session handle
-     pKey    - Parameter key
-     lenKey  - Length of pKey
-     pVals   - Parameter value
-     lenVals - Length of pVals
+  Parameters:
+    handle     - Command request session handle
+    pKey       - Parameter key
+    lenKey     - Length of pKey
+    pOptVals   - Parameter value
+    lenOptVals - Length of pOptVals
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    pOptVals will be ignored if its value is NULL.
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_t lenKey, const uint8_t* pVals, size_t lenVals)
+bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_t lenKey, const uint8_t* pOptVals, size_t lenOptVals)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
     const uint8_t id = 38;
-    if (0 == handle)
+
+    if (0U == handle)
     {
         return false;
     }
 
     if (NULL == pKey)
-    {
-        return false;
-    }
-
-    if (NULL == pVals)
     {
         return false;
     }
@@ -1595,26 +1767,34 @@ bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &id, 1);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pKey, lenKey);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pVals, lenVals);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &id, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pKey, lenKey);
+
+    if (NULL != pOptVals)
+    {
+        (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pOptVals, lenOptVals);
+    }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read the MQTT receive properties
+  Description:
+    This command is used to read the MQTT receive properties.
 
-   Parameters:
-     handle - Command request session handle
-     optId  - Parameter ID number
+  Parameters:
+    handle - Command request session handle
+    optId  - Parameter ID number
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDMQTTPROPRX_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1622,7 +1802,7 @@ bool WINC_CmdMQTTPROPRX(WINC_CMD_REQ_HANDLE handle, uint32_t optId)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1639,37 +1819,47 @@ bool WINC_CmdMQTTPROPRX(WINC_CMD_REQ_HANDLE handle, uint32_t optId)
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This is used to define which transmit properties are selected
+  Description:
+    This is used to define which transmit properties are selected.
 
-   Parameters:
-     handle     - Command request session handle
-     setPropId  - Flag indicating if optPropId is set
-     optPropId  - Property Identifier
-     optPropSel - Property Selected
+  Parameters:
+    handle     - Command request session handle
+    optPropId  - Property Identifier
+    optPropSel - Property Selected
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optPropId will be ignored if its value is WINC_CMDMQTTPROPTXS_PROP_ID_IGNORE_VAL.
+
+    optPropSel will be ignored if its value is WINC_CMDMQTTPROPTXS_PROP_SEL_IGNORE_VAL.
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPROPTXS(WINC_CMD_REQ_HANDLE handle, bool setPropId, int32_t optPropId, int32_t optPropSel)
+bool WINC_CmdMQTTPROPTXS(WINC_CMD_REQ_HANDLE handle, int32_t optPropId, int32_t optPropSel)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (((optPropId < -1) || (optPropId > 3)) && ((optPropId < 8) || (optPropId > 9)) && (11 != optPropId) && (17 != optPropId) && ((optPropId < 23) || (optPropId > 25)) && (31 != optPropId) && ((optPropId < 33) || (optPropId > 35)) && ((optPropId < 38) || (optPropId > 39)))
     {
         return false;
     }
@@ -1686,49 +1876,55 @@ bool WINC_CmdMQTTPROPTXS(WINC_CMD_REQ_HANDLE handle, bool setPropId, int32_t opt
         return false;
     }
 
-    if (true == setPropId)
+    if (-1 != optPropId)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optPropId, 4);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optPropId, 4);
 
-    if (-1 != optPropSel)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optPropSel, 4);
+        if (-1 != optPropSel)
+        {
+            (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optPropSel, 4);
+        }
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the network interface configuration
+  Description:
+    This command is used to read or set the network interface configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optIf      - Interface number
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optIntf    - Interface number
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optIntf will be ignored if its value is WINC_CMDNETIFC_INTF_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDNETIFC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
-bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIf, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((optIf < -1) || (optIf > 1))
+    if ((optIntf < -1) || (optIntf > 1))
     {
         return false;
     }
@@ -1745,37 +1941,288 @@ bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIf, uint32_t optId, W
         return false;
     }
 
-    if (-1 != optIf)
+    if (-1 != optIntf)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optIf, 4);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optIntf, 4);
 
-    if (0 != optId)
-    {
-        cmdFractValueBuilder(handle, optId);
+        if (0U != optId)
+        {
+            (void)cmdFractValueBuilder(handle, optId);
+            (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+        }
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command sends a ping (ICMP Echo Request) to the target address
+  Description:
+    This command is used to send L2 data frames.
 
-   Parameters:
-     handle             - Command request session handle
-     typeTargetAddr     - Type of targetAddr
-     targetAddr         - IP address or host name of target
-     lenTargetAddr      - Length of targetAddr
-     optProtocolVersion - IP protocol version
+  Parameters:
+    handle  - Command request session handle
+    intf    - Interface number
+    pData   - Data frame data
+    lenData - Length of pData
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdNETIFTX(WINC_CMD_REQ_HANDLE handle, uint8_t intf, const uint8_t* pData, size_t lenData)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (intf > 1U)
+    {
+        return false;
+    }
+
+    if (NULL == pData)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_NETIFTX);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &intf, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pData, lenData);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command is used to read or set the OTA configuration.
+
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDOTAC_ID_IGNORE_VAL.
+
+ *****************************************************************************/
+
+bool WINC_CmdOTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (false == cmdCheckFractType(optId, 255))
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_OTAC);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    if (0U != optId)
+    {
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command allows the downloading of firmware to the WINC.
+
+  Parameters:
+    handle - Command request session handle
+    state  - Enable the OTA download feature
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdOTADL(WINC_CMD_REQ_HANDLE handle, uint8_t state)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (1U != state)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_OTADL);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &state, 1);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command verifies the OTA firmware image.
+
+  Parameters:
+    handle - Command request session handle
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdOTAVFY(WINC_CMD_REQ_HANDLE handle)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_OTAVFY);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command activates the OTA firmware image.
+
+  Parameters:
+    handle - Command request session handle
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdOTAACT(WINC_CMD_REQ_HANDLE handle)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_OTAACT);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command will invalidate the current running firmware image.
+      Invalidation does not delete the current running firmware image.
+
+  Parameters:
+    handle - Command request session handle
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdOTAINV(WINC_CMD_REQ_HANDLE handle)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_OTAINV);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command sends a ping (ICMP Echo Request) to the target address.
+
+  Parameters:
+    handle             - Command request session handle
+    typeTargetAddr     - Type of targetAddr
+    targetAddr         - IP address or host name of target
+    lenTargetAddr      - Length of targetAddr
+    optProtocolVersion - IP protocol version
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optProtocolVersion will be ignored if its value is WINC_CMDPING_PROTOCOL_VERSION_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1783,12 +2230,12 @@ bool WINC_CmdPING(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeTargetAddr, uintptr_
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((0 != optProtocolVersion) && (4 != optProtocolVersion) && (6 != optProtocolVersion))
+    if ((0U != optProtocolVersion) && (4U != optProtocolVersion) && (6U != optProtocolVersion))
     {
         return false;
     }
@@ -1800,28 +2247,28 @@ bool WINC_CmdPING(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeTargetAddr, uintptr_
         return false;
     }
 
-    cmdMultiValueBuilder(handle, typeTargetAddr, targetAddr, lenTargetAddr);
+    (void)cmdMultiValueBuilder(handle, typeTargetAddr, targetAddr, lenTargetAddr);
 
-    if (0 != optProtocolVersion)
+    if (0U != optProtocolVersion)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optProtocolVersion, 1);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optProtocolVersion, 1);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to reset the DCE
+  Description:
+    This command is used to reset the WINC.
 
-   Parameters:
-     handle - Command request session handle
+  Parameters:
+    handle - Command request session handle
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -1829,7 +2276,7 @@ bool WINC_CmdRST(WINC_CMD_REQ_HANDLE handle)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1845,21 +2292,25 @@ bool WINC_CmdRST(WINC_CMD_REQ_HANDLE handle)
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the SNTP configuration
+  Description:
+    This command is used to read or set the SNTP configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDSNTPC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1867,7 +2318,7 @@ bool WINC_CmdSNTPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -1884,30 +2335,33 @@ bool WINC_CmdSNTPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to open a new socket
+  Description:
+    This command is used to open a new socket.
 
-   Parameters:
-     handle             - Command request session handle
-     protocol           - The protocol to use
-     optProtocolVersion - IP protocol version
+  Parameters:
+    handle             - Command request session handle
+    protocol           - The protocol to use
+    optProtocolVersion - IP protocol version
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optProtocolVersion will be ignored if its value is WINC_CMDSOCKO_PROTOCOL_VERSION_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1915,17 +2369,17 @@ bool WINC_CmdSOCKO(WINC_CMD_REQ_HANDLE handle, uint8_t protocol, uint8_t optProt
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((protocol < 1) || (protocol > 2))
+    if ((protocol < 1U) || (protocol > 2U))
     {
         return false;
     }
 
-    if ((0 != optProtocolVersion) && (4 != optProtocolVersion) && (6 != optProtocolVersion))
+    if ((0U != optProtocolVersion) && (4U != optProtocolVersion) && (6U != optProtocolVersion))
     {
         return false;
     }
@@ -1937,31 +2391,35 @@ bool WINC_CmdSOCKO(WINC_CMD_REQ_HANDLE handle, uint8_t protocol, uint8_t optProt
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &protocol, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &protocol, 1);
 
-    if (0 != optProtocolVersion)
+    if (0U != optProtocolVersion)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optProtocolVersion, 1);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optProtocolVersion, 1);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to bind a socket to a local port
+  Description:
+    This command is used to bind a socket to a local port.
 
-   Parameters:
-     handle      - Command request session handle
-     sockId      - The socket ID
-     lclPort     - The local port number to use
-     optPendSkts - Number of pending sockets connections
+  Parameters:
+    handle      - Command request session handle
+    sockId      - The socket ID
+    lclPort     - The local port number to use
+    optPendSkts - Number of pending sockets connections
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optPendSkts will be ignored if its value is WINC_CMDSOCKBL_PEND_SKTS_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -1969,12 +2427,12 @@ bool WINC_CmdSOCKBL(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint16_t lclPor
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (optPendSkts > 5)
+    if (optPendSkts > 5U)
     {
         return false;
     }
@@ -1986,34 +2444,34 @@ bool WINC_CmdSOCKBL(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint16_t lclPor
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &lclPort, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &lclPort, 2);
 
-    if (0 != optPendSkts)
+    if (0U != optPendSkts)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optPendSkts, 1);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optPendSkts, 1);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to bind a socket to a remote address
+  Description:
+    This command is used to bind a socket to a remote address.
 
-   Parameters:
-     handle      - Command request session handle
-     sockId      - The socket ID
-     typeRmtAddr - Type of rmtAddr
-     rmtAddr     - The address of the remote device
-     lenRmtAddr  - Length of rmtAddr
-     rmtPort     - The port number on the remote device
+  Parameters:
+    handle      - Command request session handle
+    sockId      - The socket ID
+    typeRmtAddr - Type of rmtAddr
+    rmtAddr     - The address of the remote device
+    lenRmtAddr  - Length of rmtAddr
+    rmtPort     - The port number on the remote device
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2021,7 +2479,7 @@ bool WINC_CmdSOCKBR(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typeR
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2033,30 +2491,30 @@ bool WINC_CmdSOCKBR(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typeR
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdMultiValueBuilder(handle, typeRmtAddr, rmtAddr, lenRmtAddr);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &rmtPort, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdMultiValueBuilder(handle, typeRmtAddr, rmtAddr, lenRmtAddr);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &rmtPort, 2);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to bind a socket to a multicast group
+  Description:
+    This command is used to bind a socket to a multicast group.
 
-   Parameters:
-     handle        - Command request session handle
-     sockId        - The socket ID
-     typeMcastAddr - Type of mcastAddr
-     mcastAddr     - The address of the multicast group
-     lenMcastAddr  - Length of mcastAddr
-     mcastPort     - The port number of the multicast group
+  Parameters:
+    handle        - Command request session handle
+    sockId        - The socket ID
+    typeMcastAddr - Type of mcastAddr
+    mcastAddr     - The address of the multicast group
+    lenMcastAddr  - Length of mcastAddr
+    mcastPort     - The port number of the multicast group
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2064,7 +2522,7 @@ bool WINC_CmdSOCKBM(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typeM
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2076,27 +2534,27 @@ bool WINC_CmdSOCKBM(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typeM
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdMultiValueBuilder(handle, typeMcastAddr, mcastAddr, lenMcastAddr);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &mcastPort, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdMultiValueBuilder(handle, typeMcastAddr, mcastAddr, lenMcastAddr);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &mcastPort, 2);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to enable TLS on a socket
+  Description:
+    This command is used to enable TLS on a socket.
 
-   Parameters:
-     handle  - Command request session handle
-     sockId  - The socket ID
-     tlsConf - TLS certificate configuration
+  Parameters:
+    handle  - Command request session handle
+    sockId  - The socket ID
+    tlsConf - TLS certificate configuration
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2104,12 +2562,12 @@ bool WINC_CmdSOCKTLS(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t tlsCon
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (tlsConf > 2)
+    if (tlsConf > 2U)
     {
         return false;
     }
@@ -2121,46 +2579,47 @@ bool WINC_CmdSOCKTLS(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t tlsCon
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &tlsConf, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &tlsConf, 1);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to send data over a socket that is bound to a remote
-       address and port number
+  Description:
+    This command is used to send data over a socket that is bound to a remote
+      address and port number.
 
-   Parameters:
-     handle     - Command request session handle
-     sockId     - The socket ID
-     length     - The length of the data to send
-     optSeqNum  - Sequence number of first byte
-     pOptData   - The data to send in either ASCII or hexadecimal string
-                    format. If omitted the DCE will enter raw binary mode and
-                    will remain in that mode until the specified length of
-                    binary data has been received from the DTE
-     lenOptData - Length of pOptData
+  Parameters:
+    handle    - Command request session handle
+    sockId    - The socket ID
+    length    - The length of the data to send
+    optSeqNum - Sequence number of first byte
+    pData     - The data to send
+    lenData   - Length of pData
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it will be ignored. Certain subsequent parameters may
+    also be ignored.
+
+    optSeqNum will be ignored if its value is WINC_CMDSOCKWR_SEQ_NUM_IGNORE_VAL.
 
  *****************************************************************************/
 
-bool WINC_CmdSOCKWR(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint16_t length, int32_t optSeqNum, const uint8_t* pOptData, size_t lenOptData)
+bool WINC_CmdSOCKWR(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint16_t length, int32_t optSeqNum, const uint8_t* pData, size_t lenData)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (length > 1460)
+    if (length > 1460U)
     {
         return false;
     }
@@ -2170,7 +2629,7 @@ bool WINC_CmdSOCKWR(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint16_t length
         return false;
     }
 
-    if ((NULL != pOptData) && (lenOptData > 1460))
+    if ((NULL == pData) || (lenData > 1460U))
     {
         return false;
     }
@@ -2182,60 +2641,57 @@ bool WINC_CmdSOCKWR(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint16_t length
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
 
     if (-1 != optSeqNum)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optSeqNum, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optSeqNum, 4);
     }
-
-    if (NULL != pOptData)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pOptData, lenOptData);
-    }
+    (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pData, lenData);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to send data to an arbitrary destination using the
-       connectionless UDP protocol
+  Description:
+    This command is used to send data to an arbitrary destination using the
+      connectionless UDP protocol.
 
-   Parameters:
-     handle      - Command request session handle
-     sockId      - The socket ID
-     typeRmtAddr - Type of rmtAddr
-     rmtAddr     - The address of the remote device
-     lenRmtAddr  - Length of rmtAddr
-     rmtPort     - The port number on the remote device
-     length      - The length of the data to send
-     optSeqNum   - Sequence number of first byte
-     pOptData    - The data to send in either ASCII or hexadecimal string
-                     format. If omitted the DCE will enter raw binary mode and
-                     will remain in that mode until the specified length of
-                     binary data has been received from the DTE
-     lenOptData  - Length of pOptData
+  Parameters:
+    handle      - Command request session handle
+    sockId      - The socket ID
+    typeRmtAddr - Type of rmtAddr
+    rmtAddr     - The address of the remote device
+    lenRmtAddr  - Length of rmtAddr
+    rmtPort     - The port number on the remote device
+    length      - The length of the data to send
+    optSeqNum   - Sequence number of first byte
+    pData       - The data to send
+    lenData     - Length of pData
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it will be ignored. Certain subsequent parameters may
+    also be ignored.
+
+    optSeqNum will be ignored if its value is WINC_CMDSOCKWRTO_SEQ_NUM_IGNORE_VAL.
 
  *****************************************************************************/
 
-bool WINC_CmdSOCKWRTO(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typeRmtAddr, uintptr_t rmtAddr, size_t lenRmtAddr, uint16_t rmtPort, uint16_t length, int32_t optSeqNum, const uint8_t* pOptData, size_t lenOptData)
+bool WINC_CmdSOCKWRTO(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typeRmtAddr, uintptr_t rmtAddr, size_t lenRmtAddr, uint16_t rmtPort, uint16_t length, int32_t optSeqNum, const uint8_t* pData, size_t lenData)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (length > 1472)
+    if (length > 1472U)
     {
         return false;
     }
@@ -2245,7 +2701,7 @@ bool WINC_CmdSOCKWRTO(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typ
         return false;
     }
 
-    if ((NULL != pOptData) && (lenOptData > 1472))
+    if ((NULL == pData) || (lenData > 1472U))
     {
         return false;
     }
@@ -2257,39 +2713,35 @@ bool WINC_CmdSOCKWRTO(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, WINC_TYPE typ
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdMultiValueBuilder(handle, typeRmtAddr, rmtAddr, lenRmtAddr);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &rmtPort, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdMultiValueBuilder(handle, typeRmtAddr, rmtAddr, lenRmtAddr);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &rmtPort, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
 
     if (-1 != optSeqNum)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optSeqNum, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optSeqNum, 4);
     }
-
-    if (NULL != pOptData)
-    {
-        cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pOptData, lenOptData);
-    }
+    (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pData, lenData);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read data from a socket
+  Description:
+    This command is used to read data from a socket.
 
-   Parameters:
-     handle     - Command request session handle
-     sockId     - The socket ID
-     outputMode - The format the DTE wishes to receive the data
-     length     - The number of bytes the DTE wishes to read
+  Parameters:
+    handle     - Command request session handle
+    sockId     - The socket ID
+    outputMode - The format the DTE wishes to receive the data
+    length     - The number of bytes the DTE wishes to read
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2297,12 +2749,12 @@ bool WINC_CmdSOCKRD(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t outputM
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((outputMode < 1) || (outputMode > 3))
+    if ((outputMode < 1U) || (outputMode > 3U))
     {
         return false;
     }
@@ -2314,28 +2766,28 @@ bool WINC_CmdSOCKRD(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t outputM
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &outputMode, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER, &length, 4);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &outputMode, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &length, 4);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read data from a socket buffer
+  Description:
+    This command is used to read data from a socket buffer.
 
-   Parameters:
-     handle     - Command request session handle
-     sockId     - The socket ID
-     outputMode - The format the DTE wishes to receive the data
-     length     - The number of bytes the DTE wishes to read
+  Parameters:
+    handle     - Command request session handle
+    sockId     - The socket ID
+    outputMode - The format the DTE wishes to receive the data
+    length     - The number of bytes the DTE wishes to read
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2343,12 +2795,12 @@ bool WINC_CmdSOCKRDBUF(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t outp
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((outputMode < 1) || (outputMode > 3))
+    if ((outputMode < 1U) || (outputMode > 3U))
     {
         return false;
     }
@@ -2360,26 +2812,26 @@ bool WINC_CmdSOCKRDBUF(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t outp
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &outputMode, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER, &length, 4);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &outputMode, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &length, 4);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to close a socket
+  Description:
+    This command is used to close a socket.
 
-   Parameters:
-     handle - Command request session handle
-     sockId - The socket ID
+  Parameters:
+    handle - Command request session handle
+    sockId - The socket ID
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2387,7 +2839,7 @@ bool WINC_CmdSOCKCL(WINC_CMD_REQ_HANDLE handle, uint16_t sockId)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2399,25 +2851,29 @@ bool WINC_CmdSOCKCL(WINC_CMD_REQ_HANDLE handle, uint16_t sockId)
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sockId, 2);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to present a list of the DCE's open
-       sockets/connections
+  Description:
+    This command is used to present a list of the WINC's open
+      sockets/connections.
 
-   Parameters:
-     handle    - Command request session handle
-     optSockId - The socket ID
+  Parameters:
+    handle    - Command request session handle
+    optSockId - The socket ID
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optSockId will be ignored if its value is WINC_CMDSOCKLST_SOCK_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2425,7 +2881,7 @@ bool WINC_CmdSOCKLST(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2437,31 +2893,37 @@ bool WINC_CmdSOCKLST(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId)
         return false;
     }
 
-    if (0 != optSockId)
+    if (0U != optSockId)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optSockId, 2);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optSockId, 2);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the socket configuration
+  Description:
+    This command is used to read or set the socket configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optSockId  - The socket ID
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optSockId  - The socket ID
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optSockId will be ignored if its value is WINC_CMDSOCKC_SOCK_ID_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDSOCKC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2469,7 +2931,7 @@ bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, uint32_t optI
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2486,34 +2948,37 @@ bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, uint32_t optI
         return false;
     }
 
-    if (0 != optSockId)
+    if (0U != optSockId)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optSockId, 2);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optSockId, 2);
 
-    if (0 != optId)
-    {
-        cmdFractValueBuilder(handle, optId);
+        if (0U != optId)
+        {
+            (void)cmdFractValueBuilder(handle, optId);
+            (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+        }
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to set or query the system time
+  Description:
+    This command is used to set or query the system time.
 
-   Parameters:
-     handle    - Command request session handle
-     optFormat - Format of time
+  Parameters:
+    handle    - Command request session handle
+    optFormat - Format of time
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optFormat will be ignored if its value is WINC_CMDTIME_FORMAT_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2521,12 +2986,12 @@ bool WINC_CmdTIME(WINC_CMD_REQ_HANDLE handle, uint8_t optFormat)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (optFormat > 3)
+    if (optFormat > 3U)
     {
         return false;
     }
@@ -2538,28 +3003,28 @@ bool WINC_CmdTIME(WINC_CMD_REQ_HANDLE handle, uint8_t optFormat)
         return false;
     }
 
-    if (0 != optFormat)
+    if (0U != optFormat)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFormat, 1);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFormat, 1);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to set or query the system time
+  Description:
+    This command is used to set or query the system time.
 
-   Parameters:
-     handle - Command request session handle
-     format - Format of time
-     utcSec - UTC seconds
+  Parameters:
+    handle - Command request session handle
+    format - Format of time
+    utcSec - UTC seconds
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2567,12 +3032,12 @@ bool WINC_CmdTIMEUTCSEC(WINC_CMD_REQ_HANDLE handle, uint8_t format, uint32_t utc
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((format < 1) || (format > 3))
+    if ((format < 1U) || (format > 3U))
     {
         return false;
     }
@@ -2584,26 +3049,26 @@ bool WINC_CmdTIMEUTCSEC(WINC_CMD_REQ_HANDLE handle, uint8_t format, uint32_t utc
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &format, 1);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &utcSec, 4);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &format, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &utcSec, 4);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to set or query the system time
+  Description:
+    This command is used to set or query the system time.
 
-   Parameters:
-     handle      - Command request session handle
-     pDateTime   - Date/time in format YYYY-MM-DDTHH:MM:SS.00Z
-     lenDateTime - Length of pDateTime
+  Parameters:
+    handle      - Command request session handle
+    pDateTime   - Date/time in format YYYY-MM-DDTHH:MM:SS.00Z
+    lenDateTime - Length of pDateTime
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2612,7 +3077,8 @@ bool WINC_CmdTIMERFC(WINC_CMD_REQ_HANDLE handle, const uint8_t* pDateTime, size_
     WINC_COMMAND_REQUEST *pCmdReq;
 
     const uint8_t format = 2;
-    if (0 == handle)
+
+    if (0U == handle)
     {
         return false;
     }
@@ -2629,29 +3095,35 @@ bool WINC_CmdTIMERFC(WINC_CMD_REQ_HANDLE handle, const uint8_t* pDateTime, size_
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &format, 1);
-    cmdParamBuilder(handle, WINC_TYPE_STRING, pDateTime, lenDateTime);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &format, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pDateTime, lenDateTime);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the TLS configuration
+  Description:
+    This command is used to read or set the TLS configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optConf    - Configuration number
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optConf    - Configuration number
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optConf will be ignored if its value is WINC_CMDTLSC_CONF_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDTLSC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2659,12 +3131,12 @@ bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, W
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (optConf > 2)
+    if (optConf > 2U)
     {
         return false;
     }
@@ -2681,38 +3153,43 @@ bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, W
         return false;
     }
 
-    if (0 != optConf)
+    if (0U != optConf)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optConf, 1);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optConf, 1);
 
-    if (0 != optId)
-    {
-        cmdFractValueBuilder(handle, optId);
+        if (0U != optId)
+        {
+            (void)cmdFractValueBuilder(handle, optId);
+            (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+        }
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the TLS cipher suite configuration
+  Description:
+    This command is used to read or set the TLS cipher suite configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optCslIdx  - Cipher suite list index
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optCslIdx  - Cipher suite list index
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optCslIdx will be ignored if its value is WINC_CMDTLSCSC_CSL_IDX_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDTLSCSC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2720,12 +3197,12 @@ bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optI
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (optCslIdx > 2)
+    if (optCslIdx > 2U)
     {
         return false;
     }
@@ -2742,38 +3219,41 @@ bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optI
         return false;
     }
 
-    if (0 != optCslIdx)
+    if (0U != optCslIdx)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optCslIdx, 1);
-    }
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optCslIdx, 1);
 
-    if (0 != optId)
-    {
-        cmdFractValueBuilder(handle, optId);
+        if (0U != optId)
+        {
+            (void)cmdFractValueBuilder(handle, optId);
+            (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+        }
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the DCE's hotspot access point
-       configuration
+  Description:
+    This command is used to read or set the WINC's hotspot access point
+      configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDWAPC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2781,7 +3261,7 @@ bool WINC_CmdWAPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2798,30 +3278,33 @@ bool WINC_CmdWAPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to enable the DCE's hotspot access point
-       functionality
+  Description:
+    This command is used to enable the WINC's hotspot access point
+      functionality.
 
-   Parameters:
-     handle   - Command request session handle
-     optState - State of the hotspot feature
+  Parameters:
+    handle   - Command request session handle
+    optState - State of the hotspot feature
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optState will be ignored if its value is WINC_CMDWAP_STATE_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2829,7 +3312,7 @@ bool WINC_CmdWAP(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2848,29 +3331,33 @@ bool WINC_CmdWAP(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 
     if (-1 != optState)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optState, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optState, 4);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to modify or query the behavior of the active
-       scanning function
+  Description:
+    This command is used to modify or query the behavior of the active
+      scanning function.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDWSCNC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2878,7 +3365,7 @@ bool WINC_CmdWSCNC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2895,30 +3382,29 @@ bool WINC_CmdWSCNC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to scan for infrastructure networks in range of the
-       DCE
+  Description:
+    This command is used to scan for infrastructure networks in range of the
+      WINC.
 
-   Parameters:
-     handle  - Command request session handle
-     actPasv - Flag indicating active or passive scanning
+  Parameters:
+    handle  - Command request session handle
+    actPasv - Flag indicating active or passive scanning
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    None.
 
  *****************************************************************************/
 
@@ -2926,12 +3412,12 @@ bool WINC_CmdWSCN(WINC_CMD_REQ_HANDLE handle, uint8_t actPasv)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (actPasv > 1)
+    if (actPasv > 1U)
     {
         return false;
     }
@@ -2943,28 +3429,32 @@ bool WINC_CmdWSCN(WINC_CMD_REQ_HANDLE handle, uint8_t actPasv)
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &actPasv, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &actPasv, 1);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the DCE's Wi-Fi station mode
-       configuration
+  Description:
+    This command is used to read or set the WINC's Wi-Fi station mode
+      configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDWSTAC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -2972,7 +3462,7 @@ bool WINC_CmdWSTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -2989,30 +3479,33 @@ bool WINC_CmdWSTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to control or query the DCE's station mode
-       functionality
+  Description:
+    This command is used to control or query the WINC's station mode
+      functionality.
 
-   Parameters:
-     handle   - Command request session handle
-     optState - State of the Wi-Fi station feature
+  Parameters:
+    handle   - Command request session handle
+    optState - State of the Wi-Fi station feature
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optState will be ignored if its value is WINC_CMDWSTA_STATE_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3020,7 +3513,7 @@ bool WINC_CmdWSTA(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -3039,25 +3532,29 @@ bool WINC_CmdWSTA(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 
     if (-1 != optState)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optState, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optState, 4);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to query current WiFi associations
+  Description:
+    This command is used to query current WiFi associations.
 
-   Parameters:
-     handle     - Command request session handle
-     optAssocId - Association ID
+  Parameters:
+    handle     - Command request session handle
+    optAssocId - Association ID
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optAssocId will be ignored if its value is WINC_CMDASSOC_ASSOC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3065,7 +3562,7 @@ bool WINC_CmdASSOC(WINC_CMD_REQ_HANDLE handle, uint16_t optAssocId)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -3077,27 +3574,31 @@ bool WINC_CmdASSOC(WINC_CMD_REQ_HANDLE handle, uint16_t optAssocId)
         return false;
     }
 
-    if (0 != optAssocId)
+    if (0U != optAssocId)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optAssocId, 2);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optAssocId, 2);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to query system information
+  Description:
+    This command is used to query system information.
 
-   Parameters:
-     handle    - Command request session handle
-     optFilter - System information filter bitmask
+  Parameters:
+    handle    - Command request session handle
+    optFilter - System information filter bitmask
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optFilter will be ignored if its value is WINC_CMDSI_FILTER_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3105,12 +3606,12 @@ bool WINC_CmdSI(WINC_CMD_REQ_HANDLE handle, uint8_t optFilter)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if ((optFilter > 2) && (4 != optFilter) && (8 != optFilter))
+    if ((optFilter > 2U) && (4U != optFilter) && (8U != optFilter))
     {
         return false;
     }
@@ -3122,31 +3623,35 @@ bool WINC_CmdSI(WINC_CMD_REQ_HANDLE handle, uint8_t optFilter)
         return false;
     }
 
-    if (0 != optFilter)
+    if (0U != optFilter)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFilter, 1);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optFilter, 1);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the provisioning service
-       configuration
+  Description:
+    This command is used to read or set the provisioning service
+      configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDWPROVC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3154,7 +3659,7 @@ bool WINC_CmdWPROVC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOp
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -3171,29 +3676,32 @@ bool WINC_CmdWPROVC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOp
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
-
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to control or query the provisioning service
+  Description:
+    This command is used to control or query the provisioning service.
 
-   Parameters:
-     handle   - Command request session handle
-     optState - State of the provisioning service
+  Parameters:
+    handle   - Command request session handle
+    optState - State of the provisioning service
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optState will be ignored if its value is WINC_CMDWPROV_STATE_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3201,7 +3709,7 @@ bool WINC_CmdWPROV(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -3220,25 +3728,29 @@ bool WINC_CmdWPROV(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 
     if (-1 != optState)
     {
-        cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optState, 4);
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optState, 4);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     Query the device information
+  Description:
+    Query the device information.
 
-   Parameters:
-     handle - Command request session handle
-     optId  - Parameter ID number
+  Parameters:
+    handle - Command request session handle
+    optId  - Parameter ID number
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDDI_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3246,7 +3758,7 @@ bool WINC_CmdDI(WINC_CMD_REQ_HANDLE handle, uint32_t optId)
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -3263,33 +3775,37 @@ bool WINC_CmdDI(WINC_CMD_REQ_HANDLE handle, uint32_t optId)
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to provide the result of an external crypto
-       operation
+  Description:
+    This command is used to provide the result of an external crypto
+      operation.
 
-   Parameters:
-     handle          - Command request session handle
-     opId            - Operation identifier, matching <OP_ID> in corresponding
+  Parameters:
+    handle          - Command request session handle
+    opId            - Operation identifier, matching <OP_ID> in corresponding
                          AEC
-     status          - Operation success or failure
-     pOptSignature   - Signature (big endian). For ECDSA signatures: R then S,
+    status          - Operation success or failure
+    pOptSignature   - Signature (big endian). For ECDSA signatures: R then S,
                          each the size of the curve.
-     lenOptSignature - Length of pOptSignature
+    lenOptSignature - Length of pOptSignature
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    pOptSignature will be ignored if its value is NULL.
 
  *****************************************************************************/
 
@@ -3297,12 +3813,12 @@ bool WINC_CmdEXTCRYPTO(WINC_CMD_REQ_HANDLE handle, uint16_t opId, uint8_t status
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
 
-    if (status > 1)
+    if (status > 1U)
     {
         return false;
     }
@@ -3314,33 +3830,37 @@ bool WINC_CmdEXTCRYPTO(WINC_CMD_REQ_HANDLE handle, uint16_t opId, uint8_t status
         return false;
     }
 
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &opId, 2);
-    cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &status, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &opId, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &status, 1);
 
     if (NULL != pOptSignature)
     {
-        cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pOptSignature, lenOptSignature);
+        (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pOptSignature, lenOptSignature);
     }
 
     return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
-   Description:
-     This command is used to read or set the device's Wi-Fi configuration
+  Description:
+    This command is used to read or set the device's Wi-Fi configuration.
 
-   Parameters:
-     handle     - Command request session handle
-     optId      - Parameter ID number
-     typeOptVal - Type of optVal
-     optVal     - Parameter value
-     lenOptVal  - Length of optVal
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
 
-   Returns:
-     true or false indicating success or failure.
+  Returns:
+    true or false indicating success or failure.
 
-   Remarks:
-     None.
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDWIFIC_ID_IGNORE_VAL.
 
  *****************************************************************************/
 
@@ -3348,7 +3868,7 @@ bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 {
     WINC_COMMAND_REQUEST *pCmdReq;
 
-    if (0 == handle)
+    if (0U == handle)
     {
         return false;
     }
@@ -3365,12 +3885,269 @@ bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
         return false;
     }
 
-    if (0 != optId)
+    if (0U != optId)
     {
-        cmdFractValueBuilder(handle, optId);
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
     }
 
-    cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command is used to read or set the NVM configuration.
+
+  Parameters:
+    handle     - Command request session handle
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optId will be ignored if its value is WINC_CMDNVMC_ID_IGNORE_VAL.
+
+ *****************************************************************************/
+
+bool WINC_CmdNVMC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (false == cmdCheckFractType(optId, 255))
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_NVMC);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    if (0U != optId)
+    {
+        (void)cmdFractValueBuilder(handle, optId);
+        (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command allows sector erase within the alternate firmware partition.
+
+  Parameters:
+    handle       - Command request session handle
+    sectorOffset - Sector offset to be used for the NVM operation
+    sectors      - The number of sectors to erase during NVM operation
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdNVMER(WINC_CMD_REQ_HANDLE handle, uint8_t sectorOffset, uint8_t sectors)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (sectorOffset > 239U)
+    {
+        return false;
+    }
+
+    if (sectors > 240U)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_NVMER);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sectorOffset, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &sectors, 1);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command allows data to be written to alternate firmware partition.
+      Write operations cannot cross a sector boundary.
+
+  Parameters:
+    handle  - Command request session handle
+    offset  - Byte offset to be used for the NVM operation
+    length  - The number of bytes for the NVM operation
+    pData   - The data to write in hexadecimal string format
+    lenData - Length of pData
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdNVMWR(WINC_CMD_REQ_HANDLE handle, uint32_t offset, uint16_t length, const uint8_t* pData, size_t lenData)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (offset > 983039U)
+    {
+        return false;
+    }
+
+    if (length > 1024U)
+    {
+        return false;
+    }
+
+    if (NULL == pData)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_NVMWR);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &offset, 4);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
+    (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pData, lenData);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command allows checking of the alternate firmware partition.
+
+  Parameters:
+    handle - Command request session handle
+    offset - Byte offset to be used for the NVM operation
+    length - The number of bytes for the NVM operation
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdNVMCHK(WINC_CMD_REQ_HANDLE handle, uint32_t offset, uint32_t length)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (offset > 983039U)
+    {
+        return false;
+    }
+
+    if (length > 983040U)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_NVMCHK);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &offset, 4);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 4);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This command allows reading of the alternate firmware partition.
+
+  Parameters:
+    handle - Command request session handle
+    offset - Byte offset to be used for the NVM operation
+    length - The number of bytes for the NVM operation
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdNVMRD(WINC_CMD_REQ_HANDLE handle, uint32_t offset, uint16_t length)
+{
+    WINC_COMMAND_REQUEST *pCmdReq;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (offset > 983039U)
+    {
+        return false;
+    }
+
+    if (length > 1024U)
+    {
+        return false;
+    }
+
+    pCmdReq = cmdBuildCommandReq(handle, WINC_CMD_ID_NVMRD);
+
+    if (NULL == pCmdReq)
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &offset, 4);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &length, 2);
 
     return cmdCompleteCommandReq(handle);
 }

@@ -60,7 +60,7 @@ Microchip or any third party.
     (
         DRV_HANDLE handle,
         uint16_t id,
-        WINC_DEV_PARAM_ELEM *pElem
+        const WINC_DEV_PARAM_ELEM *const pElem
     )
 
   Summary:
@@ -71,7 +71,7 @@ Microchip or any third party.
     settings by decoding the boolean value and setting the internal state.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
     handle - WINC device handle.
@@ -90,7 +90,7 @@ static void wifiProcessCoexElem
 (
     DRV_HANDLE handle,
     uint16_t id,
-    WINC_DEV_PARAM_ELEM *pElem
+    const WINC_DEV_PARAM_ELEM *const pElem
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
@@ -101,43 +101,44 @@ static void wifiProcessCoexElem
         return;
     }
 
-    WINC_CmdReadParamElem(pElem, WINC_TYPE_BOOL, &flag, sizeof(flag));
+    (void)WINC_CmdReadParamElem(pElem, WINC_TYPE_BOOL, &flag, sizeof(flag));
 
     switch (id)
     {
         case WINC_CFG_PARAM_ID_WIFI_COEX_ENABLED:
         {
-            pDcpt->pCtrl->coex.enabled = (true == flag) ? 1 : 0;
-            pDcpt->pCtrl->coex.confValid = true;
+            pDcpt->pCtrl->coex.enabled   = (true == flag) ? 1U : 0U;
+            pDcpt->pCtrl->coex.confValid = 1U;
             break;
         }
 
         case WINC_CFG_PARAM_ID_WIFI_COEX_INTERFACE_TYPE:
         {
-            pDcpt->pCtrl->coex.use2Wire = (true == flag) ? 1 : 0;
+            pDcpt->pCtrl->coex.use2Wire = (true == flag) ? 1U : 0U;
             break;
         }
 
         case WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_RX_VS_BT:
         {
-            pDcpt->pCtrl->coex.wlanRxHigherThanBt = (true == flag) ? 1 : 0;
+            pDcpt->pCtrl->coex.wlanRxHigherThanBt = (true == flag) ? 1U : 0U;
             break;
         }
 
         case WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_TX_VS_BT:
         {
-            pDcpt->pCtrl->coex.wlanTxHigherThanBt = (true == flag) ? 1 : 0;
+            pDcpt->pCtrl->coex.wlanTxHigherThanBt = (true == flag) ? 1U : 0U;
             break;
         }
 
         case WINC_CFG_PARAM_ID_WIFI_COEX_ANTENNA_MODE:
         {
-            pDcpt->pCtrl->coex.sharedAntenna = (true == flag) ? 1 : 0;
+            pDcpt->pCtrl->coex.sharedAntenna = (true == flag) ? 1U : 0U;
             break;
         }
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("WIFIC Coex ID %d not handled\r\n", id);
             break;
         }
     }
@@ -146,7 +147,7 @@ static void wifiProcessCoexElem
 //*******************************************************************************
 /*
   Function:
-    static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+    static void wifiProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 
   Summary:
     Process command responses.
@@ -155,7 +156,7 @@ static void wifiProcessCoexElem
     Processes command responses received via WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED events.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
     handle - WINC device handle.
@@ -169,7 +170,7 @@ static void wifiProcessCoexElem
 
 */
 
-static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+static void wifiProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
 
@@ -184,23 +185,60 @@ static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElem
         {
             WINC_DEV_FRACT_INT_TYPE id;
 
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
-                return;
+                break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
 
             switch (id.i)
             {
                 case WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED:
                 {
-                    pDcpt->pCtrl->activeRegDomain.regDomainLen = WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, pDcpt->pCtrl->activeRegDomain.regDomain, WDRV_WINC_REGDOMAIN_MAX_NAME_LEN);
+                    WDRV_WINC_REGDOMAIN_INFO *pRegDomain;
+                    WDRV_WINC_REGDOMAIN_INFO tmpRegDomain;
 
-                    if (NULL != pDcpt->pCtrl->pfRegDomainEventCB)
+                    /* Set operations are brought into a temporary structure until it is verified
+                     as being the updated domain information. Get operation go straight to the
+                     active domain structure. */
+
+                    if (true == pDcpt->pCtrl->regDomainSetInProgress)
                     {
-                        pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, 1, 1, true, &pDcpt->pCtrl->activeRegDomain);
+                        pRegDomain = &tmpRegDomain;
                     }
+                    else
+                    {
+                        pRegDomain = &pDcpt->pCtrl->activeRegDomain;
+                    }
+
+                    pRegDomain->regDomainLen = (uint8_t)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, pRegDomain->regDomain, WDRV_WINC_REGDOMAIN_MAX_NAME_LEN);
+
+                    if (0 == pRegDomain->regDomainLen)
+                    {
+                        break;
+                    }
+
+                    if (true == pDcpt->pCtrl->regDomainSetInProgress)
+                    {
+                        /* If domain information supplied matched the correct settings retry
+                         the request as WINCS02 is still in the process of updating them. */
+
+                        if ((0 == memcmp(pRegDomain->regDomain, pDcpt->pCtrl->activeRegDomain.regDomain, pRegDomain->regDomainLen))
+                               && (pRegDomain->regDomainLen == pDcpt->pCtrl->activeRegDomain.regDomainLen))
+                        {
+                            (void)WDRV_WINC_WifiRegDomainGet((DRV_HANDLE)pDcpt, WDRV_WINC_REGDOMAIN_SELECT_CURRENT, pDcpt->pCtrl->pfRegDomainEventCB);
+                            break;
+                        }
+
+                        /* Copy new domain information into active domain structure. Clear channel mask. */
+
+                        (void)memset(&pDcpt->pCtrl->activeRegDomain, 0, sizeof(WDRV_WINC_REGDOMAIN_INFO));
+                        (void)memcpy(&pDcpt->pCtrl->activeRegDomain.regDomain, pRegDomain->regDomain, pRegDomain->regDomainLen);
+                        pDcpt->pCtrl->activeRegDomain.regDomainLen = pRegDomain->regDomainLen;
+                        pDcpt->pCtrl->regDomainSetInProgress       = false;
+                    }
+
                     break;
                 }
 
@@ -208,29 +246,57 @@ static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElem
                 {
                     if (NULL == pDcpt->pCtrl->pfRegDomainEventCB)
                     {
-                        return;
+                        break;
                     }
 
                     if (-1 == id.f)
                     {
-                        WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pDcpt->pCtrl->availRegDomNum, sizeof(pDcpt->pCtrl->availRegDomNum));
+                        (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pDcpt->pCtrl->availRegDomNum, sizeof(pDcpt->pCtrl->availRegDomNum));
                     }
                     else
                     {
                         WDRV_WINC_REGDOMAIN_INFO regDomInfo;
-                        uint8_t index = id.f+1;
-                        bool active = false;
 
-                        regDomInfo.regDomainLen = WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, regDomInfo.regDomain, WDRV_WINC_REGDOMAIN_MAX_NAME_LEN);
+                        (void)memset(&regDomInfo, 0, sizeof(WDRV_WINC_REGDOMAIN_INFO));
 
-                        if (index <= pDcpt->pCtrl->availRegDomNum)
+                        regDomInfo.regDomainLen = (uint8_t)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, regDomInfo.regDomain, WDRV_WINC_REGDOMAIN_MAX_NAME_LEN);
+
+                        if (0 == regDomInfo.regDomainLen)
                         {
+                            break;
+                        }
+
+                        if (id.f < (int16_t)pDcpt->pCtrl->availRegDomNum)
+                        {
+                            bool active = false;
+
                             if (0 == memcmp(regDomInfo.regDomain, pDcpt->pCtrl->activeRegDomain.regDomain, WDRV_WINC_REGDOMAIN_MAX_NAME_LEN))
                             {
+                                regDomInfo.channelMask = pDcpt->pCtrl->regulatoryChannelMask24;
+
                                 active = true;
                             }
 
-                            pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, index, pDcpt->pCtrl->availRegDomNum, active, &regDomInfo);
+                            pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, id.f+1, pDcpt->pCtrl->availRegDomNum, active, &regDomInfo);
+                        }
+                    }
+
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_CHANMASK24:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pDcpt->pCtrl->regulatoryChannelMask24, sizeof(pDcpt->pCtrl->regulatoryChannelMask24));
+                    pDcpt->pCtrl->activeRegDomain.channelMask = pDcpt->pCtrl->regulatoryChannelMask24;
+
+                    if (false == pDcpt->pCtrl->regDomainSetInProgress)
+                    {
+                        if (NULL != pDcpt->pCtrl->pfRegDomainEventCB)
+                        {
+                            /* If WDRV_WINC_WifiRegDomainGet was called with WDRV_WINC_REGDOMAIN_SELECT_CURRENT
+                                 callback to the application with the currently selection domain. */
+
+                            pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, 1, 1, true, &pDcpt->pCtrl->activeRegDomain);
                         }
                     }
 
@@ -243,7 +309,7 @@ static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElem
 
                     if (NULL != pDcpt->pCtrl->pfPowersaveEventCB)
                     {
-                        WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &powersaveInfo.psMode, sizeof(powersaveInfo.psMode));
+                        (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &powersaveInfo.psMode, sizeof(powersaveInfo.psMode));
 
                         pDcpt->pCtrl->pfPowersaveEventCB((DRV_HANDLE)pDcpt, &powersaveInfo);
                     }
@@ -263,14 +329,17 @@ static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElem
 
                 default:
                 {
+                    WDRV_DBG_VERBOSE_PRINT("WIFIC ID(Rsp) %d not handled\r\n", id.i);
                     break;
                 }
             }
+
             break;
         }
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("WIFI CmdRspCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -295,10 +364,10 @@ static void wifiProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElem
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -361,7 +430,7 @@ static void wifiCmdRspCallbackHandler
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("WIFI CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("WIFI CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -372,7 +441,7 @@ static void wifiCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -391,7 +460,7 @@ static void wifiCmdRspCallbackHandler
                     {
                         WINC_DEV_FRACT_INT_TYPE id;
 
-                        if (pStatusInfo->srcCmd.numParams < 2)
+                        if (pStatusInfo->srcCmd.numParams < 2U)
                         {
                             break;
                         }
@@ -401,7 +470,7 @@ static void wifiCmdRspCallbackHandler
                             break;
                         }
 
-                        WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
+                        (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
 
                         switch (id.i)
                         {
@@ -412,19 +481,21 @@ static void wifiCmdRspCallbackHandler
                                     break;
                                 }
 
-                                if (WDRV_WINC_STATUS_OK == pStatusInfo->status)
+                                if (WDRV_WINC_STATUS_OK != (WDRV_WINC_STATUS)pStatusInfo->status)
                                 {
-                                    WDRV_WINC_REGDOMAIN_INFO regDomInfo;
+                                    /* If get/set regulatory domain fails, report through callback. */
 
-                                    regDomInfo.regDomainLen = elems[1].length;
-
-                                    memcpy(regDomInfo.regDomain, elems[1].pData, regDomInfo.regDomainLen);
-
-                                    pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, 1, 1, true, &regDomInfo);
+                                    pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, 0, 0, false, NULL);
+                                    pDcpt->pCtrl->pfRegDomainEventCB = NULL;
+                                }
+                                else if (2U == pStatusInfo->srcCmd.numParams)
+                                {
+                                    /* Set regulatory domain completed, send a get to update information. */
+                                    (void)WDRV_WINC_WifiRegDomainGet((DRV_HANDLE)pDcpt, WDRV_WINC_REGDOMAIN_SELECT_CURRENT, pDcpt->pCtrl->pfRegDomainEventCB);
                                 }
                                 else
                                 {
-                                    pDcpt->pCtrl->pfRegDomainEventCB((DRV_HANDLE)pDcpt, 0, 0, false, NULL);
+                                    /* Do nothing. */
                                 }
 
                                 break;
@@ -442,10 +513,17 @@ static void wifiCmdRspCallbackHandler
 
                             default:
                             {
+                                WDRV_DBG_VERBOSE_PRINT("WIFIC ID(Status) %d not handled\r\n", id.i);
                                 break;
                             }
                         }
 
+                        break;
+                    }
+
+                    default:
+                    {
+                        WDRV_DBG_VERBOSE_PRINT("WIFI CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
                         break;
                     }
                 }
@@ -455,12 +533,18 @@ static void wifiCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-            WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
+            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
 
             if (NULL != pRspElems)
             {
                 wifiProcessCmdRsp((DRV_HANDLE)pDcpt, pRspElems);
             }
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("WIFI CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
             break;
         }
     }
@@ -494,7 +578,6 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -508,26 +591,17 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_POWERSAVE, WINC_TYPE_INTEGER, psMode, sizeof(psMode));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_POWERSAVE, WINC_TYPE_INTEGER, (uintptr_t)psMode, sizeof(psMode));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -562,7 +636,6 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -576,26 +649,17 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_POWERSAVE, WINC_TYPE_INVALID, 0, 0);
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_POWERSAVE, WINC_TYPE_INVALID, 0, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -636,7 +700,6 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -650,30 +713,37 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
+    if ((0 == memcmp(pRegDomainName, pDcpt->pCtrl->activeRegDomain.regDomain, regDomainNameLen))
+           && (regDomainNameLen == pDcpt->pCtrl->activeRegDomain.regDomainLen))
     {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
+        /* If new domain information matches the current active domain, return success here
+         calling the user callback if supplied. */
+        if (NULL != pfRegDomainEventCB)
+        {
+            pfRegDomainEventCB(handle, 1, 1, true, &pDcpt->pCtrl->activeRegDomain);
+        }
+
+        return WDRV_WINC_STATUS_OK;
     }
 
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    pDcpt->pCtrl->regulatoryChannelMask24 = WDRV_WINC_CM_2_4G_NONE;
+
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED, WINC_TYPE_STRING, (uintptr_t)pRegDomainName, regDomainNameLen);
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED, WINC_TYPE_STRING, (uintptr_t)pRegDomainName, regDomainNameLen);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    pDcpt->pCtrl->pfRegDomainEventCB = pfRegDomainEventCB;
+    pDcpt->pCtrl->pfRegDomainEventCB     = pfRegDomainEventCB;
+    pDcpt->pCtrl->regDomainSetInProgress = true;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -708,7 +778,6 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainGet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -722,38 +791,29 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainGet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
-
     if (WDRV_WINC_REGDOMAIN_SELECT_ALL == regDomainSel)
     {
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_AVAILABLE, WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_AVAILABLE, WINC_TYPE_INVALID, 0, 0);
     }
     else if (WDRV_WINC_REGDOMAIN_SELECT_CURRENT == regDomainSel)
     {
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED, WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED, WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_CHANMASK24, WINC_TYPE_INVALID, 0, 0);
     }
     else
     {
-        OSAL_Free(pCmdReqBuffer);
+        WDRV_WINC_DevDiscardCmdReq(cmdReqHandle);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -790,7 +850,6 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -804,26 +863,17 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ENABLED, WINC_TYPE_BOOL, enableCoexArbiter, sizeof(bool));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ENABLED, WINC_TYPE_BOOL, (true == enableCoexArbiter) ? 1U : 0U, sizeof(bool));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -836,7 +886,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
     WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
     (
         DRV_HANDLE handle,
-        WDRV_WINC_COEX_CFG *pCoexCfg
+        const WDRV_WINC_COEX_CFG *const pCoexCfg
     )
 
   Summary:
@@ -853,12 +903,11 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
 WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
 (
     DRV_HANDLE handle,
-    WDRV_WINC_COEX_CFG *pCoexCfg
+    const WDRV_WINC_COEX_CFG *const pCoexCfg
 )
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pCoexCfg))
@@ -872,34 +921,25 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    if (1 == pDcpt->pCtrl->coex.enabled)
+    if (1U == pDcpt->pCtrl->coex.enabled)
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 4, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(4, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_INTERFACE_TYPE, WINC_TYPE_BOOL, pCoexCfg->use2Wire,           sizeof(bool));
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_RX_VS_BT,  WINC_TYPE_BOOL, pCoexCfg->wlanRxHigherThanBt, sizeof(bool));
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_TX_VS_BT,  WINC_TYPE_BOOL, pCoexCfg->wlanTxHigherThanBt, sizeof(bool));
-    WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ANTENNA_MODE,   WINC_TYPE_BOOL, pCoexCfg->sharedAntenna,      sizeof(bool));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_INTERFACE_TYPE, WINC_TYPE_BOOL, (true == pCoexCfg->use2Wire) ? 1U : 0U,           sizeof(bool));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_RX_VS_BT,  WINC_TYPE_BOOL, (true == pCoexCfg->wlanRxHigherThanBt) ? 1U : 0U, sizeof(bool));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_TX_VS_BT,  WINC_TYPE_BOOL, (true == pCoexCfg->wlanTxHigherThanBt) ? 1U : 0U, sizeof(bool));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ANTENNA_MODE,   WINC_TYPE_BOOL, (true == pCoexCfg->sharedAntenna) ? 1U : 0U,      sizeof(bool));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -949,35 +989,25 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfGet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    if (0 == pDcpt->pCtrl->coex.confValid)
+    if (0U == pDcpt->pCtrl->coex.confValid)
     {
         WINC_CMD_REQ_HANDLE cmdReqHandle;
-        void *pCmdReqBuffer;
 
-        pCmdReqBuffer = OSAL_Malloc(384);
-
-        if (NULL == pCmdReqBuffer)
-        {
-            return WDRV_WINC_STATUS_REQUEST_ERROR;
-        }
-
-        cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 384, 5, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(5, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
         if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
         {
-            OSAL_Free(pCmdReqBuffer);
             return WDRV_WINC_STATUS_REQUEST_ERROR;
         }
 
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_INTERFACE_TYPE, WINC_TYPE_INVALID, 0, 0);
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_RX_VS_BT,  WINC_TYPE_INVALID, 0, 0);
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_TX_VS_BT,  WINC_TYPE_INVALID, 0, 0);
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ANTENNA_MODE,   WINC_TYPE_INVALID, 0, 0);
-        WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ENABLED,        WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_INTERFACE_TYPE, WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_RX_VS_BT,  WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_WLAN_TX_VS_BT,  WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ANTENNA_MODE,   WINC_TYPE_INVALID, 0, 0);
+        (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_COEX_ENABLED,        WINC_TYPE_INVALID, 0, 0);
 
-        if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+        if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
         {
-            OSAL_Free(pCmdReqBuffer);
             return WDRV_WINC_STATUS_REQUEST_ERROR;
         }
 
@@ -986,15 +1016,72 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfGet
 
     if (NULL != pCoexCfg)
     {
-        pCoexCfg->use2Wire           = (pDcpt->pCtrl->coex.use2Wire           == 1) ? true : false;
-        pCoexCfg->wlanRxHigherThanBt = (pDcpt->pCtrl->coex.wlanRxHigherThanBt == 1) ? true : false;
-        pCoexCfg->wlanTxHigherThanBt = (pDcpt->pCtrl->coex.wlanTxHigherThanBt == 1) ? true : false;
-        pCoexCfg->sharedAntenna      = (pDcpt->pCtrl->coex.sharedAntenna      == 1) ? true : false;
+        pCoexCfg->use2Wire           = (1U == pDcpt->pCtrl->coex.use2Wire           ) ? true : false;
+        pCoexCfg->wlanRxHigherThanBt = (1U == pDcpt->pCtrl->coex.wlanRxHigherThanBt ) ? true : false;
+        pCoexCfg->wlanTxHigherThanBt = (1U == pDcpt->pCtrl->coex.wlanTxHigherThanBt ) ? true : false;
+        pCoexCfg->sharedAntenna      = (1U == pDcpt->pCtrl->coex.sharedAntenna      ) ? true : false;
     }
 
     if (NULL != pIsEnabled)
     {
-        *pIsEnabled = (pDcpt->pCtrl->coex.enabled == 1) ? true : false;
+        *pIsEnabled = (1U == pDcpt->pCtrl->coex.enabled) ? true : false;
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_WifiMACOptionsSet
+    (
+        DRV_HANDLE handle,
+        const WDRV_WINC_MAC_OPTIONS *const pMACOptions
+    )
+
+  Summary:
+    Sets the MAC options.
+
+  Description:
+    Configures WiFi MAC options.
+
+  Remarks:
+    See wdrv_winc_wifi.h for usage information.
+
+*/
+WDRV_WINC_STATUS WDRV_WINC_WifiMACOptionsSet
+(
+    DRV_HANDLE handle,
+    const WDRV_WINC_MAC_OPTIONS *const pMACOptions
+)
+{
+    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    WINC_CMD_REQ_HANDLE cmdReqHandle;
+
+    /* Ensure the driver handle and options pointer are valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pMACOptions))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_AMPDU_TX_ENABLED, WINC_TYPE_BOOL, (true == pMACOptions->useTxAmpdu) ? 1U : 0U, 0);
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     return WDRV_WINC_STATUS_OK;

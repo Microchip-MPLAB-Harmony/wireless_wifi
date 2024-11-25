@@ -37,7 +37,8 @@ typedef struct
     uint8_t     regVal;
 } WINC_SDIO_CMD52_REG_ENTRY;
 
-#define SPI_SDIO_BLOCK_SZ       512
+#define SPI_SDIO_BLOCK_SZ       512U
+#define SPI_SDIO_RETRY_CNT      100
 
 static const uint8_t crc7[256] = {
     0x00, 0x12, 0x24, 0x36, 0x48, 0x5a, 0x6c, 0x7e, 0x90, 0x82, 0xb4, 0xa6, 0xd8, 0xca, 0xfc, 0xee,
@@ -80,25 +81,17 @@ static const uint16_t crc16[256] =
 
 static const WINC_SDIO_CMD52_REG_ENTRY cmd52InitSeq1[] =
 {
-    {WINC_SDIOREG_FN0_FBR_FN1_BLK_SZ_L,     (SPI_SDIO_BLOCK_SZ & 0xff)},
-    {WINC_SDIOREG_FN0_FBR_FN1_BLK_SZ_H,     (SPI_SDIO_BLOCK_SZ >> 8)},
-    {WINC_SDIOREG_FN0_FBR_FN1_CSA_CFG,      WINC_SDIO_REG_CSA_CFG_EN},
-    {WINC_SDIOREG_FN0_CCCR_FN0_BLK_SZ_L,    (SPI_SDIO_BLOCK_SZ & 0xff)},
-    {WINC_SDIOREG_FN0_CCCR_FN0_BLK_SZ_H,    (SPI_SDIO_BLOCK_SZ >> 8)},
-    {WINC_SDIOREG_FN0_CCCR_IO_EN,           WINC_SDIO_REG_CCCR_FN_IO_1},
-    {WINC_SDIOREG_FN0_CCCR_BUS_IF_CTRL,     WINC_SDIO_REG_CCCR_BUS_IF_CTRL_ECSI | WINC_SDIO_REG_CCCR_BUS_IF_CTRL_BUS_1},
-    {WINC_SDIOREG_FN0_CCCR_INT_EN,          WINC_SDIO_REG_CCCR_INT_EN_MASTER | WINC_SDIO_REG_CCCR_FN_INT_1},
-    {WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP,    0x01},
-    {WINC_SDIOREG_FN1_INT_EN,               WINC_SDIO_REG_FN1_INT_DATA_RDY},
+    {(uint32_t)WINC_SDIOREG_FN0_FBR_FN1_BLK_SZ_L,     (uint8_t)(SPI_SDIO_BLOCK_SZ & 0xffU)},
+    {(uint32_t)WINC_SDIOREG_FN0_FBR_FN1_BLK_SZ_H,     (uint8_t)(SPI_SDIO_BLOCK_SZ >> 8U)},
+    {(uint32_t)WINC_SDIOREG_FN0_FBR_FN1_CSA_CFG,      (uint8_t)WINC_SDIO_REG_CSA_CFG_EN},
+    {(uint32_t)WINC_SDIOREG_FN0_CCCR_FN0_BLK_SZ_L,    (uint8_t)(SPI_SDIO_BLOCK_SZ & 0xffU)},
+    {(uint32_t)WINC_SDIOREG_FN0_CCCR_FN0_BLK_SZ_H,    (uint8_t)(SPI_SDIO_BLOCK_SZ >> 8U)},
+    {(uint32_t)WINC_SDIOREG_FN0_CCCR_IO_EN,           (uint8_t)WINC_SDIO_REG_CCCR_FN_IO_1},
+    {(uint32_t)WINC_SDIOREG_FN0_CCCR_BUS_IF_CTRL,     (uint8_t)WINC_SDIO_REG_CCCR_BUS_IF_CTRL_ECSI | WINC_SDIO_REG_CCCR_BUS_IF_CTRL_BUS_1},
+    {(uint32_t)WINC_SDIOREG_FN0_CCCR_INT_EN,          (uint8_t)WINC_SDIO_REG_CCCR_INT_EN_MASTER | WINC_SDIO_REG_CCCR_FN_INT_1},
+    {(uint32_t)WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP,    (uint8_t)0x01},
+    {(uint32_t)WINC_SDIOREG_FN1_INT_EN,               (uint8_t)WINC_SDIO_REG_FN1_INT_DATA_RDY},
 };
-
-#ifdef WINC_DEV_CACHE_LINE_SIZE
-static __attribute__((aligned(WINC_DEV_CACHE_LINE_SIZE))) uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
-static __attribute__((aligned(WINC_DEV_CACHE_LINE_SIZE))) uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
-#else
-static uint8_t sdioCmd[13];
-static uint8_t sdioCmdRsp[13];
-#endif
 
 static bool useCRCs = false;
 static WINC_SDIO_SEND_RECEIVE_FP pfSDIOSendReceive = NULL;
@@ -127,12 +120,12 @@ static uint8_t sdioCRC7(const uint8_t *p, size_t l)
         return 0;
     }
 
-    while (l--)
+    while (0U != (l--))
     {
         crc = crc7[crc ^ *p++];
     }
 
-    return crc & 0xfe;
+    return crc & 0xfeU;
 }
 
 /*****************************************************************************
@@ -159,12 +152,12 @@ static uint16_t sdioCRC16(const uint8_t *p, size_t l)
         return 0;
     }
 
-    while (l--)
+    while (0U != (l--))
     {
         crc = (crc << 8) ^ crc16[((crc >> 8) ^ *p++)];
     }
 
-    return (crc << 8) | ((crc >> 8) & 0xff);
+    return (crc << 8) | ((crc >> 8) & 0xffU);
 }
 
 /*****************************************************************************
@@ -182,20 +175,20 @@ static uint16_t sdioCRC16(const uint8_t *p, size_t l)
 
  *****************************************************************************/
 
-static bool sdioCmd52SeqWrite(const WINC_SDIO_CMD52_REG_ENTRY *pEntry, int numEntries)
+static bool sdioCmd52SeqWrite(const WINC_SDIO_CMD52_REG_ENTRY *pEntry, unsigned int numEntries)
 {
     if ((NULL == pEntry) || (0 == numEntries))
     {
         return false;
     }
 
-    while (numEntries--)
+    while (0U != (numEntries--))
     {
         uint8_t rspStatus;
 
         rspStatus = WINC_SDIOCmd52(pEntry->regAddr, &pEntry->regVal, NULL);
 
-        if (0x00 != rspStatus)
+        if (0x00U != rspStatus)
         {
             return false;
         }
@@ -222,6 +215,9 @@ static bool sdioCmd52SeqWrite(const WINC_SDIO_CMD52_REG_ENTRY *pEntry, int numEn
 
 uint8_t WINC_SDIOCmd0(void)
 {
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
+
     WINC_VERBOSE_PRINT("C0");
 
     if (NULL == pfSDIOSendReceive)
@@ -229,13 +225,16 @@ uint8_t WINC_SDIOCmd0(void)
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 9);
-    memset(&sdioCmd[2], 0, 4);
+    (void)memset(sdioCmd, 0xff, 9);
+    (void)memset(&sdioCmd[2], 0, 4);
 
     sdioCmd[1] = 0x40;
     sdioCmd[6] = 0x95;
 
-    pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 9);
+    if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 9))
+    {
+        return WINC_SDIO_R1RSP_FAILED;
+    }
 
     WINC_VERBOSE_PRINT("R1[%02x]", sdioCmdRsp[8]);
 
@@ -259,6 +258,9 @@ uint8_t WINC_SDIOCmd0(void)
 
 uint8_t WINC_SDIOCmd5(uint32_t ocr, uint32_t *pRspData)
 {
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
+
     WINC_VERBOSE_PRINT("C5");
 
     if ((NULL == pfSDIOSendReceive) || (NULL == pRspData))
@@ -266,23 +268,26 @@ uint8_t WINC_SDIOCmd5(uint32_t ocr, uint32_t *pRspData)
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 13);
+    (void)memset(sdioCmd, 0xff, 13);
 
-    sdioCmd[1] = 0x40 | 0x05;
+    sdioCmd[1] = 0x40U | 0x05U;
     sdioCmd[2] = 0x00;
-    sdioCmd[3] = (ocr >> 16) & 0xff;
-    sdioCmd[4] = (ocr >> 8) & 0xff;
-    sdioCmd[5] = ocr & 0xff;
-    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01;
+    sdioCmd[3] = (uint8_t)((ocr >> 16) & 0xffU);
+    sdioCmd[4] = (uint8_t)((ocr >> 8) & 0xffU);
+    sdioCmd[5] = (uint8_t)(ocr & 0xffU);
+    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01U;
 
-    pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 13);
+    if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 13))
+    {
+        return WINC_SDIO_R1RSP_FAILED;
+    }
 
     WINC_VERBOSE_PRINT("R1[%02x]", sdioCmdRsp[8]);
 
     *pRspData = ((uint32_t)sdioCmdRsp[9]) << 24;
-    *pRspData |= sdioCmdRsp[10] << 16;
-    *pRspData |= sdioCmdRsp[11] << 8;
-    *pRspData |= sdioCmdRsp[12];
+    *pRspData |= ((uint32_t)sdioCmdRsp[10]) << 16;
+    *pRspData |= ((uint32_t)sdioCmdRsp[11]) << 8;
+    *pRspData |= ((uint32_t)sdioCmdRsp[12]);
 
     WINC_VERBOSE_PRINT("R5[%08x]", *pRspData);
 
@@ -305,6 +310,9 @@ uint8_t WINC_SDIOCmd5(uint32_t ocr, uint32_t *pRspData)
 
 uint8_t WINC_SDIOCmd8(void)
 {
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
+
     WINC_VERBOSE_PRINT("C8");
 
     if (NULL == pfSDIOSendReceive)
@@ -312,16 +320,19 @@ uint8_t WINC_SDIOCmd8(void)
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 9);
+    (void)memset(sdioCmd, 0xff, 9);
 
-    sdioCmd[1] = 0x40 | 0x08;
+    sdioCmd[1] = 0x40U | 0x08U;
     sdioCmd[2] = 0x00;
     sdioCmd[2] = 0x00;
     sdioCmd[4] = 0x01;
     sdioCmd[5] = 0xaa;
-    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01;
+    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01U;
 
-    pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 9);
+    if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 9))
+    {
+        return WINC_SDIO_R1RSP_FAILED;
+    }
 
     WINC_VERBOSE_PRINT("R1[%02x]", sdioCmdRsp[8]);
 
@@ -346,6 +357,9 @@ uint8_t WINC_SDIOCmd8(void)
 
 uint8_t WINC_SDIOCmd52(uint32_t fnRegAddr, const uint8_t* const pWriteValue, uint8_t* const pReadValue)
 {
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
+
     WINC_VERBOSE_PRINT("C52{%04x}", fnRegAddr);
 
     if (NULL == pfSDIOSendReceive)
@@ -353,14 +367,14 @@ uint8_t WINC_SDIOCmd52(uint32_t fnRegAddr, const uint8_t* const pWriteValue, uin
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 11);
+    (void)memset(sdioCmd, 0xff, 11);
 
     sdioCmd[2] = 0x00;
 
     if (NULL != pWriteValue)
     {
         /* R/W = 1 (W) */
-        sdioCmd[2] |= 0x80;
+        sdioCmd[2] |= 0x80U;
 
         /* Write Data=value */
         sdioCmd[5] = *pWriteValue;
@@ -368,7 +382,7 @@ uint8_t WINC_SDIOCmd52(uint32_t fnRegAddr, const uint8_t* const pWriteValue, uin
         if (NULL != pReadValue)
         {
             /* RAW = 1 */
-            sdioCmd[2] |= 0x08;
+            sdioCmd[2] |= 0x08U;
         }
     }
     else
@@ -377,17 +391,20 @@ uint8_t WINC_SDIOCmd52(uint32_t fnRegAddr, const uint8_t* const pWriteValue, uin
     }
 
     /* S=0, D=1, Command Index = 52 */
-    sdioCmd[1] = 0x40 | 0x34;
+    sdioCmd[1] = 0x40U | 0x34U;
     /* R/W=?, Function Number = top 4 bits of fnRegAddr, RAW=?, Stuff=0, Register Address[16:15]=fnRegAddr[16:15] */
-    sdioCmd[2] |= ((fnRegAddr >> 24) & 0x70) | 0 | ((fnRegAddr >> 15) & 0x03);
+    sdioCmd[2] |= (uint8_t)(((fnRegAddr >> 24) & 0x70U) | /*0 |*/ ((fnRegAddr >> 15) & 0x03U));
     /* Register Address[14:7]=fnRegAddr[14:7] */
-    sdioCmd[3] = (fnRegAddr >> 7) & 0xff;
+    sdioCmd[3] = (uint8_t)((fnRegAddr >> 7) & 0xffU);
     /* Register Address[6:0]=fnRegAddr[6:0], Stuff=0 */
-    sdioCmd[4] = ((fnRegAddr << 1) & 0xfe) | 0;
+    sdioCmd[4] = (uint8_t)(((fnRegAddr << 1) & 0xfeU)) /*| 0*/;
     /* CRC=0, E=1 */
-    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01;
+    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01U;
 
-    pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 11);
+    if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 11))
+    {
+        return WINC_SDIO_R1RSP_FAILED;
+    }
 
     WINC_VERBOSE_PRINT("R5[%02x%02x]", sdioCmdRsp[8], sdioCmdRsp[9]);
 
@@ -415,6 +432,9 @@ uint8_t WINC_SDIOCmd52(uint32_t fnRegAddr, const uint8_t* const pWriteValue, uin
 
 uint8_t WINC_SDIOCmd59(void)
 {
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
+
     WINC_VERBOSE_PRINT("C59");
 
     if (NULL == pfSDIOSendReceive)
@@ -422,16 +442,19 @@ uint8_t WINC_SDIOCmd59(void)
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 9);
+    (void)memset(sdioCmd, 0xff, 9);
 
-    sdioCmd[1] = 0x40 | 0x3b;
+    sdioCmd[1] = 0x40U | 0x3bU;
     sdioCmd[2] = 0x00;
     sdioCmd[2] = 0x00;
     sdioCmd[4] = 0x00;
-    sdioCmd[5] = useCRCs ? 0x01 : 0x00;
-    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01;
+    sdioCmd[5] = (uint8_t)(useCRCs ? 0x01U : 0x00U);
+    sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01U;
 
-    pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 9);
+    if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 9))
+    {
+        return WINC_SDIO_R1RSP_FAILED;
+    }
 
     WINC_VERBOSE_PRINT("R1[%02x]", sdioCmdRsp[8]);
 
@@ -457,101 +480,157 @@ uint8_t WINC_SDIOCmd59(void)
 
 uint16_t WINC_SDIOCmd53Write(uint32_t fnRegAddr, uint8_t *pWritePtr, size_t writeLength, bool incAddr)
 {
-    uint16_t rspStatusData;
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
     uint16_t count;
     uint16_t transferSize;
-    uint16_t crc = 0;
+    uint16_t crc;
     bool blockMode;
+    int retry;
 
-    WINC_TRACE_PRINT("C53W{%08x %d}\n", fnRegAddr, writeLength);
+    WINC_VERBOSE_PRINT("C53W{%08x %d}\n", fnRegAddr, writeLength);
 
     if (NULL == pfSDIOSendReceive)
     {
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 11);
+    (void)memset(sdioCmd, 0xff, 11);
 
     do
     {
+        uint16_t rspStatusData;
+
         sdioCmd[2] = 0x00;
 
         if (writeLength > SPI_SDIO_BLOCK_SZ)
         {
-            count        = writeLength / SPI_SDIO_BLOCK_SZ;
+            count        = (uint16_t)(writeLength / SPI_SDIO_BLOCK_SZ);
             transferSize = SPI_SDIO_BLOCK_SZ;
             blockMode    = true;
 
             /* Block mode=1 */
-            sdioCmd[2] |= 0x08;
+            sdioCmd[2] |= 0x08U;
         }
         else
         {
-            count        = writeLength & 511;
-            transferSize = writeLength;
+            count        = (uint16_t)(writeLength & 511U);
+            transferSize = (uint16_t)writeLength;
             blockMode    = false;
         }
 
         /* S=0, D=1, Command Index = 53 */
-        sdioCmd[1] = 0x40 | 0x35;
-        /* R/W=1 (W), Function Number = top 4 bits of fnRegAddr, Block Mode=?, OP Mode=incAddr, Register Address[16:15]=fnRegAddr[16:15] */
-        sdioCmd[2] |= 0x80 | ((fnRegAddr >> 24) & 0x70) | (incAddr?0x04:0x00) | ((fnRegAddr >> 15) & 0x03);
+        sdioCmd[1] = 0x40U | 0x35U;
+        /* R/W=1 (W), Function Number = top 3 bits of fnRegAddr, Block Mode=?, OP Mode=incAddr, Register Address[16:15]=fnRegAddr[16:15] */
+        sdioCmd[2] |= (uint8_t)(0x80U | ((fnRegAddr >> 24) & 0x70U) | (incAddr?0x04U:0x00U) | ((fnRegAddr >> 15) & 0x03U));
         /* Register Address[14:7]=fnRegAddr[14:7] */
-        sdioCmd[3] = (fnRegAddr >> 7) & 0xff;
+        sdioCmd[3] = (uint8_t)((fnRegAddr >> 7) & 0xffU);
         /* Register Address[6:0]=fnRegAddr[6:0], Count[8:8] */
-        sdioCmd[4] = ((fnRegAddr << 1) & 0xfe) | ((count >> 8) & 0x01);
+        sdioCmd[4] = (uint8_t)(((fnRegAddr << 1) & 0xfeU) | ((count >> 8) & 0x01U));
         /* Count[7:0] */
-        sdioCmd[5] = count & 0xff;
+        sdioCmd[5] = (uint8_t)(count & 0xffU);
         /* CRC=0, E=1 */
-        sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01;
+        sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01U;
 
-        pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 11);
+        if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 11))
+        {
+            return WINC_SDIO_R1RSP_FAILED;
+        }
 
         rspStatusData = ((uint16_t)sdioCmdRsp[8] << 8) | sdioCmdRsp[9];
 
         WINC_VERBOSE_PRINT("R5[%04x]", rspStatusData);
 
-        if (0 != rspStatusData)
+        if (0U != rspStatusData)
         {
             return rspStatusData;
         }
 
         do
         {
-            /* Send start block token. */
-            sdioCmd[1] = blockMode ? 0xfc : 0xfe;
-
-            pfSDIOSendReceive(sdioCmd, NULL, 2);
-
-            /* Send data block and CRC. */
             crc = sdioCRC16(pWritePtr, transferSize);
 
-            pfSDIOSendReceive(pWritePtr, NULL, transferSize);
+            retry = SPI_SDIO_RETRY_CNT;
 
-            sdioCmd[5] = crc >> 8;
-            sdioCmd[6] = crc & 0xff;
+            if (transferSize <= 4U)
+            {
+                /* Pack start block token, data block, CRC. */
+                sdioCmd[1] = 0xfe;
 
-            pfSDIOSendReceive(&sdioCmd[5], sdioCmdRsp, 5);
+                (void)memcpy(&sdioCmd[2], pWritePtr, transferSize);
 
-            pWritePtr   += transferSize;
+                sdioCmd[2U+transferSize] = (uint8_t)(crc >> 8);
+                sdioCmd[3U+transferSize] = (uint8_t)(crc & 0xffU);
+
+                /* Send start block token, data block and CRC. */
+                if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 7U+transferSize))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+
+                rspStatusData = (uint16_t)(sdioCmdRsp[4U+transferSize] & 0x1fU);
+
+                /* Wait for data response token. */
+                while ((0x00 == sdioCmdRsp[6U+transferSize]) && (retry > 0))
+                {
+                    if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[6U+transferSize], 1))
+                    {
+                        return WINC_SDIO_R1RSP_FAILED;
+                    }
+
+                    retry--;
+                }
+            }
+            else
+            {
+                /* Send start block token. */
+                sdioCmd[1] = (uint8_t)(blockMode ? 0xfcU : 0xfeU);
+
+                if (false == pfSDIOSendReceive(sdioCmd, NULL, 2))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+
+                /* Send data block. */
+                if (false == pfSDIOSendReceive(pWritePtr, NULL, transferSize))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+
+                sdioCmd[5] = (uint8_t)(crc >> 8);
+                sdioCmd[6] = (uint8_t)(crc & 0xffU);
+
+                /* Send CRC. */
+                if (false == pfSDIOSendReceive(&sdioCmd[5], sdioCmdRsp, 5))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+
+                rspStatusData = (uint16_t)(sdioCmdRsp[2] & 0x1fU);
+
+                /* Wait for data response token. */
+                while ((0x00 == sdioCmdRsp[4]) && (retry > 0))
+                {
+                    if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[4], 1))
+                    {
+                        return WINC_SDIO_R1RSP_FAILED;
+                    }
+
+                    retry--;
+                }
+            }
+
+            if ((0 == retry) || (0x05U != rspStatusData))
+            {
+                return rspStatusData | (((uint16_t)WINC_SDIO_R1RSP_FAILED) << 8);
+            }
+
+            pWritePtr   = pWritePtr + transferSize;
             writeLength -= transferSize;
-
-            rspStatusData = sdioCmdRsp[2] & 0x1f;
-
-            /* Wait for data response token. */
-            while (0x00 == sdioCmdRsp[4])
-            {
-                pfSDIOSendReceive(NULL, &sdioCmdRsp[4], 1);
-            }
-
-            if (0x05 != rspStatusData)
-            {
-                return rspStatusData | (WINC_SDIO_R1RSP_FAILED << 8);
-            }
         }
         while (writeLength >= SPI_SDIO_BLOCK_SZ);
     }
-    while (writeLength > 0);
+    while (writeLength > 0U);
 
     return WINC_SDIO_R1RSP_OK;
 }
@@ -575,20 +654,23 @@ uint16_t WINC_SDIOCmd53Write(uint32_t fnRegAddr, uint8_t *pWritePtr, size_t writ
 
 uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLength, bool incAddr)
 {
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
+    WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
     uint16_t rspStatusData;
     uint16_t count;
     uint16_t transferSize;
     uint8_t regValue;
     uint8_t cmd52Status;
+    int retry;
 
-    WINC_TRACE_PRINT("C53R{%08x %d}\n", fnRegAddr, readLength);
+    WINC_VERBOSE_PRINT("C53R{%08x %d}\n", fnRegAddr, readLength);
 
     if (NULL == pfSDIOSendReceive)
     {
         return WINC_SDIO_R1RSP_FAILED;
     }
 
-    memset(sdioCmd, 0xff, 11);
+    (void)memset(sdioCmd, 0xff, 11);
 
     do
     {
@@ -596,9 +678,9 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
         {
             cmd52Status = WINC_SDIOCmd52(WINC_SDIOREG_FN1_INT_ID_CLR, NULL, &regValue);
 
-            if (0x00 != cmd52Status)
+            if (0x00U != cmd52Status)
             {
-                return cmd52Status | (WINC_SDIO_R1RSP_FAILED << 8);
+                return cmd52Status | (((uint16_t)WINC_SDIO_R1RSP_FAILED) << 8);
             }
 
             if (0 == (regValue & WINC_SDIO_REG_FN1_INT_DATA_RDY))
@@ -610,9 +692,9 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
 
             cmd52Status = WINC_SDIOCmd52(WINC_SDIOREG_FN1_INT_ID_CLR, &regValue, NULL);
 
-            if (0x00 != cmd52Status)
+            if (0x00U != cmd52Status)
             {
-                return cmd52Status | (WINC_SDIO_R1RSP_FAILED << 8);
+                return cmd52Status | (((uint16_t)WINC_SDIO_R1RSP_FAILED) << 8);
             }
         }
 
@@ -620,78 +702,118 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
 
         if (readLength > SPI_SDIO_BLOCK_SZ)
         {
-            count        = readLength / SPI_SDIO_BLOCK_SZ;
+            count        = (uint16_t)(readLength / SPI_SDIO_BLOCK_SZ);
             transferSize = SPI_SDIO_BLOCK_SZ;
 
             /* Block mode=1 */
-            sdioCmd[2] |= 0x08;
+            sdioCmd[2] |= 0x08U;
         }
         else
         {
-            count        = readLength & 511;
-            transferSize = readLength;
+            count        = (uint16_t)(readLength & 511U);
+            transferSize = (uint16_t)readLength;
         }
 
         /* S=0, D=1, Command Index = 53 */
-        sdioCmd[1] = 0x40 | 0x35;
-        /* R/W=0 (R), Function Number = top 4 bits of fnRegAddr, Block Mode=?, OP Mode=incAddr, Register Address[16:15]=fnRegAddr[16:15] */
-        sdioCmd[2] |= 0 | ((fnRegAddr >> 24) & 0x70) | (incAddr?0x04:0x00) | ((fnRegAddr >> 15) & 0x03);
+        sdioCmd[1] = 0x40U | 0x35U;
+        /* R/W=0 (R), Function Number = top 3 bits of fnRegAddr, Block Mode=?, OP Mode=incAddr, Register Address[16:15]=fnRegAddr[16:15] */
+        sdioCmd[2] |= (uint8_t)(/*0 |*/ ((fnRegAddr >> 24) & 0x70U) | (incAddr?0x04U:0x00U) | ((fnRegAddr >> 15) & 0x03U));
         /* Register Address[14:7]=fnRegAddr[14:7] */
-        sdioCmd[3] = (fnRegAddr >> 7) & 0xff;
+        sdioCmd[3] = (uint8_t)((fnRegAddr >> 7) & 0xffU);
         /* Register Address[6:0]=fnRegAddr[6:0], Count[8:8] */
-        sdioCmd[4] = ((fnRegAddr << 1) & 0xfe) | ((count >> 8) & 0x01);
+        sdioCmd[4] = (uint8_t)(((fnRegAddr << 1) & 0xfeU) | ((count >> 8) & 0x01U));
         /* Count[7:0] */
-        sdioCmd[5] = count & 0xff;
+        sdioCmd[5] = (uint8_t)(count & 0xffU);
         /* CRC=0, E=1 */
-        sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01;
+        sdioCmd[6] = sdioCRC7(&sdioCmd[1], 5) | 0x01U;
 
-        pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 11);
+        if (false == pfSDIOSendReceive(sdioCmd, sdioCmdRsp, 11))
+        {
+            return WINC_SDIO_R1RSP_FAILED;
+        }
 
         rspStatusData = ((uint16_t)sdioCmdRsp[8] << 8) | sdioCmdRsp[9];
 
         WINC_VERBOSE_PRINT("R5[%04x]", rspStatusData);
 
-        if (0 != rspStatusData)
+        if (0U != rspStatusData)
         {
             return rspStatusData;
         }
 
-        memset(sdioCmdRsp, 0xff, 3);
+        (void)memset(sdioCmdRsp, 0xff, 3);
 
         do
         {
             /* Wait for MISO to rise */
-            while (0x00 == sdioCmdRsp[2])
+            retry = SPI_SDIO_RETRY_CNT;
+            while ((0x00 == sdioCmdRsp[2]) && (retry > 0))
             {
-                pfSDIOSendReceive(NULL, &sdioCmdRsp[2], 1);
+                if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[2], 1))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+
+                retry--;
             }
 
-            /* Wait for 0xfe start block token. */
-            while (0x00 != (sdioCmdRsp[2] & 0x01))
+            if (retry > 0)
             {
-                pfSDIOSendReceive(NULL, &sdioCmdRsp[2], 1);
+                /* Wait for 0xfe start block token. */
+                retry = SPI_SDIO_RETRY_CNT;
+                while ((0x00 != (sdioCmdRsp[2] & 0x01U)) && (retry > 0))
+                {
+                    if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[2], 1))
+                    {
+                        return WINC_SDIO_R1RSP_FAILED;
+                    }
+
+                    retry--;
+                }
             }
 
-            if (0xfe != sdioCmdRsp[2])
+            if ((0 == retry) || (0xfe != sdioCmdRsp[2]))
             {
-                return sdioCmdRsp[2] | (WINC_SDIO_R1RSP_FAILED << 8);
+                return sdioCmdRsp[2] | (((uint16_t)WINC_SDIO_R1RSP_FAILED) << 8);
             }
 
-            /* Receive data block and CRC. */
-            pfSDIOSendReceive(NULL, pReadPtr, transferSize);
+            if (transferSize <= 4U)
+            {
+                /* Receive data block and CRC. */
+                if (false == pfSDIOSendReceive(NULL, sdioCmdRsp, 3U+transferSize))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
 
-            pfSDIOSendReceive(&sdioCmd[7], sdioCmdRsp, 3);
+                (void)memcpy(pReadPtr, sdioCmdRsp, transferSize);
+
+                sdioCmdRsp[2] = sdioCmdRsp[2U+transferSize];
+            }
+            else
+            {
+                /* Receive data block. */
+                if (false == pfSDIOSendReceive(NULL, pReadPtr, transferSize))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+
+                /* Receive CRC. */
+                if (false == pfSDIOSendReceive(&sdioCmd[7], sdioCmdRsp, 3))
+                {
+                    return WINC_SDIO_R1RSP_FAILED;
+                }
+            }
 
             if (true == useCRCs)
             {
             }
 
-            pReadPtr   += transferSize;
+            pReadPtr   = pReadPtr + transferSize;
             readLength -= transferSize;
         }
         while (readLength >= SPI_SDIO_BLOCK_SZ);
     }
-    while (readLength > 0);
+    while (readLength > 0U);
 
     return WINC_SDIO_R1RSP_OK;
 }
@@ -716,7 +838,7 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
 
   Remarks:
     If pState is not provided the function will block while initialising the
-    device. If it is provided then the function will return on of the waiting
+    device. If it is provided then the function will return one of the waiting
     status codes and should be recalled to check progress.
 
  *****************************************************************************/
@@ -750,7 +872,7 @@ WINC_SDIO_STATUS_TYPE WINC_SDIODeviceInit(WINC_SDIO_STATE_TYPE *pState, WINC_SDI
 
                 if (WINC_SDIO_R1RSP_IDLE == rspStatus)
                 {
-                    regVal |= 0x08;
+                    regVal |= 0x08U;
 
                     rspStatus = WINC_SDIOCmd52(WINC_SDIOREG_FN0_CCCR_IO_ABORT, &regVal, NULL);
 
@@ -783,6 +905,10 @@ WINC_SDIO_STATUS_TYPE WINC_SDIODeviceInit(WINC_SDIO_STATE_TYPE *pState, WINC_SDI
                     *pState = WINC_SDIO_STATE_ERROR;
                     return WINC_SDIO_STATUS_RESET_FAILED;
                 }
+                else
+                {
+                    /* Do nothing. */
+                }
 
                 *pState = WINC_SDIO_STATE_SEND_OP;
 
@@ -812,13 +938,13 @@ WINC_SDIO_STATUS_TYPE WINC_SDIODeviceInit(WINC_SDIO_STATE_TYPE *pState, WINC_SDI
 
                 rspStatus = WINC_SDIOCmd5(0x200000, &cmd5Rsp);
 
-                if (WINC_SDIO_R1RSP_OK != (rspStatus & 0xfe))
+                if ((uint8_t)WINC_SDIO_R1RSP_OK != (rspStatus & 0xfeU))
                 {
                     *pState = WINC_SDIO_STATE_ERROR;
                     return WINC_SDIO_STATUS_OP_FAILED;
                 }
 
-                if (0 == (cmd5Rsp & 0x80000000))
+                if (0U == (cmd5Rsp & 0x80000000U))
                 {
                     retStatus = WINC_SDIO_STATUS_OP_WAITING;
                     break;

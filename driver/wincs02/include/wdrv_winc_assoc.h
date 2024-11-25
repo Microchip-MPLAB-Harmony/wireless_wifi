@@ -95,6 +95,14 @@ typedef struct
 // *****************************************************************************
 /*  Association RSSI Callback.
 
+  Function:
+    typedef void (*WDRV_WINC_ASSOC_RSSI_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_ASSOC_HANDLE assocHandle,
+        int8_t rssi
+    )
+
   Summary:
     A callback to provide the current RSSI of the current association.
 
@@ -130,9 +138,85 @@ typedef void (*WDRV_WINC_ASSOC_RSSI_CALLBACK)
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_AssocPeerAddressGet
+    void WDRV_WINC_AssocProcessAEC
+    (
+        uintptr_t context,
+        WINC_DEVICE_HANDLE devHandle,
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+    )
+
+  Summary:
+    AEC process callback.
+
+  Description:
+    Callback will be called to process any AEC messages received.
+
+  Precondition:
+    WINC_DevAECCallbackRegister must be called to register the callback.
+
+  Parameters:
+    context   - Pointer to user context supplied when callback was registered.
+    devHandle - WINC device handle.
+    pElems    - Pointer to element structure.
+
+  Returns:
+    None.
+
+  Remarks:
+    Callback should call WINC_CmdReadParamElem to extract elements.
+
+*/
+
+void WDRV_WINC_AssocProcessAEC
+(
+    uintptr_t context,
+    WINC_DEVICE_HANDLE devHandle,
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+);
+
+//*******************************************************************************
+/*
+  Function:
+    static WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
     (
         DRV_HANDLE handle,
+        WDRV_WINC_MAC_ADDR *pMacAddr
+    )
+
+  Summary:
+    Find an association.
+
+  Description:
+    Finds an existing association matching the MAC address supplied or
+    finds an empty association if no MAC address supplied.
+
+  Precondition:
+    System interface initialization of the WINC driver.
+
+  Parameters:
+    handle   - Client handle obtained by a call to WDRV_WINC_Open.
+    pMacAddr - Pointer to MAC address to find or NULL.
+
+  Returns:
+    Pointer to association info structure matching.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_MAC_ADDR *pMacAddr
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AssocPeerAddressGet
+    (
+        WDRV_WINC_ASSOC_HANDLE assocHandle,
         WDRV_WINC_NETWORK_ADDRESS *const pPeerAddress
     )
 
@@ -144,8 +228,8 @@ typedef void (*WDRV_WINC_ASSOC_RSSI_CALLBACK)
       current association.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
     A peer device needs to be connected and associated.
 
   Parameters:
@@ -192,8 +276,8 @@ WDRV_WINC_STATUS WDRV_WINC_AssocPeerAddressGet
     Attempts to retrieve the RSSI of the current association.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
     A peer device needs to be connected and associated.
 
   Parameters:
@@ -244,10 +328,10 @@ WDRV_WINC_STATUS WDRV_WINC_AssocRSSIGet
     This API can also be used in STA mode to disconnect the STA from an AP.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_APStart should have been called to start softAP in softAP mode.
-    WDRV_WINC_BSSConnect should have been called to connect to an AP in STA mode.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_APStart must have been called to start softAP in softAP mode.
+    WDRV_WINC_BSSConnect must have been called to connect to an AP in STA mode.
 
   Parameters:
     assocHandle - WDRV_WINC_ASSOC_HANDLE obtained when STA joins an AP or an association is done.
@@ -257,10 +341,10 @@ WDRV_WINC_STATUS WDRV_WINC_AssocRSSIGet
     WDRV_WINC_STATUS_NOT_OPEN                   - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG                - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR              - The request to the WINC was rejected.
-    WDRV_WINC_STATUS_NOT_CONNECTED              - The association isn't valid.
+    WDRV_WINC_STATUS_NOT_CONNECTED              - The association is not valid.
 
   Remarks:
-    None.
+    This function is currently not implemented and should not be used.
 
 */
 

@@ -11,7 +11,7 @@ li.linklist {
 .container-fluid {
     margin-right: auto;
     margin-left: auto;
-    max-width: 1600px;
+    /* max-width: 1600px; */
 }
 
 a.sr-only:focus {

@@ -30,16 +30,16 @@ Microchip or any third party.
 #define WINC_DEBUG_TYPE_TRACE      3
 #define WINC_DEBUG_TYPE_VERBOSE    4
 
-#define WINC_ANSI_ESC_SEQ_END           "\033[0m"
-#define WINC_ANSI_ESC_SEQ_RED_BOLD      "\033[31;1m"
-#define WINC_ANSI_ESC_SEQ_RED           "\033[31m"
-#define WINC_ANSI_ESC_SEQ_YELLOW        "\033[33m"
+#define WINC_ANSI_ESC_SEQ_END           "\033" "[0m"
+#define WINC_ANSI_ESC_SEQ_RED_BOLD      "\033" "[31;1m"
+#define WINC_ANSI_ESC_SEQ_RED           "\033" "[31m"
+#define WINC_ANSI_ESC_SEQ_YELLOW        "\033" "[33m"
 
 #define WINC_DEBUG_ANSI_SEQ_END         WINC_ANSI_ESC_SEQ_END
 #define WINC_DEBUG_ANSI_SEQ_ERROR       WINC_ANSI_ESC_SEQ_RED_BOLD
 #define WINC_DEBUG_ANSI_SEQ_INFORM      WINC_ANSI_ESC_SEQ_RED
 #define WINC_DEBUG_ANSI_SEQ_TRACE       WINC_ANSI_ESC_SEQ_RED
-#define WINC_DEBUG_ANSI_SEQ_WERBOSE     WINC_ANSI_ESC_SEQ_YELLOW
+#define WINC_DEBUG_ANSI_SEQ_VERBOSE     WINC_ANSI_ESC_SEQ_YELLOW
 
 #ifndef WINC_DEBUG_LEVEL
 #define WINC_DEBUG_LEVEL                WINC_DEBUG_TYPE_ERROR
@@ -52,16 +52,16 @@ Microchip or any third party.
 
 #if (WINC_DEBUG_LEVEL >= WINC_DEBUG_TYPE_ERROR)
 #undef WINC_ERROR_PRINT
-#define WINC_ERROR_PRINT(format, ...)                       do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_ERROR format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (0)
+#define WINC_ERROR_PRINT(format, ...)                       do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_ERROR format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (false)
 #if (WINC_DEBUG_LEVEL >= WINC_DEBUG_TYPE_INFORM)
 #undef WINC_INFORM_PRINT
-#define WINC_INFORM_PRINT(format, ...)                      do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_INFORM format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (0)
+#define WINC_INFORM_PRINT(format, ...)                      do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_INFORM format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (false)
 #if (WINC_DEBUG_LEVEL >= WINC_DEBUG_TYPE_TRACE)
 #undef WINC_TRACE_PRINT
-#define WINC_TRACE_PRINT(format, ...)                       do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_TRACE format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (0)
+#define WINC_TRACE_PRINT(format, ...)                       do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_TRACE format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (false)
 #if (WINC_DEBUG_LEVEL >= WINC_DEBUG_TYPE_VERBOSE)
 #undef WINC_VERBOSE_PRINT
-#define WINC_VERBOSE_PRINT(format, ...)                     do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_WERBOSE format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (0)
+#define WINC_VERBOSE_PRINT(format, ...)                     do { if (NULL != pfWINCDevDebugPrintf) { pfWINCDevDebugPrintf(WINC_DEBUG_ANSI_SEQ_VERBOSE format WINC_DEBUG_ANSI_SEQ_END, ##__VA_ARGS__); } } while (false)
 #endif /* WINC_DEBUG_TYPE_VERBOSE */
 #endif /* WINC_DEBUG_TYPE_TRACE */
 #endif /* WINC_DEBUG_TYPE_INFORM */

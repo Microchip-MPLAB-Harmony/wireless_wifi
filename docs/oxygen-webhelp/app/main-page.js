@@ -13,6 +13,7 @@ define(["require", "config"], function() {
             'search-init',
             'context-help',
             'template-module-loader',
+            'wh-table',
             'bootstrap'
         ];
         if(options.getBoolean("webhelp.enable.sticky.header")) {

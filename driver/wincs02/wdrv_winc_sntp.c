@@ -42,6 +42,8 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_sntp.h"
 
+#ifndef WDRV_WINC_MOD_DISABLE_SNTP
+
 //*******************************************************************************
 /*
   Function:
@@ -61,10 +63,10 @@ Microchip or any third party.
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -120,14 +122,14 @@ static void sntpCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
 
     if (NULL == pDcpt)
     {
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("SNTP CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("SNTP CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -138,7 +140,7 @@ static void sntpCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -149,6 +151,12 @@ static void sntpCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("SNTP CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
             break;
         }
     }
@@ -182,7 +190,6 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -196,26 +203,17 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_ENABLED, WINC_TYPE_BOOL, enabled, 0);
+    (void)WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_ENABLED, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -250,7 +248,6 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPStaticSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -264,26 +261,17 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPStaticSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 128, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_STATIC, WINC_TYPE_BOOL, enabled, 0);
+    (void)WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_STATIC, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -318,7 +306,6 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
     size_t addressLen;
 
     /* Ensure the driver handle is valid. */
@@ -333,33 +320,24 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    addressLen = strnlen(pAddr, WINC_CFG_PARAM_ID_SNTP_NTP_SVR_SZ+1);
+    addressLen = strnlen(pAddr, WINC_CFG_PARAM_SZ_SNTP_NTP_SVR+1U);
 
-    if ((0 == addressLen) || (addressLen > WINC_CFG_PARAM_ID_SNTP_NTP_SVR_SZ))
+    if ((0U == addressLen) || (addressLen > WINC_CFG_PARAM_SZ_SNTP_NTP_SVR))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128+addressLen);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128+addressLen, 1, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, addressLen, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_SVR, WINC_TYPE_STRING, (uintptr_t)pAddr, addressLen);
+    (void)WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_SVR, WINC_TYPE_STRING, (uintptr_t)pAddr, addressLen);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -367,3 +345,4 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
 }
 
 //DOM-IGNORE-END
+#endif /* WDRV_WINC_MOD_DISABLE_SNTP */

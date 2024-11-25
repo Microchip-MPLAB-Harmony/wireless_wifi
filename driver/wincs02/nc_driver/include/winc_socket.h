@@ -42,7 +42,6 @@ Microchip or any third party.
 /* Maximum socket payload size */
 #define MAX_SOCK_PAYLOAD_SZ                 MAX_UDP_SOCK_PAYLOAD_SZ
 
-
 /*****************************************************************************
   Description:
     Socket module initialisation structure.
@@ -54,11 +53,32 @@ Microchip or any third party.
 
 typedef struct
 {
-    void*   (*pfMemAlloc)(size_t);
-    void    (*pfMemFree)(void*);
-    size_t  slabSize;
-    int     numSlabs;
+    void*           (*pfMemAlloc)(size_t size);
+    void            (*pfMemFree)(void *pData);
+    size_t          slabSize;
+    int8_t          numSlabs;
 } WINC_SOCKET_INIT_TYPE;
+
+/*****************************************************************************
+  Description:
+    Socket asynchronous transfer mode type.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+typedef enum
+{
+    /* Socket read uses SOCKRD to poll data from WINCS02. */
+    WINC_SOCKET_ASYNC_MODE_OFF = 0U,
+
+    /* WINCS02 sends SOCKRXT/SOCKRXU with data. */
+    WINC_SOCKET_ASYNC_MODE_SIMPLE = 1U,
+
+    /* WINCS02 sends SOCKRXT/SOCKRXU with data and sequence numbers. */
+    WINC_SOCKET_ASYNC_MODE_ACKED = 2U,
+} WINC_SOCKET_ASYNC_MODE_TYPE;
 
 /*****************************************************************************
   Description:
@@ -148,9 +168,9 @@ struct sockaddr_in6 {
 };
 
 #define INADDR_ANY        ((in_addr_t) 0x00000000)
-#define INADDR_BROADCAST  ((in_addr_t) 0xffffffff)
-#define INADDR_NONE       ((in_addr_t) 0xffffffff)
-#define INADDR_LOOPBACK   ((in_addr_t) 0x7f000001)
+#define INADDR_BROADCAST  ((in_addr_t) 0xffffffffU)
+#define INADDR_NONE       ((in_addr_t) 0xffffffffU)
+#define INADDR_LOOPBACK   ((in_addr_t) 0x7f000001U)
 
 #define IN6ADDR_ANY_INIT      { { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } } }
 #define IN6ADDR_LOOPBACK_INIT { { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 } } }
@@ -162,13 +182,13 @@ uint32_t htonl(uint32_t n);
 uint16_t ntohs(uint16_t n);
 uint32_t ntohl(uint32_t n);
 
-#define IPPROTO_IP      0
-#define IPPROTO_TCP     6
-#define IPPROTO_UDP     17
-#define IPPROTO_TLS     253
+#define IPPROTO_IP      0U
+#define IPPROTO_TCP     6U
+#define IPPROTO_UDP     17U
+#define IPPROTO_TLS     253U
 
-#define IP_TOS                  1
-#define IP_ADD_MEMBERSHIP       35
+#define IP_TOS                  1U
+#define IP_ADD_MEMBERSHIP       35U
 
 struct ip_mreqn {
     struct in_addr imr_multiaddr; /* IP multicast group address */
@@ -183,6 +203,12 @@ struct ipv6_mreq {
     struct in6_addr ipv6mr_multiaddr;   /* IPv6 multicast addr */
     unsigned int    ipv6mr_interface;   /* interface index */
 };
+
+#define	IPTOS_TOS_MASK		0x1E
+#define	IPTOS_TOS(tos)		((tos) & IPTOS_TOS_MASK)
+#define	IPTOS_LOWDELAY		0x10
+#define	IPTOS_THROUGHPUT	0x08
+#define	IPTOS_RELIABILITY	0x04
 
 /***************************** netinet/tcp.h *********************************/
 
@@ -206,14 +232,17 @@ const char *inet_ntop(int af, const void *a0, char *s, socklen_t l);
 #define SOCK_DGRAM      WINC_CONST_SOCKET_PROTOCOL_UDP
 #define SOCK_STREAM     WINC_CONST_SOCKET_PROTOCOL_TCP
 
-#define SOL_SOCKET      65535
+#define SOL_SOCKET      65535U
 
 #define SO_SNDBUF       7
 #define SO_RCVBUF       8
 #define SO_KEEPALIVE    9
 #define SO_LINGER       13
+#define SO_ASYNC_MODE   100
 
-#define PF_UNSPEC       0
+#define SOMAXCONN       WINC_CMD_PARAM_MAX_SOCKET_PEND_SKTS
+
+#define PF_UNSPEC       0U
 #define PF_INET         WINC_CONST_NETIF_PROTOCOL_VERSION_IPV4
 #define PF_INET6        WINC_CONST_NETIF_PROTOCOL_VERSION_IPV6
 
@@ -221,8 +250,8 @@ const char *inet_ntop(int af, const void *a0, char *s, socklen_t l);
 #define AF_INET         PF_INET
 #define AF_INET6        PF_INET6
 
-#define MSG_PEEK        0x0002
-#define MSG_TRUNC       0x0020
+#define MSG_PEEK        0x0002U
+#define MSG_TRUNC       0x0020U
 
 struct sockaddr {
     sa_family_t sa_family;
@@ -266,7 +295,7 @@ ssize_t recvfrom(int fd, void *buf, size_t len, int flags, struct sockaddr *addr
 ssize_t send(int fd, const void *buf, size_t len, int flags);
 ssize_t sendto(int fd, const void *buf, size_t len, int flags, const struct sockaddr *addr, socklen_t alen);
 int getaddrinfo(const char *host, const char *serv, const struct addrinfo *hint, struct addrinfo **res);
-void freeaddrinfo(struct addrinfo *p);
+void freeaddrinfo(const struct addrinfo *p);
 int setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen);
 
 #endif /* WINC_SOCKET_H */

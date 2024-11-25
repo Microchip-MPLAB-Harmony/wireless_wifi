@@ -53,6 +53,7 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_bssctx.h"
 #include "wdrv_winc_authctx.h"
+#include "wdrv_winc_wifi.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -67,7 +68,7 @@ Microchip or any third party.
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -96,7 +97,42 @@ void WDRV_WINC_WAPProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_APDefaultWiFiCfg
+    (
+        WDRV_WINC_CONN_CFG *const pWiFiCfg
+    )
+
+  Summary:
+    Initialises a WiFi configuration structure to default value.
+
+  Description:
+    Create a default WiFi configuration structure suitable for creating
+      a BSS as a Soft-AP.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pWiFiCfg - WiFi configuration.
+
+  Returns:
+    WDRV_WINC_STATUS_OK              - The request has been accepted.
+    WDRV_WINC_STATUS_INVALID_ARG     - The parameters were incorrect.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_APDefaultWiFiCfg
+(
+    WDRV_WINC_CONN_CFG *const pWiFiCfg
 );
 
 //*******************************************************************************
@@ -107,6 +143,7 @@ void WDRV_WINC_WAPProcessAEC
         DRV_HANDLE handle,
         const WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
         const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        const WDRV_WINC_CONN_CFG *pWiFiCfg,
         const WDRV_WINC_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
     )
 
@@ -119,8 +156,8 @@ void WDRV_WINC_WAPProcessAEC
       a Soft-AP instance.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
     A BSS context must have been created and initialized.
     An authentication context must have been created and initialized.
 
@@ -128,6 +165,7 @@ void WDRV_WINC_WAPProcessAEC
     handle           - Client handle obtained by a call to WDRV_WINC_Open.
     pBSSCtx          - Pointer to BSS context.
     pAuthCtx         - Pointer to authentication context.
+    pWiFiCfg         - Optional WiFi configuration.
     pfNotifyCallback - Pointer to notification callback function.
 
   Returns:
@@ -148,6 +186,7 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
     DRV_HANDLE handle,
     const WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
     const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    const WDRV_WINC_CONN_CFG *pWiFiCfg,
     const WDRV_WINC_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
 );
 
@@ -163,8 +202,8 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
     Stops an instance of Soft-AP.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
@@ -177,57 +216,10 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
 
   Remarks:
     The AP stopping will be confirmed via the notification callback registered
-    by WDRV_WINC_APStart. The callback will receive the association handle
-    WDRV_WINC_ASSOC_HANDLE_ALL to signify that all STA associations have been
-    disconnected.
+    by WDRV_WINC_APStart.
 
 */
 
 WDRV_WINC_STATUS WDRV_WINC_APStop(DRV_HANDLE handle);
-
-//*******************************************************************************
-/*
-  Function:
-   WDRV_WINC_STATUS WDRV_WINC_APRekeyIntervalSet
-   (
-       DRV_HANDLE handle,
-       const uint32_t interval
-   )
-
-  Summary:
-    Configures the group re-key interval used when operating in Soft-AP mode
-
-  Description:
-    The re-key interval specifies how much time must elapse before a group re-key
-    is initiated with connected stations.
-    The timer is restarted after each group re-key.
-
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-
-  Parameters:
-    handle - Client handle obtained by a call to WDRV_WINC_Open.
-    interval - The time in seconds that must pass before each re-key attempt.
-               The minimum time value is 60 seconds.
-               Defaults to 86400.
-
-  Returns:
-    WDRV_WINC_STATUS_OK            - The request has been accepted.
-    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
-    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
-    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
-
-  Remarks:
-    Takes effect after the next re-key - if an interval other than the default is
-    desired then it is recommended to call this API before calling
-    WDRV_WINC_APStart.
-
-*/
-
-WDRV_WINC_STATUS WDRV_WINC_APRekeyIntervalSet(
-    DRV_HANDLE handle,
-    const uint32_t interval
-);
 
 #endif /* WDRV_WINC_SOFTAP_H */

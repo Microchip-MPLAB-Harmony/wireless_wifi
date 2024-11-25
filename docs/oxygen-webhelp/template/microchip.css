@@ -394,12 +394,12 @@ table.simpletable.dataTable.bitFieldValues th {
 
 table.table tbody tr:nth-child(odd),
 table.simpletable.dataTable.bitFieldValues tbody tr:nth-child(odd) {
-  background-color: #f2f2f2;
+  background-color: #ffffff;
 }
 
 table.table tbody tr:nth-child(even),
 table.simpletable.dataTable.bitFieldValues tbody tr:nth-child(even) {
-  background-color: #d9d9d9;
+  background-color: #f2f2f2;
 }
 
 .cellrowborder {
@@ -616,10 +616,19 @@ td.rowsep-0 {
   border-bottom: 0;
 }
 
-table.headercolumn > tbody tr > td:first-child {
+td.header-cell-bg {
     background: #585858;
     color: #fff;
     font-weight: bold;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ffffff;
+}
+
+.no-cell-bg{
+  background: inherit !important;
+  color: inherit !important;
+  font-weight: normal !important;
 }
 
 ol.horizontal {
@@ -767,21 +776,27 @@ dl.noboldlist dd {
 }
 
 .table-container{
-  /* max-height: 500px; */
-  /* overflow: auto !important; */
-  overflow-x: unset;
+  max-height: 600px;
+  overflow: auto !important;
+  /* overflow-x: unset; */
+  scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar{
+  display: none;
 }
 
 .table-container tr:nth-child(1) th{
   position: sticky;
-  top: 111px;
+  /* top: 111px; */
+  top: 0px;
   z-index: 1;
 }
 
 .table-container tr:nth-child(2) th{
   position: sticky;
   /* top: 29px; */
-  top: 140px;
+  /* top: 140px; */
   z-index: 1;
 }
 

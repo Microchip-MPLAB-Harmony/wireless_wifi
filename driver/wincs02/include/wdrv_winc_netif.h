@@ -51,7 +51,6 @@ Microchip or any third party.
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -86,7 +85,9 @@ typedef enum
 {
     WDRV_WINC_NETIF_IDX_INVALID = -1,
     WDRV_WINC_NETIF_IDX_0 = 0,
-    WDRV_WINC_NETIF_IDX_1 = 1
+    WDRV_WINC_NETIF_IDX_DEFAULT = WDRV_WINC_NETIF_IDX_0,
+    WDRV_WINC_NETIF_IDX_1 = 1,
+    WDRV_WINC_NUM_NETIFS
 } WDRV_WINC_NETIF_IDX;
 
 // *****************************************************************************
@@ -110,8 +111,10 @@ typedef enum
     /* Network interface down. */
     WDRV_WINC_NETIF_EVENT_INTF_DOWN,
 
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
     /* Network interface IP address update/change. */
     WDRV_WINC_NETIF_EVENT_ADDR_UPDATE,
+#endif
 } WDRV_WINC_NETIF_EVENT_TYPE;
 
 // *****************************************************************************
@@ -136,6 +139,7 @@ typedef enum
     WDRV_WINC_NETIF_INFO_MAC_ADDR
 } WDRV_WINC_NETIF_INFO_TYPE;
 
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 // *****************************************************************************
 /* Address Auto-assignment Configuration.
 
@@ -189,6 +193,7 @@ typedef struct
     WDRV_WINC_IP_MULTI_ADDRESS addr;
 } WDRV_WINC_NETIF_ADDR_UPDATE_TYPE;
 
+#endif /* WDRV_WINC_DISABLE_L3_SUPPORT */
 // *****************************************************************************
 /*
   Function:
@@ -207,8 +212,8 @@ typedef struct
     Callback to be used to convey network interface events.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle     - Client handle obtained by a call to WDRV_WINC_Open.
@@ -246,8 +251,8 @@ typedef void (*WDRV_WINC_NETIF_EVENT_HANDLER)
     Callback to be used to convey network interface information.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle   - Client handle obtained by a call to WDRV_WINC_Open.
@@ -269,6 +274,7 @@ typedef void (*WDRV_WINC_NETIF_INFO_HANDLER)
     WDRV_WINC_STATUS status
 );
 
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 // *****************************************************************************
 /*
   Function:
@@ -286,8 +292,8 @@ typedef void (*WDRV_WINC_NETIF_INFO_HANDLER)
     of allocation of IP address via DHCP.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -297,9 +303,7 @@ typedef void (*WDRV_WINC_NETIF_INFO_HANDLER)
     None.
 
   Remarks:
-    Only supported with the socket mode WINC driver.
-
-    See WDRV_WINC_IPSetUseDHCP and WDRV_WINC_IPDHCPServerConfigure.
+    None.
 
 */
 
@@ -308,12 +312,52 @@ typedef void (*WDRV_WINC_DHCP_ADDRESS_EVENT_HANDLER)
     DRV_HANDLE handle,
     uint32_t ipAddress
 );
+#endif
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: WINC Driver Network Interface Routines
 // *****************************************************************************
 // *****************************************************************************
+
+//*******************************************************************************
+/*
+  Function:
+    void WDRV_WINC_NETIFProcessAEC
+    (
+        uintptr_t context,
+        WINC_DEVICE_HANDLE devHandle,
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+    )
+
+  Summary:
+    AEC process callback.
+
+  Description:
+    Callback will be called to process any AEC messages received.
+
+  Precondition:
+    WINC_DevAECCallbackRegister must be called to register the callback.
+
+  Parameters:
+    context   - Pointer to user context supplied when callback was registered.
+    devHandle - WINC device handle.
+    pElems    - Pointer to element structure.
+
+  Returns:
+    None.
+
+  Remarks:
+    Callback should call WINC_CmdReadParamElem to extract elements.
+
+*/
+
+void WDRV_WINC_NETIFProcessAEC
+(
+    uintptr_t context,
+    WINC_DEVICE_HANDLE devHandle,
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+);
 
 //*******************************************************************************
 /*
@@ -331,8 +375,8 @@ typedef void (*WDRV_WINC_DHCP_ADDRESS_EVENT_HANDLER)
     Function to register an event callback function.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle               - Client handle obtained by a call to WDRV_WINC_Open.
@@ -354,6 +398,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfRegisterEventCallback
     const WDRV_WINC_NETIF_EVENT_HANDLER pfNetIfEventCallback
 );
 
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 //*******************************************************************************
 /*
   Function:
@@ -371,8 +416,8 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfRegisterEventCallback
     Sets how the IP address of the network interface can be assigned.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -380,7 +425,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfRegisterEventCallback
     aacMode - Auto-assignment configuration mode.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - Callback registered.
+    WDRV_WINC_STATUS_OK            - Mode set.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
@@ -406,7 +451,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
         WDRV_WINC_NETIF_IDX ifIdx,
         WDRV_WINC_IP_ADDRESS_TYPE type,
         WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
-        int scope
+        unsigned int scope
     )
 
   Summary:
@@ -416,8 +461,8 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
     Defines the network IP address and scope of an interface.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
@@ -427,7 +472,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
     scope  - Scope of network for IP address.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - Callback registered.
+    WDRV_WINC_STATUS_OK            - IP address set.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
@@ -443,7 +488,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
     WDRV_WINC_NETIF_IDX ifIdx,
     WDRV_WINC_IP_ADDRESS_TYPE type,
     WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
-    int scope
+    unsigned int scope
 );
 
 //*******************************************************************************
@@ -466,8 +511,8 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
     Defines a route to a network interface.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle   - Client handle obtained by a call to WDRV_WINC_Open.
@@ -478,7 +523,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
     pDest    - Pointer to IP address of destination.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - Callback registered.
+    WDRV_WINC_STATUS_OK            - Route set.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
@@ -497,6 +542,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPRouteSet
     int scope,
     WDRV_WINC_IP_MULTI_ADDRESS *pDest
 );
+#endif /* WDRV_WINC_DISABLE_L3_SUPPORT */
 
 //*******************************************************************************
 /*
@@ -515,8 +561,8 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPRouteSet
     Requests the MAC address of a network interface, to be return via a callback.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle        - Client handle obtained by a call to WDRV_WINC_Open.
@@ -524,7 +570,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPRouteSet
     pfNetIfInfoCB - Pointer to callback function to receive MAC address.
 
   Returns:
-    WDRV_WINC_STATUS_OK            - Callback registered.
+    WDRV_WINC_STATUS_OK            - MAC address request accepted.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.

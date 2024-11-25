@@ -51,7 +51,6 @@ Microchip or any third party.
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -75,7 +74,7 @@ Microchip or any third party.
     void (*WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER)
     (
         DRV_HANDLE handle,
-        WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr,
+        const WDRV_WINC_IP_MULTI_ADDRESS *const pIPAddr,
         WDRV_WINC_IP_ADDRESS_TYPE ipAddrType,
         uint16_t rtt
     )
@@ -86,10 +85,6 @@ Microchip or any third party.
   Description:
     This data type defines a function event handler which is
     called in response to an ICMP echo request response event.
-
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
 
   Parameters:
     handle     - Client handle obtained by a call to WDRV_WINC_Open.
@@ -107,7 +102,7 @@ Microchip or any third party.
 typedef void (*WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER)
 (
     DRV_HANDLE handle,
-    WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr,
+    const WDRV_WINC_IP_MULTI_ADDRESS *const pIPAddr,
     WDRV_WINC_IP_ADDRESS_TYPE ipAddrType,
     uint16_t rtt
 );
@@ -125,7 +120,7 @@ typedef void (*WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER)
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -154,9 +149,10 @@ void WDRV_WINC_ICMPProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 );
 
+#ifdef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
 //*******************************************************************************
 /*
   Function:
@@ -173,16 +169,17 @@ void WDRV_WINC_ICMPProcessAEC
     Socket events are dispatched to the application via this callback.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle          - Client handle obtained by a call to WDRV_WINC_Open.
     pfSocketEventCb - Function pointer to event callback handler.
 
   Returns:
-    WDRV_WINC_STATUS_OK          - Callback registered.
-    WDRV_WINC_STATUS_INVALID_ARG - The parameters were incorrect.
+    WDRV_WINC_STATUS_OK            - Callback registered.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request failed.
 
   Remarks:
     None.
@@ -194,6 +191,7 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
     DRV_HANDLE handle,
     const WINC_SOCKET_EVENT_CALLBACK pfSocketEventCb
 );
+#endif
 
 //*******************************************************************************
 /*
@@ -201,7 +199,7 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
     WDRV_WINC_STATUS WDRV_WINC_ICMPEchoRequestAddr
     (
         DRV_HANDLE handle,
-        WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr,
+        const WDRV_WINC_IP_MULTI_ADDRESS *const pIPAddr,
         WDRV_WINC_IP_ADDRESS_TYPE ipAddrType,
         const WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER pfICMPEchoResponseCB
     )
@@ -213,8 +211,8 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
     Sends an ICMP echo request to the address specified.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle               - Client handle obtained by a call to WDRV_WINC_Open.
@@ -223,7 +221,8 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
     pfICMPEchoResponseCB - Pointer to callback function.
 
   Returns:
-    WDRV_WINC_STATUS_OK             - Callback registered.
+    WDRV_WINC_STATUS_OK             - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
     WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
 
@@ -235,7 +234,7 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
 WDRV_WINC_STATUS WDRV_WINC_ICMPEchoRequestAddr
 (
     DRV_HANDLE handle,
-    WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr,
+    const WDRV_WINC_IP_MULTI_ADDRESS *const pIPAddr,
     WDRV_WINC_IP_ADDRESS_TYPE ipAddrType,
     const WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER pfICMPEchoResponseCB
 );

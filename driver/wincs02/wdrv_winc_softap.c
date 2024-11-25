@@ -58,80 +58,6 @@ Microchip or any third party.
 //*******************************************************************************
 /*
   Function:
-    static WDRV_WINC_ASSOC_INFO* _WDRV_WINC_FindAssocInfoAP
-    (
-        WDRV_WINC_CTRLDCPT *pCtrl,
-        const uint8_t *pMacAddr
-    )
-
-  Summary:
-    Find an association.
-
-  Description:
-    Finds an existing association matching the MAC address supplied or
-    finds an empty association if no MAC address supplied.
-
-  Precondition:
-    System interface initialization of the WINC driver.
-
-  Parameters:
-    pCtrl    - Pointer to driver control structure.
-    pMacAddr - Pointer to MAC address to find or NULL.
-
-  Returns:
-    Pointer to association info structure matching.
-
-  Remarks:
-    None.
-
-*/
-
-static WDRV_WINC_ASSOC_INFO* _WDRV_WINC_FindAssocInfoAP
-(
-    WDRV_WINC_CTRLDCPT *pCtrl,
-    const uint8_t *pMacAddr
-)
-{
-    int i;
-    WDRV_WINC_ASSOC_INFO *pStaAssocInfo = NULL;
-
-    if (NULL == pCtrl)
-    {
-        return NULL;
-    }
-
-    if (NULL == pMacAddr)
-    {
-        for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
-        {
-            if ((DRV_HANDLE_INVALID == pCtrl->assocInfoAP[i].handle) &&
-                (false == pCtrl->assocInfoAP[i].peerAddress.valid))
-            {
-                pStaAssocInfo = &pCtrl->assocInfoAP[i];
-                break;
-            }
-        }
-    }
-    else
-    {
-        for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
-        {
-            if ((DRV_HANDLE_INVALID != pCtrl->assocInfoAP[i].handle) &&
-                (true == pCtrl->assocInfoAP[i].peerAddress.valid) &&
-                (0 == memcmp(pCtrl->assocInfoAP[i].peerAddress.addr, pMacAddr, WDRV_WINC_MAC_ADDR_LEN)))
-            {
-                pStaAssocInfo = &pCtrl->assocInfoAP[i];
-                break;
-            }
-        }
-    }
-
-    return pStaAssocInfo;
-}
-
-//*******************************************************************************
-/*
-  Function:
     static void apWAPCmdRspCallbackHandler
     (
         uintptr_t context,
@@ -148,10 +74,10 @@ static WDRV_WINC_ASSOC_INFO* _WDRV_WINC_FindAssocInfoAP
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -214,7 +140,7 @@ static void apWAPCmdRspCallbackHandler
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("WSTA CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+    //WDRV_DBG_INFORM_PRINT("WAP CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -225,7 +151,7 @@ static void apWAPCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -249,7 +175,7 @@ static void apWAPCmdRspCallbackHandler
                             break;
                         }
 
-                        if (pStatusInfo->srcCmd.numParams < 1)
+                        if (pStatusInfo->srcCmd.numParams < 1U)
                         {
                             break;
                         }
@@ -260,7 +186,7 @@ static void apWAPCmdRspCallbackHandler
                             break;
                         }
 
-                        WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &state, sizeof(state));
+                        (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &state, sizeof(state));
 
                         /* Update user application via callback if set. */
                         if (0 == state)
@@ -271,12 +197,17 @@ static void apWAPCmdRspCallbackHandler
                         {
                             pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, WDRV_WINC_ASSOC_HANDLE_INVALID, (WINC_STATUS_OK == pStatusInfo->status) ? WDRV_WINC_CONN_STATE_CONNECTED : WDRV_WINC_CONN_STATE_FAILED);
                         }
+                        else
+                        {
+                            /* Do nothing. */
+                        }
 
                         break;
                     }
 
                     default:
                     {
+                        WDRV_DBG_VERBOSE_PRINT("WAP CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
                         break;
                     }
                 }
@@ -289,6 +220,12 @@ static void apWAPCmdRspCallbackHandler
         {
             break;
         }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("WAP CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
     }
 }
 
@@ -299,7 +236,7 @@ static void apWAPCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -317,7 +254,7 @@ void WDRV_WINC_WAPProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
@@ -326,7 +263,7 @@ void WDRV_WINC_WAPProcessAEC
     WDRV_WINC_ASSOC_INFO *pStaAssocInfo;
 
     uint16_t assocID;
-    uint8_t peerAddress[WDRV_WINC_MAC_ADDR_LEN];
+    WDRV_WINC_MAC_ADDR peerAddress;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
     {
@@ -339,15 +276,16 @@ void WDRV_WINC_WAPProcessAEC
     {
         case WINC_AEC_ID_WAPSC:
         {
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
                 break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-            WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, peerAddress, WDRV_WINC_MAC_ADDR_LEN);
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
+            peerAddress.valid = true;
 
-            pStaAssocInfo = _WDRV_WINC_FindAssocInfoAP(pCtrl, peerAddress);
+            pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
 
             if (NULL != pStaAssocInfo)
             {
@@ -355,7 +293,7 @@ void WDRV_WINC_WAPProcessAEC
             }
             else
             {
-                pStaAssocInfo = _WDRV_WINC_FindAssocInfoAP(pCtrl, NULL);
+                pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, NULL);
             }
 
             if (NULL != pStaAssocInfo)
@@ -366,7 +304,7 @@ void WDRV_WINC_WAPProcessAEC
                 pStaAssocInfo->rssi              = 0;
                 pStaAssocInfo->assocID           = assocID;
 
-                memcpy(&pStaAssocInfo->peerAddress.addr, peerAddress, WDRV_WINC_MAC_ADDR_LEN);
+                (void)memcpy(&pStaAssocInfo->peerAddress, &peerAddress, sizeof(WDRV_WINC_MAC_ADDR));
             }
             else
             {
@@ -388,42 +326,46 @@ void WDRV_WINC_WAPProcessAEC
 
         case WINC_AEC_ID_WAPAIP:
         {
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
             uint32_t ipv4Addr = 0;
+#endif
 
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
                 break;
             }
 
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
             if (NULL == pCtrl->pfDHCPSEventCB)
             {
                 break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_IPV4ADDR, &ipv4Addr, sizeof(ipv4Addr));
+            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_IPV4ADDR, &ipv4Addr, sizeof(ipv4Addr));
 
             pCtrl->pfDHCPSEventCB((DRV_HANDLE)pDcpt, WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED, &ipv4Addr);
-
+#endif
             break;
         }
 
         case WINC_AEC_ID_WAPSD:
         {
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
                 break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-            WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, peerAddress, WDRV_WINC_MAC_ADDR_LEN);
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
+            peerAddress.valid = true;
 
-            pStaAssocInfo = _WDRV_WINC_FindAssocInfoAP(pCtrl, peerAddress);
+            pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
 
             if (NULL != pStaAssocInfo)
             {
-                pStaAssocInfo->handle = DRV_HANDLE_INVALID;
+                pStaAssocInfo->handle            = DRV_HANDLE_INVALID;
                 pStaAssocInfo->peerAddress.valid = false;
-                pStaAssocInfo->assocID = -1;
+                pStaAssocInfo->assocID           = 0xffffU;
             }
             else
             {
@@ -441,9 +383,50 @@ void WDRV_WINC_WAPProcessAEC
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("WAP AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_APDefaultWiFiCfg
+    (
+        WDRV_WINC_CONN_CFG *const pWiFiCfg
+    )
+
+  Summary:
+    Initialises a WiFi configuration structure to default value.
+
+  Description:
+    Create a default WiFi configuration structure suitable for creating
+      a BSS as a Soft-AP.
+
+  Remarks:
+    See wdrv_winc_softap.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_APDefaultWiFiCfg
+(
+    WDRV_WINC_CONN_CFG *const pWiFiCfg
+)
+{
+    if (NULL == pWiFiCfg)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    (void)memset(pWiFiCfg, 0, sizeof(WDRV_WINC_CONN_CFG));
+
+    pWiFiCfg->ifIdx             = (uint8_t)WDRV_WINC_NETIF_IDX_DEFAULT;
+    pWiFiCfg->l2Only            = false;
+    pWiFiCfg->ap.rekeyInterval  = 86400;
+    pWiFiCfg->ap.cloaked        = false;
+
+    return WDRV_WINC_STATUS_OK;
 }
 
 //*******************************************************************************
@@ -454,6 +437,7 @@ void WDRV_WINC_WAPProcessAEC
         DRV_HANDLE handle,
         const WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
         const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        const WDRV_WINC_CONN_CFG *pWiFiCfg,
         const WDRV_WINC_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
     )
 
@@ -475,14 +459,15 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
     DRV_HANDLE handle,
     const WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
     const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    const WDRV_WINC_CONN_CFG *pWiFiCfg,
     const WDRV_WINC_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
     uint8_t channel;
-    int i;
+    unsigned int i;
+    WDRV_WINC_CONN_CFG defaultWifiCfg;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -521,17 +506,11 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
 
     }
 
-    channel = pBSSCtx->channel;
+    channel = (uint8_t)pBSSCtx->channel;
 
-    if (WDRV_WINC_CID_ANY == channel)
+    if (0U == (((uint16_t)1U<<(channel-1U)) & (uint16_t)pDcpt->pCtrl->regulatoryChannelMask24))
     {
-    }
-    else
-    {
-        if(!((1<<(channel-1)) & WDRV_WINC_CM_2_4G_DEFAULT))
-        {
-            return WDRV_WINC_STATUS_INVALID_ARG;
-        }
+        return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
     /* Ensure WINC is not already configured for Soft-AP. */
@@ -546,6 +525,26 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
+    if (NULL != pWiFiCfg)
+    {
+        if (pWiFiCfg->ifIdx >= (uint8_t)WDRV_WINC_NUM_NETIFS)
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
+
+        if ((pWiFiCfg->ap.rekeyInterval < WINC_CFG_PARAM_MIN_WAP_REKEY_INTERVAL) || (pWiFiCfg->ap.rekeyInterval > WINC_CFG_PARAM_MAX_WAP_REKEY_INTERVAL))
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
+    }
+    else
+    {
+        if (WDRV_WINC_STATUS_OK == WDRV_WINC_APDefaultWiFiCfg(&defaultWifiCfg))
+        {
+            pWiFiCfg = &defaultWifiCfg;
+        }
+    }
+
     pDcpt->pCtrl->pfConnectNotifyCB = pfNotifyCallback;
     pDcpt->pCtrl->isAP              = true;
 
@@ -553,39 +552,63 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
     {
         pDcpt->pCtrl->assocInfoAP[i].handle            = DRV_HANDLE_INVALID;
         pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid = false;
-        pDcpt->pCtrl->assocInfoAP[i].assocID           = -1;
+        pDcpt->pCtrl->assocInfoAP[i].assocID           = 0xffffU;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(1024);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 1024, 5, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(9, 0, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     /* SSID and channel */
-    WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_SSID, WINC_TYPE_STRING, (uintptr_t)pBSSCtx->ssid.name, (uintptr_t)pBSSCtx->ssid.length);
-    WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_CHANNEL, WINC_TYPE_INTEGER, channel, 0);
+    (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_SSID, WINC_TYPE_STRING, (uintptr_t)pBSSCtx->ssid.name, (uintptr_t)pBSSCtx->ssid.length);
+    (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_CHANNEL, WINC_TYPE_INTEGER, channel, 0);
 
-    /* Set <SEC_TYPE> */
-    WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_SEC_TYPE, WINC_TYPE_INTEGER, pAuthCtx->authType, 0);
-
-    /* Set <CREDENTIALS> */
-    WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_CREDENTIALS, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.personal.password, pAuthCtx->authInfo.personal.size);
-
-    WINC_CmdWAP(cmdReqHandle, WINC_CONST_WAP_STATE_ENABLED);
-
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (NULL != pAuthCtx)
     {
-        OSAL_Free(pCmdReqBuffer);
+        uintptr_t mfp;
+
+        /* Set <SEC_TYPE> */
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_SEC_TYPE, WINC_TYPE_INTEGER, (uintptr_t)pAuthCtx->authType, 0);
+
+        /* Set <CREDENTIALS> */
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_CREDENTIALS, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.personal.password, pAuthCtx->authInfo.personal.size);
+
+        /* Set <MFP_TYPE> */
+        if (WDRV_WINC_AUTH_MOD_NONE != (pAuthCtx->authMod & WDRV_WINC_AUTH_MOD_MFP_REQ))
+        {
+            mfp = WINC_CFG_PARAM_OPT_WAP_MFP_TYPE_REQUIRED;
+        }
+        else if (WDRV_WINC_AUTH_MOD_NONE != (pAuthCtx->authMod & WDRV_WINC_AUTH_MOD_MFP_OFF))
+        {
+            mfp = WINC_CFG_PARAM_OPT_WAP_MFP_TYPE_DISABLED;
+        }
+        else
+        {
+            mfp = WINC_CFG_PARAM_OPT_WAP_MFP_TYPE_ENABLED;
+        }
+
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_MFP_TYPE, WINC_TYPE_INTEGER_UNSIGNED, mfp, 0);
+    }
+    else
+    {
+        /* Set <SEC_TYPE> */
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_SEC_TYPE, WINC_TYPE_INTEGER, (uintptr_t)WDRV_WINC_AUTH_TYPE_OPEN, 0);
+    }
+
+    if (NULL != pWiFiCfg)
+    {
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_HIDDEN, WINC_TYPE_BOOL, (true == pWiFiCfg->ap.cloaked) ? 1U : 0U, 0);
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_NETIF_IDX, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->ifIdx, 0);
+        (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_REKEY_INTERVAL, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->ap.rekeyInterval, 0);
+    }
+
+    (void)WINC_CmdWAP(cmdReqHandle, (int32_t)WINC_CONST_WAP_STATE_ENABLED);
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -612,7 +635,6 @@ WDRV_WINC_STATUS WDRV_WINC_APStop(DRV_HANDLE handle)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -632,111 +654,22 @@ WDRV_WINC_STATUS WDRV_WINC_APStop(DRV_HANDLE handle)
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWAP(cmdReqHandle, WINC_CONST_WAP_STATE_DISABLED);
+    (void)WINC_CmdWAP(cmdReqHandle, (int32_t)WINC_CONST_WAP_STATE_DISABLED);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     /* Clear AP state. */
     pDcpt->pCtrl->isAP = false;
-
-    return WDRV_WINC_STATUS_OK;
-}
-
-//*******************************************************************************
-/*
-  Function:
-    WDRV_WINC_STATUS WDRV_WINC_APRekeyIntervalSet
-    (
-        DRV_HANDLE handle,
-        const uint32_t interval
-    )
-
-  Summary:
-    Configures the group re-key interval used when operating in Soft-AP mode
-
-  Description:
-    The re-key interval specifies how much time must elapse before a group re-key
-    is initiated with connected stations.
-
-  Remarks:
-    See wdrv_pic32mzw_softap.h for usage information.
-
-*/
-
-WDRV_WINC_STATUS WDRV_WINC_APRekeyIntervalSet(
-    DRV_HANDLE handle,
-    const uint32_t interval
-)
-{
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
-    WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
-
-    /* Ensure the driver handle is valid. */
-    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt))
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Ensure the driver instance has been opened for use. */
-    if ((false == pDcpt->isOpen) || (NULL == pDcpt->pCtrl))
-    {
-        return WDRV_WINC_STATUS_NOT_OPEN;
-    }
-
-    /* Ensure driver handle is valid */
-    if (DRV_HANDLE_INVALID == pDcpt->pCtrl->handle)
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /*Sanity check the interval */
-    if ((interval < WINC_CFG_PARAM_ID_WAP_REKEY_INTERVAL_MIN) || (interval > WINC_CFG_PARAM_ID_WAP_REKEY_INTERVAL_MAX))
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
-
-    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
-    {
-        OSAL_Free(pCmdReqBuffer);
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_REKEY_INTERVAL, WINC_TYPE_INTEGER_UNSIGNED, interval, 0);
-
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
-    {
-        OSAL_Free(pCmdReqBuffer);
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
 
     return WDRV_WINC_STATUS_OK;
 }

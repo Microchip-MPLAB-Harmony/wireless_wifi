@@ -54,8 +54,8 @@ WINC_CMD_REQ_HANDLE WINC_CmdReqInit(uint8_t* pBuffer, size_t lenBuffer, int numC
 {
     WINC_SEND_REQ_STATE *pSendReqState;
 
-    uint16_t sendReqStateSz = sizeof(WINC_SEND_REQ_STATE) + (sizeof(uint32_t) * numCommands);
-    uint16_t sendReqHdrSz   = (sizeof(WINC_SEND_REQ_HDR_ELEM) * WINC_NUM_SEND_REQ_HDRS) * numCommands;
+    size_t sendReqStateSz = sizeof(WINC_SEND_REQ_STATE) + (sizeof(uint32_t) * (size_t)numCommands);
+    size_t sendReqHdrSz   = (sizeof(WINC_SEND_REQ_HDR_ELEM) * (size_t)WINC_NUM_SEND_REQ_HDRS) * (size_t)numCommands;
 
     if (NULL == pBuffer)
     {
@@ -69,18 +69,18 @@ WINC_CMD_REQ_HANDLE WINC_CmdReqInit(uint8_t* pBuffer, size_t lenBuffer, int numC
         return WINC_CMD_REQ_INVALID_HANDLE;
     }
 
-    memset(pBuffer, 0, sendReqStateSz + sendReqHdrSz);
+    (void)memset(pBuffer, 0, sendReqStateSz + sendReqHdrSz);
 
     pSendReqState = (WINC_SEND_REQ_STATE*)pBuffer;
     pSendReqState->size = lenBuffer;
 
-    pBuffer      += sendReqStateSz;
-    lenBuffer    -= sendReqStateSz;
+    pBuffer   = pBuffer + sendReqStateSz;
+    lenBuffer -= sendReqStateSz;
 
     pSendReqState->pFirstHdrElem = (WINC_SEND_REQ_HDR_ELEM*)pBuffer;
     pSendReqState->pCurHdrElem   = (WINC_SEND_REQ_HDR_ELEM*)pBuffer;
 
-    pBuffer   += sendReqHdrSz;
+    pBuffer   = pBuffer + sendReqHdrSz;
     lenBuffer -= sendReqHdrSz;
 
     pSendReqState->numCmds    = 0;

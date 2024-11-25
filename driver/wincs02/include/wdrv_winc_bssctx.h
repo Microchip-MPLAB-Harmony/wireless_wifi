@@ -82,9 +82,6 @@ typedef struct
 
     /* Current channel of BSS. */
     WDRV_WINC_CHANNEL_ID channel;
-
-    /* Flag indicating if SSID is cloaked. */
-    bool cloaked;
 } WDRV_WINC_BSS_CONTEXT;
 
 // *****************************************************************************
@@ -280,45 +277,6 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetChannel
 (
     WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
     WDRV_WINC_CHANNEL_ID channel
-);
-
-//*******************************************************************************
-/*
-  Function:
-    WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSIDVisibility
-    (
-        WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
-        bool visible
-    )
-
-  Summary:
-    Configures the visibility of the BSS context.
-
-  Description:
-    Specific to Soft-AP mode this flag defines if the BSS context will create a
-      visible presence on air.
-
-  Precondition:
-    None.
-
-  Parameters:
-    pBSSCtx - Pointer to a BSS context.
-    visible - Flag indicating if this BSS will be visible or not.
-
-  Returns:
-    WDRV_WINC_STATUS_OK              - The context has been configured.
-    WDRV_WINC_STATUS_INVALID_ARG     - The parameters were incorrect.
-    WDRV_WINC_STATUS_INVALID_CONTEXT - The BSS context is not valid.
-
-  Remarks:
-    None.
-
-*/
-
-WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSIDVisibility
-(
-    WDRV_WINC_BSS_CONTEXT *const pBSSCtx,
-    bool visible
 );
 
 #endif /* WDRV_WINC_BSSCTX_H */

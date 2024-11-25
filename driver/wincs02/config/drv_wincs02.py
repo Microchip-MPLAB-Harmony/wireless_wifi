@@ -8,6 +8,12 @@ global wincs02_help_keyword
 
 wincs02_help_keyword = "wireless_wifi_MPLAB_Harmony_WINCS02_WLAN"
 
+wincEventDebug = False
+
+def debugSymbolEvent(symbol, event):
+    if wincEventDebug:
+        print('symbol %s: event %s.%s => %s (%s)' %(symbol.getID(), event['namespace'], event['id'], event['value'], event['symbol'].getID()))
+
 def handleMessage(messageID, args):
     return None
 
@@ -313,10 +319,39 @@ def instantiateComponent(drvWincComponent):
     wincRXBuffer.setLabel('Receive Buffer Size')
     wincRXBuffer.setDefaultValue(2048)
 
+    wincModulesMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_MODULES_MENU', None)
+    wincModulesMenu.setLabel('Modules')
+    wincModulesMenu.setDescription('Modules Support')
+
+    wincModulesMQTTEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_MQTT_EN', wincModulesMenu)
+    wincModulesMQTTEn.setLabel('Enable MQTT')
+    wincModulesMQTTEn.setVisible(True)
+    wincModulesMQTTEn.setDefaultValue(True)
+    wincModulesMQTTEn.setDependencies(setVisibilityModulesMQTTEn, ['DRV_WIFI_WINC_L3_SUPPORT'])
+
+    wincModulesOTAEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_OTA_EN', wincModulesMenu)
+    wincModulesOTAEn.setLabel('Enable OTA')
+    wincModulesOTAEn.setVisible(True)
+    wincModulesOTAEn.setDefaultValue(True)
+
+    wincModulesNVMEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_NVM_EN', wincModulesMenu)
+    wincModulesNVMEn.setLabel('Enable NVM')
+    wincModulesNVMEn.setVisible(True)
+    wincModulesNVMEn.setDefaultValue(True)
+
+    # Use NC Berkeley Sockets Option
+    wincUseNCBerkSock = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS', None)
+    wincUseNCBerkSock.setLabel('Use NC Berkeley Sockets API?')
+    wincUseNCBerkSock.setVisible(True)
+    wincUseNCBerkSock.setDefaultValue(True)
+    wincUseNCBerkSock.setDependencies(setVisibilityUseNCBerkSock, ['DRV_WIFI_WINC_L3_SUPPORT'])
+
     # Sockets Menu
     wincSocketMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_SOCKET_MENU', None)
     wincSocketMenu.setLabel('Sockets')
     wincSocketMenu.setDescription('Sockets Configuration')
+    wincSocketMenu.setVisible(wincUseNCBerkSock.getValue())
+    wincSocketMenu.setDependencies(setVisibilitySocketsMenu, ['DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS'])
 
     wincSocketNumber = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_NUM', wincSocketMenu)
     wincSocketNumber.setLabel('Number of Sockets')
@@ -324,11 +359,19 @@ def instantiateComponent(drvWincComponent):
 
     wincSocketTxBufSz = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_TX_BUF_SZ', wincSocketMenu)
     wincSocketTxBufSz.setLabel('Send Buffer Size')
-    wincSocketTxBufSz.setDefaultValue(1472*5)
+    wincSocketTxBufSz.setDefaultValue(1472*3)
 
     wincSocketRxBufSz = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_RX_BUF_SZ', wincSocketMenu)
     wincSocketRxBufSz.setLabel('Receive Buffer Size')
     wincSocketRxBufSz.setDefaultValue(1472*5)
+
+    wincSocketTxPktBufNum = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_TX_PKT_BUF_NUM', wincSocketMenu)
+    wincSocketTxPktBufNum.setLabel('Send Packet Buffers')
+    wincSocketTxPktBufNum.setDefaultValue(5)
+
+    wincSocketRxPktBufNum = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_RX_PKT_BUF_NUM', wincSocketMenu)
+    wincSocketRxPktBufNum.setLabel('Receive Packet Buffers')
+    wincSocketRxPktBufNum.setDefaultValue(5)
 
     wincSocketSlabSize = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_SLAB_SZ', wincSocketMenu)
     wincSocketSlabSize.setLabel('Slab Size')
@@ -336,7 +379,12 @@ def instantiateComponent(drvWincComponent):
 
     wincSocketSlabNum = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_SLAB_NUM', wincSocketMenu)
     wincSocketSlabNum.setLabel('Slab Number')
-    wincSocketSlabNum.setDefaultValue(30)
+    wincSocketSlabNum.setDefaultValue(50)
+
+    wincL3Support = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_L3_SUPPORT', None)
+    wincL3Support.setLabel('Layer 3 Support')
+    wincL3Support.setVisible(True)
+    wincL3Support.setDefaultValue(True)
 
     # Interrupt Source
     wincIntSrcList = []
@@ -408,7 +456,7 @@ def instantiateComponent(drvWincComponent):
 
         wincGpioIntSrc.addKey('GPIO_PIN_NONE', '-1', 'None')
         wincGpioIntSrc = drvWincComponent.createCommentSymbol('DRV_WINC_PINS_CONFIG_COMMENT', None)
-        wincGpioIntSrc.setLabel('***Above selected pins must be configured as GPIO Output in Pin Manager***')
+        wincGpioIntSrc.setLabel('***Above selected pins must be configured as GPIO Input in Pin Manager***')
 
     elif 'PIO' in wincIntSrcList:
         #PIO is used in Cortex-M7 and MPU devices
@@ -429,7 +477,7 @@ def instantiateComponent(drvWincComponent):
 
         wincPioIntSrc.addKey('PIO_PIN_NONE', '-1', 'None')
         wincPioIntSrc = drvWincComponent.createCommentSymbol('DRV_WINC_PINS_CONFIG_COMMENT', None)
-        wincPioIntSrc.setLabel('***Above selected pins must be configured as PIO Output in Pin Manager***')
+        wincPioIntSrc.setLabel('***Above selected pins must be configured as PIO Input in Pin Manager***')
 
     # RTOS Configuration
     wincRtosMenu = drvWincComponent.createMenuSymbol('DRV_WIFI_WINC_RTOS_MENU', None)
@@ -474,7 +522,18 @@ def instantiateComponent(drvWincComponent):
     #### Code Generation ####
     ############################################################################
 
-    condAlways = [True, None, []]
+    flagUseNCBerkSock = (wincUseNCBerkSock.getValue())
+    flagL3Support     = (wincL3Support.getValue())
+    flagModuleMQTTEn  = (wincModulesMQTTEn.getValue())
+    flagModuleOTAEn   = (wincModulesOTAEn.getValue())
+    flagModuleNVMEn   = (wincModulesNVMEn.getValue())
+
+    condAlways        = [True,              None,             []]
+    condUseNCBerkSock = [flagUseNCBerkSock, setUseNCBerkSock, ['DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS']]
+    condL3Support     = [flagL3Support,     setL3Support,     ['DRV_WIFI_WINC_L3_SUPPORT']]
+    condModuleMQTTEn  = [flagModuleMQTTEn,  setModuleMQTTEn,  ['DRV_WIFI_WINC_MODULE_MQTT_EN']]
+    condModuleOTAEn   = [flagModuleOTAEn,   setModuleOTAEn,   ['DRV_WIFI_WINC_MODULE_OTA_EN']]
+    condModuleNVMEn   = [flagModuleNVMEn,   setModuleNVMEn,   ['DRV_WIFI_WINC_MODULE_NVM_EN']]
 
     wdrvIncFiles = [
         ['wdrv_winc.h',                                         condAlways],
@@ -485,15 +544,18 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_bssfind.h',                                 condAlways],
         ['wdrv_winc_client_api.h',                              condAlways],
         ['wdrv_winc_common.h',                                  condAlways],
-        ['wdrv_winc_dns.h',                                     condAlways],
+        ['wdrv_winc_dns.h',                                     condL3Support],
         ['wdrv_winc_debug.h',                                   condAlways],
-        ['wdrv_winc_dhcps.h',                                   condAlways],
+        ['wdrv_winc_dhcps.h',                                   condL3Support],
         ['wdrv_winc_extcrypto.h',                               condAlways],
         ['wdrv_winc_file.h',                                    condAlways],
         ['wdrv_winc_netif.h',                                   condAlways],
-        ['wdrv_winc_mqtt.h',                                    condAlways],
-        ['wdrv_winc_sntp.h',                                    condAlways],
-        ['wdrv_winc_socket.h',                                  condAlways],
+        ['wdrv_winc_nvm.h',                                     condModuleNVMEn],
+        ['wdrv_winc_ota.h',                                     condModuleOTAEn],
+        ['wdrv_winc_prov.h',                                    condL3Support],
+        ['wdrv_winc_mqtt.h',                                    condModuleMQTTEn],
+        ['wdrv_winc_sntp.h',                                    condL3Support],
+        ['wdrv_winc_socket.h',                                  condL3Support],
         ['wdrv_winc_softap.h',                                  condAlways],
         ['wdrv_winc_sta.h',                                     condAlways],
         ['wdrv_winc_systime.h',                                 condAlways],
@@ -510,7 +572,8 @@ def instantiateComponent(drvWincComponent):
         ['nc_driver/winc_debug.h',                              condAlways],
         ['nc_driver/winc_dev.h',                                condAlways],
         ['nc_driver/winc_sdio_drv.h',                           condAlways],
-        ['nc_driver/winc_socket.h',                             condAlways],
+        ['nc_driver/winc_socket.h',                             condUseNCBerkSock],
+        ['nc_driver/winc_tables.h',                             condAlways],
     ]
 
     for incFileEntry in wdrvIncFiles:
@@ -525,14 +588,17 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_authctx.c',                                 condAlways],
         ['wdrv_winc_bssctx.c',                                  condAlways],
         ['wdrv_winc_bssfind.c',                                 condAlways],
-        ['wdrv_winc_dns.c',                                     condAlways],
-        ['wdrv_winc_dhcps.c',                                   condAlways],
+        ['wdrv_winc_dns.c',                                     condL3Support],
+        ['wdrv_winc_dhcps.c',                                   condL3Support],
         ['wdrv_winc_extcrypto.c',                               condAlways],
         ['wdrv_winc_file.c',                                    condAlways],
+        ['wdrv_winc_mqtt.c',                                    condModuleMQTTEn],
         ['wdrv_winc_netif.c',                                   condAlways],
-        ['wdrv_winc_mqtt.c',                                    condAlways],
-        ['wdrv_winc_sntp.c',                                    condAlways],
-        ['wdrv_winc_socket.c',                                  condAlways],
+        ['wdrv_winc_ota.c',                                     condModuleOTAEn],
+        ['wdrv_winc_nvm.c',                                     condModuleNVMEn],
+        ['wdrv_winc_prov.c',                                    condL3Support],
+        ['wdrv_winc_sntp.c',                                    condL3Support],
+        ['wdrv_winc_socket.c',                                  condL3Support],
         ['wdrv_winc_softap.c',                                  condAlways],
         ['wdrv_winc_sta.c',                                     condAlways],
         ['wdrv_winc_systime.c',                                 condAlways],
@@ -547,7 +613,8 @@ def instantiateComponent(drvWincComponent):
         ['nc_driver/winc_cmd_req.c',                            condAlways],
         ['nc_driver/winc_dev.c',                                condAlways],
         ['nc_driver/winc_sdio_drv.c',                           condAlways],
-        ['nc_driver/winc_socket.c',                             condAlways],
+        ['nc_driver/winc_socket.c',                             condUseNCBerkSock],
+        ['nc_driver/winc_tables.c',                             condAlways],
     ]
 
     for srcFileEntry in wdrvSrcFiles:
@@ -770,3 +837,58 @@ def requestDMAComment(symbol, event):
         event['symbol'].setVisible(False)
     else:
         symbol.setVisible(False)
+
+def setVisibilityUseNCBerkSock(symbol, event):
+    debugSymbolEvent(symbol, event)
+    symbol.setVisible(event['value'])
+    symbol.setReadOnly(not event['value'])
+
+    if event['value'] == False:
+        symbol.setValue(False)
+
+def setVisibilitySocketsMenu(symbol, event):
+    debugSymbolEvent(symbol, event)
+    symbol.setVisible(event['value'])
+
+def setUseNCBerkSock(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    useNCBerkSock = component.getSymbolValue('DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS')
+    symbol.setEnabled(useNCBerkSock)
+
+def setL3Support(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    l3Support = component.getSymbolValue('DRV_WIFI_WINC_L3_SUPPORT')
+    symbol.setEnabled(l3Support)
+
+def setModuleMQTTEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    moduleMQTTEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_MQTT_EN')
+    symbol.setEnabled(moduleMQTTEn)
+
+def setVisibilityModulesMQTTEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    symbol.setVisible(event['value'])
+    symbol.setReadOnly(not event['value'])
+
+    if event['value'] == False:
+        symbol.setValue(False)
+
+def setModuleOTAEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    moduleOTAEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_OTA_EN')
+    symbol.setEnabled(moduleOTAEn)
+
+def setModuleNVMEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    moduleNVMEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_NVM_EN')
+    symbol.setEnabled(moduleNVMEn)

@@ -58,16 +58,26 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "wdrv_winc.h"
 #include "wdrv_winc_bssfind.h"
 #include "wdrv_winc_assoc.h"
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
 #include "wdrv_winc_dhcps.h"
+#endif
 #include "wdrv_winc_file.h"
 #include "wdrv_winc_softap.h"
 #include "wdrv_winc_sta.h"
 #include "wdrv_winc_netif.h"
+#ifndef WDRV_WINC_MOD_DISABLE_TLS
 #include "wdrv_winc_tls.h"
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_MQTT
 #include "wdrv_winc_mqtt.h"
+#endif
 #include "wdrv_winc_common.h"
+#ifndef WDRV_WINC_MOD_DISABLE_SNTP
 #include "wdrv_winc_sntp.h"
+#endif
 #include "wdrv_winc_wifi.h"
+#ifndef WDRV_WINC_MOD_DISABLE_DNS
 #include "wdrv_winc_dns.h"
+#endif
 
 #endif /* WDRV_WINC_CLIENT_API_H */

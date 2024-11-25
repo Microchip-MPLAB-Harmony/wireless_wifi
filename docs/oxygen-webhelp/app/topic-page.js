@@ -15,6 +15,7 @@ define(["require", "config"], function() {
             'permalink',
             'image-map',
             'template-module-loader',
+            'wh-table',
             'bootstrap'
         ];
         if(options.getBoolean("webhelp.enable.sticky.header")) {

@@ -1,12 +1,12 @@
 <#if HarmonyCore.SELECT_RTOS == "ThreadX">
-TX_THREAD   _WDRV_WINC_Task_TCB;
-uint8_t*    _WDRV_WINC_Task_Stk_Ptr;
+TX_THREAD   lWDRV_WINC_Task_TCB;
+uint8_t*    lWDRV_WINC_Task_Stk_Ptr;
 
 </#if>
 <#if HarmonyCore.SELECT_RTOS == "FreeRTOS">
-static void _WDRV_WINC_Tasks(void *pvParameters)
+static void lWDRV_WINC_Tasks(void *pvParameters)
 <#elseif HarmonyCore.SELECT_RTOS == "ThreadX">
-static void _WDRV_WINC_Tasks(ULONG thread_input)
+static void lWDRV_WINC_Tasks(ULONG thread_input)
 </#if>
 {
     while(1)

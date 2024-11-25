@@ -42,6 +42,8 @@ Microchip or any third party.
 #ifndef WDRV_WINC_DNS_H
 #define WDRV_WINC_DNS_H
 
+#ifndef WDRV_WINC_MOD_DISABLE_DNS
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: File includes
@@ -96,11 +98,6 @@ typedef enum
   Description:
     Callback returning the DNS resolve.
 
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_DNSResolveDomain must be called to register callback.
-
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
     status      - Operation status.
@@ -134,7 +131,7 @@ typedef void (*WDRV_WINC_DNS_RESOLVE_CALLBACK)
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -163,7 +160,7 @@ void WDRV_WINC_DNSProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 );
 
 //*******************************************************************************
@@ -179,8 +176,8 @@ void WDRV_WINC_DNSProcessAEC
     DHCP.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -216,8 +213,8 @@ WDRV_WINC_STATUS WDRV_WINC_DNSAutoSet(DRV_HANDLE handle, bool enabled);
     Configures the system to use the DNS servers specified.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -248,7 +245,7 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
     WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
     (
         DRV_HANDLE handle,
-        uint8_t type,
+        uint8_t recordType,
         const char *pDomainName,
         uint16_t timeoutMs,
         const WDRV_WINC_DNS_RESOLVE_CALLBACK pfDNSResolveResponseCB
@@ -261,12 +258,12 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
     Resolves the IP address of a specific domain.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle                 - Client handle obtained by a call to WDRV_WINC_Open.
-    type                   - The type of IP address.
+    recordType             - The type of IP address.
     pDomainName            - Pointer to domain name to resolve.
     timeoutMs              - Timeout (in milliseconds).
     pfDNSResolveResponseCB - Pointer to DNS resolve response callback.
@@ -285,10 +282,11 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
 WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
 (
     DRV_HANDLE handle,
-    uint8_t type,
+    uint8_t recordType,
     const char *pDomainName,
     uint16_t timeoutMs,
     const WDRV_WINC_DNS_RESOLVE_CALLBACK pfDNSResolveResponseCB
 );
 
+#endif /* WDRV_WINC_MOD_DISABLE_DNS */
 #endif /* WDRV_WINC_DNS_H */

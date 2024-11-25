@@ -65,10 +65,10 @@ Microchip or any third party.
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -131,7 +131,7 @@ static void pingCmdRspCallbackHandler
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("PING CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("PING CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -142,7 +142,7 @@ static void pingCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -150,7 +150,7 @@ static void pingCmdRspCallbackHandler
         {
             /* Status response received for command. */
 
-            WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
+            const WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (const WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
 
             if (NULL != pStatusInfo)
             {
@@ -170,6 +170,12 @@ static void pingCmdRspCallbackHandler
         {
             break;
         }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("PING CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
     }
 }
 
@@ -180,7 +186,7 @@ static void pingCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -198,7 +204,7 @@ void WDRV_WINC_ICMPProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
@@ -213,35 +219,42 @@ void WDRV_WINC_ICMPProcessAEC
     {
         case WINC_AEC_ID_PING:
         {
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
-                return;
+                break;
             }
 
             if (NULL != pDcpt->pCtrl->pfICMPEchoResponseCB)
             {
-                WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr;
+                WDRV_WINC_IP_MULTI_ADDRESS ipAddr;
                 WDRV_WINC_IP_ADDRESS_TYPE ipAddrType;
-
-                pIPAddr = (WDRV_WINC_IP_MULTI_ADDRESS*)pElems->elems[0].pData;
 
                 if ((WINC_TYPE_IPV4ADDR == pElems->elems[0].type) && (pElems->elems[0].length <= sizeof(WDRV_WINC_IPV4_ADDR)))
                 {
+                    (void)memcpy(&ipAddr.v4.v, pElems->elems[0].pData, sizeof(WDRV_WINC_IPV4_ADDR));
                     ipAddrType = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
                 }
                 else if ((WINC_TYPE_IPV6ADDR == pElems->elems[0].type) && (pElems->elems[0].length <= sizeof(WDRV_WINC_IPV6_ADDR)))
                 {
+                    (void)memcpy(&ipAddr.v6.v, pElems->elems[0].pData, sizeof(WDRV_WINC_IPV6_ADDR));
                     ipAddrType = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
                 }
                 else
                 {
-                    pIPAddr = NULL;
                     ipAddrType = WDRV_WINC_IP_ADDRESS_TYPE_ANY;
                 }
 
-                WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &rtt, sizeof(rtt));
+                (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &rtt, sizeof(rtt));
 
-                pDcpt->pCtrl->pfICMPEchoResponseCB((DRV_HANDLE)pDcpt, pIPAddr, ipAddrType, rtt);
+                if (WDRV_WINC_IP_ADDRESS_TYPE_ANY == ipAddrType)
+                {
+                    pDcpt->pCtrl->pfICMPEchoResponseCB((DRV_HANDLE)pDcpt, NULL, ipAddrType, rtt);
+                }
+                else
+                {
+                    pDcpt->pCtrl->pfICMPEchoResponseCB((DRV_HANDLE)pDcpt, &ipAddr, ipAddrType, rtt);
+                }
+
                 pDcpt->pCtrl->pfICMPEchoResponseCB = NULL;
             }
 
@@ -261,11 +274,13 @@ void WDRV_WINC_ICMPProcessAEC
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("PING AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
 }
 
+#ifdef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
 //*******************************************************************************
 /*
   Function:
@@ -300,10 +315,14 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    WINC_SockRegisterEventCallback(pDcpt->pCtrl->wincDevHandle, pfSocketEventCb, (uintptr_t)pDcpt);
+    if (false == WINC_SockRegisterEventCallback(pDcpt->pCtrl->wincDevHandle, pfSocketEventCb, (uintptr_t)pDcpt))
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
 
     return WDRV_WINC_STATUS_OK;
 }
+#endif
 
 //*******************************************************************************
 /*
@@ -311,7 +330,7 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
     WDRV_WINC_STATUS WDRV_WINC_ICMPEchoRequestAddr
     (
         DRV_HANDLE handle,
-        WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr,
+        const WDRV_WINC_IP_MULTI_ADDRESS *const pIPAddr,
         WDRV_WINC_IP_ADDRESS_TYPE ipAddrType,
         const WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER pfICMPEchoResponseCB
     )
@@ -330,14 +349,13 @@ WDRV_WINC_STATUS WDRV_WINC_SocketRegisterEventCallback
 WDRV_WINC_STATUS WDRV_WINC_ICMPEchoRequestAddr
 (
     DRV_HANDLE handle,
-    WDRV_WINC_IP_MULTI_ADDRESS *pIPAddr,
+    const WDRV_WINC_IP_MULTI_ADDRESS *const pIPAddr,
     WDRV_WINC_IP_ADDRESS_TYPE ipAddrType,
     const WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER pfICMPEchoResponseCB
 )
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
     WINC_TYPE typeTargetAddr;
     size_t lenTargetAddr;
 
@@ -367,26 +385,17 @@ WDRV_WINC_STATUS WDRV_WINC_ICMPEchoRequestAddr
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, pingCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenTargetAddr, pingCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdPING(cmdReqHandle, typeTargetAddr, (uintptr_t)pIPAddr, lenTargetAddr, 0);
+    (void)WINC_CmdPING(cmdReqHandle, typeTargetAddr, (uintptr_t)pIPAddr, lenTargetAddr, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 

@@ -51,7 +51,6 @@ Microchip or any third party.
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -63,7 +62,43 @@ Microchip or any third party.
 #include "wdrv_winc_utils.h"
 #include "winc_dev.h"
 #include "winc_cmd_req.h"
+#ifdef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
 #include "winc_socket.h"
+#endif
+
+#if !defined(WINC_MOD_ID_DHCP) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_DHCPS
+#endif
+#if !defined(WINC_MOD_ID_DNS) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_DNS
+#endif
+#if !defined(WINC_MOD_ID_PING) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_ICMP
+#endif
+#if !defined(WINC_MOD_ID_MQTT) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_MQTT
+#endif
+#if !defined(WINC_MOD_ID_NVM)
+#define WDRV_WINC_MOD_DISABLE_NVM
+#endif
+#if !defined(WINC_MOD_ID_OTA) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_OTA
+#endif
+#if !defined(WINC_MOD_ID_WPROV) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_PROV
+#endif
+#if !defined(WINC_MOD_ID_SNTP) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_SNTP
+#endif
+#if !defined(WINC_MOD_ID_SOCKET) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_SOCKET
+#endif
+#if !defined(WINC_MOD_ID_TLS)
+#define WDRV_WINC_MOD_DISABLE_TLS
+#endif
+#if !defined(WINC_MOD_ID_WPROV) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_WPROV
+#endif
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus // Provide C++ Compatibility
@@ -80,40 +115,17 @@ Microchip or any third party.
 /* Maximum length of an SSID. */
 #define WDRV_WINC_MAX_SSID_LEN              32U
 
-/* Address of a MAC address. */
-#define WDRV_WINC_MAC_ADDR_LEN              6
-
-/* Length of 40 bit WEP key. */
-#define WDRV_WINC_WEP_40_KEY_STRING_SIZE    10
-
-/* Length of 104 bit WEP key. */
-#define WDRV_WINC_WEP_104_KEY_STRING_SIZE   26
+/* Length of a MAC address. */
+#define WDRV_WINC_MAC_ADDR_LEN              6U
 
 /* Length of PSK (ASCII encoded binary). */
-#define WDRV_WINC_PSK_LEN                   64
+#define WDRV_WINC_PSK_LEN                   64U
 
 /* Maximum length of a WPA Personal Password. */
-#define WDRV_WINC_MAX_PSK_PASSWORD_LEN      63
+#define WDRV_WINC_MAX_PSK_PASSWORD_LEN      63U
 
 /* Minimum length of a WPA Personal Password. */
-#define WDRV_WINC_MIN_PSK_PASSWORD_LEN      8
-
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-/* The maximum length (in ASCII characters) of domain name + username (including '@' or '\')
-   for authentication with Enterprise methods.
-*/
-#define WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX         255
-/* The maximum length (in ASCII characters) of server domain name for server certificates validation
-   during enterprise connection.
-*/
-#define WDRV_WINC_ENT_AUTH_SERVER_DOMAIN_LEN_MAX    255
-/* The maximum length (in ASCII characters) of username for enterprise authentication.
-*/
-#define WDRV_WINC_ENT_AUTH_USERNAME_LEN_MAX         255
-/* The maximum length (in ASCII characters) of password for enterprise authentication.
-*/
-#define WDRV_WINC_ENT_AUTH_PASSWORD_LEN_MAX         255
-#endif
+#define WDRV_WINC_MIN_PSK_PASSWORD_LEN      8U
 
 // *****************************************************************************
 /*  WiFi Channels
@@ -250,15 +262,17 @@ typedef enum
     An extended status
 
   Remarks:
-    None.
+    Extends SYS_STATUS values.
 
 */
 
 typedef enum
 {
-    WDRV_WINC_SYS_STATUS_ERROR_DEVICE_NOT_FOUND = (SYS_STATUS_ERROR_EXTENDED-1),
+    /* Device not found. */
+    WDRV_WINC_SYS_STATUS_ERROR_DEVICE_NOT_FOUND = (SYS_STATUS_ERROR_EXTENDED-(SYS_STATUS)1),
 
-    WDRV_WINC_SYS_STATUS_ERROR_DEVICE_FAILURE   = (SYS_STATUS_ERROR_EXTENDED-2)
+    /* Device failure. */
+    WDRV_WINC_SYS_STATUS_ERROR_DEVICE_FAILURE   = (SYS_STATUS_ERROR_EXTENDED-(SYS_STATUS)2)
 } WDRV_WINC_SYS_STATUS;
 
 // *****************************************************************************
@@ -268,7 +282,7 @@ typedef enum
     Defines possible connection states.
 
   Description:
-    A connection can currently either be connected or disconnect.
+    A list of possible connection states.
 
   Remarks:
     None.
@@ -326,7 +340,7 @@ typedef enum
     Structure to hold an SSID.
 
   Description:
-    The SSID consist of a buffer and a length field.
+    The SSID consists of a buffer and a length field.
 
   Remarks:
     None.
@@ -411,7 +425,7 @@ typedef uintptr_t WDRV_WINC_ASSOC_HANDLE;
     Invalid association handle.
 
  Description:
-    Defines a value for an association handle which isn't yet valid.
+    Defines a value for an association handle which is not yet valid.
 
  Remarks:
     None.
@@ -420,22 +434,15 @@ typedef uintptr_t WDRV_WINC_ASSOC_HANDLE;
 #define WDRV_WINC_ASSOC_HANDLE_INVALID  (((WDRV_WINC_ASSOC_HANDLE) -1))
 
 // *****************************************************************************
-/* All Association Handles
-
- Summary:
-    All association handles.
-
- Description:
-    Defines a value which refers to all associations.
-
- Remarks:
-    None.
-*/
-
-#define WDRV_WINC_ASSOC_HANDLE_ALL  (((WDRV_WINC_ASSOC_HANDLE) -2))
-
-// *****************************************************************************
 /*  Connection Notify Callback
+
+  Function:
+    void (*WDRV_WINC_BSSCON_NOTIFY_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_ASSOC_HANDLE assocHandle,
+        WDRV_WINC_CONN_STATE currentState
+    )
 
   Summary:
     Callback to notify the user of a change in connection state.

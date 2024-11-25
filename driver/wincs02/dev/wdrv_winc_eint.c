@@ -39,6 +39,7 @@
 #include <stdbool.h>
 #include "configuration.h"
 #include "definitions.h"
+#include "wdrv_winc_eint.h"
 
 #if defined(INT_SOURCE_CHANGE_NOTICE) && (WDRV_WINC_INT_SOURCE == INT_SOURCE_CHANGE_NOTICE)
 #ifdef PLIB_PORTS_ExistsPinChangeNoticePerPort
@@ -74,7 +75,7 @@ void WDRV_WINC_INTInitialize(SYS_MODULE_OBJ object, int intSrc)
     GPIO_PinInterruptEnable(intSrc);
     GPIO_PinIntEnable(intSrc, GPIO_INTERRUPT_ON_FALLING_EDGE);
 #elif defined WDRV_WINC_PIO_SOURCE
-    PIO_PinInterruptCallbackRegister(intSrc, eintPIOCallback, object);
+    (void)PIO_PinInterruptCallbackRegister(intSrc, eintPIOCallback, object);
     PIO_PinInterruptEnable(intSrc);
 #else
     /* disable the external interrupt */

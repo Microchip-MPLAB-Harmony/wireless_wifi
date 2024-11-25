@@ -20,9 +20,6 @@ source software license terms, no license or other rights, whether express or
 implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
 */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
- */
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -39,13 +36,13 @@ Microchip or any third party.
 static uint8_t btohexa_high(uint8_t b)
 {
     b >>= 4;
-    return (b>0x9u) ? b+'a'-10:b+'0';
+    return (uint8_t)((b > 0x9U) ? (b + U'a' - 10U) : (b + U'0'));
 }
 
 static uint8_t btohexa_low(uint8_t b)
 {
-    b &= 0x0F;
-    return (b>9u) ? b+'a'-10:b+'0';
+    b &= 0x0FU;
+    return (uint8_t)((b > 9U) ? (b + U'a' - 10U) : (b + U'0'));
 }
 
 /*****************************************************************************
@@ -53,14 +50,15 @@ static uint8_t btohexa_low(uint8_t b)
  *****************************************************************************/
 void WDRV_WINC_UtilsSingleListInitialize(WDRV_WINC_SINGLE_LIST* pL)
 {
-    pL->head = pL->tail = 0;
+    pL->head = NULL;
+    pL->tail = NULL;
     pL->nNodes = 0;
 }
 
 /*****************************************************************************
  *
  *****************************************************************************/
-int WDRV_WINC_UtilsSingleListCount(WDRV_WINC_SINGLE_LIST* pL)
+int WDRV_WINC_UtilsSingleListCount(const WDRV_WINC_SINGLE_LIST* pL)
 {
     return pL->nNodes;
 }
@@ -71,11 +69,12 @@ int WDRV_WINC_UtilsSingleListCount(WDRV_WINC_SINGLE_LIST* pL)
 WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsSingleListHeadRemove(WDRV_WINC_SINGLE_LIST* pL)
 {
     WDRV_WINC_SGL_LIST_NODE* pN = pL->head;
-    if(pN)
+    if (NULL != pN)
     {
-        if(pL->head == pL->tail)
+        if (pL->head == pL->tail)
         {
-            pL->head = pL->tail = 0;
+            pL->head = NULL;
+            pL->tail = NULL;
         }
         else
         {
@@ -92,10 +91,11 @@ WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsSingleListHeadRemove(WDRV_WINC_SINGLE_LI
  *****************************************************************************/
 void WDRV_WINC_UtilsSingleListTailAdd(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN)
 {
-    pN->next = 0;
-    if(pL->tail == 0)
+    pN->next = NULL;
+    if (pL->tail == NULL)
     {
-        pL->head = pL->tail = pN;
+        pL->head = pN;
+        pL->tail = pN;
     }
     else
     {
@@ -111,9 +111,13 @@ void WDRV_WINC_UtilsSingleListTailAdd(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_L
 void WDRV_WINC_UtilsSingleListAppend(WDRV_WINC_SINGLE_LIST* pDstL, WDRV_WINC_SINGLE_LIST* pAList)
 {
     WDRV_WINC_SGL_LIST_NODE* pN;
-    while((pN = WDRV_WINC_UtilsSingleListHeadRemove(pAList)))
+
+    pN = WDRV_WINC_UtilsSingleListHeadRemove(pAList);
+    while (NULL != pN)
     {
         WDRV_WINC_UtilsSingleListTailAdd(pDstL, pN);
+
+        pN = WDRV_WINC_UtilsSingleListHeadRemove(pAList);
     }
 }
 
@@ -124,7 +128,7 @@ void WDRV_WINC_UtilsSingleListHeadAdd(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_L
 {
     pN->next = pL->head;
     pL->head = pN;
-    if(pL->tail == 0)
+    if (pL->tail == NULL)
     {  // empty list
         pL->tail = pN;
     }
@@ -136,21 +140,24 @@ void WDRV_WINC_UtilsSingleListHeadAdd(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_L
  *****************************************************************************/
 WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsSingleListNodeRemove(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN)
 {
-    if(pN == pL->head)
+    if (pN == pL->head)
     {
-        WDRV_WINC_UtilsSingleListHeadRemove(pL);
+        (void)WDRV_WINC_UtilsSingleListHeadRemove(pL);
     }
     else
     {
         WDRV_WINC_SGL_LIST_NODE* prev;
-        for(prev = pL->head; prev != 0 && prev->next != pN; prev = prev->next);
-        if(prev == 0)
+        for(prev = pL->head; ((prev != NULL) && (prev->next != pN)); prev = prev->next)
+        {
+        }
+
+        if (prev == NULL)
         {   // no such node
-            return 0;
+            return NULL;
         }
         // found it
         prev->next = pN->next;
-        if(pN == pL->tail)
+        if (pN == pL->tail)
         {
             pL->tail = prev;
         }
@@ -183,7 +190,7 @@ int WDRV_WINC_UtilsProtectedSingleListCount(WDRV_WINC_PROTECTED_SINGLE_LIST* pL)
  *****************************************************************************/
 void  WDRV_WINC_UtilsProtectedSingleListAppend(WDRV_WINC_PROTECTED_SINGLE_LIST* pDstL, WDRV_WINC_SINGLE_LIST* pAList)
 {
-    if(pDstL->semValid)
+    if (true == pDstL->semValid)
     {
         if (OSAL_SEM_Pend(&pDstL->semaphore, OSAL_WAIT_FOREVER) != OSAL_RESULT_TRUE)
         {
@@ -203,7 +210,7 @@ void  WDRV_WINC_UtilsProtectedSingleListAppend(WDRV_WINC_PROTECTED_SINGLE_LIST* 
 WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsProtectedSingleListHeadRemove(WDRV_WINC_PROTECTED_SINGLE_LIST* pL)
 {
 
-    if(pL->semValid)
+    if (true == pL->semValid)
     {
         if (OSAL_SEM_Pend(&pL->semaphore, OSAL_WAIT_FOREVER) != OSAL_RESULT_TRUE)
         {
@@ -217,7 +224,7 @@ WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsProtectedSingleListHeadRemove(WDRV_WINC_
         return ret;
     }
 
-    return 0;
+    return NULL;
 }
 
 /*****************************************************************************
@@ -225,7 +232,7 @@ WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsProtectedSingleListHeadRemove(WDRV_WINC_
  *****************************************************************************/
 void WDRV_WINC_UtilsProtectedSingleListTailAdd(WDRV_WINC_PROTECTED_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN)
 {
-    if(pL->semValid)
+    if (true == pL->semValid)
     {
         if (OSAL_SEM_Pend(&pL->semaphore, OSAL_WAIT_FOREVER) != OSAL_RESULT_TRUE)
         {
@@ -245,7 +252,7 @@ void WDRV_WINC_UtilsProtectedSingleListTailAdd(WDRV_WINC_PROTECTED_SINGLE_LIST* 
  *****************************************************************************/
 void WDRV_WINC_UtilsProtectedSingleListHeadAdd(WDRV_WINC_PROTECTED_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN)
 {
-    if(pL->semValid)
+    if (true == pL->semValid)
     {
         if (OSAL_SEM_Pend(&pL->semaphore, OSAL_WAIT_FOREVER) != OSAL_RESULT_TRUE)
         {
@@ -265,15 +272,16 @@ void WDRV_WINC_UtilsProtectedSingleListHeadAdd(WDRV_WINC_PROTECTED_SINGLE_LIST* 
 bool WDRV_WINC_UtilsStringToIPAddress(const char* str, WDRV_WINC_IPV4_ADDR* addr)
 {
     WDRV_WINC_UINT32_VAL dwVal;
-    WDRV_WINC_IPV4_ADDR   convAddr;
-    uint8_t i, charLen, currentOctet;
+    WDRV_WINC_IPV4_ADDR convAddr;
+    uint8_t charLen, currentOctet;
+    char c;
 
-    if(addr)
+    if (NULL != addr)
     {
         addr->Val = 0;
     }
 
-    if(str == 0 || strlen(str) == 0)
+    if ((NULL == str) || (strlen(str) == 0U))
     {
         return false;
     }
@@ -282,67 +290,84 @@ bool WDRV_WINC_UtilsStringToIPAddress(const char* str, WDRV_WINC_IPV4_ADDR* addr
     currentOctet = 0;
     dwVal.Val = 0;
 
-    while((i = *str++))
+    while ('\0' != *str)
     {
-        if(currentOctet > 3u)
+        c = *str++;
+
+        if (currentOctet > 3u)
+        {
             break;
-
-        i -= '0';
-
+        }
 
         // Validate the character is a numerical digit or dot, depending on location
-        if(charLen == 0u)
+        if (charLen == 0u)
         {
-            if(i > 9u)
+            if ((c > '9') || (c < '0'))
+            {
                 return false;
+            }
         }
-        else if(charLen == 3u)
+        else if (charLen == 3u)
         {
-            if(i != (uint8_t)('.' - '0'))
+            if (c != '.')
+            {
                 return false;
+            }
 
-            if(dwVal.Val > 0x00020505ul)
+            if (dwVal.Val > 0x00020505UL)
+            {
                 return false;
+            }
 
-            convAddr.v[currentOctet++] = dwVal.v[2]*((uint8_t)100) + dwVal.v[1]*((uint8_t)10) + dwVal.v[0];
+            convAddr.v[currentOctet++] = (dwVal.v[2]*(100U)) + (dwVal.v[1]*(10U)) + dwVal.v[0];
             charLen = 0;
             dwVal.Val = 0;
             continue;
         }
         else
         {
-            if(i == (uint8_t)('.' - '0'))
+            if (c == '.')
             {
-                if(dwVal.Val > 0x00020505ul)
+                if (dwVal.Val > 0x00020505UL)
+                {
                     return false;
+                }
 
-                convAddr.v[currentOctet++] = dwVal.v[2]*((uint8_t)100) + dwVal.v[1]*((uint8_t)10) + dwVal.v[0];
+                convAddr.v[currentOctet++] = (dwVal.v[2]*(100U)) + (dwVal.v[1]*(10U)) + dwVal.v[0];
                 charLen = 0;
                 dwVal.Val = 0;
                 continue;
             }
-            if(i > 9u)
+            if ((c > '9') || (c < '0'))
+            {
                 return false;
+            }
         }
 
         charLen++;
         dwVal.Val <<= 8;
-        dwVal.v[0] = i;
+        dwVal.v[0] = (c - '0');
     }
+
+    c = *str;
 
     // Make sure the very last character is a valid termination character
     // (i.e., not more hostname, which could be legal and not an IP
     // address as in "10.5.13.233.picsaregood.com"
-    if(currentOctet != 3 || (i != 0u && i != '/' && i != '\r' && i != '\n' && i != ' ' && i != '\t' && i != ':'))
+    if ((currentOctet != 3U) || ((c != '\0') && (c != '/') && (c != '\r') && (c != '\n') && (c != ' ') && (c != '\t') && (c != ':')))
+    {
         return false;
+    }
 
     // Verify and convert the last octet and return the result
-    if(dwVal.Val > 0x00020505ul)
+    if (dwVal.Val > 0x00020505UL)
+    {
         return false;
+    }
 
-    convAddr.v[3] = dwVal.v[2]*((uint8_t)100) + dwVal.v[1]*((uint8_t)10) + dwVal.v[0];
+    convAddr.v[3] = (dwVal.v[2]*(100U)) + (dwVal.v[1]*(10U)) + dwVal.v[0];
 
-    if(addr)
+    if (NULL != addr)
     {
         addr->Val = convAddr.Val;
     }
@@ -355,16 +380,15 @@ bool WDRV_WINC_UtilsStringToIPAddress(const char* str, WDRV_WINC_IPV4_ADDR* addr
  *****************************************************************************/
 bool WDRV_WINC_UtilsIPAddressToString(const WDRV_WINC_IPV4_ADDR* ipAdd, char* buff, size_t buffSize)
 {
-    if(ipAdd && buff)
+    if ((NULL != ipAdd) && (NULL != buff))
     {
         size_t len;
         char tempBuff[20];  // enough to hold largest IPv4 address string
 
-        sprintf(tempBuff, "%d.%d.%d.%d", ipAdd->v[0], ipAdd->v[1], ipAdd->v[2], ipAdd->v[3]);
-        len = strlen(tempBuff) + 1;
-        if(buffSize >= len)
+        len = sprintf(tempBuff, "%d.%d.%d.%d", ipAdd->v[0], ipAdd->v[1], ipAdd->v[2], ipAdd->v[3]) + 1;
+        if (buffSize >= len)
         {
-            strcpy(buff, tempBuff);
+            (void)strcpy(buff, tempBuff);
             return true;
         }
     }
@@ -377,77 +401,84 @@ bool WDRV_WINC_UtilsIPAddressToString(const WDRV_WINC_IPV4_ADDR* ipAdd, char* bu
  *****************************************************************************/
 bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR * addr)
 {
-    uint8_t shiftIndex = 0xFF;
+    int shiftIndex = -1;
     uint8_t subString[5];
-    uint16_t convertedValue;
-    int len;
+    size_t len;
     int conv_base = 16;
-    uint8_t i, j;
-    uint8_t currentWord;
-    char * endPtr;
-    char*  str;
+    int j;
+    unsigned char c;
+    int currentWord;
+    char *endPtr;
+    unsigned char *str;
     WDRV_WINC_IPV6_ADDR   convAddr;
-    char   str_buff[64 + 1];     // enough space for longest address: 1111:2222:3333:4444:5555:6666:192.250.250.250
+    char str_buff[64 + 1];     // enough space for longest address: 1111:2222:3333:4444:5555:6666:192.250.250.250
 
-    if(addr)
+    if (NULL != addr)
     {
-        memset(addr, 0, sizeof(*addr));
+        (void)memset(addr, 0, sizeof(*addr));
     }
 
-    if(addStr == 0 || (len = strlen(addStr)) == 0)
+    if (NULL == addStr)
     {
         return false;
     }
 
-    memset(convAddr.v, 0, sizeof(convAddr));
+    len = strlen(addStr);
 
-    while(isspace(*addStr))
+    if (0U == len)
+    {
+        return false;
+    }
+
+    (void)memset(&convAddr, 0, sizeof(convAddr));
+
+    while (0 != isspace((int)*addStr))
     {   // skip leading space
         addStr++;
         len--;
     }
-    while(isspace(*(addStr + len - 1)))
+    while (0 != isspace((int)*(addStr + len - 1U)))
     {   // skip trailing space
         len--;
     }
 
-    if(len > sizeof(str_buff) - 1)
+    if (len > sizeof(str_buff) - 1U)
     {   // not enough room to store
         return false;
     }
 
-    strncpy(str_buff, addStr, len);
-    str_buff[len] = 0;
-    str = str_buff;
+    (void)strncpy(str_buff, addStr, len);
+    str_buff[len] = '\0';
+    str = (unsigned char*)str_buff;
 
-    if (*str == '[')
+    if (*str == U'[')
     {   // match the end ]
-        if(str[len - 1] != ']')
+        if (str[len - 1U] != U']')
         {   // bracket mismatch
             return false;
         }
-        str[len - 1] = 0;   // delete trailing ]
+        str[len - 1U] = U'\0';   // delete trailing ]
         len--;
         str++;  // skip leading [
         len--;
     }
 
     currentWord = 0;
-    while(isspace(*str))
+    while (0 != isspace((int)*str))
     {   // skip leading space
         str++;
         len--;
     }
-    endPtr = str + len;
-    while(isspace(*(endPtr - 1)))
+    endPtr = (char*)&str[len];
+    while (0 != isspace((int)*(endPtr - 1)))
     {   // skip trailing space
         endPtr--;
     }
-    *endPtr = 0;
+    *endPtr = '\0';
 
-    if(*str == ':')
+    if (*str == U':')
     {
-        if(*++str != ':')
+        if (*++str != U':')
         {   // cannot start with stray :
             return false;
         }
@@ -455,53 +486,67 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
         shiftIndex = 0;
     }
 
-    if(!isxdigit(*str))
+    if (0 == isxdigit((int)*str))
     {
         return false;
     }
 
-    i = *str++;
-    while (i != ':' && i != 0u && i != '.' && i != '/' && i != '\r' && i != '\n' && i != ' ' && i != '\t')
+    c = *str++;
+    while ((c != U':') && (c != U'\0') && (c != U'.') && (c != U'/') && (c != U'\r') && (c != U'\n') && (c != U' ') && (c != U'\t'))
     {
+        uint16_t convertedValue;
+
         j = 0;
-        while (i != ':' && i != 0u && i != '.' && i != '/' && i != '\r' && i != '\n' && i != ' ' && i != '\t')
+        while ((c != U':') && (c != U'\0') && (c != U'.') && (c != U'/') && (c != U'\r') && (c != U'\n') && (c != U' ') && (c != U'\t'))
         {
             if (j == 4)
+            {
                 return false;
+            }
 
-            subString[j++] = i;
-            i = *str++;
+            subString[j++] = (uint8_t)c;
+            c = *str++;
         }
         subString[j] = 0;
 
-        if(i == '.')
+        if (c == U'.')
         {
             conv_base = 10;
         }
-        else if(i == ':' && conv_base == 10)
+        else if ((c == U':') && (conv_base == 10))
+        {
+            return false;
+        }
+        else
+        {
+            /* Do nothing. */
+        }
+
+        errno = 0;
+        convertedValue = (uint16_t)strtol((const char *)subString, &endPtr, conv_base);
+        if (0 != errno)
         {
             return false;
         }
 
-        convertedValue = (uint16_t)strtol((const char *)subString, &endPtr, conv_base);
-        if(convertedValue == 0 && endPtr != (char*)subString + j)
+        if ((convertedValue == 0U) && (endPtr != (char*)subString + j))
         {   // could not convert all data in there
             return false;
         }
 
-        convAddr.w[currentWord++] = htons(convertedValue);
+        convAddr.w[currentWord++] = WDRV_WINC_UtilsHToNS(convertedValue);
 
-        if(i == 0)
+        if (c == U'\0')
         {   // end of stream
             break;
         }
 
-        if (i == ':')
+        if (c == U':')
         {
-            if (*str == ':')
+            if (*str == U':')
             {
                 // Double colon - pad with zeros here
-                if (shiftIndex == 0xFF)
+                if (shiftIndex == -1)
                 {
                     shiftIndex = currentWord;
                 }
@@ -510,38 +555,42 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
                     // Can't have two double colons
                     return false;
                 }
-                i = *str++;
+                c = *str++;
             }
         }
 
-        if (i == ',')
+        if (c == U',')
         {
             return false;
         }
 
-        i = *str++;
+        c = *str++;
     }
 
-    if(currentWord > 8 || (currentWord < 8 && shiftIndex == 0xff))
+    if ((currentWord > 8) || ((currentWord < 8) && (shiftIndex == -1)))
     {   // more than 8 words entered or less, but no ::
         return false;
     }
 
-    if (shiftIndex != 0xFF)
+    if (shiftIndex != -1)
     {
-        for (i = 7, j = currentWord - 1; (int8_t)j >= (int8_t)shiftIndex; i--, j--)
+        int i;
+
+        i = 7;
+        for (j=(currentWord - 1); j >= shiftIndex; j--)
         {
-            convAddr.w[i] = convAddr.w[j];
+            convAddr.w[i--] = convAddr.w[j];
         }
-        for (i = shiftIndex; i <= 7 - (currentWord - shiftIndex); i++)
+
+        for (i=shiftIndex; i <= (7 - (currentWord - shiftIndex)); i++)
         {
             convAddr.w[i] = 0x0000;
         }
     }
 
-    if(addr)
+    if (NULL != addr)
     {
-        memcpy(addr, convAddr.v, sizeof(*addr));
+        (void)memcpy((uint8_t*)addr, convAddr.v, sizeof(*addr));
     }
 
     return true;
@@ -552,36 +601,42 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
  *****************************************************************************/
 bool WDRV_WINC_UtilsIPv6AddressToString (const WDRV_WINC_IPV6_ADDR * v6Addr, char* buff, size_t buffSize)
 {
-    if(v6Addr && buff && buffSize >= 41)
+    if ((NULL != v6Addr) && (NULL != buff) && (buffSize >= 41U))
     {
-        uint8_t i, j;
-        char k;
+        uint8_t i;
         char* str = buff;
 
-        for (i = 0; i < 8; i++)
+        for (i = 0; i < 8U; i++)
         {
+            bool j;
+            char k;
+
             j = false;
-            k = btohexa_high(v6Addr->v[(i<<1)]);
+            k = (char)btohexa_high(v6Addr->v[(i<<1)]);
             if (k != '0')
             {
                 j = true;
                 *str++ = k;
             }
-            k = btohexa_low(v6Addr->v[(i<<1)]);
-            if (k != '0' || j == true)
+            k = (char)btohexa_low(v6Addr->v[(i<<1)]);
+            if ((k != '0') || (j == true))
             {
                 j = true;
                 *str++ = k;
             }
-            k = btohexa_high(v6Addr->v[1 + (i<<1)]);
-            if (k != '0' || j == true)
+            k = (char)btohexa_high(v6Addr->v[1U + (i<<1)]);
+            if ((k != '0') || (j == true))
+            {
                 *str++ = k;
-            k = btohexa_low(v6Addr->v[1 + (i<<1)]);
+            }
+            k = (char)btohexa_low(v6Addr->v[1U + (i<<1)]);
             *str++ = k;
-            if (i != 7)
+            if (i != 7U)
+            {
                 *str++ = ':';
+            }
         }
-        *str = 0;
+        *str = '\0';
 
         return true;
     }
@@ -589,5 +644,38 @@ bool WDRV_WINC_UtilsIPv6AddressToString (const WDRV_WINC_IPV6_ADDR * v6Addr, cha
     return false;
 }
 
+#ifndef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+/*****************************************************************************
+ *
+ *****************************************************************************/
+uint32_t WDRV_WINC_UtilsNToHL(uint32_t N)
+{
+    uint8_t *pN = (uint8_t*)&N;
+    uint32_t L;
+
+    L = *pN++;
+    L = (L << 8) | *pN++;
+    L = (L << 8) | *pN++;
+    L = (L << 8) | *pN;
+
+    return L;
+}
+
+/*****************************************************************************
+ *
+ *****************************************************************************/
+uint16_t WDRV_WINC_UtilsNToHS(uint16_t N)
+{
+    uint8_t *pN = (uint8_t*)&N;
+    uint16_t L;
+
+    L = *pN++;
+    L = (L << 8) | *pN;
+
+    return L;
+}
+#endif
+#endif
 
 #endif

@@ -24,11 +24,13 @@
       file        - File operation functionality.
       mqtt        - MQTT client functionality.
       netif       - Network interface functionality.
+      ota         - OTA functionality.
+      prov        - Provisioning functionality.
       sntp        - SNTP client functionality.
       socket      - TCP/IP sockets.
       softap      - Soft-AP mode.
       sta         - Infrastructure stations mode.
-      systtime    - System time.
+      systime     - System time.
       tls         - TLS functionality.
       wifi        - WiFi configuration functionality.
 
@@ -73,7 +75,6 @@ Microchip or any third party.
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -85,14 +86,34 @@ Microchip or any third party.
 #include "wdrv_winc_systime.h"
 #include "wdrv_winc_softap.h"
 #include "wdrv_winc_sta.h"
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 #include "wdrv_winc_socket.h"
+#endif
 #include "wdrv_winc_netif.h"
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
 #include "wdrv_winc_dhcps.h"
+#endif
 #include "wdrv_winc_tls.h"
+#ifndef WDRV_WINC_MOD_DISABLE_MQTT
 #include "wdrv_winc_mqtt.h"
+#endif
 #include "wdrv_winc_extcrypto.h"
+#ifndef WDRV_WINC_MOD_DISABLE_DNS
 #include "wdrv_winc_dns.h"
+#endif
 #include "wdrv_winc_wifi.h"
+#ifndef WDRV_WINC_MOD_DISABLE_SNTP
+#include "wdrv_winc_sntp.h"
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_PROV
+#include "wdrv_winc_prov.h"
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_OTA
+#include "wdrv_winc_ota.h"
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_NVM
+#include "wdrv_winc_nvm.h"
+#endif
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus // Provide C++ Compatibility
@@ -107,22 +128,56 @@ Microchip or any third party.
 // *****************************************************************************
 
 /* Number of WiFi associations allowed. */
-#define WDRV_WINC_NUM_ASSOCS            8
+#define WDRV_WINC_NUM_ASSOCS            8U
 
 /* Number of TLS contexts. */
-#define WDRV_WINC_TLS_CTX_NUM           2
+#define WDRV_WINC_TLS_CTX_NUM           2U
 
 /* Number of cipher suites. */
-#define WDRV_WINC_TLS_CIPHER_SUITE_NUM  2
+#define WDRV_WINC_TLS_CIPHER_SUITE_NUM  2U
 
 /* Number of file contexts. */
-#define WDRV_WINC_FILE_CTX_NUM          1
+#define WDRV_WINC_FILE_CTX_NUM          1U
 
 // *****************************************************************************
-// *****************************************************************************
-// Section: Data Type Definitions
-// *****************************************************************************
-// *****************************************************************************
+/* L2 Data Frame Monitor Callback Function Pointer
+
+  Function:
+    void (*WDRV_WINC_L2DATA_MONITOR_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_NETIF_IDX ifIdx,
+        const uint8_t *const pL2DataPtr,
+        size_t l2DataLen
+    )
+
+  Summary:
+    Pointer to a callback function for receiving L2 data frames.
+
+  Description:
+    This defines a function pointer for a callback to receive L2 data frames.
+
+  Parameters:
+    handle       - Client handle obtained by a call to WDRV_WINC_Open.
+    ifIdx        - Network interface index.
+    pL2DataPtr   - Pointer to L2 data frame payload.
+    l2DataLen    - Length of L2 data frame payload.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+typedef void (*WDRV_WINC_L2DATA_MONITOR_CALLBACK)
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_NETIF_IDX ifIdx,
+    const uint8_t *const pL2DataPtr,
+    size_t l2DataLen
+);
 
 // *****************************************************************************
 /*  Firmware Version Information
@@ -159,8 +214,10 @@ typedef struct
     /* Build date/time structure. */
     struct
     {
-        uint8_t hash[WINC_CFG_PARAM_ID_CFG_BUILD_HASH_SZ];
+        /* Build hash. */
+        uint8_t hash[WINC_CFG_PARAM_SZ_CFG_BUILD_HASH];
 
+        /* Build time. */
         uint32_t timeUTC;
     } build;
 } WDRV_WINC_FIRMWARE_VERSION_INFO;
@@ -200,7 +257,7 @@ typedef struct
 
         /* Source address. */
         uint32_t srcAddr;
-    } image[WINC_CFG_PARAM_ID_DI_IMAGE_INFO_NUM];
+    } image[WINC_CFG_PARAM_NUM_DI_IMAGE_INFO];
 } WDRV_WINC_DEVICE_INFO;
 
 // *****************************************************************************
@@ -302,6 +359,9 @@ typedef struct
     /* Currently active reg-domain. */
     WDRV_WINC_REGDOMAIN_INFO activeRegDomain;
 
+    /* A set regulatory domain operation is in progress. */
+    bool regDomainSetInProgress;
+
     /* The number of scan slots per channel. */
     uint8_t scanNumSlots;
 
@@ -317,8 +377,14 @@ typedef struct
     /* Main event semaphore. */
     OSAL_SEM_HANDLE_TYPE drvEventSemaphore;
 
-    /* Bitmap of enabled 2.4GHz channels for scanning. */
+    /* Bitmap of enabled 2.4GHz channels for multi-channel scanning. */
     WDRV_WINC_CHANNEL24_MASK scanChannelMask24;
+
+    /* Scanning RSSI threshold. */
+    int8_t scanRssiThreshold;
+
+    /* Bitmap of enabled 2.4GHz channels for the WINC. */
+    WDRV_WINC_CHANNEL24_MASK regulatoryChannelMask24;
 
     /* Current operating channel. */
     WDRV_WINC_CHANNEL_ID opChannel;
@@ -329,6 +395,7 @@ typedef struct
     /* Association information (AP). */
     WDRV_WINC_ASSOC_INFO assocInfoAP[WDRV_WINC_NUM_ASSOCS];
 
+#ifndef WDRV_WINC_MOD_DISABLE_TLS
     /* TLS context information */
     WDRV_WINC_TLSCTX_INFO tlscInfo[WDRV_WINC_TLS_CTX_NUM];
 
@@ -341,12 +408,12 @@ typedef struct
         uint8_t numAlgorithms;
 
         /* List of cipher suites returned. */
-        uint16_t algorithms[WINC_CFG_PARAM_ID_TLS_CSL_CIPHER_SUITES_NUM];
+        uint16_t algorithms[WINC_CFG_PARAM_NUM_TLS_CSL_CIPHER_SUITES];
 
         /* Callback to use for getting TLS cipher suite configurations. */
         WDRV_WINC_TLS_CS_CALLBACK pfTlsCsResponseCB;
     } tlsCipherSuites;
-
+#endif
     /* File operation contexts. */
     WDRV_WINC_FILE_CTX fileCtx[WDRV_WINC_FILE_CTX_NUM];
 
@@ -376,29 +443,46 @@ typedef struct
         uint8_t flags;
     } coex;
 
+#ifndef WDRV_WINC_MOD_DISABLE_MQTT
     struct
     {
+        /* MQTT protocol version. */
+        WDRV_WINC_MQTT_PROTO_VER protocolVer;
+
         /* MQTT connection status callback. */
         WDRV_WINC_MQTT_CONN_STATUS_CALLBACK pfConnCB;
 
         /* MQTT connection state. */
         WDRV_WINC_MQTT_CONN_STATUS_TYPE connState;
 
+        /* Connection information. */
+        WDRV_WINC_MQTT_CONN_INFO connInfo;
+
         /* User context for MQTT connection status callback. */
         uintptr_t connCbCtx;
 
+        /* Publish status callback function pointer. */
         WDRV_WINC_MQTT_PUB_STATUS_CALLBACK pfPubStatusCb;
 
+        /* Publish status callback user context. */
         uintptr_t pubStatusCbCtx;
 
+        /* Subscribe callback function pointer. */
         WDRV_WINC_MQTT_SUBSCRIBE_CALLBACK pfSubscribeCb;
 
+        /* Subscribe callback user context. */
         uintptr_t subscribeCbCtx;
 
-        uint8_t connAckFlags;
+        /* Publish message properties. */
+        WDRV_WINC_MQTT_PUB_PROP pubProps;
 
-        uint8_t connAckResult;
+        /* Flag indicating if user properties are included. */
+        bool includeUserProps;
+
+        /* User property callback function pointer. */
+        WDRV_WINC_MQTT_USER_PROP_CALLBACK pfUserPropCb;
     } mqtt;
+#endif
 
     /* Callback to use for BSS find operations. */
     WDRV_WINC_BSSFIND_NOTIFY_CALLBACK pfBSSFindNotifyCB;
@@ -412,12 +496,21 @@ typedef struct
     /* Callback to use for retrieving association RSSI information from the WINC. */
     WDRV_WINC_ASSOC_RSSI_CALLBACK pfAssociationRSSICB;
 
+#ifndef WDRV_WINC_MOD_DISABLE_OTA
+    /* State of OTA operation. */
+    WDRV_WINC_OTA_OPERATION_STATE otaState;
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_NVM
+    /* State of NVM operation. */
+    WDRV_WINC_NVM_OPERATION_STATE nvmState;
+#endif
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
     /* Callback to use for ICHO echo responses. */
     WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER pfICMPEchoResponseCB;
 
     /* Callback to use for DNS resolve responses. */
     WDRV_WINC_DNS_RESOLVE_CALLBACK pfDNSResolveResponseCB;
-
+#endif
     /* Callback to use for network interface events. */
     WDRV_WINC_NETIF_EVENT_HANDLER pfNetIfEventCB;
 
@@ -429,10 +522,16 @@ typedef struct
 
     /* Callback to use for receiving powersave information events. */
     WDRV_WINC_POWERSAVE_CALLBACK pfPowersaveEventCB;
-
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
     /* Callback to use for receiving DHCP server events. */
     WDRV_WINC_DHCPS_EVENT_HANDLER pfDHCPSEventCB;
-
+#endif
+    /* Callback to monitor L2 data frames. */
+    WDRV_WINC_L2DATA_MONITOR_CALLBACK pfL2DataMonitorCB;
+#ifndef WDRV_WINC_MOD_DISABLE_PROV
+    /* Callback for provisioning service attach events */
+    WDRV_WINC_PROV_ATTACH_CALLBACK pfProvAttachCB;
+#endif
     WDRV_WINC_NETIF_IDX netIfSTA;
 
     WDRV_WINC_NETIF_IDX netIfAP;
@@ -531,11 +630,11 @@ void WDRV_WINC_DebugRegisterCallback(WDRV_WINC_DEBUG_PRINT_CALLBACK const pfDebu
     used when calling other driver functions.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Initialize must have been called.
 
   Parameters:
-    index   - Identifier for the driver instance to be opened.
-    intent  - Zero or more of the values from the enumeration
+    index  - Identifier for the driver instance to be opened.
+    intent - Zero or more of the values from the enumeration
                 DRV_IO_INTENT ORed together to indicate the intended use
                 of the driver
 
@@ -566,11 +665,11 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
     after this function is called.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
-    handle  - Client handle obtained by a call to WDRV_WINC_Open.
+    handle - Client handle obtained by a call to WDRV_WINC_Open.
 
   Returns:
     None.
@@ -598,9 +697,17 @@ void WDRV_WINC_Close(DRV_HANDLE handle);
     WDRV_WINC_Initialize must have been called before calling this function.
 
   Parameters:
-    object  - Driver object handle, returned from WDRV_WINC_Initialize
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
 
   Returns:
+    SYS_STATUS_READY - Indicates that any previous module operation for the
+                        specified module has completed.
+    SYS_STATUS_BUSY - Indicates that a previous module operation for the
+                        specified module has not yet completed.
+    SYS_STATUS_ERROR - Indicates that the specified module is in an error state.
+    SYS_STATUS_UNINITIALIZED - Driver uninitialized.
+    WDRV_WINC_SYS_STATUS_ERROR_DEVICE_NOT_FOUND - Device not found.
+    WDRV_WINC_SYS_STATUS_ERROR_DEVICE_FAILURE - Device failure.
 
   Remarks:
     None.
@@ -611,7 +718,99 @@ WDRV_WINC_SYS_STATUS WDRV_WINC_StatusExt(SYS_MODULE_OBJ object);
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver General Routines
+// Section: WINC L2 Access Routines
+// *****************************************************************************
+// *****************************************************************************
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_L2DataMonitorCallbackSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_L2DATA_MONITOR_CALLBACK pfL2DataMonitorCB
+    )
+
+  Summary:
+    Set the L2 data frame monitor callback.
+
+  Description:
+    Sets the callback used to report L2 data frames.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle            - Client handle obtained by a call to WDRV_WINC_Open.
+    pfL2DataMonitorCB - Pointer to callback to set.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_L2DataMonitorCallbackSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_L2DATA_MONITOR_CALLBACK pfL2DataMonitorCB
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_L2DataFrameSend
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_NETIF_IDX ifIdx,
+        const uint8_t *const pl2Data,
+        size_t l2DataLen
+    )
+
+  Summary:
+    Sends an L2 frame to the WiFi layer.
+
+  Description:
+    Queues an L2 frame to the WiFi subsystem for transmission.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    ifIdx     - Network interface index.
+    pl2Data   - Pointer to L2 data frame.
+    l2DataLen - Length of L2 data frame payload.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_L2DataFrameSend
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_NETIF_IDX ifIdx,
+    const uint8_t *const pl2Data,
+    size_t l2DataLen
+);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Information Routines
 // *****************************************************************************
 // *****************************************************************************
 
@@ -631,8 +830,8 @@ WDRV_WINC_SYS_STATUS WDRV_WINC_StatusExt(SYS_MODULE_OBJ object);
     Returns information on the drivers version.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle         - Client handle obtained by a call to WDRV_WINC_Open.
@@ -672,8 +871,8 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDriverVersionGet
     Returns information on the WINC firmware version and build date/time.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle           - Client handle obtained by a call to WDRV_WINC_Open.
@@ -714,8 +913,8 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceFirmwareVersionGet
     Returns information on the WINC device.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -738,6 +937,99 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceGet
     WDRV_WINC_DEVICE_INFO *const pDeviceInfo
 );
 
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Configuration Archive Routines
+// *****************************************************************************
+// *****************************************************************************
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_CfgArchiveStore
+    (
+        DRV_HANDLE handle,
+        const char *pFilename
+    )
+
+  Summary:
+    Archives a configuration set.
+
+  Description:
+    Archives the currently active configuration set to a flash file.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    pFilename - Pointer to a filename to store the configuration in.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_RETRY_REQUEST  - Version information not available, try again.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_CfgArchiveStore
+(
+    DRV_HANDLE handle,
+    const char *pFilename
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_CfgArchiveRecall
+    (
+        DRV_HANDLE handle,
+        const char *pFilename
+    )
+
+  Summary:
+    Recall a configuration set.
+
+  Description:
+    Recall a flash file to the currently active configuration.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    pFilename - Pointer to a filename to recall the configuration from.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_RETRY_REQUEST  - Version information not available, try again.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_CfgArchiveRecall
+(
+    DRV_HANDLE handle,
+    const char *pFilename
+);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver General Routines
+// *****************************************************************************
+// *****************************************************************************
+
 //*******************************************************************************
 /*
   Function:
@@ -755,8 +1047,8 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceGet
     Sets the debug UART and baud rate on the WINC device.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle       - Client handle obtained by a call to WDRV_WINC_Open.
@@ -784,6 +1076,110 @@ WDRV_WINC_STATUS WDRV_WINC_DebugUARTSet
     uint32_t uartBaudRate
 );
 
+//*******************************************************************************
+/*
+  Function:
+    WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit
+    (
+        unsigned int numCommands,
+        size_t extraDataLen,
+        WINC_DEV_CMD_RSP_CB pfCmdRspCallback,
+        uintptr_t cmdRspCallbackCtx
+    )
+
+  Summary:
+    Initialise a command request.
+
+  Description:
+    Allocates memory and initialises a command request.
+
+  Precondition:
+    None.
+
+  Parameters:
+    numCommands       - Number of commands in request burst.
+    extraDataLen      - Additional space required for data.
+    pfCmdRspCallback  - Callback function to receive request notifications.
+    cmdRspCallbackCtx - Context to provide to callback function.
+
+  Returns:
+    Command request handle or WINC_CMD_REQ_INVALID_HANDLE for error.
+
+  Remarks:
+    None.
+
+*/
+
+WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit
+(
+    unsigned int numCommands,
+    size_t extraDataLen,
+    WINC_DEV_CMD_RSP_CB pfCmdRspCallback,
+    uintptr_t cmdRspCallbackCtx
+);
+
+//*******************************************************************************
+/*
+  Function:
+    bool WDRV_WINC_DevTransmitCmdReq
+    (
+        WINC_DEVICE_HANDLE devHandle,
+        WINC_CMD_REQ_HANDLE cmdReqHandle
+    )
+
+  Summary:
+    Transmits a command request.
+
+  Description:
+    Queues a command request for transmission to the WINCS02 device.
+
+  Precondition:
+    WDRV_WINC_CmdReqInit must have been called to create a command request.
+
+  Parameters:
+    devHandle    - WINCS02 device handle.
+    cmdReqHandle - Command request handle.
+
+  Returns:
+    true or false indicating success of transmission operation.
+
+  Remarks:
+    None.
+
+*/
+
+bool WDRV_WINC_DevTransmitCmdReq
+(
+    WINC_DEVICE_HANDLE devHandle,
+    WINC_CMD_REQ_HANDLE cmdReqHandle
+);
+
+//*******************************************************************************
+/*
+  Function:
+    void WDRV_WINC_DevDiscardCmdReq(WINC_CMD_REQ_HANDLE cmdReqHandle)
+
+  Summary:
+    Discards a command request.
+
+  Description:
+    Deallocates and discards a previously created command request.
+
+  Precondition:
+    WDRV_WINC_CmdReqInit must have been called to create a command request.
+
+  Parameters:
+    cmdReqHandle - Command request handle.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+void WDRV_WINC_DevDiscardCmdReq(WINC_CMD_REQ_HANDLE cmdReqHandle);
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus

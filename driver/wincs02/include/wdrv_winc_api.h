@@ -68,7 +68,8 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
-#define WDRV_WINC_SYS_IDX_0         0
+/* WINC device system interface index 0. */
+#define WDRV_WINC_SYS_IDX_0         0U
 
 // *****************************************************************************
 /*  WINC Device System Events.
@@ -146,12 +147,9 @@ typedef struct
   Description:
     Callback used to communicate system events from the WINC driver.
 
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-
   Parameters:
-    object - Driver object handle, returned from WDRV_WINC_Initialize
-    event  - System event
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
+    event  - System event.
 
   Returns:
     None.
@@ -193,12 +191,12 @@ typedef void (*WDRV_WINC_SYSTEM_EVENT_CALLBACK)
     None.
 
   Parameters:
-    index   - Index for the WINC driver instance to be initialized.
-    init    - Pointer to initialization data, currently not used.
+    index - Index for the WINC driver instance to be initialized.
+    init  - Pointer to initialization data, see WDRV_WINC_SYS_INIT.
 
   Returns:
-    Valid handle to a driver object - if successful
-    SYS_MODULE_OBJ_INVALID - if initialization failed
+    Success - Valid handle to a driver object.
+    Failure - SYS_MODULE_OBJ_INVALID.
 
   Remarks:
     The returned object must be passed as argument to WDRV_WINC_Reinitialize,
@@ -225,10 +223,10 @@ SYS_MODULE_OBJ WDRV_WINC_Initialize
     It is called by the system.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Initialize must have been called.
 
   Parameters:
-    object  - Driver object handle, returned from WDRV_WINC_Initialize
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
 
   Returns:
     None.
@@ -257,11 +255,11 @@ void WDRV_WINC_Deinitialize(SYS_MODULE_OBJ object);
     It is called by the system.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Initialize must have been called.
 
   Parameters:
-    object  - Driver object handle, returned from WDRV_WINC_Initialize
-    init    - Pointer to initialization data, currently not used.
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
+    init   - Pointer to initialization data, currently not used.
 
   Returns:
     None.
@@ -292,14 +290,15 @@ void WDRV_WINC_Reinitialize
     WDRV_WINC_Initialize must have been called before calling this function.
 
   Parameters:
-    object  - Driver object handle, returned from WDRV_WINC_Initialize
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
 
   Returns:
-    SYS_STATUS_READY  - Indicates that any previous module operation for the
-                          specified module has completed
-    SYS_STATUS_BUSY   - Indicates that a previous module operation for the
-                          specified module has not yet completed
-    SYS_STATUS_ERROR  - Indicates that the specified module is in an error state
+    SYS_STATUS_READY         - Indicates that any previous module operation for the
+                                specified module has completed.
+    SYS_STATUS_BUSY          - Indicates that a previous module operation for the
+                                specified module has not yet completed.
+    SYS_STATUS_ERROR         - Indicates that the specified module is in an error state.
+    SYS_STATUS_UNINITIALIZED - Driver uninitialized.
 
   Example:
     <code>
@@ -318,13 +317,13 @@ void WDRV_WINC_Reinitialize
       in which the driver is ready to accept new operations.
 
     SYS_STATUS_BUSY - Indicates that the driver is busy with a previous
-      system level operation and cannot start another
+      system level operation and cannot start another.
 
-    SYS_STATUS_ERROR - Indicates that the driver is in an error state
+    SYS_STATUS_ERROR - Indicates that the driver is in an error state.
      Any value less than SYS_STATUS_ERROR is also an error state.
 
-    SYS_MODULE_DEINITIALIZED - Indicates that the driver has been
-      deinitialized
+    SYS_STATUS_UNINITIALIZED - Indicates that the driver has been
+      deinitialized.
 
     This operation can be used to determine when any of the driver's
       module level operations has completed.
@@ -362,7 +361,7 @@ SYS_STATUS WDRV_WINC_Status(SYS_MODULE_OBJ object);
     WDRV_WINC_Initialize must have been called before calling this function.
 
   Parameters:
-    object  - Driver object handle, returned from WDRV_WINC_Initialize
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
 
   Returns:
     None.
@@ -391,7 +390,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object);
     WDRV_WINC_Initialize must have been called before calling this function.
 
   Parameters:
-    object  - Driver object handle, returned from WDRV_WINC_Initialize
+    object - Driver object handle, returned from WDRV_WINC_Initialize.
 
   Returns:
     None.
@@ -423,8 +422,8 @@ void WDRV_WINC_ISR(SYS_MODULE_OBJ object);
     WDRV_WINC_Initialize must have been called before calling this function.
 
   Parameters:
-    object          - Driver object handle, returned from WDRV_WINC_Initialize
-    pfEventCallback - Pointer to callback function
+    object          - Driver object handle, returned from WDRV_WINC_Initialize.
+    pfEventCallback - Pointer to callback function.
 
   Returns:
     None.

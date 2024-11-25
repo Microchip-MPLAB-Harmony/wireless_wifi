@@ -51,7 +51,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <inttypes.h>
@@ -69,17 +68,27 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 /*  Debug Callback
 
+  Function:
+    void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...)
+
   Summary:
     Defines the debug callback.
 
   Description:
     The function callback provides a printf-like prototype.
 
+ Parameters:
+    format - Format specifiers in printf style.
+    ...    - Variable number of arguments.
+
+ Returns:
+    None.
+
   Remarks:
     None.
 */
 
-typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char*, ...);
+typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...);
 
 // *****************************************************************************
 /*  Debug Levels
@@ -108,7 +117,7 @@ typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char*, ...);
     Defines the chosen level of debugging verbosity supported.
 
   Description:
-    This define set the debugging output verbosity level.
+    This define sets the debugging output verbosity level.
 
   Remarks:
     None.
@@ -138,16 +147,16 @@ typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char*, ...);
 
 #if (WDRV_WINC_DEBUG_LEVEL >= WDRV_WINC_DEBUG_TYPE_ERROR)
 #undef WDRV_DBG_ERROR_PRINT
-#define WDRV_DBG_ERROR_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (0)
+#define WDRV_DBG_ERROR_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (false)
 #if (WDRV_WINC_DEBUG_LEVEL >= WDRV_WINC_DEBUG_TYPE_INFORM)
 #undef WDRV_DBG_INFORM_PRINT
-#define WDRV_DBG_INFORM_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (0)
+#define WDRV_DBG_INFORM_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (false)
 #if (WDRV_WINC_DEBUG_LEVEL >= WDRV_WINC_DEBUG_TYPE_TRACE)
 #undef WDRV_DBG_TRACE_PRINT
-#define WDRV_DBG_TRACE_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (0)
+#define WDRV_DBG_TRACE_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (false)
 #if (WDRV_WINC_DEBUG_LEVEL >= WDRV_WINC_DEBUG_TYPE_VERBOSE)
 #undef WDRV_DBG_VERBOSE_PRINT
-#define WDRV_DBG_VERBOSE_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (0)
+#define WDRV_DBG_VERBOSE_PRINT(...) do { if (NULL != pfWINCDebugPrintCb) { pfWINCDebugPrintCb(__VA_ARGS__); } } while (false)
 #endif /* WDRV_WINC_DEBUG_TYPE_VERBOSE */
 #endif /* WDRV_WINC_DEBUG_TYPE_TRACE */
 #endif /* WDRV_WINC_DEBUG_TYPE_INFORM */
@@ -156,25 +165,11 @@ typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char*, ...);
 // Reference debug output channel printf-like function.
 extern WDRV_WINC_DEBUG_PRINT_CALLBACK pfWINCDebugPrintCb;
 #else
-#define WDRV_DBG_VERBOSE_PRINT(...)         do { SYS_DEBUG_PRINT(SYS_ERROR_DEBUG, __VA_ARGS__); } while (0)
-#define WDRV_DBG_TRACE_PRINT(...)           do { SYS_DEBUG_PRINT(SYS_ERROR_INFO, __VA_ARGS__); } while (0)
-#define WDRV_DBG_INFORM_PRINT(...)          do { SYS_DEBUG_PRINT(SYS_ERROR_WARNING, __VA_ARGS__); } while (0)
-#define WDRV_DBG_ERROR_PRINT(...)           do { SYS_DEBUG_PRINT(SYS_ERROR_ERROR, __VA_ARGS__); } while (0)
+#define WDRV_DBG_VERBOSE_PRINT(...)         do { SYS_DEBUG_PRINT(SYS_ERROR_DEBUG, __VA_ARGS__); } while (false)
+#define WDRV_DBG_TRACE_PRINT(...)           do { SYS_DEBUG_PRINT(SYS_ERROR_INFO, __VA_ARGS__); } while (false)
+#define WDRV_DBG_INFORM_PRINT(...)          do { SYS_DEBUG_PRINT(SYS_ERROR_WARNING, __VA_ARGS__); } while (false)
+#define WDRV_DBG_ERROR_PRINT(...)           do { SYS_DEBUG_PRINT(SYS_ERROR_ERROR, __VA_ARGS__); } while (false)
 
-#endif
-
-// Function to receive MAC RX packets for inspection
-//#define WDRV_WINC_MAC_RX_PKT_INSPECT_HOOK
-
-// Function to receive MAC TX packets for inspection
-//#define WDRV_WINC_MAC_TX_PKT_INSPECT_HOOK
-
-#ifdef WDRV_WINC_MAC_RX_PKT_INSPECT_HOOK
-void WDRV_WINC_MAC_RX_PKT_INSPECT_HOOK(const TCPIP_MAC_PACKET *const ptrPacket);
-#endif
-
-#ifdef WDRV_WINC_MAC_TX_PKT_INSPECT_HOOK
-void WDRV_WINC_MAC_TX_PKT_INSPECT_HOOK(const TCPIP_MAC_PACKET *const ptrPacket);
 #endif
 
 // DOM-IGNORE-BEGIN

@@ -59,7 +59,7 @@ Microchip or any third party.
     (
         WDRV_WINC_DCPT *pDcpt,
         WINC_DEV_PARAM_ELEM *pCmdElems,
-        WINC_DEV_PARAM_ELEM *pRspElems,
+        const WINC_DEV_PARAM_ELEM *const pRspElems,
         uint16_t status
     )
 
@@ -72,7 +72,7 @@ Microchip or any third party.
     callback.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
     pDcpt     - Pointer to WINC driver descriptor.
@@ -99,7 +99,7 @@ static void netifProcessNETIFC
 (
     WDRV_WINC_DCPT *pDcpt,
     WINC_DEV_PARAM_ELEM *pCmdElems,
-    WINC_DEV_PARAM_ELEM *pRspElems,
+    const WINC_DEV_PARAM_ELEM *const pRspElems,
     uint16_t status
 )
 {
@@ -122,8 +122,8 @@ static void netifProcessNETIFC
         return;
     }
 
-    WINC_CmdReadParamElem(&pCmdElems[0], WINC_TYPE_INTEGER, &ifIdx, sizeof(ifIdx));
-    WINC_CmdReadParamElem(&pCmdElems[1], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
+    (void)WINC_CmdReadParamElem(&pCmdElems[0], WINC_TYPE_INTEGER, &ifIdx, sizeof(ifIdx));
+    (void)WINC_CmdReadParamElem(&pCmdElems[1], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
 
     switch (id.i)
     {
@@ -131,7 +131,7 @@ static void netifProcessNETIFC
         {
             if (NULL != pRspElems)
             {
-                WINC_CmdReadParamElem(&pRspElems[1], WINC_TYPE_MACADDR, &info.macAddr, sizeof(info.macAddr));
+                (void)WINC_CmdReadParamElem(&pRspElems[1], WINC_TYPE_MACADDR, &info.macAddr, sizeof(info.macAddr));
                 pInfoPtr = &info.macAddr;
             }
 
@@ -141,6 +141,7 @@ static void netifProcessNETIFC
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("NETIFC ID %d not handled\r\n", id.i);
             break;
         }
     }
@@ -155,7 +156,7 @@ static void netifProcessNETIFC
 //*******************************************************************************
 /*
   Function:
-    static void netifProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+    static void netifProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 
   Summary:
     Process command responses.
@@ -164,7 +165,7 @@ static void netifProcessNETIFC
     Processes command responses received via WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED events.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
     handle - WINC device handle.
@@ -178,7 +179,7 @@ static void netifProcessNETIFC
 
 */
 
-static void netifProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+static void netifProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
 
@@ -193,7 +194,7 @@ static void netifProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pEle
         {
             WINC_DEV_PARAM_ELEM elems[10];
 
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
                 break;
             }
@@ -209,6 +210,7 @@ static void netifProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pEle
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("NETIF CmdRspCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -233,10 +235,10 @@ static void netifProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pEle
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -299,7 +301,7 @@ static void netIfCmdRspCallbackHandler
         return;
     }
 
-//    WDRV_DBG_INFORM_PRINT("NETIF CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("NETIF CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -310,7 +312,7 @@ static void netIfCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -318,7 +320,6 @@ static void netIfCmdRspCallbackHandler
         {
             /* Status response received for command. */
             WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
-            WINC_DEV_PARAM_ELEM elems[10];
 
             if (NULL == pStatusInfo)
             {
@@ -334,6 +335,8 @@ static void netIfCmdRspCallbackHandler
             {
                 case WINC_CMD_ID_NETIFC:
                 {
+                    WINC_DEV_PARAM_ELEM elems[10];
+
                     if (false == WINC_DevUnpackElements(pStatusInfo->srcCmd.numParams, pStatusInfo->srcCmd.pParams, elems))
                     {
                         break;
@@ -345,6 +348,7 @@ static void netIfCmdRspCallbackHandler
 
                 default:
                 {
+                    WDRV_DBG_VERBOSE_PRINT("NETIF CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
                     break;
                 }
             }
@@ -354,12 +358,85 @@ static void netIfCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-            WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
+            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
 
             if (NULL != pRspElems)
             {
                 netifProcessCmdRsp((DRV_HANDLE)pDcpt, pRspElems);
             }
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("NETIF CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    void WDRV_WINC_NETIFProcessAEC
+    (
+        uintptr_t context,
+        WINC_DEVICE_HANDLE devHandle,
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+    )
+
+  Summary:
+    AEC process callback.
+
+  Description:
+    Callback will be called to process any AEC messages received.
+
+  Remarks:
+    See wdrv_winc_wifi.h for usage information.
+
+*/
+
+void WDRV_WINC_NETIFProcessAEC
+(
+    uintptr_t context,
+    WINC_DEVICE_HANDLE devHandle,
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+)
+{
+    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    WDRV_WINC_CTRLDCPT *pCtrl;
+
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    pCtrl = pDcpt->pCtrl;
+
+    switch (pElems->rspId)
+    {
+        case WINC_AEC_ID_NETIFRX:
+        {
+            if (3U != pElems->numElems)
+            {
+                break;
+            }
+
+            if (NULL != pCtrl->pfL2DataMonitorCB)
+            {
+                WDRV_WINC_NETIF_IDX ifIdx;
+
+                (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &ifIdx, sizeof(ifIdx));
+
+                pCtrl->pfL2DataMonitorCB((DRV_HANDLE)pDcpt, ifIdx, pElems->elems[2].pData, pElems->elems[2].length);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("NETIF AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -410,6 +487,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfRegisterEventCallback
     return WDRV_WINC_STATUS_OK;
 }
 
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 //*******************************************************************************
 /*
   Function:
@@ -440,8 +518,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
-    int netIfCDHCPEnable = 0;
+    uintptr_t netIfCDHCPEnable = 0;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -455,31 +532,22 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    if (0 != (aacMode & WDRV_WINC_NETIF_AAC_V4_DHCP))
+    if (WDRV_WINC_NETIF_AAC_NONE != (aacMode & WDRV_WINC_NETIF_AAC_V4_DHCP))
     {
         netIfCDHCPEnable = 1;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdNETIFC(cmdReqHandle, ifIdx, WINC_CFG_PARAM_ID_NETIF_DHCPC_EN, WINC_TYPE_INTEGER, netIfCDHCPEnable, 0);
+    (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)ifIdx, WINC_CFG_PARAM_ID_NETIF_DHCPC_EN, WINC_TYPE_INTEGER, netIfCDHCPEnable, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -495,7 +563,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
         WDRV_WINC_NETIF_IDX ifIdx,
         WDRV_WINC_IP_ADDRESS_TYPE type,
         WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
-        int scope
+        unsigned int scope
     )
 
   Summary:
@@ -515,12 +583,11 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
     WDRV_WINC_NETIF_IDX ifIdx,
     WDRV_WINC_IP_ADDRESS_TYPE type,
     WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
-    int scope
+    unsigned int scope
 )
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
     uint8_t addrScope[16+1];
 
     /* Ensure the driver handle is valid. */
@@ -531,14 +598,14 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
 
     if (WDRV_WINC_IP_ADDRESS_TYPE_IPV4 == type)
     {
-        if (scope > 31)
+        if (scope > 31U)
         {
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
     }
     else if (WDRV_WINC_IP_ADDRESS_TYPE_IPV6 == type)
     {
-        if (scope > 127)
+        if (scope > 127U)
         {
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
@@ -554,18 +621,10 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -573,28 +632,27 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
     {
         if (WDRV_WINC_IP_ADDRESS_TYPE_IPV4 == type)
         {
-            uint32_t netMask = 0xffffffff;
+            uint32_t netMask = 0xffffffffU;
 
-            netMask <<= (32-scope);
-            netMask = htonl(netMask);
+            netMask <<= (32U-scope);
+            netMask = WDRV_WINC_UtilsHToNL(netMask);
 
-            memcpy(&addrScope[0], pAddr, 4);
-            memcpy(&addrScope[4], &netMask, 4);
+            (void)memcpy(&addrScope[0], (uint8_t*)pAddr, 4);
+            (void)memcpy(&addrScope[4], (uint8_t*)&netMask, 4);
 
-            WINC_CmdNETIFC(cmdReqHandle, ifIdx, WINC_CFG_PARAM_ID_NETIF_IP_MASK, WINC_TYPE_IPV4ADDR, (uintptr_t)addrScope, 8);
+            (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)ifIdx, WINC_CFG_PARAM_ID_NETIF_IP_MASK, WINC_TYPE_IPV4ADDR, (uintptr_t)addrScope, 8);
         }
         else
         {
-            memcpy(&addrScope[0], pAddr, 16);
-            addrScope[16] = scope;
+            (void)memcpy(&addrScope[0], (uint8_t*)pAddr, 16);
+            addrScope[16] = (uint8_t)scope;
 
-            WINC_CmdNETIFC(cmdReqHandle, ifIdx, WINC_CFG_PARAM_ID_NETIF_IPV6_GLO_ADDR, WINC_TYPE_IPV6ADDR, (uintptr_t)addrScope, 17);
+            (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)ifIdx, WINC_CFG_PARAM_ID_NETIF_IPV6_GLO_ADDR, WINC_TYPE_IPV6ADDR, (uintptr_t)addrScope, 17);
         }
     }
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -637,7 +695,6 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPRouteSet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -662,38 +719,30 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPRouteSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     if (WDRV_WINC_IP_ADDRESS_TYPE_IPV4 == type)
     {
-        WINC_CmdNETIFC(cmdReqHandle, ifIdx, WINC_CFG_PARAM_ID_NETIF_GATEWAY, WINC_TYPE_IPV4ADDR, (uintptr_t)pDest, sizeof(WDRV_WINC_IPV4_ADDR));
+        (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)ifIdx, WINC_CFG_PARAM_ID_NETIF_GATEWAY, WINC_TYPE_IPV4ADDR, (uintptr_t)pDest, sizeof(WDRV_WINC_IPV4_ADDR));
     }
     else
     {
-        WINC_CmdNETIFC(cmdReqHandle, ifIdx, WINC_CFG_PARAM_ID_NETIF_IPV6_GATEWAY, WINC_TYPE_IPV6ADDR, (uintptr_t)pDest, sizeof(WDRV_WINC_IPV6_ADDR));
+        (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)ifIdx, WINC_CFG_PARAM_ID_NETIF_IPV6_GATEWAY, WINC_TYPE_IPV6ADDR, (uintptr_t)pDest, sizeof(WDRV_WINC_IPV6_ADDR));
     }
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     return WDRV_WINC_STATUS_OK;
 }
+#endif /* WDRV_WINC_DISABLE_L3_SUPPORT */
 
 //*******************************************************************************
 /*
@@ -725,7 +774,6 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfMACAddrGet
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -744,26 +792,17 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfMACAddrGet
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, netIfCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdNETIFC(cmdReqHandle, ifIdx, WINC_CFG_PARAM_ID_NETIF_ETHER, WINC_TYPE_INVALID, 0, 0);
+    (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)ifIdx, WINC_CFG_PARAM_ID_NETIF_ETHER, WINC_TYPE_INVALID, 0, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 

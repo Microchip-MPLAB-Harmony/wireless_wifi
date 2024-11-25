@@ -1,0 +1,71 @@
+#ifndef CONF_WINC_DEV_H
+#define CONF_WINC_DEV_H
+
+/* WINC_DEV_CACHE_LINE_SIZE:
+    If present this defines the devices cache line size. The purpose is to ensure
+    that memory accesses for hardware interfaces are aligned to cache line
+    boundaries and occupy complete lines to avoid cache operation corruption.
+*/
+#define WINC_DEV_CACHE_LINE_SIZE            CACHE_LINE_SIZE
+
+/* WINC_DEBUG_LEVEL:
+    Sets the NC drivers debug level. Can be:
+
+        WINC_DEBUG_TYPE_NONE
+        WINC_DEBUG_TYPE_ERROR
+        WINC_DEBUG_TYPE_INFORM
+        WINC_DEBUG_TYPE_TRACE
+        WINC_DEBUG_TYPE_VERBOSE
+*/
+#define WINC_DEBUG_LEVEL                    WINC_DEBUG_TYPE_INFORM
+
+/* WINC_SOCK_NUM_SOCKETS:
+    Defines the number of Berkeley sockets supported in the driver.
+*/
+#define WINC_SOCK_NUM_SOCKETS               10U
+
+/* WINC_SOCK_BUF_RX_SZ:
+    Defines the size of the socket receive buffer.
+*/
+#define WINC_SOCK_BUF_RX_SZ                (MAX_SOCK_PAYLOAD_SZ*5)
+
+/* WINC_SOCK_BUF_TX_SZ:
+    Defines the size of the socket transmit buffer.
+*/
+#define WINC_SOCK_BUF_TX_SZ                (MAX_SOCK_PAYLOAD_SZ*5)
+
+/* WINC_CONF_LOCK_STORAGE:
+    If multi-threading support is required, this defines any storage which must
+    be present in the device context for maintaining lock state.
+*/
+#define WINC_CONF_LOCK_STORAGE              OSAL_MUTEX_HANDLE_TYPE accessMutex
+
+/* WINC_CONF_LOCK_CREATE:
+    This defines any code which must be present in the driver initialisation
+    to correctly initialise the lock state.
+*/
+#define WINC_CONF_LOCK_CREATE               OSAL_MUTEX_Create(&wincDevCtrlCtx.accessMutex)
+
+/* WINC_CONF_LOCK_DESTROY:
+    This defines any code which must be present to de-initialise the lock state
+    when the driver is de-initialised.
+*/
+#define WINC_CONF_LOCK_DESTROY              OSAL_MUTEX_Delete(&pCtrlCtx->accessMutex)
+
+/* WINC_CONF_LOCK_ENTER:
+    This defines the entry condition for lock support. This must equate to true
+    or false depending on if it is safe to enter lock state. This may include waiting
+    for lock to be avaliable.
+    
+        true  = Lock state has been entered.
+        false = An error occurred attempting to gain lock state or lock was not gained
+                within a specified timeout.
+*/
+#define WINC_CONF_LOCK_ENTER                (OSAL_RESULT_SUCCESS == OSAL_MUTEX_Lock(&pCtrlCtx->accessMutex, OSAL_WAIT_FOREVER))
+
+/* WINC_CONF_LOCK_LEAVE:
+    This defines code which must be present to leave lock state.
+*/
+#define WINC_CONF_LOCK_LEAVE                OSAL_MUTEX_Unlock(&pCtrlCtx->accessMutex)
+
+#endif /* CONF_WINC_DEV_H */

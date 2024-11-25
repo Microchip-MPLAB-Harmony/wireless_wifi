@@ -73,7 +73,7 @@ static bool fileLoadBuffer(WDRV_WINC_DCPT *pDcpt, WDRV_WINC_FILE_CTX *pFileCtx, 
     Search all file transfer contexts for a matching handle.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Initialize must have been called.
 
   Parameters:
     pFileCtxList - Pointer to first file transfer context.
@@ -93,7 +93,7 @@ static WDRV_WINC_FILE_CTX *fileFindTsfrHandle
     uint16_t tsrfHandle
 )
 {
-    int i;
+    unsigned int i;
 
     if (NULL == pFileCtxList)
     {
@@ -132,7 +132,7 @@ static WDRV_WINC_FILE_CTX *fileFindTsfrHandle
     Search all file transfer contexts for a matching handle.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Initialize must have been called.
 
   Parameters:
     pFileCtxList - Pointer to first file transfer context.
@@ -152,7 +152,7 @@ static WDRV_WINC_FILE_CTX *fileFindTsfrCmdReq
     WINC_CMD_REQ_HANDLE cmdReqHandle
 )
 {
-    int i;
+    unsigned int i;
 
     if (NULL == pFileCtxList)
     {
@@ -194,11 +194,11 @@ static WDRV_WINC_FILE_CTX *fileFindTsfrCmdReq
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -262,7 +262,7 @@ static void fileCmdRspCallbackHandler
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("File CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+    //WDRV_DBG_INFORM_PRINT("File CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -273,7 +273,7 @@ static void fileCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -291,7 +291,7 @@ static void fileCmdRspCallbackHandler
                     {
                         WINC_DEV_PARAM_ELEM elems[10];
                         uint16_t op;
-                        uint16_t fileType = WDRV_WINC_FILE_TYPE_INVALID;
+                        uint16_t fileType = (uint16_t)WDRV_WINC_FILE_TYPE_INVALID;
                         WDRV_WINC_FILE_STATUS_TYPE status = WDRV_WINC_FILE_STATUS_OK;
 
                         /* Unpack original command parameters. */
@@ -301,11 +301,11 @@ static void fileCmdRspCallbackHandler
                         }
 
                         /* Extract the command operation and, if present, the file type. */
-                        WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &op, sizeof(op));
+                        (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &op, sizeof(op));
 
-                        if (pStatusInfo->srcCmd.numParams > 1)
+                        if (pStatusInfo->srcCmd.numParams > 1U)
                         {
-                            WINC_CmdReadParamElem(&elems[1], WINC_TYPE_INTEGER, &fileType, sizeof(fileType));
+                            (void)WINC_CmdReadParamElem(&elems[1], WINC_TYPE_INTEGER, &fileType, sizeof(fileType));
                         }
 
                         if (WINC_STATUS_OK != pStatusInfo->status)
@@ -318,7 +318,7 @@ static void fileCmdRspCallbackHandler
                             case WINC_CONST_FS_OP_LOAD:
                             {
                                 /* Find the transfer context associated with the command request, the
-                                 the transfer handle isn't set yet so use the command request handle. */
+                                 the transfer handle is not set yet so use the command request handle. */
                                 pFileCtx = fileFindTsfrCmdReq(pDcpt->pCtrl->fileCtx, cmdReqHandle);
 
                                 if (NULL != pFileCtx)
@@ -332,7 +332,7 @@ static void fileCmdRspCallbackHandler
                                         }
 
                                         /* Reset the transfer context to terminate state. */
-                                        memset(pFileCtx, 0, sizeof(WDRV_WINC_FILE_CTX));
+                                        (void)memset(pFileCtx, 0, sizeof(WDRV_WINC_FILE_CTX));
                                     }
                                     else
                                     {
@@ -375,6 +375,7 @@ static void fileCmdRspCallbackHandler
 
                             default:
                             {
+                                WDRV_DBG_VERBOSE_PRINT("File CmdRspCB(Status) FSOP %d not handled\r\n", op);
                                 break;
                             }
                         }
@@ -395,7 +396,7 @@ static void fileCmdRspCallbackHandler
                         }
 
                         /* Extract the transfer handle associated with the original command. */
-                        WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &tsfrHandle, sizeof(tsfrHandle));
+                        (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &tsfrHandle, sizeof(tsfrHandle));
 
                         /* Find transfer context associated with transfer handle. */
                         pFileCtx = fileFindTsfrHandle(pDcpt->pCtrl->fileCtx, tsfrHandle);
@@ -422,6 +423,7 @@ static void fileCmdRspCallbackHandler
 
                     default:
                     {
+                        WDRV_DBG_VERBOSE_PRINT("File CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
                         break;
                     }
                 }
@@ -441,13 +443,13 @@ static void fileCmdRspCallbackHandler
                     {
                         uint16_t op;
 
-                        if (pRspElems->numElems < 2)
+                        if (pRspElems->numElems < 2U)
                         {
                             break;
                         }
 
                         /* Extract the file operation from the response elements. */
-                        WINC_CmdReadParamElem(&pRspElems->elems[0], WINC_TYPE_INTEGER, &op, sizeof(op));
+                        (void)WINC_CmdReadParamElem(&pRspElems->elems[0], WINC_TYPE_INTEGER, &op, sizeof(op));
 
                         switch (op)
                         {
@@ -456,7 +458,7 @@ static void fileCmdRspCallbackHandler
                                 uint16_t tsfrHandle;
 
                                 /* Extract the transfer handle from the response elements. */
-                                WINC_CmdReadParamElem(&pRspElems->elems[1], WINC_TYPE_INTEGER, &tsfrHandle, sizeof(tsfrHandle));
+                                (void)WINC_CmdReadParamElem(&pRspElems->elems[1], WINC_TYPE_INTEGER, &tsfrHandle, sizeof(tsfrHandle));
 
                                 /* Find the transfer context associated with the transfer handle. */
                                 pFileCtx = fileFindTsfrCmdReq(pDcpt->pCtrl->fileCtx, cmdReqHandle);
@@ -467,7 +469,7 @@ static void fileCmdRspCallbackHandler
                                 }
 
                                 /* Check that no current transfer handle has been set. */
-                                if (0 == pFileCtx->tsfrHandle)
+                                if (0U == pFileCtx->tsfrHandle)
                                 {
                                     /* Initialise the file transfer context. */
                                     pFileCtx->inUse      = true;
@@ -488,27 +490,30 @@ static void fileCmdRspCallbackHandler
 
                             case WINC_CONST_FS_OP_LIST:
                             {
-                                uint16_t fileType;
-                                char filename[32+1];
-
-                                if (pRspElems->numElems < 3)
+                                if (pRspElems->numElems < 3U)
                                 {
                                     break;
                                 }
 
                                 if (NULL != pDcpt->pCtrl->pfFileFindCB)
                                 {
+                                    uint16_t fileType;
+                                    char filename[WINC_CMD_PARAM_SZ_FS_FILENAME+1U];
+
                                     /* Extract the file type and filename from response elements. */
-                                    WINC_CmdReadParamElem(&pRspElems->elems[1], WINC_TYPE_INTEGER, &fileType, sizeof(fileType));
-                                    WINC_CmdReadParamElem(&pRspElems->elems[2], WINC_TYPE_STRING,  filename, sizeof(filename));
+                                    (void)WINC_CmdReadParamElem(&pRspElems->elems[1], WINC_TYPE_INTEGER, &fileType, sizeof(fileType));
+                                    (void)WINC_CmdReadParamElem(&pRspElems->elems[2], WINC_TYPE_STRING,  filename, sizeof(filename));
 
                                     /* Call user callback indicating a new file entry. */
                                     pDcpt->pCtrl->pfFileFindCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->fileOpUserCtx, fileType, filename, WDRV_WINC_FILE_STATUS_OK);
                                 }
+
+                                break;
                             }
 
                             default:
                             {
+                                WDRV_DBG_VERBOSE_PRINT("File CmdRspCB(Rsp) FSOP %d not handled\r\n", op);
                                 break;
                             }
                         }
@@ -521,13 +526,13 @@ static void fileCmdRspCallbackHandler
                         uint16_t remaining;
                         uint16_t tsfrHandle;
 
-                        if (3 != pRspElems->numElems)
+                        if (3U != pRspElems->numElems)
                         {
                             break;
                         }
 
                         /* Extract the transfer handle from the response elements. */
-                        WINC_CmdReadParamElem(&pRspElems->elems[0], WINC_TYPE_INTEGER, &tsfrHandle, sizeof(tsfrHandle));
+                        (void)WINC_CmdReadParamElem(&pRspElems->elems[0], WINC_TYPE_INTEGER, &tsfrHandle, sizeof(tsfrHandle));
 
                         /* Find the transfer context associated with the transfer handle. */
                         pFileCtx = fileFindTsfrHandle(pDcpt->pCtrl->fileCtx, tsfrHandle);
@@ -538,8 +543,8 @@ static void fileCmdRspCallbackHandler
                         }
 
                         /* Extract the block number and bytes remaining from the response elements. */
-                        WINC_CmdReadParamElem(&pRspElems->elems[1], WINC_TYPE_INTEGER, &blockNum, sizeof(blockNum));
-                        WINC_CmdReadParamElem(&pRspElems->elems[2], WINC_TYPE_INTEGER, &remaining, sizeof(remaining));
+                        (void)WINC_CmdReadParamElem(&pRspElems->elems[1], WINC_TYPE_INTEGER, &blockNum, sizeof(blockNum));
+                        (void)WINC_CmdReadParamElem(&pRspElems->elems[2], WINC_TYPE_INTEGER, &remaining, sizeof(remaining));
 
                         /* Check that the received block number is the one expected. */
                         if (blockNum == pFileCtx->op.load.blockNum)
@@ -548,7 +553,7 @@ static void fileCmdRspCallbackHandler
                             pFileCtx->op.load.bufLen = 0;
 
                             /* Refill internal buffer if pending data exists. */
-                            fileLoadBuffer(pDcpt, pFileCtx, false);
+                            (void)fileLoadBuffer(pDcpt, pFileCtx, false);
 
                             if (NULL == pFileCtx->op.load.pData)
                             {
@@ -562,7 +567,7 @@ static void fileCmdRspCallbackHandler
                                 }
                             }
 
-                            if (0 == remaining)
+                            if (0U == remaining)
                             {
                                 /* End of the request file transfer. */
                                 if (NULL != pFileCtx->pfFileStatusCb)
@@ -579,11 +584,18 @@ static void fileCmdRspCallbackHandler
 
                     default:
                     {
+                        WDRV_DBG_VERBOSE_PRINT("File CmdRspCB ID %04x not handled\r\n", pRspElems->rspId);
                         break;
                     }
                 }
             }
 
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("File CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
             break;
         }
     }
@@ -607,7 +619,7 @@ static void fileCmdRspCallbackHandler
     full this is flushed to the WINC via AT+FSTSFR,
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Initialize must have been called.
 
   Parameters:
     pDcpt           - Pointer to WINC device descriptor.
@@ -644,18 +656,18 @@ static bool fileLoadBuffer
             /* Calculate free space vs length of new data. */
             if (bufFreeSpace > pFileCtx->op.load.lenData)
             {
-                bufFreeSpace = pFileCtx->op.load.lenData;
+                bufFreeSpace = (uint8_t)pFileCtx->op.load.lenData;
             }
 
             /* Copy data into the internal buffer. */
-            memcpy(&pFileCtx->op.load.buffer[pFileCtx->op.load.bufLen], pFileCtx->op.load.pData, bufFreeSpace);
+            (void)memcpy(&pFileCtx->op.load.buffer[pFileCtx->op.load.bufLen], pFileCtx->op.load.pData, bufFreeSpace);
 
             pFileCtx->op.load.pData   += bufFreeSpace;
             pFileCtx->op.load.lenData -= bufFreeSpace;
             pFileCtx->op.load.bufLen  += bufFreeSpace;
 
             /* If all the user input data has been consumed, release the user buffer. */
-            if (0 == pFileCtx->op.load.lenData)
+            if (0U == pFileCtx->op.load.lenData)
             {
                 pFileCtx->op.load.pData = NULL;
             }
@@ -663,36 +675,21 @@ static bool fileLoadBuffer
     }
 
     /* Check if the internal buffer is full, or partially full with an override to flush. */
-    if ((WDRV_WINC_FILE_LOAD_BUF_SZ == pFileCtx->op.load.bufLen) || ((true == forceFlushClose) && (pFileCtx->op.load.bufLen > 0)))
+    if ((WDRV_WINC_FILE_LOAD_BUF_SZ == pFileCtx->op.load.bufLen) || ((true == forceFlushClose) && (pFileCtx->op.load.bufLen > 0U)))
     {
         WINC_CMD_REQ_HANDLE cmdReqHandle;
-        void *pCmdReqBuffer;
 
-        if ((NULL == pDcpt) || (NULL == pFileCtx) || (NULL == pDcpt->pCtrl))
-        {
-            return false;
-        }
-
-        pCmdReqBuffer = OSAL_Malloc(256);
-
-        if (NULL == pCmdReqBuffer)
-        {
-            return false;
-        }
-
-        cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(1, pFileCtx->op.load.bufLen, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
         if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
         {
-            OSAL_Free(pCmdReqBuffer);
             return false;
         }
 
-        WINC_CmdFSTSFR(cmdReqHandle, pFileCtx->tsfrHandle, ++pFileCtx->op.load.blockNum, pFileCtx->op.load.buffer, pFileCtx->op.load.bufLen, -1);
+        (void)WINC_CmdFSTSFR(cmdReqHandle, pFileCtx->tsfrHandle, ++pFileCtx->op.load.blockNum, pFileCtx->op.load.buffer, pFileCtx->op.load.bufLen, -1);
 
-        if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+        if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
         {
-            OSAL_Free(pCmdReqBuffer);
             return false;
         }
     }
@@ -737,7 +734,7 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
-    int i;
+    unsigned int i;
     size_t lenFilename;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -757,9 +754,9 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
         return WDRV_WINC_FILE_INVALID_HANDLE;
     }
 
-    lenFilename = strnlen(pFilename, 32+1);
+    lenFilename = strnlen(pFilename, WINC_CMD_PARAM_SZ_FS_FILENAME+1U);
 
-    if (lenFilename > 32)
+    if (lenFilename > WINC_CMD_PARAM_SZ_FS_FILENAME)
     {
         return WDRV_WINC_FILE_INVALID_HANDLE;
     }
@@ -769,28 +766,18 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
         if (false == pDcpt->pCtrl->fileCtx[i].inUse)
         {
             WINC_CMD_REQ_HANDLE cmdReqHandle;
-            void *pCmdReqBuffer;
 
-            pCmdReqBuffer = OSAL_Malloc(256);
-
-            if (NULL == pCmdReqBuffer)
-            {
-                return WDRV_WINC_FILE_INVALID_HANDLE;
-            }
-
-            cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 1, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+            cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenFilename, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
             if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
             {
-                OSAL_Free(pCmdReqBuffer);
                 return WDRV_WINC_FILE_INVALID_HANDLE;
             }
 
-            WINC_CmdFSLOAD(cmdReqHandle, type, WINC_CONST_FS_TSFRPROT_TSFR, (uint8_t*)pFilename, lenFilename, lenFile);
+            (void)WINC_CmdFSLOAD(cmdReqHandle, (uint8_t)type, WINC_CONST_FS_TSFRPROT_TSFR, (const uint8_t*)pFilename, lenFilename, (uint16_t)lenFile);
 
-            if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+            if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
             {
-                OSAL_Free(pCmdReqBuffer);
                 return WDRV_WINC_FILE_INVALID_HANDLE;
             }
 
@@ -803,7 +790,7 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
             pDcpt->pCtrl->fileCtx[i].fileStatusCbCtx = statusCbCtx;
             pDcpt->pCtrl->fileCtx[i].fileSize        = lenFile;
 
-            memset(&pDcpt->pCtrl->fileCtx[i].op, 0, sizeof(pDcpt->pCtrl->fileCtx[i].op));
+            (void)memset(&pDcpt->pCtrl->fileCtx[i].op, 0, sizeof(pDcpt->pCtrl->fileCtx[i].op));
 
             return (uintptr_t)&pDcpt->pCtrl->fileCtx[i];
         }
@@ -869,14 +856,14 @@ WDRV_WINC_STATUS WDRV_WINC_FileClose
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    if ((0 == pFileCtx->op.load.bufLen) && (0 == pFileCtx->op.load.lenData))
+    if ((0U == pFileCtx->op.load.bufLen) && (0U == pFileCtx->op.load.lenData))
     {
         if (NULL != pFileCtx->pfFileStatusCb)
         {
             pFileCtx->pfFileStatusCb((DRV_HANDLE)pDcpt, (WDRV_WINC_FILE_HANDLE)pFileCtx, pFileCtx->fileStatusCbCtx, WDRV_WINC_FILE_STATUS_CLOSE);
         }
 
-        memset(pFileCtx, 0, sizeof(WDRV_WINC_FILE_CTX));
+        (void)memset(pFileCtx, 0, sizeof(WDRV_WINC_FILE_CTX));
     }
     else
     {
@@ -931,7 +918,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileWrite
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    if ((NULL == pData) || (0 == lenData))
+    if ((NULL == pData) || (0U == lenData))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -989,7 +976,6 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -1011,26 +997,17 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
     pDcpt->pCtrl->pfFileFindCB  = pfFindCb;
     pDcpt->pCtrl->fileOpUserCtx = findCbCtx;
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdFSOP(cmdReqHandle, WINC_CONST_FS_OP_LIST, type, NULL, 0);
+    (void)WINC_CmdFSOP(cmdReqHandle, WINC_CONST_FS_OP_LIST, (uint8_t)type, NULL, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -1040,7 +1017,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_FILE_HANDLE WDRV_WINC_FileDelete
+    WDRV_WINC_STATUS WDRV_WINC_FileDelete
     (
         DRV_HANDLE handle,
         const char *pFilename,
@@ -1060,7 +1037,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
 
 */
 
-WDRV_WINC_FILE_HANDLE WDRV_WINC_FileDelete
+WDRV_WINC_STATUS WDRV_WINC_FileDelete
 (
     DRV_HANDLE handle,
     const char *pFilename,
@@ -1071,7 +1048,6 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileDelete
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pFilename))
@@ -1093,26 +1069,17 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileDelete
     pDcpt->pCtrl->pfFileDeleteCB = pfDeleteCb;
     pDcpt->pCtrl->fileOpUserCtx  = deleteCbCtx;
 
-    pCmdReqBuffer = OSAL_Malloc(128);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 128, 1, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdFSOP(cmdReqHandle, WINC_CONST_FS_OP_DEL, type, (uint8_t*)pFilename, strlen(pFilename));
+    (void)WINC_CmdFSOP(cmdReqHandle, WINC_CONST_FS_OP_DEL, (uint8_t)type, (const uint8_t*)pFilename, strlen(pFilename));
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 

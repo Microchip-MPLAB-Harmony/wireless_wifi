@@ -74,10 +74,6 @@ Microchip or any third party.
     Callback returning the system time. The time is returned as UTC seconds
     since 01/01/1970.
 
-  Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
     timeUTC - UTC time.
@@ -108,7 +104,7 @@ typedef void (*WDRV_WINC_SYSTIME_CURRENT_CALLBACK)
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -137,7 +133,7 @@ void WDRV_WINC_TIMEProcessAEC
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
-    WINC_DEV_EVENT_RSP_ELEMS *pElems
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 );
 
 //*******************************************************************************
@@ -156,8 +152,8 @@ void WDRV_WINC_TIMEProcessAEC
     Configures the system time to the UTC value specified.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -196,8 +192,8 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeSetCurrent
     Requests the current system time which is returned via the callback provided.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle               - Client handle obtained by a call to WDRV_WINC_Open.

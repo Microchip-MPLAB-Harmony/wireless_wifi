@@ -42,6 +42,8 @@ Microchip or any third party.
 #ifndef WDRV_WINC_SNTP_H
 #define WDRV_WINC_SNTP_H
 
+#ifndef WDRV_WINC_MOD_DISABLE_SNTP
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: File includes
@@ -74,8 +76,8 @@ Microchip or any third party.
     Enables or disables the Network Time (NTP) client.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -114,8 +116,8 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
     Configures the NTP configuration mode to either DHCP or Static.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle  - Client handle obtained by a call to WDRV_WINC_Open.
@@ -154,8 +156,8 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPStaticSet
     Configures the address/name to be used as the NTP server.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
@@ -178,4 +180,5 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
     const char *pAddr
 );
 
+#endif /* WDRV_WINC_MOD_DISABLE_SNTP */
 #endif /* WDRV_WINC_SNTP_H */

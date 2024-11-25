@@ -51,77 +51,63 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
+// Section: WINC Driver Authentication Context Data Types
+// *****************************************************************************
+// *****************************************************************************
+
+/* Bits for 11i info. */
+#define DRV_WINC_11I_NONE           0x0000U
+#define DRV_WINC_PRIVACY            0x0001U     // Not 11i, but included here for convenience
+#define DRV_WINC_SKEY               0x0002U     // Not 11i, but included here for convenience
+#define DRV_WINC_11I_WEP            0x0004U
+#define DRV_WINC_11I_WEP104         0x0008U
+#define DRV_WINC_11I_WPAIE          0x0010U
+#define DRV_WINC_11I_RSNE           0x0020U
+#define DRV_WINC_11I_CCMP128        0x0040U
+#define DRV_WINC_11I_TKIP           0x0080U
+#define DRV_WINC_11I_BIPCMAC128     0x0100U
+#define DRV_WINC_11I_MFP_REQUIRED   0x0200U
+#define DRV_WINC_11I_1X             0x0400U
+#define DRV_WINC_11I_PSK            0x0800U
+#define DRV_WINC_11I_SAE            0x1000U
+#define DRV_WINC_11I_TD             0x2000U
+#define DRV_WINC_AP                 0x8000U     // Indicates whether the settings are intended for STA or AP mode
+#define DRV_WINC_RSNA_MASK          0x3FF0U     // Mask of bits linked to RSNA's
+
+// *****************************************************************************
+// *****************************************************************************
 // Section: WINC Driver Authentication Context Global Data
 // *****************************************************************************
 // *****************************************************************************
 
-/* Table to convert auth types to 11i info for DRV_WIFI_WID_11I_INFO. */
-static const WDRV_WINC_11I_MASK mapAuthTypeTo11i[] =
+/* Table to convert auth types to 11i info. */
+static const uint16_t mapAuthTypeTo11i[] =
 {
     /* WDRV_WINC_AUTH_TYPE_OPEN */
-    0,
-    /* WDRV_WINC_AUTH_TYPE_WEP */
-    WDRV_WINC_PRIVACY,
+    DRV_WINC_11I_NONE,
+    /* Gap 1 */
+    DRV_WINC_11I_NONE,
     /* WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_WPAIE | WDRV_WINC_11I_TKIP
-        | WDRV_WINC_11I_RSNE | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_PSK,
+    DRV_WINC_PRIVACY
+        | DRV_WINC_11I_WPAIE | DRV_WINC_11I_TKIP
+        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+        | DRV_WINC_11I_BIPCMAC128
+        | DRV_WINC_11I_PSK,
     /* WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_RSNE | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_PSK,
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
+    DRV_WINC_PRIVACY
+        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+        | DRV_WINC_11I_BIPCMAC128
+        | DRV_WINC_11I_PSK,
     /* WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_RSNE | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_PSK | WDRV_WINC_11I_SAE,
+    DRV_WINC_PRIVACY
+        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+        | DRV_WINC_11I_BIPCMAC128
+        | DRV_WINC_11I_PSK | DRV_WINC_11I_SAE,
     /* WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_RSNE | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128 | WDRV_WINC_11I_MFP_REQUIRED
-        | WDRV_WINC_11I_SAE,
-#else
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-    /* WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL */
-    0,
-    /* WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL */
-    0,
-#endif
-#endif
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-    /* WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_WPAIE
-        | WDRV_WINC_11I_RSNE
-        | WDRV_WINC_11I_TKIP
-        | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_1X,
-    /* WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_RSNE
-        | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_1X,
-    /* WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_RSNE
-        | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_1X,
-    /* WDRV_WINC_AUTH_TYPE_WPA3_ENTERPRISE */
-    WDRV_WINC_PRIVACY
-        | WDRV_WINC_11I_RSNE
-        | WDRV_WINC_11I_CCMP128
-        | WDRV_WINC_11I_BIPCMAC128
-        | WDRV_WINC_11I_MFP_REQUIRED
-        | WDRV_WINC_11I_1X
-        | WDRV_WINC_11I_TD,
-#endif
+    DRV_WINC_PRIVACY
+        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+        | DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED
+        | DRV_WINC_11I_SAE,
 };
 
 // *****************************************************************************
@@ -133,68 +119,11 @@ static const WDRV_WINC_11I_MASK mapAuthTypeTo11i[] =
 //*******************************************************************************
 /*
   Function:
-    bool authctxWEPKeyIsValid
-    (
-        uint8_t idx,
-        uint8_t *const pKey,
-        uint8_t size
-    )
-
-  Summary:
-    Checks if WEP key is valid.
-
-  Description:
-    Determines if the WEP key, index and size are valid.
-
-  Precondition:
-    None.
-
-  Parameters:
-    idx  - Key index.
-    pKey - Pointer to key.
-    size - Size of key.
-
-  Returns:
-    true or false indicating if WEP key information is valid.
-
-*/
-
-static bool authctxWEPKeyIsValid
-(
-    uint8_t idx,
-    uint8_t *const pKey,
-    uint8_t size
-)
-{
-    /* Check index. Index values 1-4 is only allowed*/
-    if ((idx < 1) || (idx > 4))
-    {
-        return false;
-    }
-    /* Check key. */
-    if (NULL == pKey)
-    {
-        return false;
-    }
-    /* Check size. */
-    if (
-            (WDRV_WINC_WEP_40_KEY_STRING_SIZE != size)
-        &&  (WDRV_WINC_WEP_104_KEY_STRING_SIZE != size)
-    )
-    {
-        return false;
-    }
-    return true;
-}
-
-//*******************************************************************************
-/*
-  Function:
     bool authctxPersonalKeyIsValid
     (
-        uint8_t *const pPassword,
+        const uint8_t *const pPassword,
         uint8_t size,
-        WDRV_WINC_11I_MASK dot11iInfo
+        uint16_t dot11iInfo
     )
 
   Summary:
@@ -218,9 +147,9 @@ static bool authctxWEPKeyIsValid
 
 static bool authctxPersonalKeyIsValid
 (
-    uint8_t *const pPassword,
+    const uint8_t *const pPassword,
     uint8_t size,
-    WDRV_WINC_11I_MASK dot11iInfo
+    uint16_t dot11iInfo
 )
 {
     /* Check password is present. */
@@ -232,7 +161,7 @@ static bool authctxPersonalKeyIsValid
     /* If password is to be used for SAE, we place the same upper limit on
      * length as for PSK passphrases. Note this is an implementation-specific
      * restriction, not an 802.11 (2016) restriction. */
-    if (dot11iInfo & WDRV_WINC_11I_SAE)
+    if (DRV_WINC_11I_NONE != (dot11iInfo & DRV_WINC_11I_SAE))
     {
         if (WDRV_WINC_MAX_PSK_PASSWORD_LEN < size)
         {
@@ -240,13 +169,13 @@ static bool authctxPersonalKeyIsValid
         }
     }
 
-    if (dot11iInfo & WDRV_WINC_11I_PSK)
+    if (DRV_WINC_11I_NONE != (dot11iInfo & DRV_WINC_11I_PSK))
     {
         /* Determine if this is a password or direct PSK. */
         if (WDRV_WINC_PSK_LEN == size)
         {
             /* PSK. */
-            while (size--)
+            while (0U != (size--))
             {
                 char character = (char)(pPassword[size]);
 
@@ -274,11 +203,9 @@ static bool authctxPersonalKeyIsValid
             }
 
             /* Each character must be in the range 0x20 to 0x7e. */
-            while (size--)
+            while (0U != (size--))
             {
-                char character = (char)(pPassword[size]);
-
-                if ((0x20 > character) || (0x7e < character))
+                if ((0x20U > pPassword[size]) || (0x7eU < pPassword[size]))
                 {
                     return false;
                 }
@@ -291,10 +218,10 @@ static bool authctxPersonalKeyIsValid
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_11I_MASK WDRV_WINC_AuthGet11iMask
+    uint16_t authctxGet11iMask
     (
         WDRV_WINC_AUTH_TYPE authType,
-        WDRV_WINC_AUTH_MOD_MASK authMod
+        uint8_t authMod
     )
 
   Summary:
@@ -302,101 +229,57 @@ static bool authctxPersonalKeyIsValid
 
   Description:
 
-  Remarks:
-    See wdrv_winc_authctx.h for usage information.
+  Precondition:
+    None.
 
+  Parameters:
+    authType - Auth type to convert.
+    authMod  - Modifiers to the authentication type.
+
+  Returns:
+    11i info mapped from auth type and modifiers.
 */
 
-WDRV_WINC_11I_MASK WDRV_WINC_AuthGet11iMask
+static uint16_t authctxGet11iMask
 (
     WDRV_WINC_AUTH_TYPE authType,
-    WDRV_WINC_AUTH_MOD_MASK authMod
+    uint8_t authMod
 )
 {
-    WDRV_WINC_11I_MASK dot11iInfo;
+    uint16_t dot11iInfo;
 
-    if (authType >= WDRV_WINC_AUTH_TYPE_MAX)
+    if ((authType >= WDRV_WINC_AUTH_TYPE_MAX) || (authType <= WDRV_WINC_AUTH_TYPE_DEFAULT))
     {
-        return 0;
+        return DRV_WINC_11I_NONE;
     }
 
     /* Convert auth type to 11i info. */
     dot11iInfo = mapAuthTypeTo11i[authType];
 
     /* Apply any relevant modifiers. */
-    if (authMod & WDRV_WINC_AUTH_MOD_MFP_REQ)
+    if (WDRV_WINC_AUTH_MOD_NONE != (authMod & WDRV_WINC_AUTH_MOD_MFP_REQ))
     {
         if (
                 (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
             ||  (WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL == authType)
-#endif
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-            ||  (WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE == authType)
-            ||  (WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE == authType)
-#endif
         )
         {
-            dot11iInfo |= WDRV_WINC_11I_BIPCMAC128 | WDRV_WINC_11I_MFP_REQUIRED;
+            dot11iInfo |= DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED;
         }
     }
-    else if (authMod & WDRV_WINC_AUTH_MOD_MFP_OFF)
+    else if (WDRV_WINC_AUTH_MOD_NONE != (authMod & WDRV_WINC_AUTH_MOD_MFP_OFF))
     {
         if (
                 (WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL == authType)
             ||  (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-            ||  (WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE == authType)
-            ||  (WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE == authType)
-#endif
         )
         {
-            dot11iInfo &= ~WDRV_WINC_11I_BIPCMAC128;
+            dot11iInfo &= (0xffffU ^ DRV_WINC_11I_BIPCMAC128);
         }
     }
-
-    if (authMod & WDRV_WINC_AUTH_MOD_SHARED_KEY)
+    else
     {
-        if (WDRV_WINC_AUTH_TYPE_WEP == authType)
-        {
-            dot11iInfo |= WDRV_WINC_SKEY;
-        }
-    }
-
-    if (authMod & (WDRV_WINC_AUTH_MOD_AP_TD))
-    {
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
-        if (
-                (WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL == authType)
-            ||  (WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL == authType)
-        )
-        {
-            dot11iInfo |= WDRV_WINC_11I_TD;
-        }
-#endif
-    }
-
-    if (authMod & (WDRV_WINC_AUTH_MOD_STA_TD))
-    {
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
-        if (dot11iInfo & WDRV_WINC_11I_SAE)
-        {
-            dot11iInfo |= WDRV_WINC_11I_MFP_REQUIRED;
-            dot11iInfo |= WDRV_WINC_11I_TD;
-            dot11iInfo &= ~WDRV_WINC_11I_PSK;
-        }
-#endif
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-        if (
-                (dot11iInfo & WDRV_WINC_11I_1X)
-            &&  (dot11iInfo & WDRV_WINC_11I_BIPCMAC128)
-        )
-        {
-            dot11iInfo |= WDRV_WINC_11I_MFP_REQUIRED;
-            dot11iInfo |= WDRV_WINC_11I_TD;
-            dot11iInfo &= ~DRV_WINC_11I_TKIP;
-        }
-#endif
+        /* Do Nothing. */
     }
 
     return dot11iInfo;
@@ -420,6 +303,8 @@ WDRV_WINC_11I_MASK WDRV_WINC_AuthGet11iMask
 
 bool WDRV_WINC_AuthCtxIsValid(const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx)
 {
+    bool retVal = true;
+
     /* Ensure authentication context is valid. */
     if (NULL == pAuthCtx)
     {
@@ -434,35 +319,19 @@ bool WDRV_WINC_AuthCtxIsValid(const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx)
             break;
         }
 
-        /* Check WEP authentication. */
-        case WDRV_WINC_AUTH_TYPE_WEP:
-        {
-            if (false == authctxWEPKeyIsValid(
-                    pAuthCtx->authInfo.WEP.idx,
-                    (uint8_t *const)(pAuthCtx->authInfo.WEP.key),
-                    pAuthCtx->authInfo.WEP.size
-            ))
-            {
-                return false;
-            }
-            break;
-        }
-
         /* Check Personal authentication. */
         case WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL:
         case WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL:
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
         case WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL:
         case WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL:
-#endif
         {
             if (false == authctxPersonalKeyIsValid(
-                    (uint8_t *const)(pAuthCtx->authInfo.personal.password),
+                    pAuthCtx->authInfo.personal.password,
                     pAuthCtx->authInfo.personal.size,
-                    WDRV_WINC_AuthGet11iMask(pAuthCtx->authType, pAuthCtx->authMod)
+                    authctxGet11iMask(pAuthCtx->authType, pAuthCtx->authMod)
             ))
             {
-                return false;
+                retVal = false;
             }
             break;
         }
@@ -470,11 +339,12 @@ bool WDRV_WINC_AuthCtxIsValid(const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx)
         default:
         {
             /* Unknown authentication scheme. */
-            return false;
+            retVal = false;
+            break;
         }
     }
 
-    return true;
+    return retVal;
 }
 
 //*******************************************************************************
@@ -507,7 +377,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetDefaults
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    memset(pAuthCtx, 0, sizeof(WDRV_WINC_AUTH_CONTEXT));
+    (void)memset(pAuthCtx, 0, sizeof(WDRV_WINC_AUTH_CONTEXT));
 
     /* Ensure authentication type is a known invalid type. */
     pAuthCtx->authType = WDRV_WINC_AUTH_TYPE_DEFAULT;
@@ -558,68 +428,6 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWEP
-    (
-        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-        uint8_t idx,
-        uint8_t *pKey,
-        uint8_t size
-    )
-
-  Summary:
-    Configure an authentication context for WEP authentication.
-
-  Description:
-    The auth type and information are configured appropriately for WEP
-      authentication.
-
-  Remarks:
-    See wdrv_winc_authctx.h for usage information.
-
-*/
-
-WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWEP
-(
-    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-    uint8_t idx,
-    uint8_t *const pKey,
-    uint8_t size
-)
-{
-    /* Ensure authentication context is valid. */
-    if ((NULL == pAuthCtx) || (NULL == pKey))
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Ensure the index and key are valid. */
-    if (false == authctxWEPKeyIsValid(idx, pKey, size))
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Set authentication type to WEP. */
-    pAuthCtx->authType = WDRV_WINC_AUTH_TYPE_WEP;
-
-    /* Initialise Shared Key authentication to disabled.                     */
-    /* The Application may enable Shared Key later if desired via            */
-    /* WDRV_WINC_AuthCtxSharedKey.                                       */
-    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_SHARED_KEY;
-
-    /* Set key index and size. */
-    pAuthCtx->authInfo.WEP.idx  = idx;
-    pAuthCtx->authInfo.WEP.size = size;
-
-    /* Copy WEP key and ensure zero terminated. */
-    memcpy(&pAuthCtx->authInfo.WEP.key, pKey, size);
-    pAuthCtx->authInfo.WEP.key[size] = '\0';
-
-    return WDRV_WINC_STATUS_OK;
-}
-
-//*******************************************************************************
-/*
-  Function:
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
@@ -649,7 +457,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     WDRV_WINC_AUTH_TYPE authType
 )
 {
-    WDRV_WINC_11I_MASK dot11iInfo;
+    uint16_t dot11iInfo;
 
     /* Ensure authentication context is valid. */
     if ((NULL == pAuthCtx) || (NULL == pPassword))
@@ -659,19 +467,14 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
 
     if (WDRV_WINC_AUTH_TYPE_DEFAULT == authType)
     {
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
         /* Set authentication type to WPA2/WPA3 transition mode. */
         authType = WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL;
-#else
-        /* Set authentication type to WPA2. */
-        authType = WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL;
-#endif
     }
 
-    dot11iInfo = WDRV_WINC_AuthGet11iMask(authType, WDRV_WINC_AUTH_MOD_NONE);
+    dot11iInfo = authctxGet11iMask(authType, WDRV_WINC_AUTH_MOD_NONE);
 
     /* Ensure the requested auth type is valid for Personal authentication. */
-    if (!(dot11iInfo & (WDRV_WINC_11I_PSK | WDRV_WINC_11I_SAE)))
+    if (!(dot11iInfo & (DRV_WINC_11I_PSK | DRV_WINC_11I_SAE)))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -688,22 +491,84 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     /* Initialise the MFP configuration to WDRV_WINC_AUTH_MFP_ENABLED.   */
     /* The Application may change the configuration later if desired via     */
     /* WDRV_WINC_AuthCtxConfigureMfp.                                    */
-    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_MFP_REQ;
-    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_MFP_OFF;
-
-    /* Initialise the TD configuration to not enabled.                       */
-    /* The Application may change the configuration later if desired via     */
-    /* WDRV_WINC_AuthCtxApTransitionDisable or                           */
-    /* WDRV_WINC_AuthCtxStaTransitionDisable.                            */
-    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_AP_TD;
-    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_STA_TD;
+    pAuthCtx->authMod &= (0xffu^WDRV_WINC_AUTH_MOD_MFP_REQ);
+    pAuthCtx->authMod &= (0xffu^WDRV_WINC_AUTH_MOD_MFP_OFF);
 
     /* Copy the key and zero out unused parts of the buffer. */
     pAuthCtx->authInfo.personal.size = size;
-    memset( pAuthCtx->authInfo.personal.password,
+    (void)memset( pAuthCtx->authInfo.personal.password,
             0,
             sizeof(pAuthCtx->authInfo.personal.password));
-    memcpy(pAuthCtx->authInfo.personal.password, pPassword, size);
+    (void)memcpy(pAuthCtx->authInfo.personal.password, pPassword, size);
 
     return WDRV_WINC_STATUS_OK;
 }
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        WDRV_WINC_AUTH_MFP_CONFIG config
+    )
+
+  Summary:
+    Set the Management Frame Protection configuration of an authentication
+      context.
+
+  Description:
+    The authentication context is updated with the Management Frame Protection
+      configuration specified in the config parameter.
+
+  Remarks:
+    See wdrv_winc_authctx.h for usage information.
+*/
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    WDRV_WINC_AUTH_MFP_CONFIG config
+)
+{
+    WDRV_WINC_STATUS status = WDRV_WINC_STATUS_OK;
+
+    /* Ensure authentication context is valid. */
+    if (NULL == pAuthCtx)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Update the authentication context. */
+    switch (config)
+    {
+        case WDRV_WINC_AUTH_MFP_ENABLED:
+        {
+            pAuthCtx->authMod &= (0xffu^WDRV_WINC_AUTH_MOD_MFP_REQ);
+            pAuthCtx->authMod &= (0xffu^WDRV_WINC_AUTH_MOD_MFP_OFF);
+            break;
+        }
+
+        case WDRV_WINC_AUTH_MFP_REQUIRED:
+        {
+            pAuthCtx->authMod |= WDRV_WINC_AUTH_MOD_MFP_REQ;
+            pAuthCtx->authMod &= (0xffu^WDRV_WINC_AUTH_MOD_MFP_OFF);
+            break;
+        }
+
+        case WDRV_WINC_AUTH_MFP_DISABLED:
+        {
+            pAuthCtx->authMod &= (0xffu^WDRV_WINC_AUTH_MOD_MFP_REQ);
+            pAuthCtx->authMod |= WDRV_WINC_AUTH_MOD_MFP_OFF;
+            break;
+        }
+
+        default:
+        {
+            status = WDRV_WINC_STATUS_INVALID_ARG;
+            break;
+        }
+    }
+
+    return status;
+}
+

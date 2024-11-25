@@ -149,13 +149,13 @@ typedef struct
 } WINC_SEND_REQ_STATE;
 
 /* Flag indicating the command request status has been received. */
-#define WINC_FLAG_STATUS_RCVD       0x20
+#define WINC_FLAG_STATUS_RCVD       0x20U
 
 /* Flag indicating this forms the first element of a burst. */
-#define WINC_FLAG_FIRST_IN_BURST    0x40
+#define WINC_FLAG_FIRST_IN_BURST    0x40U
 
 /* Flag indicating this forms the last element of a burst. */
-#define WINC_FLAG_LAST_IN_BURST     0x80
+#define WINC_FLAG_LAST_IN_BURST     0x80U
 
 /*****************************************************************************
                      WINC Command Request Module API

@@ -30,8 +30,11 @@ Microchip or any third party.
 #include "winc_cmd_req.h"
 #include "winc_debug.h"
 
-#define WINC_DEV_NUM_AEC_CB_ENTRIES             15
-#define WINC_DEV_NUM_MOD_REQS_COUNTERS          15
+#ifndef WINC_DEV_NUM_AEC_CB_ENTRIES
+#define WINC_DEV_NUM_AEC_CB_ENTRIES             5U
+#endif
+
+#define WINC_DEV_NUM_MOD_REQS_COUNTERS          15U
 
 typedef enum
 {
@@ -79,23 +82,43 @@ typedef struct
     WINC_SEND_REQ_STATE             *pSendReqState;
     WINC_DEV_EVENT_CTX              eventCtx;
     WINC_DEV_AEC_CB_ENTRY           aecCallbackTable[WINC_DEV_NUM_AEC_CB_ENTRIES];
+    WINC_DEV_RX_INTERCEPT_CB        pfIinterceptCallback;
+    uintptr_t                       interceptCallbackCtx;
     struct
     {
         uint8_t                     modId;
         uint8_t                     count;
     } modReqCount[WINC_DEV_NUM_MOD_REQS_COUNTERS];
+
+    WINC_CONF_LOCK_STORAGE(accessMutex);
 } WINC_DEV_CTRL_CTX;
 
 static WINC_DEV_CTRL_CTX wincDevCtrlCtx = {.isInit = false};
 
 WINC_DEBUG_PRINTF_FP pfWINCDevDebugPrintf = NULL;
 
+/*****************************************************************************
+  Description:
+    Update module request counters.
+
+  Parameters:
+    pCtrlCtx - Pointer to the device control context
+    modId    - Module ID
+    insert   - Flag indicate if request is inserted or removed
+
+  Returns:
+    The updated module count.
+
+  Remarks:
+
+ *****************************************************************************/
+
 static uint8_t devModReqCountUpdate(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t modId, bool insert)
 {
-    int modIdx = 0;
+    unsigned int modIdx = 0;
     int firstEmptyIdx = -1;
 
-    if ((NULL == pCtrlCtx) || (0 == modId))
+    if ((NULL == pCtrlCtx) || (0U == modId))
     {
         return 0;
     }
@@ -106,9 +129,13 @@ static uint8_t devModReqCountUpdate(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t modId, 
         {
             break;
         }
-        else if ((-1 == firstEmptyIdx) && (0 == pCtrlCtx->modReqCount[modIdx].modId))
+        else if ((-1 == firstEmptyIdx) && (0U == pCtrlCtx->modReqCount[modIdx].modId))
         {
-            firstEmptyIdx = modIdx;
+            firstEmptyIdx = (int)modIdx;
+        }
+        else
+        {
+            /* Do nothing. */
         }
     }
 
@@ -121,13 +148,13 @@ static uint8_t devModReqCountUpdate(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t modId, 
                 return 0;
             }
 
-            modIdx = firstEmptyIdx;
+            modIdx = (unsigned)firstEmptyIdx;
 
             pCtrlCtx->modReqCount[modIdx].modId = modId;
             pCtrlCtx->modReqCount[modIdx].count = 0;
         }
 
-        if (pCtrlCtx->modReqCount[modIdx].count < 255)
+        if (pCtrlCtx->modReqCount[modIdx].count < 255U)
         {
             pCtrlCtx->modReqCount[modIdx].count++;
         }
@@ -139,16 +166,17 @@ static uint8_t devModReqCountUpdate(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t modId, 
             return 0;
         }
 
-        if (pCtrlCtx->modReqCount[modIdx].count > 0)
+        if (pCtrlCtx->modReqCount[modIdx].count > 0U)
         {
             pCtrlCtx->modReqCount[modIdx].count--;
         }
 
-        if (0 == pCtrlCtx->modReqCount[modIdx].count)
+        if (0U == pCtrlCtx->modReqCount[modIdx].count)
         {
             pCtrlCtx->modReqCount[modIdx].modId = 0;
         }
     }
+#if defined(WINC_DEBUG_LEVEL) && defined(WINC_DEBUG_TYPE_VERBOSE)
 #if (WINC_DEBUG_LEVEL >= WINC_DEBUG_TYPE_VERBOSE)
     int i;
 
@@ -158,6 +186,7 @@ static uint8_t devModReqCountUpdate(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t modId, 
         WINC_VERBOSE_PRINT("[%d:%d]", pCtrlCtx->modReqCount[i].modId, pCtrlCtx->modReqCount[i].count);
     }
     WINC_VERBOSE_PRINT("\n");
+#endif
 #endif
     return pCtrlCtx->modReqCount[modIdx].count;
 }
@@ -182,7 +211,7 @@ static uint8_t devModReqCountUpdate(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t modId, 
 static bool devUnpackResponseElements(WINC_COMMAND_RESPONSE *pCmdRsp, WINC_DEV_EVENT_RSP_ELEMS *pElems)
 {
     WINC_RSP_ELEMENTS *pRspElems;
-    int i;
+    uint8_t i;
 
     if ((NULL == pCmdRsp) || (NULL == pElems))
     {
@@ -195,7 +224,7 @@ static bool devUnpackResponseElements(WINC_COMMAND_RESPONSE *pCmdRsp, WINC_DEV_E
 
     pElems->numElems = pRspElems->numTlvs;
 
-    if (WINC_COMMAND_MSG_TYPE_AEC == pCmdRsp->msgType)
+    if (WINC_COMMAND_MSG_TYPE_AEC == (WINC_COMMAND_MSG_TYPE)pCmdRsp->msgType)
     {
         WINC_TRACE_PRINT("AEC %04x Num=%d\n", pElems->rspId, pElems->numElems);
     }
@@ -237,8 +266,7 @@ static bool devUnpackResponseElements(WINC_COMMAND_RESPONSE *pCmdRsp, WINC_DEV_E
 static bool devPreparePendingCmdReq(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_SEND_REQ_STATE *pSendReqState)
 {
     WINC_SEND_REQ_HDR_ELEM *pReqHdr;
-    WINC_COMMAND_REQUEST *pCmdReq;
-    int i;
+    uint8_t i;
 
     if ((NULL == pCtrlCtx) || (NULL == pSendReqState))
     {
@@ -254,7 +282,7 @@ static bool devPreparePendingCmdReq(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_SEND_REQ_S
     pSendReqState->pPtr      = pSendReqState->pFirstHdrElem->pPtr;
     pSendReqState->numErrors = 0;
 
-    if (0 == pSendReqState->numCmds)
+    if (0U == pSendReqState->numCmds)
     {
         return false;
     }
@@ -263,9 +291,11 @@ static bool devPreparePendingCmdReq(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_SEND_REQ_S
 
     for (i=0; i<pSendReqState->numCmds; i++)
     {
+        WINC_COMMAND_REQUEST *pCmdReq;
+
         /* Advance to the next request header related to the command header. */
 
-        while (0 == (pReqHdr->flags & WINC_FLAG_FIRST_IN_BURST))
+        while (0U == (pReqHdr->flags & WINC_FLAG_FIRST_IN_BURST))
         {
             pReqHdr++;
         }
@@ -274,14 +304,14 @@ static bool devPreparePendingCmdReq(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_SEND_REQ_S
 
         pCmdReq = (WINC_COMMAND_REQUEST*)pReqHdr->pPtr;
 
-        pCmdReq->seqNum_h  = pCtrlCtx->nextSeqNum >> 8;
-        pCmdReq->seqNum_l  = pCtrlCtx->nextSeqNum & 0xff;
+        pCmdReq->seqNum_h = (uint8_t)(pCtrlCtx->nextSeqNum >> 8);
+        pCmdReq->seqNum_l = (uint8_t)(pCtrlCtx->nextSeqNum & 0xffU);
 
-        WINC_VERBOSE_PRINT("Assign SN=%04x to %08x\n", pCtrlCtx->nextSeqNum, pCmdReq);
+        WINC_TRACE_PRINT("Assign SN=%04x to %08x\n", pCtrlCtx->nextSeqNum, pCmdReq);
 
         pCtrlCtx->nextSeqNum++;
 
-        devModReqCountUpdate(pCtrlCtx, pCmdReq->id_h, true);
+        (void)devModReqCountUpdate(pCtrlCtx, pCmdReq->id_h, true);
 
         pReqHdr++;
     }
@@ -308,7 +338,6 @@ static void devFlushPendingCmdReqQueue(WINC_DEV_CTRL_CTX *pCtrlCtx)
 {
     WINC_CMD_REQ_HANDLE cmdReq;
     WINC_SEND_REQ_STATE *pSendReqState;
-    WINC_CMD_REQ_HANDLE nextCmdReq;
 
     if (NULL == pCtrlCtx)
     {
@@ -319,6 +348,8 @@ static void devFlushPendingCmdReqQueue(WINC_DEV_CTRL_CTX *pCtrlCtx)
 
     while (WINC_CMD_REQ_INVALID_HANDLE != cmdReq)
     {
+        WINC_CMD_REQ_HANDLE nextCmdReq;
+
         pSendReqState = (WINC_SEND_REQ_STATE*)cmdReq;
 
         nextCmdReq = pSendReqState->nextCmdReq;
@@ -330,10 +361,14 @@ static void devFlushPendingCmdReqQueue(WINC_DEV_CTRL_CTX *pCtrlCtx)
             eventCompleteArgs.numCmds   = pSendReqState->numCmds;
             eventCompleteArgs.numErrors = pSendReqState->numCmds;
 
+            WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
             pSendReqState->pfCmdRspCallback(pSendReqState->cmdRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, (WINC_CMD_REQ_HANDLE)pSendReqState, WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE, (uintptr_t)&eventCompleteArgs);
+            if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+            {
+            }
         }
 
-        WINC_VERBOSE_PRINT("CmdReq %08x flushed, moving to %08x\n", pSendReqState, nextCmdReq);
+        WINC_TRACE_PRINT("CmdReq %08x flushed, moving to %08x\n", pSendReqState, nextCmdReq);
 
         cmdReq = nextCmdReq;
     }
@@ -376,9 +411,9 @@ static bool devProcessPendingCmdReqQueue(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_SEND_
 
     /* Construct message to device: | TX_REQ | No. of cmds | Size of first msg | */
 
-    message = (WINC_DEV_EVENT_TX_REQ << 24) | (pSendReqState->numCmds << 16);
+    message = ((uint32_t)WINC_DEV_EVENT_TX_REQ << 24) | (((uint32_t)pSendReqState->numCmds) << 16);
 
-    if (pSendReqState->numCmds > 1)
+    if (pSendReqState->numCmds > 1U)
     {
         uint32_t csaPtr = 0x00000000;
 
@@ -454,17 +489,12 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
     WINC_COMMAND_RESPONSE *pCmdRsp;
     uint16_t rspCmdId;
     uint16_t seqNum;
-    int i;
-    WINC_SEND_REQ_STATE *pSendReqState;
+    uint8_t i;
 
     if ((NULL == pCtrlCtx) || (NULL == pMsg) || (msgLength < WINC_CMD_RSP_HDR_SIZE))
     {
         return;
     }
-
-    /* Setup pointer to current head command request burst. */
-
-    pSendReqState = (WINC_SEND_REQ_STATE*)pCtrlCtx->cmdReqQueue;
 
     /* Setup pointer to decode the response header. */
 
@@ -477,14 +507,26 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
 
     WINC_TRACE_PRINT("Message type %d received, length=%d, ID=%04x, SN=%04x\n", pCmdRsp->msgType, msgLength, rspCmdId, seqNum);
 
-    if ((WINC_COMMAND_MSG_TYPE_STATUS == pCmdRsp->msgType) || (WINC_COMMAND_MSG_TYPE_RSP == pCmdRsp->msgType))
+    if (NULL != pCtrlCtx->pfIinterceptCallback)
     {
+        WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
+
+        pCtrlCtx->pfIinterceptCallback(pCtrlCtx->interceptCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, pCmdRsp->msgType, pMsg, msgLength);
+
+        if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+        {
+        }
+    }
+
+    if ((WINC_COMMAND_MSG_TYPE_STATUS == (WINC_COMMAND_MSG_TYPE)pCmdRsp->msgType) || (WINC_COMMAND_MSG_TYPE_RSP == (WINC_COMMAND_MSG_TYPE)pCmdRsp->msgType))
+    {
+        WINC_SEND_REQ_STATE *pSendReqState;
         WINC_SEND_REQ_HDR_ELEM *pReqHdr;
-        int numStatus = 0;
+        uint8_t numStatus = 0;
 
         /* Ensure a minimum length has been passed in to be able to process the header. */
 
-        if (WINC_COMMAND_MSG_TYPE_STATUS == pCmdRsp->msgType)
+        if (WINC_COMMAND_MSG_TYPE_STATUS == (WINC_COMMAND_MSG_TYPE)pCmdRsp->msgType)
         {
             if (msgLength < WINC_CMD_RSP_STATUS_LEN)
             {
@@ -498,6 +540,10 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
                 return;
             }
         }
+
+        /* Setup pointer to current head command request burst. */
+
+        pSendReqState = (WINC_SEND_REQ_STATE*)pCtrlCtx->cmdReqQueue;
 
         /* Ensure there is a command request burst to check against. */
 
@@ -514,7 +560,7 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
         {
             /* Advance to the next request header related to the command header. */
 
-            while (0 == (pReqHdr->flags & WINC_FLAG_FIRST_IN_BURST))
+            while (0U == (pReqHdr->flags & WINC_FLAG_FIRST_IN_BURST))
             {
                 pReqHdr++;
             }
@@ -529,25 +575,25 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
             /* Status responses replace their corresponding command requests within
              the burst, so ignore them when looking for a matching request. */
 
-            if (WINC_COMMAND_MSG_TYPE_STATUS == pReqHdr->pPtr[0])
+            if (WINC_COMMAND_MSG_TYPE_STATUS == (WINC_COMMAND_MSG_TYPE)pReqHdr->pPtr[0])
             {
                 /* Count the number of command requests with previously received
                  responses, to determine when all requests have been acknowledged. */
 
                 numStatus++;
             }
-            else if (WINC_COMMAND_MSG_TYPE_REQ == pReqHdr->pPtr[0])
+            else if (WINC_COMMAND_MSG_TYPE_REQ == (WINC_COMMAND_MSG_TYPE)pReqHdr->pPtr[0])
             {
                 pCmdReq = (WINC_COMMAND_REQUEST*)pReqHdr->pPtr;
 
                 /* Command requests and responses share the same header format for
                  ID and sequence number, so a simple compare can be used to match them. */
 
-                if (0 == memcmp(&pReqHdr->pPtr[1], &pMsg[1], WINC_CMD_RSP_HDR_SIZE-1))
+                if (0 == memcmp(&pReqHdr->pPtr[1], &pMsg[1], WINC_CMD_RSP_HDR_SIZE-1U))
                 {
-                    WINC_VERBOSE_PRINT("Match found on command %d\n", i);
+                    WINC_TRACE_PRINT("Match found on command %d\n", i);
 
-                    if (WINC_COMMAND_MSG_TYPE_STATUS == pCmdRsp->msgType)
+                    if (WINC_COMMAND_MSG_TYPE_STATUS == (WINC_COMMAND_MSG_TYPE)pCmdRsp->msgType)
                     {
                         /* The message is a status response, this completes a command request. */
 
@@ -562,7 +608,7 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
                          the request header but leaves the parameters intact incase they are
                          needed in the callback. */
 
-                        memcpy(pReqHdr->pPtr, pMsg, WINC_CMD_RSP_STATUS_LEN);
+                        (void)memcpy(pReqHdr->pPtr, pMsg, WINC_CMD_RSP_STATUS_LEN);
 
                         /* Update the request header to reflect the new length and flag
                          that the status has been received. */
@@ -579,7 +625,7 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
                             pSendReqState->numErrors++;
                         }
 
-                        devModReqCountUpdate(pCtrlCtx, rspCmdId>>8, false);
+                        (void)devModReqCountUpdate(pCtrlCtx, (uint8_t)(rspCmdId>>8), false);
 
                         WINC_TRACE_PRINT("Status %04x %04x in CMD(%d), SN=%04x\n", pSendReqState->cmds[i].rsp.status, rspCmdId, i, seqNum);
 
@@ -597,7 +643,11 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
                             eventStatusArgs.srcCmd.numParams = numParams;
                             eventStatusArgs.srcCmd.pParams   = pCmdReq->params;
 
+                            WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
                             pSendReqState->pfCmdRspCallback(pSendReqState->cmdRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, (WINC_CMD_REQ_HANDLE)pSendReqState, WINC_DEV_CMDREQ_EVENT_CMD_STATUS, (uintptr_t)&eventStatusArgs);
+                            if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+                            {
+                            }
                         }
 
                         /* Count the new status response in the burst total. */
@@ -622,10 +672,14 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
                                 eventCompleteArgs.numCmds   = pSendReqState->numCmds;
                                 eventCompleteArgs.numErrors = pSendReqState->numErrors;
 
+                                WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
                                 pSendReqState->pfCmdRspCallback(pSendReqState->cmdRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, (WINC_CMD_REQ_HANDLE)pSendReqState, WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE, (uintptr_t)&eventCompleteArgs);
+                                if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+                                {
+                                }
                             }
 
-                            WINC_VERBOSE_PRINT("CmdReq %08x retired, moving to %08x\n", pSendReqState, nextCmdReq);
+                            WINC_TRACE_PRINT("CmdReq %08x retired, moving to %08x\n", pSendReqState, nextCmdReq);
 
                             /* Detach the memory of the current complete burst, move on
                              to the next one in the queue. */
@@ -647,37 +701,53 @@ static void devDecodeResponseMsg(WINC_DEV_CTRL_CTX *pCtrlCtx, uint8_t *pMsg, siz
                         eventRspElems.srcCmd.numParams  = pCmdReq->numParams;
                         eventRspElems.srcCmd.pParams    = pCmdReq->params;
 
-                        devUnpackResponseElements(pCmdRsp, &eventRspElems);
+                        (void)devUnpackResponseElements(pCmdRsp, &eventRspElems);
 
                         if (NULL != pSendReqState->pfCmdRspCallback)
                         {
+                            WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
                             pSendReqState->pfCmdRspCallback(pSendReqState->cmdRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, (WINC_CMD_REQ_HANDLE)pSendReqState, WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED, (uintptr_t)&eventRspElems);
+                            if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+                            {
+                            }
                         }
                     }
 
                     break;
                 }
             }
+            else
+            {
+            }
 
             pReqHdr++;
         }
     }
-    else if (WINC_COMMAND_MSG_TYPE_AEC == pCmdRsp->msgType)
+    else if (WINC_COMMAND_MSG_TYPE_AEC == (WINC_COMMAND_MSG_TYPE)pCmdRsp->msgType)
     {
         /* AECs are passed to the application layer, the response elements are
          passed to all registered AEC callback handlers. */
 
         WINC_DEV_EVENT_RSP_ELEMS eventRspElems;
 
-        memset(&eventRspElems, 0, sizeof(eventRspElems));
-
-        devUnpackResponseElements(pCmdRsp, &eventRspElems);
-
-        for (i=0; i<WINC_DEV_NUM_AEC_CB_ENTRIES; i++)
+        if (NULL == pCtrlCtx->pfIinterceptCallback)
         {
-            if (NULL != pCtrlCtx->aecCallbackTable[i].pfAecRspCallback)
+            (void)memset(&eventRspElems, 0, sizeof(eventRspElems));
+
+            (void)devUnpackResponseElements(pCmdRsp, &eventRspElems);
+
+            for (i=0; i<WINC_DEV_NUM_AEC_CB_ENTRIES; i++)
             {
-                pCtrlCtx->aecCallbackTable[i].pfAecRspCallback(pCtrlCtx->aecCallbackTable[i].aecRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, &eventRspElems);
+                if (NULL != pCtrlCtx->aecCallbackTable[i].pfAecRspCallback)
+                {
+                    WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
+
+                    pCtrlCtx->aecCallbackTable[i].pfAecRspCallback(pCtrlCtx->aecCallbackTable[i].aecRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, &eventRspElems);
+
+                    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+                    {
+                    }
+                }
             }
         }
     }
@@ -718,7 +788,7 @@ static bool devProcessTransmitReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVE
         return false;
     }
 
-    if ((0 == pEvent->number) || (0 == pEvent->length))
+    if ((0U == pEvent->number) || (0U == pEvent->length))
     {
         return false;
     }
@@ -726,14 +796,14 @@ static bool devProcessTransmitReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVE
     /* Send the next request header data block to the device, lengths are aligned to
      32-bits. */
 
-    pEvent->txReq.pSendReqHdr->length = (pEvent->txReq.pSendReqHdr->length + 3) & ~3;
+    pEvent->txReq.pSendReqHdr->length = (uint16_t)((pEvent->txReq.pSendReqHdr->length + 3U) & ~0x0003U);
 
-    WINC_VERBOSE_PRINT("R: %08x %08x %d %d\n", pEvent->txReq.pSendReqHdr, pEvent->txReq.pSendReqHdr->pPtr, pEvent->txReq.pSendReqHdr->length, pEvent->length);
+    WINC_TRACE_PRINT("R: %08x %08x %d %d\n", pEvent->txReq.pSendReqHdr, pEvent->txReq.pSendReqHdr->pPtr, pEvent->txReq.pSendReqHdr->length, pEvent->length);
     cmd53Status = WINC_SDIOCmd53Write(WINC_SDIOREG_FN1_DATA, pEvent->txReq.pSendReqHdr->pPtr, pEvent->txReq.pSendReqHdr->length, false);
     if (WINC_SDIO_R1RSP_OK != cmd53Status)
     {
-        WINC_ERROR_PRINT("error, msg(%d) CMD53 write failed, status=0x%04x\n", (pEvent->rxReq.pMsgLengths-(uint32_t*)pCtrlCtx->pReceiveBuffer), cmd53Status);
-        memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+        WINC_ERROR_PRINT("error, msg(%d) CMD53 write failed, status=0x%04x\n", (pEvent->rxReq.pMsgLengths-(uint32_t*)(void*)pCtrlCtx->pReceiveBuffer), cmd53Status);
+        (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
         pCtrlCtx->busError = true;
         devFlushPendingCmdReqQueue(pCtrlCtx);
         return false;
@@ -759,17 +829,21 @@ static bool devProcessTransmitReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVE
         {
             if (NULL != pSendReqState->pfCmdRspCallback)
             {
+                WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
                 pSendReqState->pfCmdRspCallback(pSendReqState->cmdRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, pEvent->txReq.cmdReqHandle, WINC_DEV_CMDREQ_EVENT_TX_COMPLETE, 0);
+                if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+                {
+                }
             }
 
-            memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+            (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
 
-            WINC_VERBOSE_PRINT("CmdReq %08x complete, moving to %08x\n", pSendReqState, pSendReqState->nextCmdReq);
+            WINC_TRACE_PRINT("CmdReq %08x complete, moving to %08x\n", pSendReqState, pSendReqState->nextCmdReq);
 
-            devProcessPendingCmdReqQueue(pCtrlCtx, (WINC_SEND_REQ_STATE*)pSendReqState->nextCmdReq);
+            (void)devProcessPendingCmdReqQueue(pCtrlCtx, (WINC_SEND_REQ_STATE*)pSendReqState->nextCmdReq);
         }
     }
-    else if (0 == pEvent->number)
+    else if (0U == pEvent->number)
     {
         WINC_SEND_REQ_STATE *pSendReqState = (WINC_SEND_REQ_STATE*)pEvent->txReq.cmdReqHandle;
 
@@ -778,7 +852,10 @@ static bool devProcessTransmitReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVE
             pSendReqState->pCurHdrElem = pEvent->txReq.pSendReqHdr;
         }
 
-        memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+        (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+    }
+    else
+    {
     }
 
     return true;
@@ -811,26 +888,26 @@ static bool devProcessReceiveReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVEN
         return false;
     }
 
-    if ((0 == pEvent->number) || (0 == pEvent->length))
+    if ((0U == pEvent->number) || (0U == pEvent->length))
     {
         return false;
     }
 
     if (NULL == pEvent->rxReq.pMsgLengths)
     {
-        pEvent->rxReq.pMsgLengths = (uint32_t*)pCtrlCtx->pReceiveBuffer;
+        pEvent->rxReq.pMsgLengths = (uint32_t*)(void*)pCtrlCtx->pReceiveBuffer;
 
-        if (pEvent->number > 1)
+        if (pEvent->number > 1U)
         {
-            pEvent->number = pEvent->length;
+            pEvent->number = (uint8_t)pEvent->length;
 
-            msgLength = pEvent->length << 2;
+            msgLength = ((size_t)pEvent->length) << 2;
 
             cmd53Status = WINC_SDIOCmd53Read(WINC_SDIOREG_FN1_DATA, pCtrlCtx->pReceiveBuffer, msgLength, false);
             if (WINC_SDIO_R1RSP_OK != cmd53Status)
             {
                 WINC_ERROR_PRINT("error, length CMD53 read failed, status=0x%04x\n", cmd53Status);
-                memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+                (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
                 return false;
             }
         }
@@ -847,15 +924,15 @@ static bool devProcessReceiveReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVEN
     if (msgLength > (pCtrlCtx->receiveBufferSize - pEvent->rxReq.receiveBufferOffset))
     {
         WINC_ERROR_PRINT("error, receive message exceeds buffer. %d %d %d\n", *pEvent->rxReq.pMsgLengths, pCtrlCtx->receiveBufferSize, pEvent->number);
-        memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+        (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
         return false;
     }
 
     cmd53Status = WINC_SDIOCmd53Read(WINC_SDIOREG_FN1_DATA, &pCtrlCtx->pReceiveBuffer[pEvent->rxReq.receiveBufferOffset], msgLength, false);
     if (WINC_SDIO_R1RSP_OK != cmd53Status)
     {
-        WINC_ERROR_PRINT("error, msg(%d) CMD53 read failed, status=0x%04x\n", (pEvent->rxReq.pMsgLengths-(uint32_t*)pCtrlCtx->pReceiveBuffer), cmd53Status);
-        memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+        WINC_ERROR_PRINT("error, msg(%d) CMD53 read failed, status=0x%04x\n", (pEvent->rxReq.pMsgLengths-(uint32_t*)(void*)pCtrlCtx->pReceiveBuffer), cmd53Status);
+        (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
         return false;
     }
 
@@ -865,9 +942,9 @@ static bool devProcessReceiveReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVEN
 
     pEvent->number--;
 
-    if (0 == pEvent->number)
+    if (0U == pEvent->number)
     {
-        memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
+        (void)memset(pEvent, 0, sizeof(WINC_DEV_EVENT_CTX));
     }
 
     return true;
@@ -887,7 +964,7 @@ static bool devProcessReceiveReqEvent(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_DEV_EVEN
 
  *****************************************************************************/
 
-WINC_DEVICE_HANDLE WINC_DevInit(WINC_DEV_INIT *pInitData)
+WINC_DEVICE_HANDLE WINC_DevInit(const WINC_DEV_INIT *pInitData)
 {
     if (true == wincDevCtrlCtx.isInit)
     {
@@ -903,17 +980,19 @@ WINC_DEVICE_HANDLE WINC_DevInit(WINC_DEV_INIT *pInitData)
 
     /* Clear device control context and store initialisation data into it. */
 
-    memset(&wincDevCtrlCtx, 0, sizeof(WINC_DEV_CTRL_CTX));
+    (void)memset(&wincDevCtrlCtx, 0, sizeof(WINC_DEV_CTRL_CTX));
 
 #ifdef WINC_DEV_CACHE_LINE_SIZE
-    wincDevCtrlCtx.pReceiveBuffer    = (uint8_t*)(((uintptr_t)pInitData->pReceiveBuffer + (WINC_DEV_CACHE_LINE_SIZE-1)) & ~(WINC_DEV_CACHE_LINE_SIZE-1));
-    wincDevCtrlCtx.receiveBufferSize = (pInitData->receiveBufferSize - (wincDevCtrlCtx.pReceiveBuffer-pInitData->pReceiveBuffer)) & ~(WINC_DEV_CACHE_LINE_SIZE-1);
+    wincDevCtrlCtx.pReceiveBuffer    = (uint8_t*)(((uintptr_t)(pInitData->pReceiveBuffer + (WINC_DEV_CACHE_LINE_SIZE-1U))) & ~((uintptr_t)WINC_DEV_CACHE_LINE_SIZE-1U));
+    wincDevCtrlCtx.receiveBufferSize = (pInitData->receiveBufferSize - (wincDevCtrlCtx.pReceiveBuffer-pInitData->pReceiveBuffer)) & ~(WINC_DEV_CACHE_LINE_SIZE-1U);
 #else
     wincDevCtrlCtx.pReceiveBuffer    = pInitData->pReceiveBuffer;
     wincDevCtrlCtx.receiveBufferSize = pInitData->receiveBufferSize;
 #endif
 
     wincDevCtrlCtx.cmdReqQueue = WINC_CMD_REQ_INVALID_HANDLE;
+
+    WINC_CONF_LOCK_CREATE(&wincDevCtrlCtx.accessMutex);
 
     wincDevCtrlCtx.isInit = true;
 
@@ -938,8 +1017,14 @@ void WINC_DevDeinit(WINC_DEVICE_HANDLE devHandle)
 {
     WINC_DEV_CTRL_CTX *pCtrlCtx = (WINC_DEV_CTRL_CTX*)devHandle;
     WINC_SEND_REQ_STATE *pPendingSendReqState;
+    WINC_SEND_REQ_STATE *pNextCmdReq;
 
     if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit))
+    {
+        return;
+    }
+
+    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
     {
         return;
     }
@@ -950,13 +1035,21 @@ void WINC_DevDeinit(WINC_DEVICE_HANDLE devHandle)
 
     while (NULL != pPendingSendReqState)
     {
+        pNextCmdReq = (WINC_SEND_REQ_STATE*)pPendingSendReqState->nextCmdReq;
+
         if (NULL != pPendingSendReqState->pfCmdRspCallback)
         {
+            WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
             pPendingSendReqState->pfCmdRspCallback(pPendingSendReqState->cmdRspCallbackCtx, (WINC_DEVICE_HANDLE)pCtrlCtx, (WINC_CMD_REQ_HANDLE)pPendingSendReqState, WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE, 0);
+            if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+            {
+            }
         }
 
-        pPendingSendReqState = (WINC_SEND_REQ_STATE*)pPendingSendReqState->nextCmdReq;
+        pPendingSendReqState = pNextCmdReq;
     }
+
+    WINC_CONF_LOCK_DESTROY(&pCtrlCtx->accessMutex);
 }
 
 /*****************************************************************************
@@ -997,14 +1090,21 @@ bool WINC_DevTransmitCmdReq(WINC_DEVICE_HANDLE devHandle, WINC_CMD_REQ_HANDLE cm
 {
     WINC_DEV_CTRL_CTX *pCtrlCtx = (WINC_DEV_CTRL_CTX*)devHandle;
     WINC_SEND_REQ_STATE *pSendReqState = (WINC_SEND_REQ_STATE*)cmdReqHandle;
+    bool result = true;
 
     if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit) || (NULL == pSendReqState) || (NULL == pSendReqState->pPtr) || (true == pCtrlCtx->busError))
     {
         return false;
     }
 
+    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+    {
+        return false;
+    }
+
     if (false == devPreparePendingCmdReq(pCtrlCtx, pSendReqState))
     {
+        WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
         return false;
     }
 
@@ -1020,13 +1120,13 @@ bool WINC_DevTransmitCmdReq(WINC_DEVICE_HANDLE devHandle, WINC_CMD_REQ_HANDLE cm
             pPendingSendReqState = (WINC_SEND_REQ_STATE*)pPendingSendReqState->nextCmdReq;
         }
 
-        WINC_VERBOSE_PRINT("CmdReq add %08x to %08x\n", pSendReqState, pPendingSendReqState);
+        WINC_TRACE_PRINT("CmdReq add %08x to %08x\n", pSendReqState, pPendingSendReqState);
 
         pPendingSendReqState->nextCmdReq = cmdReqHandle;
 
         if (NULL == pCtrlCtx->pSendReqState)
         {
-            return devProcessPendingCmdReqQueue(pCtrlCtx, pSendReqState);
+            result = devProcessPendingCmdReqQueue(pCtrlCtx, pSendReqState);
         }
     }
     else
@@ -1035,12 +1135,13 @@ bool WINC_DevTransmitCmdReq(WINC_DEVICE_HANDLE devHandle, WINC_CMD_REQ_HANDLE cm
 
         pCtrlCtx->cmdReqQueue = cmdReqHandle;
 
-        WINC_VERBOSE_PRINT("CmdReq add %08x\n", pSendReqState);
+        WINC_TRACE_PRINT("CmdReq add %08x\n", pSendReqState);
 
-        return devProcessPendingCmdReqQueue(pCtrlCtx, pSendReqState);
+        result = devProcessPendingCmdReqQueue(pCtrlCtx, pSendReqState);
     }
 
-    return true;
+    WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
+    return result;
 }
 
 /*****************************************************************************
@@ -1061,13 +1162,19 @@ bool WINC_DevTransmitCmdReq(WINC_DEVICE_HANDLE devHandle, WINC_CMD_REQ_HANDLE cm
 bool WINC_DevUpdateEvent(WINC_DEVICE_HANDLE devHandle)
 {
     WINC_DEV_CTRL_CTX *pCtrlCtx = (WINC_DEV_CTRL_CTX*)devHandle;
+    bool result = true;
 
     if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit) || (true == pCtrlCtx->busError))
     {
         return false;
     }
 
-    switch (pCtrlCtx->eventCtx.type)
+    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+    {
+        return false;
+    }
+
+    switch ((WINC_DEV_EVENT_TYPE)pCtrlCtx->eventCtx.type)
     {
         case WINC_DEV_EVENT_NONE:
         {
@@ -1076,22 +1183,26 @@ bool WINC_DevUpdateEvent(WINC_DEVICE_HANDLE devHandle)
 
         case WINC_DEV_EVENT_TX_REQ:
         {
-            return devProcessTransmitReqEvent(pCtrlCtx, &pCtrlCtx->eventCtx);
+            result = devProcessTransmitReqEvent(pCtrlCtx, &pCtrlCtx->eventCtx);
+            break;
         }
 
         case WINC_DEV_EVENT_RX_REQ:
         {
-            return devProcessReceiveReqEvent(pCtrlCtx, &pCtrlCtx->eventCtx);
+            result = devProcessReceiveReqEvent(pCtrlCtx, &pCtrlCtx->eventCtx);
+            break;
         }
 
         default:
         {
             WINC_ERROR_PRINT("error, unknown event type %d\n", pCtrlCtx->eventCtx.type);
+            result = false;
             break;
         }
     }
 
-    return true;
+    WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
+    return result;
 }
 
 /*****************************************************************************
@@ -1119,35 +1230,43 @@ bool WINC_DevHandleEvent(WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_CHECK_FP p
     uint8_t regValue;
     uint8_t regSetValue;
     uint8_t cmd52Status;
-    uint16_t cmd53Status;
 
     if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit) || (true == pCtrlCtx->busError))
     {
         return false;
     }
 
+    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
+    {
+        return false;
+    }
+
     /* Check for ongoing event. */
 
-    if (WINC_DEV_EVENT_NONE != pCtrlCtx->eventCtx.type)
+    if (WINC_DEV_EVENT_NONE != (WINC_DEV_EVENT_TYPE)pCtrlCtx->eventCtx.type)
     {
+        WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
         return false;
     }
 
     /* Read the interrupt ID register, check for message event indication. */
 
     cmd52Status = WINC_SDIOCmd52(WINC_SDIOREG_FN1_INT_ID_CLR, NULL, &regValue);
-    if (WINC_SDIO_R1RSP_OK != (cmd52Status & 0xfe))
+    if ((uint8_t)WINC_SDIO_R1RSP_OK != (cmd52Status & 0xfeU))
     {
         WINC_ERROR_PRINT("error, interrupt check failed, status=%02x\n", cmd52Status);
         pCtrlCtx->busError = true;
+        WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
         return false;
     }
 
-    if (regValue & WINC_SDIO_REG_FN1_INT_MSG_FROM_ARM)
+    if (0U != (regValue & WINC_SDIO_REG_FN1_INT_MSG_FROM_ARM))
     {
+        uint16_t cmd53Status;
+
         /* New event message from device. */
 
-        uint32_t *pMessage = (uint32_t*)pCtrlCtx->pReceiveBuffer;
+        uint32_t *pMessage = (uint32_t*)(void*)pCtrlCtx->pReceiveBuffer;
 
         /* Receive message and decode. */
 
@@ -1156,16 +1275,17 @@ bool WINC_DevHandleEvent(WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_CHECK_FP p
         {
             WINC_ERROR_PRINT("error, message CMD53 read failed, status=0x%04x\n", cmd53Status);
             pCtrlCtx->busError = true;
+            WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
             return false;
         }
 
-        pCtrlCtx->eventCtx.type   = (*pMessage >> 24) & 0xff;
-        pCtrlCtx->eventCtx.number = (*pMessage >> 16) & 0xff;
-        pCtrlCtx->eventCtx.length = *pMessage & 0xffff;
+        pCtrlCtx->eventCtx.type   = (uint8_t)((*pMessage >> 24) & 0xffU);
+        pCtrlCtx->eventCtx.number = (uint8_t)((*pMessage >> 16) & 0xffU);
+        pCtrlCtx->eventCtx.length = (uint16_t)(*pMessage & 0xffffU);
 
         regSetValue = WINC_SDIO_REG_FN1_INT_MSG_FROM_ARM;
 
-        switch (pCtrlCtx->eventCtx.type)
+        switch ((WINC_DEV_EVENT_TYPE)pCtrlCtx->eventCtx.type)
         {
             case WINC_DEV_EVENT_TX_REQ:
             {
@@ -1174,7 +1294,7 @@ bool WINC_DevHandleEvent(WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_CHECK_FP p
                     break;
                 }
 
-                if (regValue & WINC_SDIO_REG_FN1_INT_ACK_TO_HOST)
+                if (0U != (regValue & WINC_SDIO_REG_FN1_INT_ACK_TO_HOST))
                 {
                     regSetValue |= WINC_SDIO_REG_FN1_INT_ACK_TO_HOST;
                 }
@@ -1198,16 +1318,18 @@ bool WINC_DevHandleEvent(WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_CHECK_FP p
             default:
             {
                 WINC_ERROR_PRINT("error, unknown event type\n");
+                WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
                 return false;
             }
         }
 
         cmd52Status = WINC_SDIOCmd52(WINC_SDIOREG_FN1_INT_ID_CLR, &regSetValue, NULL);
 
-        if (0x00 != cmd52Status)
+        if (0x00U != cmd52Status)
         {
             WINC_ERROR_PRINT("error, interrupt clear (0x%02x) failed, status=%02x\n", regSetValue, cmd52Status);
             pCtrlCtx->busError = true;
+            WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
             return false;
         }
 
@@ -1226,6 +1348,7 @@ bool WINC_DevHandleEvent(WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_CHECK_FP p
         WINC_ERROR_PRINT("error, unhandled event 0x%02x\n", regValue);
     }
 
+    WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
     return true;
 }
 
@@ -1248,9 +1371,15 @@ bool WINC_DevHandleEvent(WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_CHECK_FP p
 bool WINC_DevAECCallbackRegister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RSP_CB pfAecRspCallback, uintptr_t aecRspCallbackCtx)
 {
     WINC_DEV_CTRL_CTX *pCtrlCtx = (WINC_DEV_CTRL_CTX*)devHandle;
-    int i;
+    uint8_t i;
+    bool result = false;
 
     if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit))
+    {
+        return false;
+    }
+
+    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
     {
         return false;
     }
@@ -1262,11 +1391,13 @@ bool WINC_DevAECCallbackRegister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RSP_
             pCtrlCtx->aecCallbackTable[i].pfAecRspCallback  = pfAecRspCallback;
             pCtrlCtx->aecCallbackTable[i].aecRspCallbackCtx = aecRspCallbackCtx;
 
-            return true;
+            result = true;
+            break;
         }
     }
 
-    return false;
+    WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
+    return result;
 }
 
 /*****************************************************************************
@@ -1287,9 +1418,15 @@ bool WINC_DevAECCallbackRegister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RSP_
 bool WINC_DevAECCallbackDeregister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RSP_CB pfAecRspCallback)
 {
     WINC_DEV_CTRL_CTX *pCtrlCtx = (WINC_DEV_CTRL_CTX*)devHandle;
-    int i;
+    uint8_t i;
+    bool result = false;
 
     if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit))
+    {
+        return false;
+    }
+
+    if (false == WINC_CONF_LOCK_ENTER(&pCtrlCtx->accessMutex))
     {
         return false;
     }
@@ -1301,11 +1438,13 @@ bool WINC_DevAECCallbackDeregister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RS
             pCtrlCtx->aecCallbackTable[i].pfAecRspCallback  = NULL;
             pCtrlCtx->aecCallbackTable[i].aecRspCallbackCtx = 0;
 
-            return true;
+            result = true;
+            break;
         }
     }
 
-    return false;
+    WINC_CONF_LOCK_LEAVE(&pCtrlCtx->accessMutex);
+    return result;
 }
 
 /*****************************************************************************
@@ -1324,29 +1463,62 @@ bool WINC_DevAECCallbackDeregister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RS
 
  *****************************************************************************/
 
-bool WINC_DevUnpackElements(uint8_t numTlvs, uint8_t *pTLVBytes, WINC_DEV_PARAM_ELEM *pElems)
+bool WINC_DevUnpackElements(uint8_t numTlvs, const uint8_t *pTLVBytes, WINC_DEV_PARAM_ELEM *pElems)
 {
-    int i;
+    uint8_t i;
 
     if ((NULL == pTLVBytes) || (NULL == pElems))
     {
         return false;
     }
 
-    for (i=0; i<numTlvs; i++, pElems++)
+    for (i=0; i<numTlvs; i++)
     {
         WINC_TLV_ELEMENT *pTLV;
 
         pTLV = (WINC_TLV_ELEMENT*)pTLVBytes;
 
-        pElems->type   = pTLV->type;
+        pElems->type   = (WINC_TYPE)pTLV->type;
         pElems->length = WINC_FIELD_UNPACK_16(pTLV->length);
         pElems->pData  = pTLV->data;
 
         WINC_VERBOSE_PRINT(" %d: T=%d, L=%d\n", i, pElems->type, pElems->length);
 
-        pTLVBytes += sizeof(WINC_TLV_ELEMENT) + pElems->length + (pTLV->flags & 0x03);
+        pTLVBytes += sizeof(WINC_TLV_ELEMENT) + pElems->length + (pTLV->flags & 0x03U);
+
+        pElems++;
     }
+
+    return true;
+}
+
+/*****************************************************************************
+  Description:
+    Register a device receive interception callback.
+
+  Parameters:
+    devHandle            - Device handle obtained from WINC_DevInit
+    pfInterceptCallback  - Pointer to callback function
+    interceptCallbackCtx - Callback context, provided to callback when called
+
+  Returns:
+    true or false indicating success or failure
+
+  Remarks:
+
+ *****************************************************************************/
+
+bool WINC_DevInterceptCallbackRegister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_RX_INTERCEPT_CB pfInterceptCallback, uintptr_t interceptCallbackCtx)
+{
+    WINC_DEV_CTRL_CTX *pCtrlCtx = (WINC_DEV_CTRL_CTX*)devHandle;
+
+    if ((NULL == pCtrlCtx) || (false == pCtrlCtx->isInit))
+    {
+        return false;
+    }
+
+    pCtrlCtx->pfIinterceptCallback = pfInterceptCallback;
+    pCtrlCtx->interceptCallbackCtx = interceptCallbackCtx;
 
     return true;
 }

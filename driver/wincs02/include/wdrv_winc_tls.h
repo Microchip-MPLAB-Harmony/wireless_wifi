@@ -42,6 +42,8 @@ Microchip or any third party.
 #ifndef WDRV_WINC_TLS_H
 #define WDRV_WINC_TLS_H
 
+#ifndef WDRV_WINC_MOD_DISABLE_TLS
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: File includes
@@ -59,10 +61,11 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
-#define WDRV_WINC_TLS_INVALID_HANDLE                    0
-#define WDRV_WINC_TLS_CS_INVALID_HANDLE                 0
+/* Defines an invalid TLS context handle. */
+#define WDRV_WINC_TLS_INVALID_HANDLE                    0U
 
-#define WDRV_WINC_TLSCtxHandleToCfgIdx(HANDLE)          (HANDLE)
+/* Defines an invalid TLS cipher suite list handle. */
+#define WDRV_WINC_TLS_CS_INVALID_HANDLE                 0U
 
 // *****************************************************************************
 // *****************************************************************************
@@ -125,7 +128,7 @@ typedef struct
     uintptr_t signCbCtx;
 
     /* TLS cipher suite handle */
-    int tlsCsHandle;
+    WDRV_WINC_TLS_CS_HANDLE tlsCsHandle;
 } WDRV_WINC_TLSCTX_INFO;
 
 //*******************************************************************************
@@ -145,9 +148,6 @@ typedef struct
 
   Description:
     Callback will be called to provide TLS cipher suite information.
-
-  Precondition:
-    WDRV_WINC_TLSCipherSuiteAlgGet must be called to register the callback.
 
   Parameters:
     handle        - Client handle obtained by a call to WDRV_WINC_Open.
@@ -219,8 +219,8 @@ typedef struct
     Obtains a handle to a free TLS context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
@@ -247,9 +247,9 @@ WDRV_WINC_TLS_HANDLE WDRV_WINC_TLSCtxOpen(DRV_HANDLE handle);
     Frees a TLS context handle for other uses.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle    - Client handle obtained by a call to WDRV_WINC_Open.
@@ -264,6 +264,33 @@ WDRV_WINC_TLS_HANDLE WDRV_WINC_TLSCtxOpen(DRV_HANDLE handle);
 */
 
 void WDRV_WINC_TLSCtxClose(DRV_HANDLE handle, WDRV_WINC_TLS_HANDLE tlsHandle);
+
+//*******************************************************************************
+/*
+  Function:
+    uint8_t WDRV_WINC_TLSCtxHandleToCfgIdx(WDRV_WINC_TLS_HANDLE tlsHandle)
+
+  Summary:
+    Convert TLS handle to index.
+
+  Description:
+    Convert TLS context handle to configuration index.
+
+  Precondition:
+    None.
+
+  Parameters:
+    tlsHandle - TLS handle obtained by a call to WDRV_WINC_TLSCtxOpen.
+
+  Returns:
+    TLS configuration index or 0 for invalid handles.
+
+  Remarks:
+    None.
+
+*/
+
+uint8_t WDRV_WINC_TLSCtxHandleToCfgIdx(WDRV_WINC_TLS_HANDLE tlsHandle);
 
 //*******************************************************************************
 /*
@@ -283,9 +310,9 @@ void WDRV_WINC_TLSCtxClose(DRV_HANDLE handle, WDRV_WINC_TLS_HANDLE tlsHandle);
     Sets the certificate authority field of a TLS context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -331,9 +358,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCACertFileSet
     Sets the certificate field of a TLS context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle    - Client handle obtained by a call to WDRV_WINC_Open.
@@ -361,6 +388,50 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertFileSet
 //*******************************************************************************
 /*
   Function:
+    WDRV_WINC_STATUS WDRV_WINC_TLSCtxDHParamtersFileSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_TLS_HANDLE tlsHandle,
+        const char *pDHParamId
+    )
+
+  Summary:
+    Sets the Diffie-Hellman parameters field of a TLS context.
+
+  Description:
+    Sets the Diffie-Hellman parameters field of a TLS context.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
+
+  Parameters:
+    handle     - Client handle obtained by a call to WDRV_WINC_Open.
+    tlsHandle  - TLS handle obtained by a call to WDRV_WINC_TLSCtxOpen.
+    pDHParamId - Pointer to DH parameters Identifier.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_TLSCtxDHParamtersFileSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_TLS_HANDLE tlsHandle,
+    const char *pDHParamId
+);
+
+//*******************************************************************************
+/*
+  Function:
     WDRV_WINC_STATUS WDRV_WINC_TLSCtxPrivKeySet
     (
         DRV_HANDLE handle,
@@ -376,9 +447,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertFileSet
     Sets the private key name and password fields of a TLS context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle           - Client handle obtained by a call to WDRV_WINC_Open.
@@ -422,9 +493,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxPrivKeySet
     Sets the SNI field of a TLS context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -467,9 +538,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSNISet
     Sets the hostname check field of a TLS context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle       - Client handle obtained by a call to WDRV_WINC_Open.
@@ -516,9 +587,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxHostnameCheckSet
     Sets the signing callback for external cryptographic functions.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle    - Client handle obtained by a call to WDRV_WINC_Open.
@@ -562,9 +633,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxSetSignCallback
     Sets the TLS cipher suite.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -601,8 +672,8 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCipherSuiteSet(
     specific cipher algorithms for a TLS connection.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
@@ -633,9 +704,9 @@ WDRV_WINC_TLS_CS_HANDLE WDRV_WINC_TLSCipherSuiteOpen(DRV_HANDLE handle);
     Frees a TLS cipher suite handle for other uses.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCipherSuiteOpen should have been called to obtain a valid TLS cipher suite handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCipherSuiteOpen must have been called to obtain a valid TLS cipher suite handle.
 
   Parameters:
     handle      - Client handle obtained by a call to WDRV_WINC_Open.
@@ -662,7 +733,7 @@ void WDRV_WINC_TLSCipherSuiteClose
     (
         DRV_HANDLE handle,
         WDRV_WINC_TLS_CS_HANDLE tlsCsHandle,
-        uint16_t *pAlgorithms,
+        const uint16_t *const pAlgorithms,
         uint8_t numAlgorithms,
         const WDRV_WINC_TLS_CS_CALLBACK pfTlsCsResponseCB
     )
@@ -674,9 +745,9 @@ void WDRV_WINC_TLSCipherSuiteClose
     Set a list of ciphers suite algorithms requested to the TLS cipher suite.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCipherSuiteOpen must have been called to obtain a valid TLS cipher suite handle.
 
   Parameters:
     handle            - Client handle obtained by a call to WDRV_WINC_Open.
@@ -700,7 +771,7 @@ void WDRV_WINC_TLSCipherSuiteClose
 WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgSet(
     DRV_HANDLE handle,
     WDRV_WINC_TLS_CS_HANDLE tlsCsHandle,
-    uint16_t *pAlgorithms,
+    const uint16_t *const pAlgorithms,
     uint8_t numAlgorithms,
     const WDRV_WINC_TLS_CS_CALLBACK pfTlsCsResponseCB
 );
@@ -723,9 +794,9 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgSet(
      Gets the current or default cipher suite algorithms set for a given context.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
-    WDRV_WINC_TLSCtxOpen should have been called to obtain a valid TLS handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCipherSuiteOpen must have been called to obtain a valid TLS cipher suite handle.
 
   Parameters:
     handle            - Client handle obtained by a call to WDRV_WINC_Open.
@@ -753,4 +824,5 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCipherSuiteAlgGet
     bool getDefaults
 );
 
+#endif /* WDRV_WINC_MOD_DISABLE_TLS */
 #endif /* WDRV_WINC_TLS_H */

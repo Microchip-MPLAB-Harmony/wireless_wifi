@@ -38,6 +38,7 @@ Microchip or any third party.
 
 #include <stdint.h>
 #include <string.h>
+#include <limits.h>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -56,7 +57,7 @@ Microchip or any third party.
 // *****************************************************************************
 
 /* Number of scan results to store in cache. */
-#define WDRV_WINC_SCAN_RESULT_CACHE_NUM_ENTRIES     50
+#define WDRV_WINC_SCAN_RESULT_CACHE_NUM_ENTRIES     50u
 
 // *****************************************************************************
 // *****************************************************************************
@@ -111,7 +112,7 @@ typedef struct
 typedef struct
 {
     /* Number of valid cache entries. */
-    int                         numDescrs;
+    uint8_t                     numDescrs;
 
     /* Scan result entry, one per AP. */
     DRV_WINC_SCAN_RESULTS       bssDescr[WDRV_WINC_SCAN_RESULT_CACHE_NUM_ENTRIES];
@@ -135,7 +136,7 @@ static WDRV_WINC_SCAN_RESULT_CACHE scanResultCache;
 //*******************************************************************************
 /*
   Function:
-    static void bssfindWSCNProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+    static void bssfindWSCNProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 
   Summary:
     Process command responses.
@@ -144,7 +145,7 @@ static WDRV_WINC_SCAN_RESULT_CACHE scanResultCache;
     Processes command responses received via WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED events.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
     handle - WINC device handle.
@@ -158,9 +159,9 @@ static WDRV_WINC_SCAN_RESULT_CACHE scanResultCache;
 
 */
 
-static void bssfindWSCNProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+static void bssfindWSCNProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT *)handle;
     WDRV_WINC_CTRLDCPT *pCtrl;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
@@ -176,51 +177,53 @@ static void bssfindWSCNProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS
         {
             uint8_t id;
 
-            if (pElems->numElems != 2)
+            if (2U != pElems->numElems)
             {
-                return;
+                break;
             }
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
 
             switch (id)
             {
                 case WINC_CFG_PARAM_ID_WSCN_ACT_SLOT_TIME:
                 {
-                    WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanActiveScanTime, sizeof(pCtrl->scanActiveScanTime));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanActiveScanTime, sizeof(pCtrl->scanActiveScanTime));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_WSCN_PASV_SLOT_TIME:
                 {
-                    WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanPassiveListenTime, sizeof(pCtrl->scanPassiveListenTime));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanPassiveListenTime, sizeof(pCtrl->scanPassiveListenTime));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_WSCN_NUM_SLOTS:
                 {
-                    WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanNumSlots, sizeof(pCtrl->scanNumSlots));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanNumSlots, sizeof(pCtrl->scanNumSlots));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_WSCN_PROBES_PER_SLOT:
                 {
-                    WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanNumProbes, sizeof(pCtrl->scanNumProbes));
+                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->scanNumProbes, sizeof(pCtrl->scanNumProbes));
                     break;
                 }
 
                 default:
                 {
+                    WDRV_DBG_VERBOSE_PRINT("WSCNC ID %d not handled\r\n", id);
                     break;
                 }
             }
 
-            WDRV_DBG_VERBOSE_PRINT("Scan Params: %d %d %d %d\n", pCtrl->scanActiveScanTime, pCtrl->scanPassiveListenTime, pCtrl->scanNumSlots, pCtrl->scanNumProbes);
+            WDRV_DBG_VERBOSE_PRINT("Scan Params: %d %d %d %d\r\n", pCtrl->scanActiveScanTime, pCtrl->scanPassiveListenTime, pCtrl->scanNumSlots, pCtrl->scanNumProbes);
             break;
         }
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("WSCN CmdRspCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -245,10 +248,10 @@ static void bssfindWSCNProcessCmdRsp(DRV_HANDLE handle, WINC_DEV_EVENT_RSP_ELEMS
     Receives command responses for command requests originating from this module.
 
   Precondition:
-    WINC_DevTransmitCmdReq must of been called to submit command request.
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    context      - Context provided to WINC_CmdReqInit for callback.
+    context      - Context provided to WDRV_WINC_CmdReqInit for callback.
     devHandle    - WINC device handle.
     cmdReqHandle - Command request handle.
     event        - Command request event being raised.
@@ -311,7 +314,7 @@ static void bssfindWSCNCmdRspCallbackHandler
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("WSCN CmdRspCB %08x Event %d\n", cmdReqHandle, event);
+    //WDRV_DBG_INFORM_PRINT("WSCN CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -322,7 +325,7 @@ static void bssfindWSCNCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE:
         {
-            OSAL_Free((void*)cmdReqHandle);
+            OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
             break;
         }
 
@@ -334,12 +337,18 @@ static void bssfindWSCNCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-            WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
+            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
 
             if (NULL != pRspElems)
             {
                 bssfindWSCNProcessCmdRsp((DRV_HANDLE)pDcpt, pRspElems);
             }
+            break;
+        }
+
+        default:
+        {
+            WDRV_DBG_VERBOSE_PRINT("WSCN CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
             break;
         }
     }
@@ -352,7 +361,7 @@ static void bssfindWSCNCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
-        WINC_DEV_EVENT_RSP_ELEMS *pElems
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
     )
 
   Summary:
@@ -366,9 +375,9 @@ static void bssfindWSCNCmdRspCallbackHandler
 
 */
 
-void WDRV_WINC_WSCNProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, WINC_DEV_EVENT_RSP_ELEMS *pElems)
+void WDRV_WINC_WSCNProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT *)context;
     WDRV_WINC_CTRLDCPT *pCtrl;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
@@ -382,23 +391,23 @@ void WDRV_WINC_WSCNProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, W
     {
         case WINC_AEC_ID_WSCNIND:
         {
-            if (pElems->numElems != 5)
+            if (5U != pElems->numElems)
             {
-                return;
+                break;
             }
 
             if (scanResultCache.numDescrs < WDRV_WINC_SCAN_RESULT_CACHE_NUM_ENTRIES)
             {
                 DRV_WINC_SCAN_RESULTS *pScanRes = &scanResultCache.bssDescr[scanResultCache.numDescrs];
 
-                WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &pScanRes->rssi, sizeof(pScanRes->rssi));
-                WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pScanRes->authTypeRecommended, sizeof(pScanRes->authTypeRecommended));
-                WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER, &pScanRes->channel, sizeof(pScanRes->channel));
-                WINC_CmdReadParamElem(&pElems->elems[3], WINC_TYPE_MACADDR, pScanRes->bssid.addr, WDRV_WINC_MAC_ADDR_LEN);
-                WINC_CmdReadParamElem(&pElems->elems[4], WINC_TYPE_STRING,  pScanRes->ssid.name, WDRV_WINC_MAX_SSID_LEN);
+                (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &pScanRes->rssi, sizeof(pScanRes->rssi));
+                (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pScanRes->authTypeRecommended, sizeof(pScanRes->authTypeRecommended));
+                (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER, &pScanRes->channel, sizeof(pScanRes->channel));
+                (void)WINC_CmdReadParamElem(&pElems->elems[3], WINC_TYPE_MACADDR, pScanRes->bssid.addr, WDRV_WINC_MAC_ADDR_LEN);
+                (void)WINC_CmdReadParamElem(&pElems->elems[4], WINC_TYPE_STRING,  pScanRes->ssid.name, WDRV_WINC_MAX_SSID_LEN);
 
                 pScanRes->bssid.valid = true;
-                pScanRes->ssid.length = pElems->elems[4].length;
+                pScanRes->ssid.length = (uint8_t)pElems->elems[4].length;
 
                 scanResultCache.numDescrs++;
             }
@@ -410,20 +419,20 @@ void WDRV_WINC_WSCNProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, W
         {
             uint8_t nResults = 0;
 
-            if (pElems->numElems != 1)
+            if (1U != pElems->numElems)
             {
-                return;
+                break;
             }
 
             pCtrl->scanInProgress = false;
 
-            WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &nResults, sizeof(nResults));
+            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &nResults, sizeof(nResults));
 
             if (NULL != pCtrl->pfBSSFindNotifyCB)
             {
-                if (0 == nResults)
+                if (0U == nResults)
                 {
-                    pCtrl->pfBSSFindNotifyCB(pCtrl->handle, 0, 0, NULL);
+                    (void)pCtrl->pfBSSFindNotifyCB(pCtrl->handle, 0, 0, NULL);
                     pCtrl->pfBSSFindNotifyCB = NULL;
                     break;
                 }
@@ -431,7 +440,7 @@ void WDRV_WINC_WSCNProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, W
                 /* Reuse find next function by pre-decrementing scan index. */
                 pCtrl->scanIndex--;
 
-                WDRV_WINC_BSSFindNext(pCtrl->handle, pCtrl->pfBSSFindNotifyCB);
+                (void)WDRV_WINC_BSSFindNext(pCtrl->handle, pCtrl->pfBSSFindNotifyCB);
             }
 
             break;
@@ -439,6 +448,7 @@ void WDRV_WINC_WSCNProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, W
 
         default:
         {
+            WDRV_DBG_VERBOSE_PRINT("WSCN AECCB ID %04x not handled\r\n", pElems->rspId);
             break;
         }
     }
@@ -479,22 +489,12 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindFirst
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
+    int numSSIDInList = 0;
+    size_t ssidListSize = 0;
+    const WDRV_WINC_SSID_LIST *pSSIDListIter;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Ensure request channel is valid. */
-    if (channel > WDRV_WINC_CID_2_4G_CH13)
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Ensure SSID list is only provided for active scans. */
-    if ((false == active) && (NULL != pSSIDList))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -505,46 +505,66 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindFirst
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    /* Convert public API representation of all channels to
-       internal representation. */
-    if (WDRV_WINC_CID_ANY == channel)
+    /* Ensure requested channel is valid. */
+    if (channel > WDRV_WINC_CID_2_4G_CH13)
     {
+        return WDRV_WINC_STATUS_INVALID_ARG;
     }
-    else
+
+    /* Ensure requested channel is allowed */
+    if (WDRV_WINC_CID_ANY != channel)
     {
-        if(!((1<<(channel-1)) & pDcpt->pCtrl->scanChannelMask24))
+        if (0U == (((uint16_t)1U<<((unsigned)channel-1U)) & (uint16_t)pDcpt->pCtrl->regulatoryChannelMask24))
         {
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
     }
 
+    /* Ensure SSID list is only provided for active scans. */
+    if ((false == active) && (NULL != pSSIDList))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
     if (NULL != pSSIDList)
     {
+        pSSIDListIter = pSSIDList;
+
+        while (NULL != pSSIDListIter)
+        {
+            numSSIDInList++;
+
+            ssidListSize += (int)pSSIDListIter->ssid.length;
+
+            pSSIDListIter = pSSIDListIter->pNext;
+        }
     }
 
     scanResultCache.numDescrs = 0;
 
-    pCmdReqBuffer = OSAL_Malloc(256);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 256, 2, bssfindWSCNCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit((unsigned int)5+numSSIDInList, ssidListSize, bssfindWSCNCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_CHANNEL, WINC_TYPE_INTEGER, channel, 0);
-    WINC_CmdWSCN(cmdReqHandle, active ? WINC_CONST_WSCN_ACT_PASV_ACTIVE : WINC_CONST_WSCN_ACT_PASV_PASSIVE);
+    (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_CHANMASK24, WINC_TYPE_INTEGER, (uintptr_t)pDcpt->pCtrl->scanChannelMask24, 0);
+    (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_CHANNEL, WINC_TYPE_INTEGER, (uintptr_t)channel, 0);
+    (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_RSSI_THRESH, WINC_TYPE_INTEGER, (uintptr_t)pDcpt->pCtrl->scanRssiThreshold, 0);
+    (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_FILT_LIST, WINC_TYPE_STRING, 0, 0);
 
-    if (false == WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    pSSIDListIter = pSSIDList;
+    while ((0 != (numSSIDInList--)) && (NULL != pSSIDListIter))
     {
-        OSAL_Free(pCmdReqBuffer);
+        (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_FILT_LIST, WINC_TYPE_STRING, (uintptr_t)&pSSIDListIter->ssid.name, pSSIDListIter->ssid.length);
+        pSSIDListIter = pSSIDListIter->pNext;
+    };
+
+    (void)WINC_CmdWSCN(cmdReqHandle, active ? WINC_CONST_WSCN_ACT_PASV_ACTIVE : WINC_CONST_WSCN_ACT_PASV_PASSIVE);
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -590,7 +610,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindNext
     }
 
     /* Ensure the driver instance has been opened for use. */
-    if ((false == pDcpt->isOpen) || (NULL == pDcpt->pCtrl) || (DRV_HANDLE_INVALID == pDcpt->pCtrl->handle))
+    if ((false == pDcpt->isOpen) || (DRV_HANDLE_INVALID == pDcpt->pCtrl->handle))
     {
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
@@ -618,12 +638,11 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindNext
     if (NULL != pDcpt->pCtrl->pfBSSFindNotifyCB)
     {
         WDRV_WINC_BSS_INFO bssInfo;
-        bool findResult;
 
         while (WDRV_WINC_STATUS_OK == WDRV_WINC_BSSFindGetInfo(handle, &bssInfo))
         {
             /* Notify the user application of the scan results. */
-            findResult = pDcpt->pCtrl->pfBSSFindNotifyCB(handle, pDcpt->pCtrl->scanIndex+1, scanResultCache.numDescrs, &bssInfo);
+            bool findResult = pDcpt->pCtrl->pfBSSFindNotifyCB(handle, pDcpt->pCtrl->scanIndex+1U, scanResultCache.numDescrs, &bssInfo);
 
             /* Check if the callback requested the next set of results. */
             if (true == findResult)
@@ -696,7 +715,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindReset
     }
 
     /* Reuse find next function by pre-decrementing scan index. */
-    pDcpt->pCtrl->scanIndex = -1;
+    pDcpt->pCtrl->scanIndex = UCHAR_MAX;
 
     return WDRV_WINC_BSSFindNext(handle, pfNotifyCallback);
 }
@@ -751,19 +770,18 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
 
     pLastBSSScanInfo = &scanResultCache.bssDescr[pDcpt->pCtrl->scanIndex];
 
-    if (0 == scanResultCache.numDescrs)
+    if (0U == scanResultCache.numDescrs)
     {
         return WDRV_WINC_STATUS_NO_BSS_INFO;
     }
 
     /* Copy BSS scan cache to user supplied buffer. */
-    pBSSInfo->ctx.channel         = pLastBSSScanInfo->channel;
+    pBSSInfo->ctx.channel         = (WDRV_WINC_CHANNEL_ID)pLastBSSScanInfo->channel;
     pBSSInfo->rssi                = pLastBSSScanInfo->rssi;
-    pBSSInfo->ctx.cloaked         = false;
-    pBSSInfo->authTypeRecommended = pLastBSSScanInfo->authTypeRecommended;
+    pBSSInfo->authTypeRecommended = (WDRV_WINC_AUTH_TYPE)pLastBSSScanInfo->authTypeRecommended;
 
-    memcpy(&pBSSInfo->ctx.bssid, &pLastBSSScanInfo->bssid, sizeof(WDRV_WINC_MAC_ADDR));
-    memcpy(&pBSSInfo->ctx.ssid,  &pLastBSSScanInfo->ssid,  sizeof(WDRV_WINC_SSID));
+    (void)memcpy(&pBSSInfo->ctx.bssid, &pLastBSSScanInfo->bssid, sizeof(WDRV_WINC_MAC_ADDR));
+    (void)memcpy(&pBSSInfo->ctx.ssid,  &pLastBSSScanInfo->ssid,  sizeof(WDRV_WINC_SSID));
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -804,7 +822,6 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_CTRLDCPT *pCtrl;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
-    void *pCmdReqBuffer;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -821,7 +838,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
     }
 
     /* Check for update to Active Scan Time. */
-    if ((0 != activeSlotTime) && (pCtrl->scanActiveScanTime != activeSlotTime))
+    if ((0U != activeSlotTime) && (pCtrl->scanActiveScanTime != activeSlotTime))
     {
         if ((activeSlotTime > DRV_WINC_MAX_SCAN_TIME) || (activeSlotTime < DRV_WINC_MIN_SCAN_TIME))
         {
@@ -832,7 +849,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
     }
 
     /* Check for update to Passive Scan Time. */
-    if ((0 != passiveSlotTime) && (pCtrl->scanPassiveListenTime != passiveSlotTime))
+    if ((0U != passiveSlotTime) && (pCtrl->scanPassiveListenTime != passiveSlotTime))
     {
         if ((passiveSlotTime > DRV_WINC_MAX_SCAN_TIME) || (passiveSlotTime < DRV_WINC_MIN_SCAN_TIME))
         {
@@ -843,13 +860,13 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
     }
 
     /* Check for update to Number of Slots. */
-    if ((0 != numSlots) && (pCtrl->scanNumSlots != numSlots))
+    if ((0U != numSlots) && (pCtrl->scanNumSlots != numSlots))
     {
         pCtrl->scanNumSlots = numSlots;
     }
 
     /* Check for update to Number of Probes. */
-    if ((0 != numProbes) && (pCtrl->scanNumProbes != numProbes))
+    if ((0U != numProbes) && (pCtrl->scanNumProbes != numProbes))
     {
         if ((numProbes > DRV_WINC_SCAN_MAX_NUM_PROBE) || (numProbes < DRV_WINC_SCAN_MIN_NUM_PROBE))
         {
@@ -859,44 +876,35 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
         pCtrl->scanNumProbes = numProbes;
     }
 
-    pCmdReqBuffer = OSAL_Malloc(512);
-
-    if (NULL == pCmdReqBuffer)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    cmdReqHandle = WINC_CmdReqInit(pCmdReqBuffer, 512, 4, bssfindWSCNCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(4, 0, bssfindWSCNCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    if (0 != pCtrl->scanActiveScanTime)
+    if (0U != pCtrl->scanActiveScanTime)
     {
-        WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_ACT_SLOT_TIME, WINC_TYPE_INTEGER, pCtrl->scanActiveScanTime, 0);
+        (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_ACT_SLOT_TIME, WINC_TYPE_INTEGER, pCtrl->scanActiveScanTime, 0);
     }
 
-    if (0 != pCtrl->scanPassiveListenTime)
+    if (0U != pCtrl->scanPassiveListenTime)
     {
-        WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_PASV_SLOT_TIME, WINC_TYPE_INTEGER, pCtrl->scanPassiveListenTime, 0);
+        (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_PASV_SLOT_TIME, WINC_TYPE_INTEGER, pCtrl->scanPassiveListenTime, 0);
     }
 
-    if (0 != pCtrl->scanNumSlots)
+    if (0U != pCtrl->scanNumSlots)
     {
-        WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_NUM_SLOTS, WINC_TYPE_INTEGER, pCtrl->scanNumSlots, 0);
+        (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_NUM_SLOTS, WINC_TYPE_INTEGER, pCtrl->scanNumSlots, 0);
     }
 
-    if (0 != pCtrl->scanNumProbes)
+    if (0U != pCtrl->scanNumProbes)
     {
-        WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_PROBES_PER_SLOT, WINC_TYPE_INTEGER, pCtrl->scanNumProbes, 0);
+        (void)WINC_CmdWSCNC(cmdReqHandle, WINC_CFG_PARAM_ID_WSCN_PROBES_PER_SLOT, WINC_TYPE_INTEGER, pCtrl->scanNumProbes, 0);
     }
 
-    if (false == WINC_DevTransmitCmdReq(pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pCtrl->wincDevHandle, cmdReqHandle))
     {
-        OSAL_Free(pCmdReqBuffer);
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
@@ -930,13 +938,15 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
     int8_t rssiThreshold
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
+
+    pDcpt->pCtrl->scanRssiThreshold = rssiThreshold;
 
     /* Ensure the driver instance has been opened for use. */
     if (false == pDcpt->isOpen)
@@ -950,25 +960,26 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetRSSIThreshold
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels24
+    WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanChannels24
     (
         DRV_HANDLE handle,
         WDRV_WINC_CHANNEL_MASK channelMask24
     )
 
   Summary:
-    Set the enabled channels list for 2.4GHz.
+    Set the multi-channel list for scanning in 2.4GHz.
 
   Description:
-    To comply with regulatory domains certain channels must not be scanned.
-      This function configures which channels are enabled to be used.
+    In some scenarios an application may want to scan on a subset of channels.
+      This function configures which channels are set to be scanned when issuing
+      a multi-channel scan (when WDRV_WINC_CID_ANY is passed as channel).
 
   Remarks:
     See wdrv_winc_bssfind.h for usage information.
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels24
+WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanChannels24
 (
     DRV_HANDLE handle,
     WDRV_WINC_CHANNEL24_MASK channelMask24
@@ -988,12 +999,61 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetEnabledChannels24
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    if (0 != (channelMask24 & ~WDRV_WINC_CM_2_4G_ALL))
+    /* Check the proposed channel mask is within regulatory limits */
+    if ((uint16_t)WDRV_WINC_CM_2_4G_NONE != ((uint16_t)channelMask24 & ~(uint16_t)pDcpt->pCtrl->regulatoryChannelMask24))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
     pDcpt->pCtrl->scanChannelMask24 = channelMask24;
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_BSSFindGetScanChannels24
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_CHANNEL24_MASK *const pChannelMask
+    )
+
+  Summary:
+    Retrieves the multi-channel list for scanning in 2.4GHz.
+
+  Remarks:
+    See wdrv_winc_bssfind.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_BSSFindGetScanChannels24
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_CHANNEL24_MASK *const pChannelMask
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pChannelMask))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure pointer is valid */
+    if (NULL == pDcpt->pCtrl)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    *pChannelMask = pDcpt->pCtrl->scanChannelMask24;
 
     return WDRV_WINC_STATUS_OK;
 }

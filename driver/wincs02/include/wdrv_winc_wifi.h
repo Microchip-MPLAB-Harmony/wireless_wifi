@@ -52,11 +52,8 @@ Microchip or any third party.
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
-#include "wdrv_winc.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus // Provide C++ Compatibility
@@ -70,7 +67,8 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
-#define WDRV_WINC_REGDOMAIN_MAX_NAME_LEN    WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED_SZ
+/* Maximum length of regulatory domain name. */
+#define WDRV_WINC_REGDOMAIN_MAX_NAME_LEN    WINC_CFG_PARAM_SZ_WIFI_REGDOMAIN_SELECTED
 
 // *****************************************************************************
 // *****************************************************************************
@@ -116,8 +114,13 @@ typedef enum
 
 typedef enum
 {
+    /* No regulatory domain selected. */
     WDRV_WINC_REGDOMAIN_SELECT_NONE,
+
+    /* Current regulatory domain selected. */
     WDRV_WINC_REGDOMAIN_SELECT_CURRENT,
+
+    /* All regulatory domains selected. */
     WDRV_WINC_REGDOMAIN_SELECT_ALL
 } WDRV_WINC_REGDOMAIN_SELECT;
 
@@ -136,6 +139,7 @@ typedef enum
 
 typedef struct
 {
+    /* Powersave mode. */
    WDRV_WINC_POWERSAVE_MODE psMode;
 } WDRV_WINC_POWERSAVE_INFO;
 
@@ -155,8 +159,14 @@ typedef struct
 
 typedef struct
 {
+    /* Length of regulatory domain. */
     uint8_t regDomainLen;
+
+    /* Regulatory domain name. */
     uint8_t regDomain[WDRV_WINC_REGDOMAIN_MAX_NAME_LEN];
+
+    /* Regulatory domain channel mask. */
+    WDRV_WINC_CHANNEL24_MASK channelMask;
 } WDRV_WINC_REGDOMAIN_INFO;
 
 // *****************************************************************************
@@ -174,14 +184,89 @@ typedef struct
 
 typedef struct
 {
+    /* Use 2-wire interface (BT_Prio, WLAN_Act) or 3-wire interface (BT_Act, BT_Prio, WLAN_Act). */
     bool use2Wire;
+
+    /* BT/Wi-Fi coexistence arbiter WLAN Rx priority over BT Low Priority. */
     bool wlanRxHigherThanBt;
+
+    /* BT/Wi-Fi coexistence arbiter WLAN Tx priority over BT Low Priority. */
     bool wlanTxHigherThanBt;
+
+    /* BT/Wi-Fi coexistence arbiter antenna mode (shared vs dedicated). */
     bool sharedAntenna;
 } WDRV_WINC_COEX_CFG;
 
 // *****************************************************************************
+/*  MAC Options
+
+  Summary:
+    Structure containing MAC options.
+
+  Description:
+    Contains MAC options.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Wi-Fi A-MPDU Tx Enable. */
+    bool useTxAmpdu;
+} WDRV_WINC_MAC_OPTIONS;
+
+// *****************************************************************************
+/*  WiFi Connection Configuration
+
+  Summary:
+    Structure containing WiFi connection configuration.
+
+  Description:
+    Contains WiFi configuration for use during connection.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Network interface to assign. (see WDRV_WINC_NETIF_IDX) */
+    uint8_t ifIdx;
+
+    /* Layer 2 (no IP services) configuration only. */
+    bool l2Only;
+
+    /* STA specific configuration. */
+    struct
+    {
+        /* Connection timeout in milliseconds. */
+        uint32_t connTimeoutMs;
+
+        /* Roaming configuration option. (see WDRV_WINC_BSS_ROAMING_CFG) */
+        uint8_t roaming;
+    } sta;
+
+    /* AP specific configuration. */
+    struct
+    {
+        /* Rekey interval in seconds. */
+        uint32_t rekeyInterval;
+
+        /* Flag indicating if SSID is cloaked. */
+        bool cloaked;
+    } ap;
+} WDRV_WINC_CONN_CFG;
+
+// *****************************************************************************
 /* Powersave Information Callback
+
+  Function:
+    void (*WDRV_WINC_POWERSAVE_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        const WDRV_WINC_POWERSAVE_INFO *const pPowersaveInfo
+    )
 
   Summary:
     Pointer to a powersave callback.
@@ -209,6 +294,16 @@ typedef void (*WDRV_WINC_POWERSAVE_CALLBACK)
 
 // *****************************************************************************
 /* Regulatory Domain Information Callback
+
+ Function:
+    void (*WDRV_WINC_REGDOMAIN_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        uint8_t index,
+        uint8_t ofTotal,
+        bool isCurrent,
+        const WDRV_WINC_REGDOMAIN_INFO *const pRegDomInfo
+    )
 
   Summary:
     Pointer to a regulatory domain callback.
@@ -247,6 +342,12 @@ typedef void (*WDRV_WINC_REGDOMAIN_CALLBACK)
     const WDRV_WINC_REGDOMAIN_INFO *const pRegDomInfo
 );
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Wifi Configuration Routines
+// *****************************************************************************
+// *****************************************************************************
+
 //*******************************************************************************
 /*
   Function:
@@ -263,8 +364,8 @@ typedef void (*WDRV_WINC_REGDOMAIN_CALLBACK)
     Configures the powersave mode to one of the available powersave modes.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
@@ -303,8 +404,8 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
     Retrieves the currently applied powersave mode.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle             - Client handle obtained by a call to WDRV_WINC_Open.
@@ -345,8 +446,8 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
     Configures the regulatory domain to one available in NVM.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle             - Client handle obtained by a call to WDRV_WINC_Open.
@@ -390,8 +491,8 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainSet
     Read the active or all available regulatory domain(s).
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle             - Client handle obtained by a call to WDRV_WINC_Open.
@@ -432,8 +533,8 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainGet
     Enables or disables the coexistence arbiter.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle            - Client handle obtained by a call to WDRV_WINC_Open.
@@ -462,7 +563,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
     WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
     (
         DRV_HANDLE handle,
-        WDRV_WINC_COEX_CFG *pCoexCfg
+        const WDRV_WINC_COEX_CFG *const pCoexCfg
     )
 
   Summary:
@@ -472,8 +573,8 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
     Sets the interface mode, priority and antenna mode of the coexistence arbiter.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle   - Client handle obtained by a call to WDRV_WINC_Open.
@@ -493,7 +594,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
 WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
 (
     DRV_HANDLE handle,
-    WDRV_WINC_COEX_CFG *pCoexCfg
+    const WDRV_WINC_COEX_CFG *const pCoexCfg
 );
 
 //*******************************************************************************
@@ -514,8 +615,8 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
     mode, priority and antenna mode as well as if the arbiter is enabled or not.
 
   Precondition:
-    WDRV_WINC_Initialize should have been called.
-    WDRV_WINC_Open should have been called to obtain a valid handle.
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
     handle     - Client handle obtained by a call to WDRV_WINC_Open.
@@ -541,6 +642,46 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfGet
     DRV_HANDLE handle,
     WDRV_WINC_COEX_CFG *pCoexCfg,
     bool *pIsEnabled
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_WifiMACOptionsSet
+    (
+        DRV_HANDLE handle,
+        const WDRV_WINC_MAC_OPTIONS *const pMACOptions
+    )
+
+  Summary:
+    Sets the MAC options.
+
+  Description:
+    Configures WiFi MAC options.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle      - Client handle obtained by a call to WDRV_WINC_Open.
+    pMACOptions - Pointer to new MAC options to configure.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_WifiMACOptionsSet
+(
+    DRV_HANDLE handle,
+    const WDRV_WINC_MAC_OPTIONS *const pMACOptions
 );
 
 // DOM-IGNORE-BEGIN

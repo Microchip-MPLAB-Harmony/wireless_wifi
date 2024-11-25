@@ -25,6 +25,7 @@ Microchip or any third party.
 #define WDRV_WINC_UTILS_H
 
 #include "osal/osal.h"
+#include "conf_winc_dev.h"
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {
@@ -57,6 +58,11 @@ extern "C" {
 
 #define WDRV_WINC_UtilsStringToIPAddress(STR, ADDR)                     TCPIP_Helper_StringToIPAddress(STR, ADDR)
 #define WDRV_WINC_UtilsStringToIPv6Address(STR, ADDR)                   TCPIP_Helper_StringToIPv6Address(STR, ADDR)
+
+#define WDRV_WINC_UtilsNToHL                                            TCPIP_Helper_ntohl
+#define WDRV_WINC_UtilsHToNL                                            TCPIP_Helper_htonl
+#define WDRV_WINC_UtilsNToHS                                            TCPIP_Helper_ntohs
+#define WDRV_WINC_UtilsHToNS                                            TCPIP_Helper_htons
 
 #define WDRV_WINC_NTP_EPOCH                                             TCPIP_NTP_EPOCH
 #else
@@ -189,7 +195,7 @@ typedef union
 } WDRV_WINC_UINT32_VAL;
 
 void                        WDRV_WINC_UtilsSingleListInitialize(WDRV_WINC_SINGLE_LIST* pL);
-int                         WDRV_WINC_UtilsSingleListCount(WDRV_WINC_SINGLE_LIST* pL);
+int                         WDRV_WINC_UtilsSingleListCount(const WDRV_WINC_SINGLE_LIST* pL);
 WDRV_WINC_SGL_LIST_NODE*    WDRV_WINC_UtilsSingleListHeadRemove(WDRV_WINC_SINGLE_LIST* pL);
 void                        WDRV_WINC_UtilsSingleListTailAdd(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN);
 void                        WDRV_WINC_UtilsSingleListAppend(WDRV_WINC_SINGLE_LIST* pDstL, WDRV_WINC_SINGLE_LIST* pAList);
@@ -209,7 +215,27 @@ bool WDRV_WINC_UtilsIPAddressToString(const WDRV_WINC_IPV4_ADDR* ipAdd, char* bu
 bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR * addr);
 bool WDRV_WINC_UtilsIPv6AddressToString (const WDRV_WINC_IPV6_ADDR * v6Addr, char* buff, size_t buffSize);
 
-#define WDRV_WINC_NTP_EPOCH     2208988800ul
+#ifdef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
+#define WDRV_WINC_UtilsNToHL(N)                     ntohl(N)
+#define WDRV_WINC_UtilsHToNL(N)                     htonl(N)
+#define WDRV_WINC_UtilsNToHS(N)                     ntohs(N)
+#define WDRV_WINC_UtilsHToNS(N)                     htons(N)
+#else
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+uint32_t WDRV_WINC_UtilsNToHL(uint32_t N);
+uint16_t WDRV_WINC_UtilsNToHS(uint16_t N);
+
+#define WDRV_WINC_UtilsHToNL(N)                     WDRV_WINC_UtilsNToHL(N)
+#define WDRV_WINC_UtilsHToNS(N)                     WDRV_WINC_UtilsNToHS(N)
+#else
+#define WDRV_WINC_UtilsNToHL(N)                     (N)
+#define WDRV_WINC_UtilsHToNL(N)                     (N)
+#define WDRV_WINC_UtilsNToHS(N)                     (N)
+#define WDRV_WINC_UtilsHToNS(N)                     (N)
+#endif
+#endif
+
+#define WDRV_WINC_NTP_EPOCH     2208988800UL
 #endif
 
 #ifdef __cplusplus

@@ -59,26 +59,21 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
-/* Bits for WID_11I_SETTINGS and dot11iInfo field of scan results. */
-typedef enum
-{
-    WDRV_WINC_PRIVACY            = 0x0001,  // Not 11i, but included here for convenience
-    WDRV_WINC_SKEY               = 0x0002,  // Not 11i, but included here for convenience
-    WDRV_WINC_11I_WEP            = 0x0004,
-    WDRV_WINC_11I_WEP104         = 0x0008,
-    WDRV_WINC_11I_WPAIE          = 0x0010,
-    WDRV_WINC_11I_RSNE           = 0x0020,
-    WDRV_WINC_11I_CCMP128        = 0x0040,
-    WDRV_WINC_11I_TKIP           = 0x0080,
-    WDRV_WINC_11I_BIPCMAC128     = 0x0100,
-    WDRV_WINC_11I_MFP_REQUIRED   = 0x0200,
-    WDRV_WINC_11I_1X             = 0x0400,
-    WDRV_WINC_11I_PSK            = 0x0800,
-    WDRV_WINC_11I_SAE            = 0x1000,
-    WDRV_WINC_11I_TD             = 0x2000,
-    WDRV_WINC_AP                 = 0x8000,   // Indicates whether the settings are intended for STA or AP mode
-    WDRV_WINC_RSNA_MASK          = 0x3FF0,   // Mask of bits linked to RSNA's
-} WDRV_WINC_11I_MASK;
+    /* No modifiers set; the default behaviour for each auth type applies. */
+#define WDRV_WINC_AUTH_MOD_NONE         0x00U
+    /* If set, this modifier causes management frame protection to be required.
+     * It is relevant to the following auth types:
+     *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
+     *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
+     * This modifier can be set/cleared by WDRV_WINC_AuthCtxConfigureMfp. */
+#define WDRV_WINC_AUTH_MOD_MFP_REQ      0x01U
+    /* If set, this modifier causes management frame protection to be disabled.
+     * It is relevant to the following auth types:
+     *      WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL
+     *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
+     * This modifier is ignored if WDRV_WINC_AUTH_MOD_MFP_REQ is set.
+     * This modifier can be set/cleared by WDRV_WINC_AuthCtxConfigureMfp. */
+#define WDRV_WINC_AUTH_MOD_MFP_OFF      0x02U
 
 // *****************************************************************************
 /*  Authentication Types
@@ -104,9 +99,6 @@ typedef enum
     /* No encryption. */
     WDRV_WINC_AUTH_TYPE_OPEN = 0,
 
-    /* WEP encryption. */
-    WDRV_WINC_AUTH_TYPE_WEP = 1,
-
     /* WPA2 mixed mode (AP) / compatibility mode (STA) with PSK.
      * (As an AP GTK is TKIP, as a STA GTK is chosen by AP;
      * PTK can be CCMP or TKIP) */
@@ -116,95 +108,54 @@ typedef enum
     /* Note that a WPA2-only STA will not connect to a WPA2 mixed mode AP.   */
     WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL = 3,
 
-#define WDRV_WINC_WPA3_PERSONAL_SUPPORT
-#ifdef WDRV_WINC_WPA3_PERSONAL_SUPPORT
     /* WPA3 SAE transition mode. (CCMP, IGTK can be BIP or none) */
     WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL = 4,
 
     /* WPA3 SAE authentication. (CCMP, IGTK is BIP) */
     WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL = 5,
-#endif
-
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-    /* WPA2/WPA enterprise mixed mode authentication type */
-    WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE = 6,
-
-    /* WPA2 enterprise authentication type */
-    WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE = 7,
-
-    /* WPA3 enterprise transition mode authentication type */
-    WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE = 8,
-
-    /* WPA3 enterprise authentication type */
-    WDRV_WINC_AUTH_TYPE_WPA3_ENTERPRISE = 9,
-#endif
 
     /* Authentication types with this value or above are not recognised. */
     WDRV_WINC_AUTH_TYPE_MAX
 } WDRV_WINC_AUTH_TYPE;
 
 // *****************************************************************************
-/*  Authentication Modifiers
+/*  MFP Configurations
 
   Summary:
-    List of possible authentication modifiers.
+    List of possible configurations for Management Frame Protection.
 
   Description:
-    This type defines the possible modifications that can be made to the
-    authentication types in WDRV_WINC_AUTH_TYPE.
+    This type defines the possible configurations that can be specified in
+    WDRV_WINC_AuthCtxConfigureMfp.
 
   Remarks:
-    Not all modifiers are relevant to all auth types. When an auth context is
-    applied, modifiers are ignored if they are not relevant to the auth type.
+    Not all MFP configurations are compatible with all auth types. When an auth
+    context is applied, the MFP configuration is ignored if it is not
+    compatible with the auth type.
 */
 
 typedef enum
 {
-    /* No modifiers set; the default behaviour for each auth type applies. */
-    WDRV_WINC_AUTH_MOD_NONE         = 0,
-    /* If set, this modifier causes management frame protection to be required.
-     * It is relevant to the following auth types:
-     *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
-     *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
-     *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
-     *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE
-     * This modifier can be set/cleared by WDRV_WINC_AuthCtxConfigureMfp. */
-    WDRV_WINC_AUTH_MOD_MFP_REQ      = 0x01,
-    /* If set, this modifier causes management frame protection to be disabled.
-     * It is relevant to the following auth types:
+    /* Management Frame Protection enabled but not required.
+     * This is the default configuration for the following auth types:
      *      WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
-     *      WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE
-     *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
-     * This modifier is ignored if WDRV_WINC_AUTH_MOD_MFP_REQ is set.
-     * This modifier can be set/cleared by WDRV_WINC_AuthCtxConfigureMfp. */
-    WDRV_WINC_AUTH_MOD_MFP_OFF      = 0x02,
-    /* If set, this modifier allows the device, as supplicant, to attempt
-     * Shared Key authentication in the event that Open System authentication
-     * is rejected by the authenticator.
-     * It is relevant to the following auth types:
-     *      WDRV_WINC_AUTH_TYPE_WEP
-     * This modifier can be set/cleared by WDRV_WINC_AuthCtxSharedKey. */
-    WDRV_WINC_AUTH_MOD_SHARED_KEY   = 0x04,
-    /* If set, this modifier causes the device, as authenticator, to include a
-     * transition disable element. This instructs peer STAs to disable any
-     * transition mode protocols.
-     * It is relevant to the following auth types:
-     *      WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
-     * This modifier can be set/cleared by
-     *      WDRV_WINC_AuthCtxApTransitionDisable. */
-    WDRV_WINC_AUTH_MOD_AP_TD        = 0x08,
-    /* If set, this modifier causes the device, as supplicant, to disable any
-     * transition mode protocols.
-     * It is relevant to the following auth types:
+     * This configuration is not compatible with other auth types. */
+    WDRV_WINC_AUTH_MFP_ENABLED,
+    /* Management Frame Protection required.
+     * This is an optional configuration for the following auth types:
+     *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
-     *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE
-     *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE (so long as MFP is enabled)
-     *      WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE (so long as MFP is enabled)
-     * This modifier can be set by WDRV_WINC_AuthCtxStaTransitionDisable. */
-    WDRV_WINC_AUTH_MOD_STA_TD       = 0x10,
-} WDRV_WINC_AUTH_MOD_MASK;
+     * This configuration is not compatible with other auth types. */
+    WDRV_WINC_AUTH_MFP_REQUIRED,
+    /* Management Frame Protection disabled.
+     * This is an optional configuration for the following auth types:
+     *      WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL
+     *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
+     * This configuration is not compatible with other auth types. */
+    WDRV_WINC_AUTH_MFP_DISABLED,
+} WDRV_WINC_AUTH_MFP_CONFIG;
 
 // *****************************************************************************
 /*  Authentication Context
@@ -226,22 +177,11 @@ typedef struct
     WDRV_WINC_AUTH_TYPE authType;
 
     /* Authentication modifiers. */
-    WDRV_WINC_AUTH_MOD_MASK authMod;
+    uint8_t authMod;
 
     /* Union of data structures for each authentication type. */
     union
     {
-        /* WEP authentication state. */
-        struct
-        {
-            /* The WEP key index in the range 1-4. */
-            uint8_t idx;
-            /* The WEP key size is 10 for WEP_40 and 26 for WEP_104. */
-            uint8_t size;
-            /* The WEP key. */
-            uint8_t key[WDRV_WINC_WEP_104_KEY_STRING_SIZE+1];
-        } WEP;
-
         /* WPA-Personal authentication state. */
         struct
         {
@@ -252,37 +192,6 @@ typedef struct
             /* The password or PSK. */
             uint8_t password[WDRV_WINC_PSK_LEN];
         } personal;
-#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
-         /* 802.1x authentication state. */
-        struct
-        {
-            /* EAP method configured for 802.1X authentication */
-            WDRV_WINC_AUTH_1X_METHOD   auth1xMethod;
-            struct
-            {
-                /* Specifies the EAP identity name - [Domain][UserName] or [Username][Domain] */
-                char identity[WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX+1];
-                /* WOLFSSL_CTX handle */
-                WDRV_WINC_TLS_CONTEXT_HANDLE tlsCtxHandle;
-                /* Server domain name against which either server certificate's subject alternative
-                 * name(SAN) or common name(CN) shall be matched for successful enterprise connection */
-                char serverDomainName[WDRV_WINC_ENT_AUTH_SERVER_DOMAIN_LEN_MAX + 1];
-            } phase1;
-            struct
-            {
-                union
-                {
-                    struct
-                    {
-                        /* username for mschapv2 authentication */
-                        char username[WDRV_WINC_ENT_AUTH_USERNAME_LEN_MAX + 1];
-                        /* password for mschapv2 authentication */
-                        char password[WDRV_WINC_ENT_AUTH_PASSWORD_LEN_MAX + 1];
-                    } mschapv2;
-                } credentials;
-            } phase2;
-        } enterprise;
-#endif
     } authInfo;
 } WDRV_WINC_AUTH_CONTEXT;
 
@@ -291,40 +200,6 @@ typedef struct
 // Section: WINC Driver Authentication Context Routines
 // *****************************************************************************
 // *****************************************************************************
-
-//*******************************************************************************
-/*
-  Function:
-    WDRV_WINC_11I_MASK WDRV_WINC_AuthGet11iMask
-    (
-        WDRV_WINC_AUTH_TYPE authType,
-        WDRV_WINC_AUTH_MOD_MASK authMod
-    )
-
-  Summary:
-    Convert authentication type and modifiers to 11i info.
-
-  Description:
-
-  Precondition:
-    None.
-
-  Parameters:
-    authType - Auth type to convert.
-    authMod  - Modifiers to the authentication type.
-
-  Returns:
-    11i info mapped from auth type and modifiers.
-
-  Remarks:
-    None.
-*/
-
-WDRV_WINC_11I_MASK WDRV_WINC_AuthGet11iMask
-(
-    WDRV_WINC_AUTH_TYPE authType,
-    WDRV_WINC_AUTH_MOD_MASK authMod
-);
 
 //*******************************************************************************
 /*
@@ -425,50 +300,6 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWEP
-    (
-        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-        uint8_t idx,
-        uint8_t *pKey,
-        uint8_t size
-    )
-
-  Summary:
-    Configure an authentication context for WEP authentication.
-
-  Description:
-    The auth type and information are configured appropriately for WEP
-      authentication.
-
-  Precondition:
-    None.
-
-  Parameters:
-    pAuthCtx - Pointer to an authentication context.
-    idx      - WEP index.
-    pKey     - Pointer to WEP key.
-    size     - Size of WEP key.
-
-  Returns:
-    WDRV_WINC_STATUS_OK             - The context has been configured.
-    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
-
-  Remarks:
-    None.
-
-*/
-
-WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWEP
-(
-    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-    uint8_t idx,
-    uint8_t *const pKey,
-    uint8_t size
-);
-
-//*******************************************************************************
-/*
-  Function:
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
@@ -509,6 +340,48 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     uint8_t *const pPassword,
     uint8_t size,
     WDRV_WINC_AUTH_TYPE authType
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        WDRV_WINC_AUTH_MFP_CONFIG config
+    )
+
+  Summary:
+    Set the Management Frame Protection configuration of an authentication
+      context.
+
+  Description:
+    The authentication context is updated with the Management Frame Protection
+      configuration specified in the config parameter.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pAuthCtx    - Pointer to an authentication context.
+    config      - The required Management Frame Protection configuration.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The context has been updated.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    Not all MFP configurations are compatible with all auth types. When an auth
+      context is applied, the MFP configuration is ignored if it is not
+      compatible with the auth type.
+    The MFP configuration is initialised to WDRV_WINC_AUTH_MFP_ENABLED by
+      WDRV_WINC_AuthCtxSetPersonal.
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    WDRV_WINC_AUTH_MFP_CONFIG config
 );
 
 #endif /* WDRV_WINC_AUTHCTX_H */

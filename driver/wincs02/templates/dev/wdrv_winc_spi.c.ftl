@@ -52,17 +52,17 @@
 
 typedef struct
 {
-    bool                    isInit;
-    bool                    isOpen;
-    /* This is the SPI configuration. */
-    WDRV_WINC_SPI_CFG       cfg;
-<#if DRV_WIFI_WINC_TX_RX_DMA == false>
-<#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0 >
-    DRV_HANDLE              spiHandle;
-    DRV_SPI_TRANSFER_HANDLE transferHandle;
+    bool                                isInit;
+    bool                                isOpen;
+    WDRV_WINC_SPI_CFG                   cfg;
+<#if DRV_WIFI_WINC_TX_RX_DMA == true>
+    SYS_DMA_SOURCE_ADDRESSING_MODE      txDMAAddrMode;
+    SYS_DMA_DESTINATION_ADDRESSING_MODE rxDMAAddrMode;
+<#elseif drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0 >
+    DRV_HANDLE                          spiHandle;
+    DRV_SPI_TRANSFER_HANDLE             transferHandle;
 </#if>
-</#if>
-    OSAL_SEM_HANDLE_TYPE    syncSem;
+    OSAL_SEM_HANDLE_TYPE                syncSem;
 } WDRV_WINC_SPIDCPT;
 
 // *****************************************************************************
@@ -86,7 +86,7 @@ static CACHE_ALIGN uint8_t dummyDataRx[CACHE_ALIGNED_SIZE_GET(4)];
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
 static void lDRV_SPI_PlibCallbackHandler(SYS_DMA_TRANSFER_EVENT status, uintptr_t contextHandle)
 {
-    OSAL_SEM_PostISR((OSAL_SEM_HANDLE_TYPE*)contextHandle);
+    (void)OSAL_SEM_PostISR((OSAL_SEM_HANDLE_TYPE*)contextHandle);
 }
 
 <#elseif drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0 >
@@ -99,7 +99,7 @@ static void lWDRV_WINC_SPITransferEventHandler(DRV_SPI_TRANSFER_EVENT event,
             // This means the data was transferred.
             if (spiDcpt.transferHandle == handle)
             {
-                OSAL_SEM_PostISR(&spiDcpt.syncSem);
+                (void)OSAL_SEM_PostISR(&spiDcpt.syncSem);
             }
 
             break;
@@ -146,8 +146,8 @@ static void lDRV_SPI_PlibCallbackHandler(uintptr_t contextHandle)
 bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t size)
 {
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
-    SYS_DMA_SOURCE_ADDRESSING_MODE      sourceAddrMode = SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED;
-    SYS_DMA_DESTINATION_ADDRESSING_MODE destAddrMode   = SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED;
+    SYS_DMA_SOURCE_ADDRESSING_MODE      txDMAAddrMode = SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED;
+    SYS_DMA_DESTINATION_ADDRESSING_MODE rxDMAAddrMode = SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED;
 
 </#if>
     if ((false == spiDcpt.isInit) || (false == spiDcpt.isOpen))
@@ -168,13 +168,12 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
     else
     {
         /* Configure the RX DMA channel - to receive data in receive buffer */
-        destAddrMode = SYS_DMA_DESTINATION_ADDRESSING_MODE_INCREMENTED;
+        rxDMAAddrMode = SYS_DMA_DESTINATION_ADDRESSING_MODE_INCREMENTED;
 <#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true >
 
         /* Flush receive buffer data from cache to memory, in case there are
-          changes to other locations within the cache line.
-          Invalid cache lines to avoid flushing over received data */
-        SYS_CACHE_CleanInvalidateDCache_by_Addr(pReceiveData, size);
+          changes to other locations within the cache line. */
+        SYS_CACHE_CleanDCache_by_Addr(pReceiveData, size);
 </#if>
     }
 
@@ -186,7 +185,7 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
     else
     {
         /* Configure the transmit DMA channel - to send data from transmit buffer */
-        sourceAddrMode = SYS_DMA_SOURCE_ADDRESSING_MODE_INCREMENTED;
+        txDMAAddrMode = SYS_DMA_SOURCE_ADDRESSING_MODE_INCREMENTED;
 <#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true >
 
         /* Flush transmit data from cache to memory */
@@ -194,11 +193,19 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
 </#if>
     }
 
-    SYS_DMA_AddressingModeSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, destAddrMode);
-    SYS_DMA_ChannelTransfer(spiDcpt.cfg.rxDMAChannel, (const void*)spiDcpt.cfg.rxAddress, pReceiveData, size);
+    if (rxDMAAddrMode != spiDcpt.rxDMAAddrMode)
+    {
+        SYS_DMA_AddressingModeSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_SOURCE_ADDRESSING_MODE_FIXED, rxDMAAddrMode);
+        spiDcpt.rxDMAAddrMode = rxDMAAddrMode;
+    }
+    (void)SYS_DMA_ChannelTransfer(spiDcpt.cfg.rxDMAChannel, (const void*)spiDcpt.cfg.rxAddress, pReceiveData, size);
 
-    SYS_DMA_AddressingModeSetup(spiDcpt.cfg.txDMAChannel, sourceAddrMode, SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED);
-    SYS_DMA_ChannelTransfer(spiDcpt.cfg.txDMAChannel, pTransmitData, (const void*)spiDcpt.cfg.txAddress, size);
+    if (txDMAAddrMode != spiDcpt.txDMAAddrMode)
+    {
+        SYS_DMA_AddressingModeSetup(spiDcpt.cfg.txDMAChannel, txDMAAddrMode, SYS_DMA_DESTINATION_ADDRESSING_MODE_FIXED);
+        spiDcpt.txDMAAddrMode = txDMAAddrMode;
+    }
+    (void)SYS_DMA_ChannelTransfer(spiDcpt.cfg.txDMAChannel, pTransmitData, (const void*)spiDcpt.cfg.txAddress, size);
 <#elseif drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
     size_t txSize, rxSize;
     void *pTxPtr, *pRxPtr;
@@ -265,6 +272,13 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
     while (OSAL_RESULT_FALSE == OSAL_SEM_Pend(&spiDcpt.syncSem, OSAL_WAIT_FOREVER))
     {
     }
+<#if core.DATA_CACHE_ENABLE?? && core.DATA_CACHE_ENABLE == true >
+
+    if (SYS_DMA_DESTINATION_ADDRESSING_MODE_INCREMENTED == rxDMAAddrMode)
+    {
+        SYS_CACHE_InvalidateDCache_by_Addr(pReceiveData, size);
+    }
+</#if>
 
 #ifdef WDRV_WINC_SSN_Set
     WDRV_WINC_SSN_Set();
@@ -290,9 +304,14 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
 
 bool WDRV_WINC_SPIOpen(void)
 {
-    if ((false == spiDcpt.isInit) || (true == spiDcpt.isOpen))
+    if (false == spiDcpt.isInit)
     {
         return false;
+    }
+
+    if (true == spiDcpt.isOpen)
+    {
+        return true;
     }
 
     if (OSAL_RESULT_TRUE != OSAL_SEM_Create(&spiDcpt.syncSem, OSAL_SEM_TYPE_COUNTING, 10, 0))
@@ -303,6 +322,9 @@ bool WDRV_WINC_SPIOpen(void)
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.rxDMAChannel, SYS_DMA_WIDTH_8_BIT);
     SYS_DMA_DataWidthSetup(spiDcpt.cfg.txDMAChannel, SYS_DMA_WIDTH_8_BIT);
+
+    spiDcpt.txDMAAddrMode = SYS_DMA_SOURCE_ADDRESSING_MODE_NONE;
+    spiDcpt.rxDMAAddrMode = SYS_DMA_DESTINATION_ADDRESSING_MODE_NONE;
 
     SYS_DMA_ChannelCallbackRegister(spiDcpt.cfg.rxDMAChannel, lDRV_SPI_PlibCallbackHandler, (uintptr_t)&spiDcpt.syncSem);
 
@@ -370,8 +392,8 @@ void WDRV_WINC_SPIInitialize(const WDRV_WINC_SPI_CFG *const pInitData)
         return;
     }
 
-    memcpy(&spiDcpt.cfg, pInitData, sizeof(WDRV_WINC_SPI_CFG));
-    memset(dummyDataTx, 0xff, sizeof(dummyDataTx));
+    (void)memcpy(&spiDcpt.cfg, pInitData, sizeof(WDRV_WINC_SPI_CFG));
+    (void)memset(dummyDataTx, 0xff, sizeof(dummyDataTx));
 <#if DRV_WIFI_WINC_TX_RX_DMA == false>
 <#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0 >
 
@@ -418,8 +440,8 @@ void WDRV_WINC_SPIDeinitialize(void)
     }
 
 <#else>
-    OSAL_SEM_Post(&spiDcpt.syncSem);
-    OSAL_SEM_Delete(&spiDcpt.syncSem);
+    (void)OSAL_SEM_Post(&spiDcpt.syncSem);
+    (void)OSAL_SEM_Delete(&spiDcpt.syncSem);
 
 </#if>
     spiDcpt.isOpen = false;

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -42,5 +42,17 @@ Microchip or any third party.
 <#elseif DRV_WIFI_WINC_LOG_LEVEL == "Verbose">
     <#lt>#define WINC_DEBUG_LEVEL                    WINC_DEBUG_TYPE_VERBOSE
 </#if>
+<#if HarmonyCore.SELECT_RTOS != "BareMetal">
 
+#define WINC_CONF_LOCK_STORAGE(NAME)        OSAL_MUTEX_HANDLE_TYPE NAME
+#define WINC_CONF_LOCK_CREATE(NAME)         OSAL_MUTEX_Create(NAME)
+#define WINC_CONF_LOCK_DESTROY(NAME)        OSAL_MUTEX_Delete(NAME)
+#define WINC_CONF_LOCK_ENTER(NAME)          (OSAL_RESULT_SUCCESS == OSAL_MUTEX_Lock(NAME, OSAL_WAIT_FOREVER))
+#define WINC_CONF_LOCK_LEAVE(NAME)          OSAL_MUTEX_Unlock(NAME)
+
+</#if>
+<#if DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS>
+#define WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
+
+</#if>
 #endif /* CONF_WINC_DEV_H */
