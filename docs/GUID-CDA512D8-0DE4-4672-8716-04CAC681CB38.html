@@ -242,10 +242,16 @@ MPLAB® Harmony 3 Wireless_wifi</a></div></div></li><li role="treeitem" aria-exp
         </div>
       </div>
       <div class="mchp-footer-tier2">
-        <p class="mchp-copyright">© Copyright 1998-2022 Microchip Technology Inc. All rights reserved.</p>
+        <p class="mchp-copyright">© Copyright 1998-<span class="current-year">2024</span> Microchip Technology Inc. All rights reserved.</p>
       </div>
     </div>
   </div>
+  <script>
+    (function() {
+      var currentYear = new Date().getFullYear();
+      document.querySelector('.current-year').textContent = currentYear;
+    })();
+  </script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-2724382-19"></script>
   <script>
