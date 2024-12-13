@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019-21, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -73,7 +73,7 @@ static bool bleInitialized = false;
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_BLEWaitCallback(void)
+    void bleWaitCallback(void)
 
   Summary:
     WINC BLE wait callback.
@@ -96,7 +96,7 @@ static bool bleInitialized = false;
 
 */
 
-static void _WDRV_WINC_BLEWaitCallback(DRV_HANDLE handle)
+static void bleWaitCallback(DRV_HANDLE handle)
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
 
@@ -206,7 +206,7 @@ WDRV_WINC_STATUS WDRV_WINC_BLEStart(DRV_HANDLE handle)
         /* If BLE has never been initialised, set up initialise it. */
         plf_params.drvHandle    = handle;
         plf_params.ble_write_cb = m2m_wifi_ble_api_send;
-        plf_params.plf_wait_cb  = _WDRV_WINC_BLEWaitCallback;
+        plf_params.plf_wait_cb  = bleWaitCallback;
 
         if (M2M_SUCCESS != m2m_wifi_get_firmware_version(&info))
         {

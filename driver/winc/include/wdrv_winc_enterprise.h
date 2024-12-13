@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_ENTERPRISE_H
-#define _WDRV_WINC_ENTERPRISE_H
+#ifndef WDRV_WINC_ENTERPRISE_H
+#define WDRV_WINC_ENTERPRISE_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -400,4 +400,4 @@ bool WDRV_WINC_EntSec802_1XSessionCache(DRV_HANDLE handle);
 #endif
 // DOM-IGNORE-END
 
-#endif /* _WDRV_WINC_COMMON_H */
+#endif /* WDRV_WINC_COMMON_H */

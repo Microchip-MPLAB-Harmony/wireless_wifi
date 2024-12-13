@@ -1,6 +1,6 @@
 <#--
 /*
-Copyright (C) 2019-21, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -25,7 +25,7 @@ Microchip or any third party.
 <#if HarmonyCore.SELECT_RTOS == "BareMetal">
     WDRV_WINC_Tasks(sysObj.drvWifiWinc);
 <#elseif HarmonyCore.SELECT_RTOS == "FreeRTOS">
-    xTaskCreate( _WDRV_WINC_Tasks,
+    xTaskCreate( lWDRV_WINC_Tasks,
         "WDRV_WINC_Tasks",
         DRV_WIFI_WINC_RTOS_STACK_SIZE,
         (void*)NULL,
@@ -33,19 +33,19 @@ Microchip or any third party.
         (TaskHandle_t*)NULL
     );
 <#elseif HarmonyCore.SELECT_RTOS == "ThreadX">
-    /* Allocate the stack for _WDRV_WINC_Tasks thread */
+    /* Allocate the stack for lWDRV_WINC_Tasks thread */
     tx_byte_allocate(&byte_pool_0,
-        (VOID **) &_WDRV_WINC_Task_Stk_Ptr,
+        (VOID **) &lWDRV_WINC_Task_Stk_Ptr,
         DRV_WIFI_WINC_RTOS_STACK_SIZE,
         TX_NO_WAIT
     );
 
-    /* create the _WDRV_WINC_Tasks thread */
-    tx_thread_create(&_WDRV_WINC_Task_TCB,
-        (char*)"_WDRV_WINC_Tasks",
-        _WDRV_WINC_Tasks,
+    /* create the lWDRV_WINC_Tasks thread */
+    tx_thread_create(&lWDRV_WINC_Task_TCB,
+        (char*)"lWDRV_WINC_Tasks",
+        lWDRV_WINC_Tasks,
         0,
-        _WDRV_WINC_Task_Stk_Ptr,
+        lWDRV_WINC_Task_Stk_Ptr,
         DRV_WIFI_WINC_RTOS_STACK_SIZE,
         DRV_WIFI_WINC_RTOS_TASK_PRIORITY,
         DRV_WIFI_WINC_RTOS_TASK_PRIORITY,

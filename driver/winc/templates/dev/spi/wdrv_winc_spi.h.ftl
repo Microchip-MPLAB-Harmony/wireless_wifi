@@ -37,8 +37,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_SPI_H
-#define _WDRV_WINC_SPI_H
+#ifndef WDRV_WINC_SPI_H
+#define WDRV_WINC_SPI_H
 
 <#if drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0>
 #include "system/ports/sys_ports.h"
@@ -258,4 +258,4 @@ void WDRV_WINC_SPIInitialize(const WDRV_WINC_SPI_CFG *const pInitData);
 
 void WDRV_WINC_SPIDeinitialize(void);
 
-#endif /* _WDRV_WINC_SPI_H */
+#endif /* WDRV_WINC_SPI_H */

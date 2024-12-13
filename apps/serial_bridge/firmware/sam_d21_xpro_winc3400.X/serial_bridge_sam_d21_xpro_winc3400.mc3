@@ -5212,7 +5212,7 @@
       &lt;/Boolean&gt;
     &lt;/Attributes&gt;
     &lt;Values dnOrder=&quot;1&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;1.4.6&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;1.4.7&quot;/&gt;
     &lt;/Values&gt;
   &lt;/drvWifiWinc&gt;
 &lt;/drvWifiWinc&gt;
@@ -6030,9 +6030,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_ECC_TYPES_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_ECC_TYPES_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_ECC_TYPES_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_ECC_TYPES_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6043,9 +6043,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_INET_ADDR_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_INET_ADDR_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_INET_ADDR_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_INET_ADDR_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6056,9 +6056,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_INET_NTOP_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_INET_NTOP_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_INET_NTOP_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_INET_NTOP_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6069,9 +6069,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_FLASH_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_FLASH_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_FLASH_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_FLASH_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6082,9 +6082,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_FLASH_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_FLASH_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_FLASH_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_FLASH_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6095,9 +6095,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_HIF_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_HIF_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_HIF_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_HIF_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6108,9 +6108,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_HIF_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_HIF_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_HIF_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_HIF_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6121,9 +6121,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_OTA_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_OTA_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_OTA_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_OTA_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6134,9 +6134,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_OTA_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_OTA_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_OTA_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_OTA_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6147,9 +6147,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_PERIPH_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_PERIPH_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_PERIPH_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_PERIPH_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6160,9 +6160,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_PERIPH_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_PERIPH_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_PERIPH_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_PERIPH_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6173,9 +6173,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_SOCKET_HOST_IF_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_SOCKET_HOST_IF_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_SOCKET_HOST_IF_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_SOCKET_HOST_IF_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6186,9 +6186,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_SSL_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_SSL_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_SSL_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_SSL_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6199,9 +6199,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_SSL_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_SSL_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_SSL_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_SSL_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6212,9 +6212,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_TYPES_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_TYPES_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_TYPES_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_TYPES_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6225,9 +6225,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_WIFI_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_WIFI_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_WIFI_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_WIFI_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6238,9 +6238,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_M2M_WIFI_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_M2M_WIFI_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_M2M_WIFI_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_M2M_WIFI_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6251,9 +6251,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NETINET_IN_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NETINET_IN_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NETINET_IN_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NETINET_IN_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6264,9 +6264,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMASIC_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMASIC_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMASIC_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMASIC_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6277,9 +6277,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMASIC_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMASIC_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMASIC_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMASIC_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6290,9 +6290,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMBUS_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMBUS_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMBUS_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMBUS_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6303,9 +6303,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMBUS_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMBUS_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMBUS_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMBUS_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6316,9 +6316,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMDRV_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMDRV_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMDRV_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMDRV_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6329,9 +6329,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMDRV_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMDRV_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMDRV_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMDRV_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6342,9 +6342,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMSPI_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMSPI_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMSPI_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMSPI_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6355,9 +6355,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NMSPI_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NMSPI_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NMSPI_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NMSPI_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6368,9 +6368,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NM_BSP_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NM_BSP_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NM_BSP_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NM_BSP_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6381,9 +6381,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NM_COMMON_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NM_COMMON_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NM_COMMON_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NM_COMMON_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6394,9 +6394,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NM_COMMON_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NM_COMMON_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NM_COMMON_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NM_COMMON_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6407,9 +6407,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_NM_DEBUG_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_NM_DEBUG_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_NM_DEBUG_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_NM_DEBUG_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6420,9 +6420,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_SOCKET_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_SOCKET_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_SOCKET_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_SOCKET_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6433,9 +6433,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_SOCKET_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_SOCKET_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_SOCKET_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_SOCKET_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6446,9 +6446,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_SPI_FLASH_C"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_SPI_FLASH_C"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_SPI_FLASH_C&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_SPI_FLASH_C&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6459,9 +6459,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_SPI_FLASH_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_SPI_FLASH_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_SPI_FLASH_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_SPI_FLASH_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
@@ -6472,9 +6472,9 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_6_SPI_FLASH_MAP_H"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="drvWifiWinc" name="WIFI_WINC3400_1_4_7_SPI_FLASH_MAP_H"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;drvWifiWinc&gt;
-  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_6_SPI_FLASH_MAP_H&quot;&gt;
+  &lt;drvWifiWinc dnOrder=&quot;0&quot; id=&quot;WIFI_WINC3400_1_4_7_SPI_FLASH_MAP_H&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
         &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;

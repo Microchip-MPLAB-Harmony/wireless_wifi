@@ -479,10 +479,10 @@ def instantiateComponent(drvWincComponent):
     winc1500Version.setHelp(winclite_help_keyword)
 
     # WINC3400 Version
-    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.4.6'])
+    winc3400Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC3400_VERSION', None, ['1.4.7'])
     winc3400Version.setLabel('Firmware Version')
     winc3400Version.setVisible(False)
-    winc3400Version.setDefaultValue('1.4.6')
+    winc3400Version.setDefaultValue('1.4.7')
     winc3400Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
     winc3400Version.setHelp(winclite_help_keyword)
 
@@ -684,10 +684,10 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc1500, configName, incFileEntry, 'winc1500_19.7.7_lite')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'winc3400_1.4.6_lite')
+        importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'winc3400_1.4.7_lite')
 
     for incFileEntry in bledrvFirmwareDriverIncFiles:
-        importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'winc3400_1.4.6_lite')
+        importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'winc3400_1.4.7_lite')
 
     wdrvSrcFiles = [
         ['wdrv_winc.c',                                         condAlways],
@@ -756,10 +756,10 @@ def instantiateComponent(drvWincComponent):
         importSrcFile(drvWincComponent, flagWinc1500, configName, srcFileEntry, 'winc1500_19.7.7_lite')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'winc3400_1.4.6_lite')
+        importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'winc3400_1.4.7_lite')
 
     for srcFileEntry in bledrvFirmwareDriverSrcFiles:
-        importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'winc3400_1.4.6_lite')
+        importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'winc3400_1.4.7_lite')
 
     wdrvIncPaths = [
         ['/include/',               condAlways],

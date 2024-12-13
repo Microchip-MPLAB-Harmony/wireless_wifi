@@ -40,8 +40,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_AUTHCTX_H
-#define _WDRV_WINC_AUTHCTX_H
+#ifndef WDRV_WINC_AUTHCTX_H
+#define WDRV_WINC_AUTHCTX_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -505,4 +505,4 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetWPAEnterpriseTLS
 );
 #endif
 
-#endif /* _WDRV_WINC_AUTHCTX_H */
+#endif /* WDRV_WINC_AUTHCTX_H */

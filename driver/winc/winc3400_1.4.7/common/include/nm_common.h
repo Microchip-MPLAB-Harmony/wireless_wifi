@@ -31,7 +31,7 @@ for any third-party software incorporated in the software and any applicable ope
 source software license terms, no license or other rights, whether express or
 implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
-*/
+ */
 //DOM-IGNORE-END
 
 /** @defgroup COMMON Common

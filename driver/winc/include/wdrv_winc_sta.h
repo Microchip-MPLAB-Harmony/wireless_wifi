@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_STA_H
-#define _WDRV_WINC_STA_H
+#ifndef WDRV_WINC_STA_H
+#define WDRV_WINC_STA_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -264,4 +264,4 @@ WDRV_WINC_STATUS WDRV_WINC_BSSRoamingConfigure
 );
 #endif
 
-#endif /* _WDRV_WINC_STA_H */
+#endif /* WDRV_WINC_STA_H */

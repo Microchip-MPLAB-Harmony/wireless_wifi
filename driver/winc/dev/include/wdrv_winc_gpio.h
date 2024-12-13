@@ -37,8 +37,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_GPIO_H
-#define _WDRV_WINC_GPIO_H
+#ifndef WDRV_WINC_GPIO_H
+#define WDRV_WINC_GPIO_H
 
 //*******************************************************************************
 /*
@@ -188,4 +188,4 @@ void WDRV_WINC_GPIOResetAssert(void);
  */
 void WDRV_WINC_GPIOResetDeassert(void);
 
-#endif /* _WDRV_WINC_GPIO_H */
+#endif /* WDRV_WINC_GPIO_H */

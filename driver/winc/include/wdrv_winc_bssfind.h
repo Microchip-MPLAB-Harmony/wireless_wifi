@@ -49,8 +49,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_BSSFIND_H
-#define _WDRV_WINC_BSSFIND_H
+#ifndef WDRV_WINC_BSSFIND_H
+#define WDRV_WINC_BSSFIND_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -654,4 +654,4 @@ uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle);
 
 bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle);
 
-#endif /* _WDRV_WINC_BSSFIND_H */
+#endif /* WDRV_WINC_BSSFIND_H */

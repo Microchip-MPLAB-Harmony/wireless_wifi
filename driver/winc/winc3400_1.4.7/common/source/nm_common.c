@@ -1,12 +1,12 @@
 /*******************************************************************************
   File Name:
-    nm_common.h
+    nm_common.c
 
   Summary:
-    This module contains WINC3400 BSP APIs declarations.
+    This module contains common APIs implementations.
 
   Description:
-    This module contains WINC3400 BSP APIs declarations.
+    This module contains common APIs implementations.
  *******************************************************************************/
 
 //DOM-IGNORE-BEGIN
@@ -31,55 +31,68 @@ for any third-party software incorporated in the software and any applicable ope
 source software license terms, no license or other rights, whether express or
 implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
+ */
+
+#include "nm_common.h"
+#include "wdrv_winc_common.h"
+#include "wdrv_winc_gpio.h"
+
+/*!
+ *  @fn         nm_sleep
+ *  @brief      Sleep in units of mSec
+ *  @param[IN]  u32TimeMsec
+ *              Time in milliseconds
 */
+void nm_sleep(uint32_t u32TimeMsec)
+{
+    WDRV_MSDelay(u32TimeMsec);
+}
+
+/*!
+ *  @fn     nm_reset
+ *  @brief  Reset NMC3400 SoC by setting CHIP_EN and RESET_N signals low,
+ *           CHIP_EN high then RESET_N high
+ */
+void nm_reset(void)
+        {
+    WDRV_WINC_GPIOChipEnableDeassert();
+    WDRV_WINC_GPIOResetAssert();
+    nm_sleep(100);
+    WDRV_WINC_GPIOChipEnableAssert();
+    nm_sleep(10);
+    WDRV_WINC_GPIOResetDeassert();
+    nm_sleep(10);
+}
+
+/* Convert hexchar to value 0-15 */
+static uint8_t hexchar_2_val(uint8_t ch)
+{
+    ch -= 0x30;
+    if(ch <= 9)
+        return ch;
+    ch |= 0x20;
+    ch -= 0x31;
+    if(ch <= 5)
+        return ch + 10;
+    return 0xFF;
+}
+
+/* Convert hexstring to bytes */
+int8_t hexstr_2_bytes(uint8_t *pu8Out, uint8_t *pu8In, uint8_t u8SizeOut)
+{
+    while(u8SizeOut--)
+    {
+        uint8_t   u8Out = hexchar_2_val(*pu8In++);
+        if(u8Out > 0xF)
+            return M2M_ERR_INVALID_ARG;
+        *pu8Out = u8Out * 0x10;
+        u8Out = hexchar_2_val(*pu8In++);
+        if(u8Out > 0xF)
+            return M2M_ERR_INVALID_ARG;
+        *pu8Out += u8Out;
+        pu8Out++;
+    }
+    return M2M_SUCCESS;
+}
+
 //DOM-IGNORE-END
-
-/** @defgroup nm_bsp BSP
-    @brief
-        Description of the BSP (<strong>B</strong>oard <strong>S</strong>upport <strong>P</strong>ackage) module.
-    @{
-        @defgroup   DataT       Data Types
-        @defgroup   BSPDefine   Defines
-        @defgroup   BSPAPI      Functions
-        @brief
-            Lists the available BSP (<strong>B</strong>oard <strong>S</strong>upport <strong>P</strong>ackage) APIs.
-    @}
- */
-
-/**@addtogroup BSPDefine
-   @{
- */
-#ifndef _NM_BSP_H_
-#define _NM_BSP_H_
-
-#define BSP_MIN(x,y) ((x)>(y)?(y):(x))
-/*!<
- *    Computes the minimum value between \b x and \b y.
- */
-/**@}*/     //BSPDefine
-
-/**
- * @addtogroup BSPDefine
- * @{
- */
-
-#ifdef _NM_BSP_BIG_END
-/*! Switch endianness of 32bit word (In the case that Host is BE) */
-#define NM_BSP_B_L_32(x) \
-((((x) & 0x000000FF) << 24) + \
-(((x) & 0x0000FF00) << 8)  + \
-(((x) & 0x00FF0000) >> 8)   + \
-(((x) & 0xFF000000) >> 24))
-/*! Switch endianness of 16bit word (In the case that Host is BE) */
-#define NM_BSP_B_L_16(x) \
-((((x) & 0x00FF) << 8) + \
-(((x)  & 0xFF00) >> 8))
-#else
-/*! Retain endianness of 32bit word (In the case that Host is LE) */
-#define NM_BSP_B_L_32(x)  (x)
-/*! Retain endianness of 16bit word (In the case that Host is LE) */
-#define NM_BSP_B_L_16(x)  (x)
-#endif
-/**@}*/     //BSPDefine
-
-#endif  /*_NM_BSP_H_*/

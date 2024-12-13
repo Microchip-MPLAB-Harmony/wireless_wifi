@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_ETHERNET_H
-#define _WDRV_WINC_ETHERNET_H
+#ifndef WDRV_WINC_ETHERNET_H
+#define WDRV_WINC_ETHERNET_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -166,4 +166,4 @@ WDRV_WINC_STATUS WDRV_WINC_EthernetSendPacket
 #endif
 // DOM-IGNORE-END
 
-#endif /* _WDRV_WINC_ETHERNET_H */
+#endif /* WDRV_WINC_ETHERNET_H */

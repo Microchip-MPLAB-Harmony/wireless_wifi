@@ -39,8 +39,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
  *******************************************************************************/
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_MAC_H
-#define _WDRV_WINC_MAC_H
+#ifndef WDRV_WINC_MAC_H
+#define WDRV_WINC_MAC_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -502,4 +502,4 @@ bool WDRV_WINC_MACEventAcknowledge(DRV_HANDLE handle, TCPIP_MAC_EVENT macEvents)
 
 TCPIP_MAC_EVENT WDRV_WINC_MACEventPendingGet(DRV_HANDLE handle);
 
-#endif /* _WDRV_WINC_MAC_H */
+#endif /* WDRV_WINC_MAC_H */

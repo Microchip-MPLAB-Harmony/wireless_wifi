@@ -90,7 +90,7 @@ static CACHE_ALIGN uint8_t alignedBuffer[CACHE_ALIGNED_SIZE_GET(2048)];
 
 <#if DRV_WIFI_WINC_TX_RX_DMA == true>
 <#elseif drv_spi?? && DRV_WIFI_WINC_SPI_INST_IDX gte 0 >
-static void _WDRV_WINC_SPITransferEventHandler(DRV_SPI_TRANSFER_EVENT event,
+static void spiTransferEventHandler(DRV_SPI_TRANSFER_EVENT event,
         DRV_SPI_TRANSFER_HANDLE handle, uintptr_t context)
 {
     switch(event)
@@ -321,7 +321,7 @@ bool WDRV_WINC_SPIOpen(void)
         return false;
     }
 
-    DRV_SPI_TransferEventHandlerSet(spiDcpt.spiHandle, _WDRV_WINC_SPITransferEventHandler, 0);
+    DRV_SPI_TransferEventHandlerSet(spiDcpt.spiHandle, spiTransferEventHandler, 0);
 </#if>
 </#if>
 
