@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_SOFTAP_H
-#define _WDRV_WINC_SOFTAP_H
+#ifndef WDRV_WINC_SOFTAP_H
+#define WDRV_WINC_SOFTAP_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -193,4 +193,4 @@ WDRV_WINC_STATUS WDRV_WINC_APSetCustIE
     const WDRV_WINC_CUST_IE_STORE_CONTEXT *const pCustIECtx
 );
 
-#endif /* _WDRV_WINC_SOFTAP_H */
+#endif /* WDRV_WINC_SOFTAP_H */

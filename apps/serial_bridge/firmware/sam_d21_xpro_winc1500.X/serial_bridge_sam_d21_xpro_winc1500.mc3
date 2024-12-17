@@ -7649,7 +7649,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\definitions.h</file>
-         <hash>436c47cdb73924a2b28137c3f2e77c32b11494bed37be4584ea96132c7d9b1a7</hash>
+         <hash>28a346b86c1fe2c771714d55e600726c12f31cce5727a8c250158e2e104ab069</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\device.h</file>
@@ -7745,11 +7745,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\dev\wdrv_winc_gpio.h</file>
-         <hash>5cac8b19a0a37ba6fefb4c6a9886bc0e15dbfb04c4cc9fc24c7fe370981af653</hash>
+         <hash>8a83d21f0bbeae85cc6cf9cd3ce413dbe0b830e16582b5a31774991e5b228ae5</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\dev\wdrv_winc_spi.h</file>
-         <hash>457371e3f5f2c7cadc12572f34ba1645fd964e099b458014ce021fc001c339ec</hash>
+         <hash>be203b60e485e7146c03c8517cf7bf2ee9731f9a6867f0c177463c1cc3694b9b</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\drv\bsp\nm_bsp.h</file>
@@ -7833,87 +7833,87 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc.h</file>
-         <hash>28d676e635654da70b19be36e2ef67689b1b43d7bde94a96c6b5903a126e66cc</hash>
+         <hash>8f1173b8c1c1728897fc915b559c335fd7199bbef88d476e3c84ea7e06d16ccf</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_api.h</file>
-         <hash>a2aaa71e2b00ef9984da243674e53ef1d6931435aedc7f3ef9351703f01513e2</hash>
+         <hash>7c1b6d44a5fd2d2d7be9cfbed572d503fa2951393332d7d9819d781ef4786a9e</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_assoc.h</file>
-         <hash>77345b69f42b42e3df18e4559df59ecdbeee1851de1925c01f3ae527e5ae5fa2</hash>
+         <hash>27996cecc64f3f856f7aa8feb096bb82c8d9e44deb310667fa8f7b51187eaace</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_authctx.h</file>
-         <hash>aaedb117f48338c57a8d8e57fa1f060b1d3667b3f221581c0f5a43e2d43da675</hash>
+         <hash>b4665f464e2428f3ef30a7b94a6fa2366c00bf2be16204d39feb5d8a10f1baf2</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_bssctx.h</file>
-         <hash>80205273796b0b9ae2408bacac6de26dbe86d572ecfd9bd4620ed1d4a9782eb7</hash>
+         <hash>dd899935b3a09606221b8821ea5bbdb6dae5907b7ec10fd63d8b29a629ca20fe</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_bssfind.h</file>
-         <hash>7b080af28903ff6ab643222b72e5cfae15880b42351cec5e8a1b4bb08648adcb</hash>
+         <hash>649448840702ad4ad8604ac55c6b1455b99fff3a41db4a213cd8349cb304c2e3</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_client_api.h</file>
-         <hash>9967c909183b72459d7e24890fd7a36b722780b30d63d7f6a7d318320cea8581</hash>
+         <hash>1f270effb3191120b2bbdc609f4d2737b8ebddc2278b0a07ea1ea6cfcc6b4a5d</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_common.h</file>
-         <hash>03bd2ff262875c439c2a1047270df62d7a7b81d2a28e6e53871acc0eda83e0ba</hash>
+         <hash>bf9a2151b9bfc1fc5ef7ba4d37123cd2defa0332e07e0338bbb3783cd0c6495a</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_custie.h</file>
-         <hash>6da49fc0a73ce64fbc2538bb29e7ead376aeff0ed05fabee2f54cb720b8b3e2d</hash>
+         <hash>07f8e0e2f6394dfd799f55a180949fd59d209c9f63da7f34d581992a7d0ced43</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_debug.h</file>
-         <hash>75242f7d6a3ac3724f9da7f072f68c363458e18088a278576fc455758310cebe</hash>
+         <hash>771da4aa890429629cb36e6e7f7721032e1bc129d738ed3f7538a68237268ea2</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_enterprise.h</file>
-         <hash>ff9764a3b42cce23f5396fd1cd6c2c934c73fa9983a97dc7a24a61ef671f8146</hash>
+         <hash>07ef660e915f067171554b64b70309040f6cd3fb5e63dcab347407e46ce6d814</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_host_file.h</file>
-         <hash>b33e4fe06149e5ec33381e01f4a2ec98237001b43a4d8a55155d0659367e4659</hash>
+         <hash>d091ab36921b185137aa8cb0041424dd976b7f5ebc4c1a371a2912be08cbf6ce</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_httpprovctx.h</file>
-         <hash>450c007d360885933485e857fd8ba26b265a34fc77c23f45c2290e15856b3174</hash>
+         <hash>f7d257cad92d5e8fdd523b33a42282937eb4ad3d3948f96baf7455892d9a7be2</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_nvm.h</file>
-         <hash>57ba21e9983af6c20b94196f885b7bf86d47267173b8f7a2abacf2c576d01b0a</hash>
+         <hash>601c5d4889a7f18e2e9775d7140dba0c1931e6d9b707ead2baba720dd321d63f</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_powersave.h</file>
-         <hash>7c18edd78c70c95f7f935d6a90073f379268155962a1710312a4cce64bd1486d</hash>
+         <hash>fb073b6128c31c450c8a69cbb9541d4787c844c4d5f12beeb311df7e220a3521</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_socket.h</file>
-         <hash>57e5e61fe06543339e609b133920b2d7924edaecb070635c5678d5b21da1e09b</hash>
+         <hash>2e04281fffda075f94018b8f55d4f753828784f9eec2e1bdad58202f0abc51ef</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_softap.h</file>
-         <hash>d3f33749a7987c666c2798220f619faf929bdeb53e88408520ff13b789a13a13</hash>
+         <hash>8a4320530233a5705bf392739011d70ee3bb6848d992bce78951ba8bb42f6fa9</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_ssl.h</file>
-         <hash>10b31383339e504591e066322ec559e19b0a2d48b8321ea3b8cc715fd2619ea7</hash>
+         <hash>670835076f30fcf6b37bef1dd7d2c3e1e7d5744753feb9adbb4b2c7ac80f0f21</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_sta.h</file>
-         <hash>fba93a4415976e1da48e77d7b380d5e2ef9ba20ac1c615a42c49051c53af63ba</hash>
+         <hash>d188c8f28b48802a4461dada9878e8636b76c612df8a47ad2bee6d73074a529e</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_systime.h</file>
-         <hash>ddb858f48ace0816b9d11d8813a4a03e56aa33d7d008b1443acbbe7eb1df5856</hash>
+         <hash>0b801dc1ea4a6c910f393511aae13600c4e6e05d77b057900043964640f39aa7</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\include\wdrv_winc_wps.h</file>
-         <hash>d105554d4c3b1170b80ac3405dca33f5e5808dabbd5fa0a416c6a8a73edf8abd</hash>
+         <hash>45b1afd31013d0b2c9545a874dc4dce836d59f78e30fadf33a1e1861081e34ea</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\osal\wdrv_winc_osal.c</file>
@@ -7921,7 +7921,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc.c</file>
-         <hash>6a5418d7d0b7d3b0326554cd2bf21f45dba7bc4b971caef4301db36edb3fa0be</hash>
+         <hash>9060c9b8915a3692b56485d313102db37e4a7f0cafe9c7a6e2e75520ad3f864e</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_assoc.c</file>
@@ -7957,7 +7957,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_nvm.c</file>
-         <hash>4ab2a6ea56eb7d8e9777d2d5d961bcabbdd36fc4a3436776503680737d7ce995</hash>
+         <hash>20e2c69b688a88ff794a63b99c39ee38060767759668eec07a6543f201708a59</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_powersave.c</file>
@@ -7965,7 +7965,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_socket.c</file>
-         <hash>8b320083343faa8deaaa4e6675da756ec8b8abe117adf0e99279b6b4989c3e03</hash>
+         <hash>d1514daaaa47595477d6069f8449509274846a70c8956e244cbcca7d0e3b243e</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_softap.c</file>
@@ -7973,11 +7973,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_ssl.c</file>
-         <hash>880e6eeba9378e2f43e09936877c35d358ca61858e0ad594d7b4d248bfff97f2</hash>
+         <hash>8a63131a3f13203d7f6cc4983430913de2935a79bbfcd3c579f1175997b3e927</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_sta.c</file>
-         <hash>3e513a9c67a317c8c5c9971c61f3c95359d982d40fbfdce6ae512db327d60243</hash>
+         <hash>9f114aa9636bb0187dc65ae30ccb5c7e633edbef0265ee94c2835b6b61722a27</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\driver\winc\wdrv_winc_systime.c</file>
@@ -7989,11 +7989,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\exceptions.c</file>
-         <hash>3d788ce1bd25caaaf6b533ec5b06e4b1e753044c1a217dd5cdf8629628ae85a9</hash>
+         <hash>b0b65c30aa1f7a01ef7be6c1628c331a5ca3eae7dc3bd76ebe647703b76f432d</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\initialization.c</file>
-         <hash>7bf1ae0b7b270ec6aeb1eb4eafd6489090dc8880c513bd063f62aac878ed4a07</hash>
+         <hash>7c9b3a8c994706e26d022d4e082c66b4a884458bc6210fb647474f8b2502bb86</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\interrupts.c</file>
@@ -8009,7 +8009,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\osal\osal.h</file>
-         <hash>8404fbe44807fa0484ffb38843a72cb9af8e31c9c30bd1b2594e609b8ea317d9</hash>
+         <hash>1cfe3b61d9693b2369922041eef33fe16b3c1ccd9c85d4ded808b805f90a869c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\osal\osal_definitions.h</file>
@@ -8017,7 +8017,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\osal\osal_impl_basic.h</file>
-         <hash>67ce72d34fd1e4dee0b6937fa026ab2c7bd285f82a24da09742c68333adaf0fc</hash>
+         <hash>65e68edbc0320d0407399f65e6d06ff7e6d3d7697231cf1fe0a1fdf1d65f0463</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\clock\plib_clock.c</file>
@@ -8065,11 +8065,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\nvmctrl\plib_nvmctrl.h</file>
-         <hash>a10c9385ab1460929c8d9efdbd3ee8e491051546a6e08c5dbf7767300235ebcd</hash>
+         <hash>5ed5f5c5b0892544d57303872afa61c7a560577850ce23de1af5f8113193f2dd</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\port\plib_port.c</file>
-         <hash>6f6155d3e228157a1599e5fde6cfbdbe3e025d4c196d0a988335700ba1bef2ae</hash>
+         <hash>b9d0d0e72b35cd1ce18fdd4a9624b158d9134d6654de361143d823ca9b9daf0b</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\port\plib_port.h</file>
@@ -8077,7 +8077,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom0_spi_master.c</file>
-         <hash>151cb82a81a43e083ceb4813620b6375091e33c549bc98caf5e36fe3456c4707</hash>
+         <hash>d1ef1eb0c6d616e61607746b9390f145b008a3673a818a9b855ccb89276c079d</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom0_spi_master.h</file>
@@ -8085,7 +8085,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom1_spi_master.c</file>
-         <hash>af7ed1fa87e71314087b17c9a4cdfe2303b05673959d69077c84a1c60affdf9b</hash>
+         <hash>da1a3e38e39da8a024c8246aec69329dea44de9f478594edfb4789ac10934369</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom1_spi_master.h</file>
@@ -8093,19 +8093,19 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom_spi_master_common.h</file>
-         <hash>f28c2694b21a2c5ebad94edb7de6fac0acb2bd5686d78d08289cd2185cdccfbf</hash>
+         <hash>06e3c7813e1608b5008e3c8955569f9cff04bef321a34c35421f7979368a4ada</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\usart\plib_sercom3_usart.c</file>
-         <hash>7035ba2cba065bc16918ff6fb9d0555015e9c927af0f4a0ad68f8ebf9cef25d2</hash>
+         <hash>d0e083b3bf848dd99471c0f41b8ce2180d51f45cc02b05cbbd8c141008b6844c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\usart\plib_sercom3_usart.h</file>
-         <hash>bdb7a2a6a892bbf75e432ff0874a6903193ef29952e3a75570a5c06e10c9b3bd</hash>
+         <hash>22b0b20a392b7b9a0bcc89663853e622c2fcadb751f6b8ded1a4f834614accc8</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\sercom\usart\plib_sercom_usart_common.h</file>
-         <hash>63c6e89936ba47e8989478a8be0fa40b406361f2f0dcc1b6cfcd801b50a4bf92</hash>
+         <hash>9f02e811b95f0470ca23f3546f3ddf4ccccb385b4d8b8c091899d0d20b0c56e1</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc1500\peripheral\tc\plib_tc3.c</file>

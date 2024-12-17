@@ -40,8 +40,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_ASSOC_H
-#define _WDRV_WINC_ASSOC_H
+#ifndef WDRV_WINC_ASSOC_H
+#define WDRV_WINC_ASSOC_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -413,4 +413,4 @@ WDRV_WINC_STATUS WDRV_WINC_AssocRSSIGet
 
 WDRV_WINC_STATUS WDRV_WINC_AssocDisconnect(WDRV_WINC_ASSOC_HANDLE assocHandle);
 
-#endif /* _WDRV_WINC_ASSOC_H */
+#endif /* WDRV_WINC_ASSOC_H */

@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -56,7 +56,7 @@ Microchip or any third party.
 // *****************************************************************************
 
 #ifdef WDRV_WINC_NETWORK_MODE_SOCKET
-static bool _WDRV_WINC_ConnNetCfg(WDRV_WINC_CTRLDCPT *const pCtrl)
+static bool staConnNetCfg(WDRV_WINC_CTRLDCPT *const pCtrl)
 {
     if ((false == pCtrl->useDHCP) && (0 != pCtrl->ipAddress))
     {
@@ -185,7 +185,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     }
 
 #ifdef WDRV_WINC_NETWORK_MODE_SOCKET
-    if (false == _WDRV_WINC_ConnNetCfg(pDcpt->pCtrl))
+    if (false == staConnNetCfg(pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_CONNECT_FAIL;
     }
@@ -444,7 +444,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSReconnect
         return WDRV_WINC_STATUS_NO_ETH_BUFFER;
     }
 #else
-    if (false == _WDRV_WINC_ConnNetCfg(pDcpt->pCtrl))
+    if (false == staConnNetCfg(pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_CONNECT_FAIL;
     }

@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_SSL_H
-#define _WDRV_WINC_SSL_H
+#ifndef WDRV_WINC_SSL_H
+#define WDRV_WINC_SSL_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -147,7 +147,9 @@ typedef enum
     WDRV_WINC_ECC_REQ_GEN_KEY = ECC_REQ_GEN_KEY,
     WDRV_WINC_ECC_REQ_SIGN_GEN = ECC_REQ_SIGN_GEN,
     WDRV_WINC_ECC_REQ_SIGN_VERIFY = ECC_REQ_SIGN_VERIFY
-} WINC_WDRV_ECC_REQ_TYPE;
+} WDRV_WINC_ECC_REQ_TYPE;
+
+#define WINC_WDRV_ECC_REQ_TYPE WDRV_WINC_ECC_REQ_TYPE
 
 // *****************************************************************************
 /* ECC Status Type
@@ -165,9 +167,13 @@ typedef enum
 
 typedef enum
 {
-    WINC_WDRV_ECC_STATUS_SUCCESS,
-    WINC_WDRV_ECC_STATUS_FAILURE,
-} WINC_WDRV_ECC_STATUS;
+    WDRV_WINC_ECC_STATUS_SUCCESS,
+    WDRV_WINC_ECC_STATUS_FAILURE,
+} WDRV_WINC_ECC_STATUS;
+
+#define WINC_WDRV_ECC_STATUS         WDRV_WINC_ECC_STATUS
+#define WINC_WDRV_ECC_STATUS_SUCCESS WDRV_WINC_ECC_STATUS_SUCCESS
+#define WINC_WDRV_ECC_STATUS_FAILURE WDRV_WINC_ECC_STATUS_FAILURE
 
 // *****************************************************************************
 /*  Elliptic Curve Point Representation
@@ -380,7 +386,7 @@ typedef void (*WDRV_WINC_SSL_CIPHERSUITELIST_CALLBACK)
 typedef void (*WDRV_WINC_SSL_REQ_ECC_CALLBACK)
 (
     DRV_HANDLE handle,
-    WINC_WDRV_ECC_REQ_TYPE reqType,
+    WDRV_WINC_ECC_REQ_TYPE reqType,
     const WDRV_WINC_ECC_HANDSHAKE_INFO *const pHandshakeData,
     const WDRV_WINC_ECC_REQ_EX_INFO *const pEccReqExtendInfo
 );
@@ -596,8 +602,8 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCReqCallbackSet
     WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
     (
         DRV_HANDLE handle,
-        WINC_WDRV_ECC_REQ_TYPE reqType,
-        WINC_WDRV_ECC_STATUS status,
+        WDRV_WINC_ECC_REQ_TYPE reqType,
+        WDRV_WINC_ECC_STATUS status,
         const WDRV_WINC_ECC_HANDSHAKE_INFO *const pHandshakeData,
         const WDRV_WINC_ECDH_INFO *const pECDHRspInfo,
         const uint8_t *const pRspDataBuff,
@@ -640,8 +646,8 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCReqCallbackSet
 WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
 (
     DRV_HANDLE handle,
-    WINC_WDRV_ECC_REQ_TYPE reqType,
-    WINC_WDRV_ECC_STATUS status,
+    WDRV_WINC_ECC_REQ_TYPE reqType,
+    WDRV_WINC_ECC_STATUS status,
     const WDRV_WINC_ECC_HANDSHAKE_INFO *const pHandshakeData,
     const WDRV_WINC_ECDH_INFO *const pECDHRspInfo,
     const uint8_t *const pRspDataBuff,
@@ -771,4 +777,4 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveHash
 
 WDRV_WINC_STATUS WDRV_WINC_SSLStopRetrieveCert(DRV_HANDLE handle);
 
-#endif /* _WDRV_WINC_SSL_H */
+#endif /* WDRV_WINC_SSL_H */

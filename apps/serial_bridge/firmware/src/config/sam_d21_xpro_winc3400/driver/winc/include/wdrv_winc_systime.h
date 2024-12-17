@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_SYSTIME_H
-#define _WDRV_WINC_SYSTIME_H
+#ifndef WDRV_WINC_SYSTIME_H
+#define WDRV_WINC_SYSTIME_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -304,4 +304,4 @@ WDRV_WINC_STATUS WDRV_WINC_SystemTimeGetCurrent
     const WDRV_WINC_SYSTIME_CURRENT_CALLBACK pfGetCurrentCallback
 );
 
-#endif /* _WDRV_WINC_SYSTIME_H */
+#endif /* WDRV_WINC_SYSTIME_H */
