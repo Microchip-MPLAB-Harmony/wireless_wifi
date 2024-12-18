@@ -4,7 +4,7 @@
 
 
 project: serial_bridge
-creation_date: 2024-12-17T10:15:52.631Z[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2024-12-18T14:45:00.919Z[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 10
 mcc_mode: IDE            # [IDE|Standalone|Headless]
 mcc_version: v5.5.1
@@ -16,7 +16,7 @@ compiler: XC32 4.45
 modules:
     - {name: "csp", version: "v3.20.0"}
     - {name: "wireless_wifi", version: "v3.12.1"}
-    - {name: "core", version: "v3.14.0"}
+    - {name: "core", version: "v3.14.1"}
     - {name: "CMSIS_5", version: "5.9.0"}
 
 packs:
