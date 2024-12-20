@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -412,8 +412,8 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCReqCallbackSet
     WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
     (
         DRV_HANDLE handle,
-        WINC_WDRV_ECC_REQ_TYPE reqType,
-        WINC_WDRV_ECC_STATUS status,
+        WDRV_WINC_ECC_REQ_TYPE reqType,
+        WDRV_WINC_ECC_STATUS status,
         const WDRV_WINC_ECC_HANDSHAKE_INFO *const pHandshakeData,
         const WDRV_WINC_ECDH_INFO *const pECDHRspInfo,
         const uint8_t *const pRspDataBuff,
@@ -434,8 +434,8 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCReqCallbackSet
 WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
 (
     DRV_HANDLE handle,
-    WINC_WDRV_ECC_REQ_TYPE reqType,
-    WINC_WDRV_ECC_STATUS status,
+    WDRV_WINC_ECC_REQ_TYPE reqType,
+    WDRV_WINC_ECC_STATUS status,
     const WDRV_WINC_ECC_HANDSHAKE_INFO *const pHandshakeData,
     const WDRV_WINC_ECDH_INFO *const pECDHRspInfo,
     const uint8_t *const pRspDataBuff,
@@ -470,7 +470,7 @@ WDRV_WINC_STATUS WDRV_WINC_SSLECCHandShakeRsp
     strECCResp.u32UserData  = pHandshakeData->data[0];
     strECCResp.u32SeqNo     = pHandshakeData->data[1];
 
-    if (WINC_WDRV_ECC_STATUS_SUCCESS == status)
+    if (WDRV_WINC_ECC_STATUS_SUCCESS == status)
     {
         strECCResp.u16Status = 0;
     }

@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -138,7 +138,7 @@ static const WDRV_WINC_FLASH_MAP_ENTRY flashMap[] =
 //*******************************************************************************
 /*
   Function:
-    static uint8_t _WDRV_WINC_NVMCRC7(uint8_t crc, const uint8_t *buff, uint16_t len)
+    static uint8_t nvmCRC7(uint8_t crc, const uint8_t *buff, uint16_t len)
 
   Summary:
     Calculate a CRC.
@@ -163,7 +163,7 @@ static const WDRV_WINC_FLASH_MAP_ENTRY flashMap[] =
 
 */
 
-static uint8_t _WDRV_WINC_NVMCRC7(uint8_t crc, const uint8_t *pBuff, uint16_t len)
+static uint8_t nvmCRC7(uint8_t crc, const uint8_t *pBuff, uint16_t len)
 {
     uint16_t i;
     uint16_t g;
@@ -189,7 +189,7 @@ static uint8_t _WDRV_WINC_NVMCRC7(uint8_t crc, const uint8_t *pBuff, uint16_t le
 //*******************************************************************************
 /*
   Function:
-    static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
+    static bool nvmVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
 
   Summary:
     Verify flash control sector.
@@ -212,7 +212,7 @@ static uint8_t _WDRV_WINC_NVMCRC7(uint8_t crc, const uint8_t *pBuff, uint16_t le
 
 */
 
-static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
+static bool nvmVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
 {
     if (NULL == pstrControlSec)
     {
@@ -224,7 +224,7 @@ static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
         return false;
     }
 
-    if(pstrControlSec->u32OtaControlSecCrc != _WDRV_WINC_NVMCRC7(0x7f, (uint8_t*)pstrControlSec, sizeof(tstrOtaControlSec) - 4))
+    if(pstrControlSec->u32OtaControlSecCrc != nvmCRC7(0x7f, (uint8_t*)pstrControlSec, sizeof(tstrOtaControlSec) - 4))
     {
         return false;
     }
@@ -235,7 +235,7 @@ static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
 //*******************************************************************************
 /*
   Function:
-    static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
+    static bool nvmReadCtrlSec(tstrOtaControlSec *pstrControlSec)
 
   Summary:
     Reads the control sector from flash.
@@ -259,7 +259,7 @@ static bool _WDRV_WINC_NVMVerifyCtrlSec(tstrOtaControlSec *pstrControlSec)
 
 */
 
-static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
+static bool nvmReadCtrlSec(tstrOtaControlSec *pstrControlSec)
 {
     if (NULL == pstrControlSec)
     {
@@ -268,7 +268,7 @@ static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
 
     if (M2M_SUCCESS == spi_flash_read((uint8_t*)pstrControlSec, M2M_CONTROL_FLASH_OFFSET, sizeof(tstrOtaControlSec)))
     {
-        if (true == _WDRV_WINC_NVMVerifyCtrlSec(pstrControlSec))
+        if (true == nvmVerifyCtrlSec(pstrControlSec))
         {
             return true;
         }
@@ -280,7 +280,7 @@ static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
     if (M2M_SUCCESS == spi_flash_read((uint8_t*)pstrControlSec, M2M_CONTROL_FLASH_BKP_OFFSET, sizeof(tstrOtaControlSec)))
 #endif
     {
-        if (true == _WDRV_WINC_NVMVerifyCtrlSec(pstrControlSec))
+        if (true == nvmVerifyCtrlSec(pstrControlSec))
         {
             return true;
         }
@@ -292,7 +292,7 @@ static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
 //*******************************************************************************
 /*
   Function:
-    static bool _WDRV_WINC_NVMFindSection
+    static bool nvmFindSection
     (
         WDRV_WINC_NVM_REGION region,
         uint32_t *pStartAddr,
@@ -323,7 +323,7 @@ static bool _WDRV_WINC_NVMReadCtrlSec(tstrOtaControlSec *pstrControlSec)
 
 */
 
-static bool _WDRV_WINC_NVMFindSection
+static bool nvmFindSection
 (
     WDRV_WINC_NVM_REGION region,
     uint32_t *pStartAddr,
@@ -331,7 +331,7 @@ static bool _WDRV_WINC_NVMFindSection
 )
 {
     /* Ensure the pointers and region are valid. */
-    if ((NULL == pStartAddr) || (NULL == pSize) || (region >= NUM_WDRV_WINC_NVM_REGIONS))
+    if ((NULL == pStartAddr) || (NULL == pSize) || (region >= WDRV_WINC_NVM_NUM_REGIONS))
     {
         return false;
     }
@@ -357,7 +357,7 @@ static bool _WDRV_WINC_NVMFindSection
             tstrOtaControlSec strControl;
 
             /* Read control structure from flash. */
-            if (false == _WDRV_WINC_NVMReadCtrlSec(&strControl))
+            if (false == nvmReadCtrlSec(&strControl))
             {
                 return false;
             }
@@ -419,7 +419,7 @@ static bool _WDRV_WINC_NVMFindSection
         if (0 == flashMap[region].address)
         {
             /* Read control structure from flash. */
-            if (false == _WDRV_WINC_NVMReadCtrlSec(&strControl))
+            if (false == nvmReadCtrlSec(&strControl))
             {
                 return false;
             }
@@ -498,7 +498,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
 
     /* Ensure the driver handle and region are valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl)
-            || (region >= NUM_WDRV_WINC_NVM_REGIONS))
+            || (region >= WDRV_WINC_NVM_NUM_REGIONS))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -524,7 +524,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
 #endif
 
     /* Find region address and size. */
-    if (false == _WDRV_WINC_NVMFindSection(region, &flashAddress, &flashRegionSize))
+    if (false == nvmFindSection(region, &flashAddress, &flashRegionSize))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -599,7 +599,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMWrite
 
     /* Ensure the driver handle, buffer pointer and region are valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl)
-            || (NULL == pBuffer) || (region >= NUM_WDRV_WINC_NVM_REGIONS))
+            || (NULL == pBuffer) || (region >= WDRV_WINC_NVM_NUM_REGIONS))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -625,7 +625,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMWrite
 #endif
 
     /* Find region address and size. */
-    if (false == _WDRV_WINC_NVMFindSection(region, &flashAddress, &flashRegionSize))
+    if (false == nvmFindSection(region, &flashAddress, &flashRegionSize))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -692,7 +692,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMRead
 
     /* Ensure the driver handle, buffer pointer and region are valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl)
-            || (NULL == pBuffer) || (region >= NUM_WDRV_WINC_NVM_REGIONS))
+            || (NULL == pBuffer) || (region >= WDRV_WINC_NVM_NUM_REGIONS))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -718,7 +718,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMRead
 #endif
 
     /* Find region address and size. */
-    if (false == _WDRV_WINC_NVMFindSection(region, &flashAddress, &flashRegionSize))
+    if (false == nvmFindSection(region, &flashAddress, &flashRegionSize))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }

@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019-22, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -167,7 +167,7 @@ const TCPIP_MAC_OBJECT WDRV_WINC_MACObject =
 #define MAX_TX_PACKET_SIZE 1518
 #define MAX_RX_PACKET_SIZE 1518
 
-static void _WDRV_WINC_MACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt);
+static void wincMACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt);
 #endif
 
 #ifdef WDRV_WINC_DEVICE_WINC1500
@@ -206,7 +206,7 @@ static WDRV_WINC_MACDCPT wincMACDescriptor;
 //*******************************************************************************
 /*
   Function:
-    static bool _WDRV_WINC_PacketQueueInit(WDRV_WINC_PACKET_QUEUE* pPktQueue)
+    static bool wincPacketQueueInit(WDRV_WINC_PACKET_QUEUE* pPktQueue)
 
   Summary:
     Packet queue initialization function.
@@ -228,7 +228,7 @@ static WDRV_WINC_MACDCPT wincMACDescriptor;
 
 */
 
-static bool _WDRV_WINC_PacketQueueInit(WDRV_WINC_PACKET_QUEUE *pPktQueue)
+static bool wincPacketQueueInit(WDRV_WINC_PACKET_QUEUE *pPktQueue)
 {
     if (NULL == pPktQueue)
     {
@@ -254,7 +254,7 @@ static bool _WDRV_WINC_PacketQueueInit(WDRV_WINC_PACKET_QUEUE *pPktQueue)
 //*******************************************************************************
 /*
   Function:
-    static void _WDRV_WINC_PacketQueueInsert
+    static void wincPacketQueueInsert
     (
         WDRV_WINC_PACKET_QUEUE *pPktQueue,
         TCPIP_MAC_PACKET *pN
@@ -267,7 +267,7 @@ static bool _WDRV_WINC_PacketQueueInit(WDRV_WINC_PACKET_QUEUE *pPktQueue)
     Inserts a packet into the queue at the end of a linked list.
 
   Precondition:
-    _WDRV_WINC_PacketQueueInit must have been called.
+    wincPacketQueueInit must have been called.
 
   Parameters:
     pPktQueue - Pointer to packet queue management structure.
@@ -281,7 +281,7 @@ static bool _WDRV_WINC_PacketQueueInit(WDRV_WINC_PACKET_QUEUE *pPktQueue)
 
 */
 
-static bool _WDRV_WINC_PacketQueueInsert
+static bool wincPacketQueueInsert
 (
     WDRV_WINC_PACKET_QUEUE *pPktQueue,
     TCPIP_MAC_PACKET *pN
@@ -324,7 +324,7 @@ static bool _WDRV_WINC_PacketQueueInsert
 //*******************************************************************************
 /*
   Function:
-static TCPIP_MAC_PACKET* _WDRV_WINC_PacketQueueRemove
+static TCPIP_MAC_PACKET* wincPacketQueueRemove
 (
     WDRV_WINC_PACKET_QUEUE *pPktQueue
 )
@@ -336,7 +336,7 @@ static TCPIP_MAC_PACKET* _WDRV_WINC_PacketQueueRemove
     Removes a packet from head of the queue linked list.
 
   Precondition:
-    _WDRV_WINC_PacketQueueInit must have been called.
+    wincPacketQueueInit must have been called.
 
   Parameters:
     pPktQueue - Pointer to packet queue management structure.
@@ -349,7 +349,7 @@ static TCPIP_MAC_PACKET* _WDRV_WINC_PacketQueueRemove
 
 */
 
-static TCPIP_MAC_PACKET* _WDRV_WINC_PacketQueueRemove
+static TCPIP_MAC_PACKET* wincPacketQueueRemove
 (
     WDRV_WINC_PACKET_QUEUE *pPktQueue
 )
@@ -393,7 +393,7 @@ static TCPIP_MAC_PACKET* _WDRV_WINC_PacketQueueRemove
 //*******************************************************************************
 /*
   Function:
-    bool _WDRV_WINC_MACEthernetMsgStackCallback
+    bool wincMACEthernetMsgStackCallback
     (
         TCPIP_MAC_PACKET *ptrPacket,
         const void *ackParam
@@ -420,7 +420,7 @@ static TCPIP_MAC_PACKET* _WDRV_WINC_PacketQueueRemove
     None.
 
 */
-static void _WDRV_WINC_MACEthernetMsgStackCallback
+static void wincMACEthernetMsgStackCallback
 (
     TCPIP_MAC_PACKET *ptrPacket,
     const void *ackParam
@@ -453,14 +453,14 @@ static void _WDRV_WINC_MACEthernetMsgStackCallback
                         break;
                     }
 
-                    _WDRV_WINC_PacketQueueInsert(&pMac->packetPoolFreeList, ptrPacket);
+                    wincPacketQueueInsert(&pMac->packetPoolFreeList, ptrPacket);
                 }
             }
         }
     }
     else
     {
-        _WDRV_WINC_PacketQueueInsert(&pMac->packetPoolFreeList, ptrPacket);
+        wincPacketQueueInsert(&pMac->packetPoolFreeList, ptrPacket);
     }
 
     return;
@@ -469,7 +469,7 @@ static void _WDRV_WINC_MACEthernetMsgStackCallback
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_MACEthernetMsgRecvCallback
+    void wincMACEthernetMsgRecvCallback
     (
         DRV_HANDLE handle,
         const uint8_t *const pEthMsg,
@@ -504,7 +504,7 @@ static void _WDRV_WINC_MACEthernetMsgStackCallback
 
 */
 
-static void _WDRV_WINC_MACEthernetMsgRecvCallback
+static void wincMACEthernetMsgRecvCallback
 (
     DRV_HANDLE handle,
     const uint8_t *const pEthMsg,
@@ -526,7 +526,7 @@ static void _WDRV_WINC_MACEthernetMsgRecvCallback
 
     if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pMac->curRxPacketSemaphore, OSAL_WAIT_FOREVER))
     {
-        ptrPacket->ackFunc  = _WDRV_WINC_MACEthernetMsgStackCallback;
+        ptrPacket->ackFunc  = wincMACEthernetMsgStackCallback;
         ptrPacket->ackParam = pDcpt->pMac;
 
         ptrPacket->pDSeg->segLen  = lengthEthMsg - ETHERNET_HDR_LEN;
@@ -534,7 +534,7 @@ static void _WDRV_WINC_MACEthernetMsgRecvCallback
         ptrPacket->pktFlags       = TCPIP_MAC_PKT_FLAG_QUEUED;
         ptrPacket->tStamp         = SYS_TMR_TickCountGet();
 
-        _WDRV_WINC_PacketQueueInsert(&pDcpt->pMac->ethRxPktList, ptrPacket);
+        wincPacketQueueInsert(&pDcpt->pMac->ethRxPktList, ptrPacket);
         pDcpt->pMac->pCurRxPacket = NULL;
         OSAL_SEM_Post(&pDcpt->pMac->curRxPacketSemaphore);
 
@@ -555,13 +555,13 @@ static void _WDRV_WINC_MACEthernetMsgRecvCallback
         }
     }
 
-    _WDRV_WINC_MACCheckRecvPacket(pDcpt);
+    wincMACCheckRecvPacket(pDcpt);
 }
 
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_MACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
+    void wincMACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
 
   Summary:
     Check if a new Ethernet receive packet is needed.
@@ -585,7 +585,7 @@ static void _WDRV_WINC_MACEthernetMsgRecvCallback
 
 */
 
-static void _WDRV_WINC_MACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
+static void wincMACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
 {
     /* Ensure the driver handle is valid. */
     if ((NULL == pDcpt) || (NULL == pDcpt->pMac))
@@ -597,14 +597,14 @@ static void _WDRV_WINC_MACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
     {
         if (NULL == pDcpt->pMac->pCurRxPacket)
         {
-            pDcpt->pMac->pCurRxPacket = _WDRV_WINC_PacketQueueRemove(&pDcpt->pMac->packetPoolFreeList);
+            pDcpt->pMac->pCurRxPacket = wincPacketQueueRemove(&pDcpt->pMac->packetPoolFreeList);
 
             if (NULL != pDcpt->pMac->pCurRxPacket)
             {
                 WDRV_WINC_EthernetRecvPacket((DRV_HANDLE)pDcpt,
                                         pDcpt->pMac->pCurRxPacket->pDSeg->segLoad,
                                         PACKET_BUFFER_SIZE,
-                                        &_WDRV_WINC_MACEthernetMsgRecvCallback);
+                                        &wincMACEthernetMsgRecvCallback);
             }
         }
 
@@ -624,7 +624,7 @@ static void _WDRV_WINC_MACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgContent)
+    void wincWifiCallback(uint8_t msgType, const void *const pMsgContent)
 
   Summary:
     WiFi event callback.
@@ -656,7 +656,7 @@ static void _WDRV_WINC_MACCheckRecvPacket(WDRV_WINC_DCPT *const pDcpt)
 
 */
 
-static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgContent)
+static void wincWifiCallback(uint8_t msgType, const void *const pMsgContent)
 {
     WDRV_WINC_DCPT *const pDcpt = &wincDescriptor[0];
 
@@ -1105,7 +1105,7 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_EthernetCallback
+    void wincEthernetCallback
     (
         uint8_t msgType,
         const void *const pMsgContent,
@@ -1135,7 +1135,7 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
 
 */
 
-static void _WDRV_WINC_EthernetCallback
+static void wincEthernetCallback
 (
     uint8_t msgType,
     const void *const pMsgContent,
@@ -1191,7 +1191,7 @@ static void _WDRV_WINC_EthernetCallback
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_OTAUpdateCallback(uint8_t type, uint8_t status);
+    void wincOTAUpdateCallback(uint8_t type, uint8_t status);
 
   Summary:
     OTA update callback.
@@ -1217,7 +1217,7 @@ static void _WDRV_WINC_EthernetCallback
 
 */
 
-static void _WDRV_WINC_OTAUpdateCallback(uint8_t type, uint8_t status)
+static void wincOTAUpdateCallback(uint8_t type, uint8_t status)
 {
     WDRV_WINC_DCPT *const pDcpt = &wincDescriptor[0];
 
@@ -1264,7 +1264,7 @@ static void _WDRV_WINC_OTAUpdateCallback(uint8_t type, uint8_t status)
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
+    void wincSSLCallback(uint8_t msgType, void *pMsgContent)
 
   Summary:
     SSL event callback.
@@ -1290,7 +1290,7 @@ static void _WDRV_WINC_OTAUpdateCallback(uint8_t type, uint8_t status)
 
 */
 
-static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
+static void wincSSLCallback(uint8_t msgType, void *pMsgContent)
 {
     WDRV_WINC_DCPT *const pDcpt = &wincDescriptor[0];
 
@@ -1321,7 +1321,7 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
         case M2M_SSL_REQ_ECC:
         {
             tstrEccReqInfo                  *const pECCReqInfo = (tstrEccReqInfo *const)pMsgContent;
-            WINC_WDRV_ECC_REQ_TYPE          reqType;
+            WDRV_WINC_ECC_REQ_TYPE          reqType;
             WDRV_WINC_ECC_HANDSHAKE_INFO    handshakeData;
             WDRV_WINC_ECC_REQ_EX_INFO       eccReqExInfo;
             WDRV_WINC_ECC_REQ_EX_INFO       *pECCReqExInfo = &eccReqExInfo;
@@ -1331,7 +1331,7 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
                 break;
             }
 
-            reqType                 = (WINC_WDRV_ECC_REQ_TYPE)pECCReqInfo->u16REQ;
+            reqType                 = (WDRV_WINC_ECC_REQ_TYPE)pECCReqInfo->u16REQ;
             handshakeData.data[0]   = pECCReqInfo->u32UserData;
             handshakeData.data[1]   = pECCReqInfo->u32SeqNo;
 
@@ -1392,7 +1392,7 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_HostFileGetCallback
+    void wincHostFileGetCallback
     (
         uint8_t status,
         uint8_t handle,
@@ -1422,7 +1422,7 @@ static void _WDRV_WINC_SSLCallback(uint8_t msgType, void *pMsgContent)
 
 */
 
-static void _WDRV_WINC_HostFileGetCallback
+static void wincHostFileGetCallback
 (
     uint8_t status,
     uint8_t handle,
@@ -1473,7 +1473,7 @@ static void _WDRV_WINC_HostFileGetCallback
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_HostFileReadHIFCallback
+    void wincHostFileReadHIFCallback
     (
         uint8_t status,
         uint8_t *pBuffer,
@@ -1503,7 +1503,7 @@ static void _WDRV_WINC_HostFileGetCallback
 
 */
 
-static void _WDRV_WINC_HostFileReadHIFCallback
+static void wincHostFileReadHIFCallback
 (
     uint8_t status,
     uint8_t *pBuffer,
@@ -1627,7 +1627,7 @@ static void _WDRV_WINC_HostFileReadHIFCallback
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_HostFileEraseCallback(uint8_t status)
+    void wincHostFileEraseCallback(uint8_t status)
 
   Summary:
     Callback called in response to WDRV_WINC_HostFileErase.
@@ -1650,7 +1650,7 @@ static void _WDRV_WINC_HostFileReadHIFCallback
 
 */
 
-static void _WDRV_WINC_HostFileEraseCallback(uint8_t status)
+static void wincHostFileEraseCallback(uint8_t status)
 {
     WDRV_WINC_DCPT *const pDcpt = &wincDescriptor[0];
     WDRV_WINC_HOST_FILE_DCPT *pHostFileDcpt;
@@ -1684,7 +1684,7 @@ static void _WDRV_WINC_HostFileEraseCallback(uint8_t status)
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_ResetCtrlDcpt(WDRV_WINC_CTRLDCPT *pCtrl)
+    void wincResetCtrlDcpt(WDRV_WINC_CTRLDCPT *pCtrl)
 
   Summary:
     Reset control descriptor to initial state.
@@ -1706,7 +1706,7 @@ static void _WDRV_WINC_HostFileEraseCallback(uint8_t status)
 
 */
 
-static void _WDRV_WINC_ResetCtrlDcpt(WDRV_WINC_CTRLDCPT *pCtrl)
+static void wincResetCtrlDcpt(WDRV_WINC_CTRLDCPT *pCtrl)
 {
     if (NULL == pCtrl)
     {
@@ -1763,9 +1763,9 @@ static void _WDRV_WINC_ResetCtrlDcpt(WDRV_WINC_CTRLDCPT *pCtrl)
 #ifdef WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
     pCtrl->hostFileDcpt.handle      = HFD_INVALID_HANDLER;
     pCtrl->hostFileDcpt.pBuffer     = NULL;
-    pCtrl->hostFileDcpt.getFileCB   = _WDRV_WINC_HostFileGetCallback;
-    pCtrl->hostFileDcpt.readFileCB  = _WDRV_WINC_HostFileReadHIFCallback;
-    pCtrl->hostFileDcpt.eraseFileCB = _WDRV_WINC_HostFileEraseCallback;
+    pCtrl->hostFileDcpt.getFileCB   = wincHostFileGetCallback;
+    pCtrl->hostFileDcpt.readFileCB  = wincHostFileReadHIFCallback;
+    pCtrl->hostFileDcpt.eraseFileCB = wincHostFileEraseCallback;
 
     pCtrl->pfHostFileCB             = NULL;
 #endif
@@ -1865,7 +1865,7 @@ SYS_MODULE_OBJ WDRV_WINC_Initialize
             return (SYS_MODULE_OBJ)pDcpt;
         }
 
-        _WDRV_WINC_PacketQueueInit(&wincMACDescriptor.packetPoolFreeList);
+        wincPacketQueueInit(&wincMACDescriptor.packetPoolFreeList);
 
         for (i=0; i<WDRV_WINC_PACKET_POOL_MIN_THRES; i++)
         {
@@ -1876,10 +1876,10 @@ SYS_MODULE_OBJ WDRV_WINC_Initialize
                 break;
             }
 
-            _WDRV_WINC_PacketQueueInsert(&wincMACDescriptor.packetPoolFreeList, ptrPacket);
+            wincPacketQueueInsert(&wincMACDescriptor.packetPoolFreeList, ptrPacket);
         }
 
-        _WDRV_WINC_PacketQueueInit(&wincMACDescriptor.ethRxPktList);
+        wincPacketQueueInit(&wincMACDescriptor.ethRxPktList);
 
         for (i=0; i<MULTICAST_FILTER_SIZE; i++)
         {
@@ -1968,11 +1968,11 @@ void WDRV_WINC_Deinitialize(SYS_MODULE_OBJ object)
         wincMACDescriptor.pktFreeF      = NULL;
         wincMACDescriptor.pktAckF       = NULL;
 
-        while (NULL != _WDRV_WINC_PacketQueueRemove(&wincMACDescriptor.ethRxPktList))
+        while (NULL != wincPacketQueueRemove(&wincMACDescriptor.ethRxPktList))
         {
         }
 
-        while (NULL != _WDRV_WINC_PacketQueueRemove(&wincMACDescriptor.packetPoolFreeList))
+        while (NULL != wincPacketQueueRemove(&wincMACDescriptor.packetPoolFreeList))
         {
         }
     }
@@ -2127,7 +2127,7 @@ void WDRV_WINC_MACTasks(SYS_MODULE_OBJ object)
         {
             if (SYS_STATUS_READY == wincDescriptor[0].sysStat)
             {
-                _WDRV_WINC_MACCheckRecvPacket(pDcpt);
+                wincMACCheckRecvPacket(pDcpt);
 
                 pDcpt->sysStat = SYS_STATUS_READY;
             }
@@ -2318,10 +2318,10 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 
             memset(&wifiParam, 0, sizeof(tstrWifiInitParam));
             /* Construct M2M WiFi initialisation structure. */
-            wifiParam.pfAppWifiCb = _WDRV_WINC_WifiCallback;
+            wifiParam.pfAppWifiCb = wincWifiCallback;
 #ifndef WDRV_WINC_NETWORK_MODE_SOCKET
             /* Ethernet mode required callback and Ethernet buffers. */
-            wifiParam.strEthInitParam.pfAppEthCb = _WDRV_WINC_EthernetCallback;
+            wifiParam.strEthInitParam.pfAppEthCb = wincEthernetCallback;
             wifiParam.strEthInitParam.au8ethRcvBuf = NULL;
             wifiParam.strEthInitParam.u16ethRcvBufSize = 0;
 #ifdef WDRV_WINC_DEVICE_DYNAMIC_BYPASS_MODE
@@ -2355,24 +2355,24 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
             /* Socket mode requires the socket interface and SSL be initialised. */
             socketInit();
 
-            m2m_ssl_init(&_WDRV_WINC_SSLCallback);
+            m2m_ssl_init(&wincSSLCallback);
 #endif
-            _WDRV_WINC_ResetCtrlDcpt(&wincCtrlDescriptor);
+            wincResetCtrlDcpt(&wincCtrlDescriptor);
 
 #ifdef WDRV_WINC_NETWORK_MODE_SOCKET
 #if defined(WDRV_WINC_DEVICE_WINC1500)
 #ifdef WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
-            m2m_ota_init(_WDRV_WINC_OTAUpdateCallback, NULL, _WDRV_WINC_HostFileGetCallback);
+            m2m_ota_init(wincOTAUpdateCallback, NULL, wincHostFileGetCallback);
 
             OSAL_SEM_Create(&wincCtrlDescriptor.hostFileDcpt.hfdSemaphore, OSAL_SEM_TYPE_BINARY, 1, 1);
 #else
-            m2m_ota_init(&_WDRV_WINC_OTAUpdateCallback, NULL);
+            m2m_ota_init(&wincOTAUpdateCallback, NULL);
 #endif // #ifdef WDRV_WINC_DEVICE_HOST_FILE_DOWNLOAD
 #elif defined(WDRV_WINC_DEVICE_WINC3400)
 #ifndef WDRV_WINC_DEVICE_LITE_DRIVER
-            m2m_ota_init(_WDRV_WINC_OTAUpdateCallback);
+            m2m_ota_init(wincOTAUpdateCallback);
 #else
-            m2m_ota_init(_WDRV_WINC_OTAUpdateCallback, NULL);
+            m2m_ota_init(wincOTAUpdateCallback, NULL);
 #endif
 #endif
 #endif
@@ -2541,7 +2541,7 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
 
     if ((false == wincDescriptor[0].isOpen) && (false == wincDescriptor[1].isOpen))
     {
-        _WDRV_WINC_ResetCtrlDcpt(pDcpt->pCtrl);
+        wincResetCtrlDcpt(pDcpt->pCtrl);
     }
 
     if (WDRV_WINC_SYS_IDX_0 == index)
@@ -2929,7 +2929,7 @@ TCPIP_MAC_PACKET* WDRV_WINC_MACPacketRx
         return NULL;
     }
 
-    ptrPacket = _WDRV_WINC_PacketQueueRemove(&pDcpt->pMac->ethRxPktList);
+    ptrPacket = wincPacketQueueRemove(&pDcpt->pMac->ethRxPktList);
 
     if (NULL != ptrPacket)
     {

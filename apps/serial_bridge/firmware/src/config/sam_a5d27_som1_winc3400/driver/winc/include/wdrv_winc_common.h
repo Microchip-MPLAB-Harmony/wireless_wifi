@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019-22, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_COMMON_H
-#define _WDRV_WINC_COMMON_H
+#ifndef WDRV_WINC_COMMON_H
+#define WDRV_WINC_COMMON_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -110,7 +110,7 @@ Microchip or any third party.
 
 */
 
-typedef enum _WDRV_WINCCHANNEL_ID
+typedef enum
 {
     /* Any valid channel. */
     WDRV_WINC_CID_ANY,
@@ -189,7 +189,7 @@ typedef enum _WDRV_WINCCHANNEL_ID
 
 */
 
-typedef enum _WDRV_WINC_STATUS
+typedef enum
 {
     /* Operation was successful. */
     WDRV_WINC_STATUS_OK = 0,
@@ -389,7 +389,7 @@ typedef enum
 
 */
 
-typedef struct _WDRV_WINC_SSID
+typedef struct
 {
     /* SSID name, up to WDRV_WINC_MAX_SSID_LEN characters long. */
     uint8_t name[WDRV_WINC_MAX_SSID_LEN];
@@ -412,10 +412,10 @@ typedef struct _WDRV_WINC_SSID
 
 */
 
-typedef struct _WDRV_WINC_SSID_LIST
+typedef struct lWDRV_WINC_SSID_LIST
 {
     /* Pointer to next SSID element in list. */
-    struct _WDRV_WINC_SSID_LIST *pNext;
+    struct lWDRV_WINC_SSID_LIST *pNext;
 
     /* SSID structure. */
     WDRV_WINC_SSID ssid;
@@ -435,7 +435,7 @@ typedef struct _WDRV_WINC_SSID_LIST
 
 */
 
-typedef struct _WDRV_WINC_MAC_ADDR
+typedef struct
 {
     /* MAC address, must be WDRV_WINC_MAC_ADDR_LEN characters long. */
     uint8_t addr[WDRV_WINC_MAC_ADDR_LEN];
@@ -546,4 +546,4 @@ void WDRV_MSDelay(uint32_t ms);
 #endif
 // DOM-IGNORE-END
 
-#endif /* _WDRV_WINC_COMMON_H */
+#endif /* WDRV_WINC_COMMON_H */

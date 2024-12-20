@@ -40,8 +40,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_CUSTIE_H
-#define _WDRV_WINC_CUSTIE_H
+#ifndef WDRV_WINC_CUSTIE_H
+#define WDRV_WINC_CUSTIE_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -236,4 +236,4 @@ WDRV_WINC_STATUS WDRV_WINC_CustIEStoreCtxRemoveIE
     uint8_t id
 );
 
-#endif /* _WDRV_WINC_CUSTIE_H */
+#endif /* WDRV_WINC_CUSTIE_H */

@@ -40,8 +40,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_HTTPPROVCTX_H
-#define _WDRV_WINC_HTTPPROVCTX_H
+#ifndef WDRV_WINC_HTTPPROVCTX_H
+#define WDRV_WINC_HTTPPROVCTX_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -270,4 +270,4 @@ WDRV_WINC_STATUS WDRV_WINC_HTTPProvCtxSetConnectCallback
     const WDRV_WINC_HTTPPROV_INFO_CALLBACK pfProvConnectInfoCB
 );
 
-#endif /* _WDRV_WINC_HTTPPROVCTX_H */
+#endif /* WDRV_WINC_HTTPPROVCTX_H */

@@ -60,8 +60,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_H
-#define _WDRV_WINC_H
+#ifndef WDRV_WINC_H
+#define WDRV_WINC_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -595,7 +595,7 @@ typedef struct
     None.
 */
 
-typedef struct _WDRV_WINC_DCPT
+typedef struct
 {
     /* Flag indicating if the driver has been initialized. */
     bool isInit;
@@ -1255,4 +1255,4 @@ WDRV_WINC_STATUS WDRV_WINC_AutoRateSelectTransmitRate(DRV_HANDLE handle, bool au
 #endif
 // DOM-IGNORE-END
 
-#endif /* _WDRV_WINC_H */
+#endif /* WDRV_WINC_H */

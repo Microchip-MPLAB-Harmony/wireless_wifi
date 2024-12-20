@@ -16,7 +16,7 @@
 
 // DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_NVM_H
-#define _WDRV_WINC_NVM_H
+#ifndef WDRV_WINC_NVM_H
+#define WDRV_WINC_NVM_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -109,7 +109,7 @@ typedef enum
     WDRV_WINC_NVM_REGION_HOST_FILE,
 #endif
     /* Number of regions. */
-    NUM_WDRV_WINC_NVM_REGIONS
+    WDRV_WINC_NVM_NUM_REGIONS
 } WDRV_WINC_NVM_REGION;
 
 // *****************************************************************************
@@ -265,4 +265,4 @@ WDRV_WINC_STATUS WDRV_WINC_NVMRead
     uint32_t size
 );
 
-#endif /* _WDRV_WINC_NVM_H */
+#endif /* WDRV_WINC_NVM_H */

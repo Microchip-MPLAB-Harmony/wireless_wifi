@@ -31,7 +31,7 @@ for any third-party software incorporated in the software and any applicable ope
 source software license terms, no license or other rights, whether express or
 implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
-*/
+ */
 
 #include "nm_common.h"
 #include "wdrv_winc_common.h"
@@ -42,7 +42,7 @@ Microchip or any third party.
  *  @brief      Sleep in units of mSec
  *  @param[IN]  u32TimeMsec
  *              Time in milliseconds
- */
+*/
 void nm_sleep(uint32_t u32TimeMsec)
 {
     WDRV_MSDelay(u32TimeMsec);
@@ -54,7 +54,7 @@ void nm_sleep(uint32_t u32TimeMsec)
  *           CHIP_EN high then RESET_N high
  */
 void nm_reset(void)
-{
+        {
     WDRV_WINC_GPIOChipEnableDeassert();
     WDRV_WINC_GPIOResetAssert();
     nm_sleep(100);
@@ -68,11 +68,11 @@ void nm_reset(void)
 static uint8_t hexchar_2_val(uint8_t ch)
 {
     ch -= 0x30;
-    if (ch <= 9)
+    if(ch <= 9)
         return ch;
     ch |= 0x20;
     ch -= 0x31;
-    if (ch <= 5)
+    if(ch <= 5)
         return ch + 10;
     return 0xFF;
 }
@@ -83,11 +83,11 @@ int8_t hexstr_2_bytes(uint8_t *pu8Out, uint8_t *pu8In, uint8_t u8SizeOut)
     while(u8SizeOut--)
     {
         uint8_t   u8Out = hexchar_2_val(*pu8In++);
-        if (u8Out > 0xF)
+        if(u8Out > 0xF)
             return M2M_ERR_INVALID_ARG;
         *pu8Out = u8Out * 0x10;
         u8Out = hexchar_2_val(*pu8In++);
-        if (u8Out > 0xF)
+        if(u8Out > 0xF)
             return M2M_ERR_INVALID_ARG;
         *pu8Out += u8Out;
         pu8Out++;

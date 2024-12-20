@@ -40,8 +40,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_BSSCTX_H
-#define _WDRV_WINC_BSSCTX_H
+#ifndef WDRV_WINC_BSSCTX_H
+#define WDRV_WINC_BSSCTX_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -324,4 +324,4 @@ WDRV_WINC_STATUS WDRV_WINC_BSSCtxSetSSIDVisibility
     bool visible
 );
 
-#endif /* _WDRV_WINC_BSSCTX_H */
+#endif /* WDRV_WINC_BSSCTX_H */

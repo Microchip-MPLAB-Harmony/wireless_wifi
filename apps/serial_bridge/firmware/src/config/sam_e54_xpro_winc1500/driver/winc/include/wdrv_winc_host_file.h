@@ -40,8 +40,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_HOST_FILE_H
-#define _WDRV_WINC_HOST_FILE_H
+#ifndef WDRV_WINC_HOST_FILE_H
+#define WDRV_WINC_HOST_FILE_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -487,4 +487,4 @@ WDRV_WINC_STATUS WDRV_WINC_HostFileUpdateReadBuffer
     uint32_t bufferSize
 );
 
-#endif /* _WDRV_WINC_HOST_FILE_H */
+#endif /* WDRV_WINC_HOST_FILE_H */

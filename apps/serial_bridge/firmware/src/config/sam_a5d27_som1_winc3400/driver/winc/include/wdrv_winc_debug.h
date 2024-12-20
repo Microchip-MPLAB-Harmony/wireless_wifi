@@ -39,8 +39,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _WDRV_WINC_DEBUG_H
-#define _WDRV_WINC_DEBUG_H
+#ifndef WDRV_WINC_DEBUG_H
+#define WDRV_WINC_DEBUG_H
 
 // *****************************************************************************
 // *****************************************************************************
@@ -183,4 +183,4 @@ void WDRV_WINC_MAC_TX_PKT_INSPECT_HOOK(const TCPIP_MAC_PACKET *const ptrPacket);
 #endif
 // DOM-IGNORE-END
 
-#endif /* _WDRV_WINC_DEBUG_H */
+#endif /* WDRV_WINC_DEBUG_H */

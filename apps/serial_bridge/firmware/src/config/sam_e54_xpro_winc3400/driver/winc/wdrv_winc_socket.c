@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019-22, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -58,7 +58,7 @@ Microchip or any third party.
 //*******************************************************************************
 /*
   Function:
-    void _WDRV_WINC_ICMPEchoResponseCallback
+    void socketICMPEchoResponseCallback
     (
         uint32_t ipAddress,
         uint32_t rtt,
@@ -86,7 +86,7 @@ Microchip or any third party.
 
 */
 
-static void _WDRV_WINC_ICMPEchoResponseCallback
+static void socketICMPEchoResponseCallback
 (
     uint32_t ipAddress,
     uint32_t rtt,
@@ -118,7 +118,7 @@ static void _WDRV_WINC_ICMPEchoResponseCallback
 //*******************************************************************************
 /*
   Function:
-    static WDRV_WINC_STATUS _WDRV_WINC_OTAInProgress(WDRV_WINC_DCPT *const pDcpt)
+    static WDRV_WINC_STATUS socketOTAInProgress(WDRV_WINC_DCPT *const pDcpt)
 
   Summary:
     Check if OTA is in progress.
@@ -143,7 +143,7 @@ static void _WDRV_WINC_ICMPEchoResponseCallback
 
 */
 
-static WDRV_WINC_STATUS _WDRV_WINC_OTAInProgress(WDRV_WINC_DCPT *const pDcpt)
+static WDRV_WINC_STATUS socketOTAInProgress(WDRV_WINC_DCPT *const pDcpt)
 {
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == (DRV_HANDLE)pDcpt) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -582,7 +582,7 @@ WDRV_WINC_STATUS WDRV_WINC_ICMPEchoRequest
     }
 
     /* Send ICMP echo request. */
-    if (M2M_SUCCESS != m2m_ping_req(ipAddress, ttl, &_WDRV_WINC_ICMPEchoResponseCallback))
+    if (M2M_SUCCESS != m2m_ping_req(ipAddress, ttl, &socketICMPEchoResponseCallback))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -625,7 +625,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
     WDRV_WINC_STATUS status;
 
     /* Ensure the driver is open and no OTA is in progress. */
-    status = _WDRV_WINC_OTAInProgress(pDcpt);
+    status = socketOTAInProgress(pDcpt);
 
     if (WDRV_WINC_STATUS_OK != status)
     {
@@ -742,7 +742,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTASSLServerAuthModeSet
     int optValue;
 
     /* Ensure the driver is open and no OTA is in progress. */
-    status = _WDRV_WINC_OTAInProgress(pDcpt);
+    status = socketOTAInProgress(pDcpt);
 
     if (WDRV_WINC_STATUS_OK != status)
     {
@@ -785,7 +785,7 @@ bool WDRV_WINC_OTASSLServerAuthModeIsEnabled(DRV_HANDLE handle)
     size_t optLength;
 
     /* Ensure the driver is open and no OTA is in progress. */
-    status = _WDRV_WINC_OTAInProgress(pDcpt);
+    status = socketOTAInProgress(pDcpt);
 
     if (WDRV_WINC_STATUS_OK != status)
     {
@@ -841,7 +841,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTASSLSNISet
     const char *pOptSNIName;
 
     /* Ensure the driver is open and no OTA is in progress. */
-    status = _WDRV_WINC_OTAInProgress(pDcpt);
+    status = socketOTAInProgress(pDcpt);
 
     if (WDRV_WINC_STATUS_OK != status)
     {
@@ -900,7 +900,7 @@ bool WDRV_WINC_OTASSLSNIIsEnabled(DRV_HANDLE handle)
     size_t optLength;
 
     /* Ensure the driver is open and no OTA is in progress. */
-    status = _WDRV_WINC_OTAInProgress(pDcpt);
+    status = socketOTAInProgress(pDcpt);
 
     if (WDRV_WINC_STATUS_OK != status)
     {
