@@ -3,6 +3,16 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.12.1
+
+### Dot Release Update for v3.12.1:
+
+- WINC: Add support for WINC3400 FW v1.4.7.
+    - Correct the handling of BLE MAC address generation in the WINC firmware
+- WINC: Some MISRA fixes in the WINC driver
+
+**Other release notes for v3.12.0 apply here too**
+
 ## Wireless_wifi Release v3.12.0
 
 This release includes improvements for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com.
