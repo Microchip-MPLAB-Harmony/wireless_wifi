@@ -2242,7 +2242,11 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 #ifdef WDRV_WINC_DEVICE_WINC3400
             if (true == pDcpt->pCtrl->isBLEInitStarted)
             {
+<#if HarmonyCore.SELECT_RTOS == "BareMetal" || HarmonyCore.SELECT_RTOS == None>
                 if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
+<#else>
+                if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
+</#if>
                 {
 #ifdef WDRV_WINC_DEVICE_LITE_DRIVER
                     if (M2M_SUCCESS != m2m_wifi_handle_events(NULL))
@@ -2400,7 +2404,11 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
         /* Running steady state. */
         case SYS_STATUS_READY:
         {
+<#if HarmonyCore.SELECT_RTOS == "BareMetal" || HarmonyCore.SELECT_RTOS == None>
             if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
+<#else>
+            if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
+</#if>
             {
                 if (SYS_STATUS_READY != pDcpt->sysStat)
                 {

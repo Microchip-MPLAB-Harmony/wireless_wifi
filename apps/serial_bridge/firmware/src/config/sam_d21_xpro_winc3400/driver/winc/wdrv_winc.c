@@ -2242,7 +2242,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 #ifdef WDRV_WINC_DEVICE_WINC3400
             if (true == pDcpt->pCtrl->isBLEInitStarted)
             {
-                if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
+                if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
                 {
 #ifdef WDRV_WINC_DEVICE_LITE_DRIVER
                     if (M2M_SUCCESS != m2m_wifi_handle_events(NULL))
@@ -2400,7 +2400,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
         /* Running steady state. */
         case SYS_STATUS_READY:
         {
-            if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
+            if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
             {
                 if (SYS_STATUS_READY != pDcpt->sysStat)
                 {

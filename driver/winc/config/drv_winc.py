@@ -687,7 +687,6 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'bluetooth_driver')
 
     wdrvSrcFiles = [
-        ['wdrv_winc.c',                         condAlways],
         ['wdrv_winc_assoc.c',                   condAlways],
         ['wdrv_winc_authctx.c',                 condAlways],
         ['wdrv_winc_ble.c',                     condBle],
@@ -863,6 +862,15 @@ def instantiateComponent(drvWincComponent):
     drvwincSystemRtosTasksFile.setMarkup(True)
     drvwincSystemRtosTasksFile.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))
     drvwincSystemRtosTasksFile.setDependencies(setEnabledRTOSTask, ['HarmonyCore.SELECT_RTOS'])
+
+    drvwincDevSpiSrcFile = drvWincComponent.createFileSymbol('WDRV_WINC_SRC', None)
+    drvwincDevSpiSrcFile.setSourcePath('driver/winc/templates/wdrv_winc.c.ftl')
+    drvwincDevSpiSrcFile.setOutputName('wdrv_winc.c')
+    drvwincDevSpiSrcFile.setDestPath('/driver/winc/')
+    drvwincDevSpiSrcFile.setProjectPath('config/' + configName + '/driver/winc/')
+    drvwincDevSpiSrcFile.setType('SOURCE')
+    drvwincDevSpiSrcFile.setMarkup(True)
+    drvwincDevSpiSrcFile.setOverwrite(True)
 
 def destroyComponent(drvWincComponentCommon):
     Database.sendMessage('HarmonyCore', 'ENABLE_DRV_COMMON', {'isEnabled':False})
