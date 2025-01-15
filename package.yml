@@ -4,19 +4,10 @@ package:
   type: "api"
   status: "production"
   required: false
-  version: "v3.12.0"
+  version: "v3.12.1"
 
   dependencies:
-    - name: "csp"
-      type: "package"
-      version: "v3.19.7"
-    - name: "core"
-      type: "package"
-      version: "v3.13.5"
     - name: "net"
       type: "package"
-      version: "v3.12.3"
-    - name: "bsp"
-      type: "package"
-      version: "v3.21.0"
+      version: "v3.13.0"
       

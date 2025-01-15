@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Package name="wireless_wifi">
     <Dependencies>
-        <Dependency name="csp" version="v3.19.7"/>
-        <Dependency name="core" version="v3.13.5"/>
-        <Dependency name="net" version="v3.12.3"/>
-        <Dependency name="bsp" version="v3.21.0"/>
+        <Dependency name="csp" version="v3.20.0"/>
+        <Dependency name="core" version="v3.14.1"/>
+        <Dependency name="net" version="v3.13.0"/>
+        <Dependency name="bsp" version="v3.21.1"/>
     </Dependencies>
 </Package>
