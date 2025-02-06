@@ -2242,7 +2242,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 #ifdef WDRV_WINC_DEVICE_WINC3400
             if (true == pDcpt->pCtrl->isBLEInitStarted)
             {
-<#if (HarmonyCore.SELECT_RTOS)?? && (HarmonyCore.SELECT_RTOS != "BareMetal" && HarmonyCore.SELECT_RTOS != None)>
+<#if (HarmonyCore.SELECT_RTOS)?? && HarmonyCore.SELECT_RTOS != "BareMetal">
                 if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
 <#else>
                 if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
@@ -2404,10 +2404,10 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
         /* Running steady state. */
         case SYS_STATUS_READY:
         {
-<#if HarmonyCore.SELECT_RTOS == "BareMetal" || HarmonyCore.SELECT_RTOS == None>
-            if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
-<#else>
+<#if (HarmonyCore.SELECT_RTOS)?? && HarmonyCore.SELECT_RTOS != "BareMetal">
             if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_WAIT_FOREVER))
+<#else>
+            if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, OSAL_NO_WAIT))
 </#if>
             {
                 if (SYS_STATUS_READY != pDcpt->sysStat)
