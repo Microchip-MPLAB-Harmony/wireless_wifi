@@ -331,8 +331,8 @@ TCPIP_MAC_RES WDRV_WINC_MACParametersGet
     (
         DRV_HANDLE handle,
         TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
-        int nEntries,
-        int* pHwEntries
+        size_t nEntries,
+        size_t* pHwEntries
     )
 
   Summary:
@@ -361,8 +361,8 @@ TCPIP_MAC_RES WDRV_WINC_MACRegisterStatisticsGet
 (
     DRV_HANDLE handle,
     TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
-    int nEntries,
-    int* pHwEntries
+    size_t nEntries,
+    size_t* pHwEntries
 );
 
 //*******************************************************************************
