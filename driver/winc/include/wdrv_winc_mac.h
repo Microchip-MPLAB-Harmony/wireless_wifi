@@ -331,8 +331,8 @@ TCPIP_MAC_RES WDRV_WINC_MACParametersGet
     (
         DRV_HANDLE handle,
         TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
-        size_t nEntries,
-        size_t* pHwEntries
+        size_t/int nEntries,
+        size_t/int* pHwEntries
     )
 
   Summary:
@@ -361,8 +361,13 @@ TCPIP_MAC_RES WDRV_WINC_MACRegisterStatisticsGet
 (
     DRV_HANDLE handle,
     TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
+#if TCPIP_STACK_VERSION_MAJOR != 8
     size_t nEntries,
     size_t* pHwEntries
+#else
+    int nEntries,
+    int* pHwEntries
+#endif
 );
 
 //*******************************************************************************

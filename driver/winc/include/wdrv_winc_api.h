@@ -115,6 +115,7 @@ typedef struct
 extern const TCPIP_MAC_OBJECT WDRV_WINC_MACObject;
 
 #endif
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: WINC Driver System Routines

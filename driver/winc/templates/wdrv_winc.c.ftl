@@ -127,38 +127,44 @@ static WDRV_WINC_DCPT wincDescriptor[2] =
 
 #ifdef WDRV_WINC_NETWORK_USE_HARMONY_TCPIP
 
+#if TCPIP_STACK_VERSION_MAJOR != 8
+#define MAC_FUNC(NAME)      MAC_##NAME
+#else
+#define MAC_FUNC(NAME)      TCPIP_MAC_##NAME
+#endif
+
 const TCPIP_MAC_OBJECT WDRV_WINC_MACObject =
 {
-    .macId                            = TCPIP_MODULE_MAC_WINC,
+    .macId                                  = TCPIP_MODULE_MAC_WINC,
 #if TCPIP_STACK_VERSION_MAJOR != 7
-    .macType                          = TCPIP_MAC_TYPE_WLAN,
+    .macType                                = TCPIP_MAC_TYPE_WLAN,
 #endif
-    .macName                          = "WINC",
-    .MAC_Initialize                   = WDRV_WINC_Initialize,
+    .macName                                = "WINC",
+    .MAC_FUNC(Initialize)                   = WDRV_WINC_Initialize,
 #if (TCPIP_STACK_MAC_DOWN_OPERATION != false)
-    .MAC_Deinitialize                 = WDRV_WINC_Deinitialize,
-    .MAC_Reinitialize                 = WDRV_WINC_Reinitialize,
+    .MAC_FUNC(Deinitialize)                 = WDRV_WINC_Deinitialize,
+    .MAC_FUNC(Reinitialize)                 = WDRV_WINC_Reinitialize,
 #else
-    .MAC_Deinitialize                 = 0,
-    .MAC_Reinitialize                 = 0,
+    .MAC_FUNC(Deinitialize)                 = 0,
+    .MAC_FUNC(Reinitialize)                 = 0,
 #endif  // (TCPIP_STACK_DOWN_OPERATION != 0)
-    .MAC_Status                       = WDRV_WINC_Status,
-    .MAC_Tasks                        = WDRV_WINC_MACTasks,
-    .MAC_Open                         = WDRV_WINC_Open,
-    .MAC_Close                        = WDRV_WINC_Close,
-    .MAC_LinkCheck                    = WDRV_WINC_MACLinkCheck,
-    .MAC_RxFilterHashTableEntrySet    = WDRV_WINC_MACRxFilterHashTableEntrySet,
-    .MAC_PowerMode                    = WDRV_WINC_MACPowerMode,
-    .MAC_PacketTx                     = WDRV_WINC_MACPacketTx,
-    .MAC_PacketRx                     = WDRV_WINC_MACPacketRx,
-    .MAC_Process                      = WDRV_WINC_MACProcess,
-    .MAC_StatisticsGet                = WDRV_WINC_MACStatisticsGet,
-    .MAC_ParametersGet                = WDRV_WINC_MACParametersGet,
-    .MAC_RegisterStatisticsGet        = WDRV_WINC_MACRegisterStatisticsGet,
-    .MAC_ConfigGet                    = WDRV_WINC_MACConfigGet,
-    .MAC_EventMaskSet                 = WDRV_WINC_MACEventMaskSet,
-    .MAC_EventAcknowledge             = WDRV_WINC_MACEventAcknowledge,
-    .MAC_EventPendingGet              = WDRV_WINC_MACEventPendingGet,
+    .MAC_FUNC(Status)                       = WDRV_WINC_Status,
+    .MAC_FUNC(Tasks)                        = WDRV_WINC_MACTasks,
+    .MAC_FUNC(Open)                         = WDRV_WINC_Open,
+    .MAC_FUNC(Close)                        = WDRV_WINC_Close,
+    .MAC_FUNC(LinkCheck)                    = WDRV_WINC_MACLinkCheck,
+    .MAC_FUNC(RxFilterHashTableEntrySet)    = WDRV_WINC_MACRxFilterHashTableEntrySet,
+    .MAC_FUNC(PowerMode)                    = WDRV_WINC_MACPowerMode,
+    .MAC_FUNC(PacketTx)                     = WDRV_WINC_MACPacketTx,
+    .MAC_FUNC(PacketRx)                     = WDRV_WINC_MACPacketRx,
+    .MAC_FUNC(Process)                      = WDRV_WINC_MACProcess,
+    .MAC_FUNC(StatisticsGet)                = WDRV_WINC_MACStatisticsGet,
+    .MAC_FUNC(ParametersGet)                = WDRV_WINC_MACParametersGet,
+    .MAC_FUNC(RegisterStatisticsGet)        = WDRV_WINC_MACRegisterStatisticsGet,
+    .MAC_FUNC(ConfigGet)                    = WDRV_WINC_MACConfigGet,
+    .MAC_FUNC(EventMaskSet)                 = WDRV_WINC_MACEventMaskSet,
+    .MAC_FUNC(EventAcknowledge)             = WDRV_WINC_MACEventAcknowledge,
+    .MAC_FUNC(EventPendingGet)              = WDRV_WINC_MACEventPendingGet,
 };
 
 #define TCPIP_THIS_MODULE_ID TCPIP_MODULE_MAC_WINC
@@ -3077,8 +3083,8 @@ TCPIP_MAC_RES WDRV_WINC_MACParametersGet
     (
         DRV_HANDLE handle,
         TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
-        size_t nEntries,
-        size_t* pHwEntries
+        size_t/int nEntries,
+        size_t/int* pHwEntries
     )
 
   Summary:
@@ -3094,8 +3100,13 @@ TCPIP_MAC_RES WDRV_WINC_MACRegisterStatisticsGet
 (
     DRV_HANDLE handle,
     TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
+#if TCPIP_STACK_VERSION_MAJOR != 8
     size_t nEntries,
     size_t* pHwEntries
+#else
+    int nEntries,
+    int* pHwEntries
+#endif
 )
 {
     return TCPIP_MAC_RES_OP_ERR;
