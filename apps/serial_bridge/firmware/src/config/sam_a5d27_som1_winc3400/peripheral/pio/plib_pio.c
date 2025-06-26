@@ -45,10 +45,10 @@
 #include "interrupts.h"
 
 /* Array to store callback objects of each configured interrupt */
-volatile static PIO_PIN_CALLBACK_OBJ portPinCbObj[2];
+static volatile PIO_PIN_CALLBACK_OBJ portPinCbObj[2];
 
 /* Array to store number of interrupts in each PORT Channel + previous interrupt count */
-volatile static uint8_t portNumCb[7 + 1] = { 0, 1, 2, 2, 2, 2, 2, 2, };
+static volatile uint8_t portNumCb[7 + 1] = { 0, 1, 2, 2, 2, 2, 2, 2, };
 
 
 

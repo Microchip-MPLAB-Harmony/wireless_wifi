@@ -10116,11 +10116,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\definitions.h</file>
-         <hash>65a4c7cf03cc3fb2f29f743600103021794e243bee7402aa1e64417f5a69d838</hash>
+         <hash>7a6be16f1abc680d3342b974553607b66dd28b49c4bc585be0fb11165af0233c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\device.h</file>
-         <hash>68bb28accb617ce48b644e0b41a8f8a1aab2e1025456ba49a5a4bd72bf8e9fe8</hash>
+         <hash>b8fdcc4ed83daa65a6f38614a689c97d414774be19ae106e6da07556c50a2c82</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\device_cache.h</file>
@@ -10304,7 +10304,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\driver\winc\include\wdrv_winc_api.h</file>
-         <hash>7c1b6d44a5fd2d2d7be9cfbed572d503fa2951393332d7d9819d781ef4786a9e</hash>
+         <hash>1cae5562cc011285bb31025783f94cf91792fa26e585b1514597b14a8045f3a6</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\driver\winc\include\wdrv_winc_assoc.h</file>
@@ -10384,7 +10384,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\driver\winc\wdrv_winc.c</file>
-         <hash>9060c9b8915a3692b56485d313102db37e4a7f0cafe9c7a6e2e75520ad3f864e</hash>
+         <hash>0f14c3c09956beb23963012bb4f6600e270a6481fb6456de5fa465a524452cd1</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\driver\winc\wdrv_winc_assoc.c</file>
@@ -10452,15 +10452,15 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\initialization.c</file>
-         <hash>23fd3114f4d65c4b1223ee57d3d5c06db1107dc355a55906ecd3784be6c69985</hash>
+         <hash>ccef17a21c04bc2c465f0a544882841d0464e58360d91e5780e3548143d819d4</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\interrupts.c</file>
-         <hash>f89ebcc28c4414679c5949ecf72239e9ec68367f82b54a96a99b728bcdbeeed1</hash>
+         <hash>4232a2a3619a09762872734647fc0cf0eb62bf3347693e96cf216391d4617029</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\interrupts.h</file>
-         <hash>581f82924502dee9d252d633b3db74f432474f40d58b4c35c97ee96ffa45e3bd</hash>
+         <hash>85f8b2fe163c1b957ae2c084701ba17e50a0d102f4ff6ff19d43e9bf1904717b</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\libc_syscalls.c</file>
@@ -10496,7 +10496,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\dmac\plib_dmac.c</file>
-         <hash>f0ea8672b69ed4d1a3f1db522aa57f2416040f73a020b88e4340a692644641ef</hash>
+         <hash>f99be2ce334099cc00c8a08439ee694578a59dc7d8934772a1d5b0c33e436cc4</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\dmac\plib_dmac.h</file>
@@ -10504,7 +10504,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\eic\plib_eic.c</file>
-         <hash>30378c03f4c3e6e2f2ed2b5b53841357d8380c549682ad5972e8d186eaec2081</hash>
+         <hash>922ded5ada8810ef7f7a705528282529d261d0c118610cb9e10a4a1511ba3b12</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\eic\plib_eic.h</file>
@@ -10528,7 +10528,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\nvmctrl\plib_nvmctrl.c</file>
-         <hash>1a6bdac00590cbec796a13351597c695bc1d962a95641bdb573d1bf0dc38b2d8</hash>
+         <hash>fba7a5e2b2b74c95065983f4c1c67d9e755d1f46d773e271c6904b13b395643a</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\nvmctrl\plib_nvmctrl.h</file>
@@ -10544,7 +10544,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom4_spi_master.c</file>
-         <hash>f0b43817b4c2661c2eb1ebdb3910aa28695a1ea49be5d203c66e6b06939ac0af</hash>
+         <hash>44ff8197b718e533c95c08f251b8aa9aa37f72cdc8db7e823534f76d02d3db1d</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom4_spi_master.h</file>
@@ -10552,7 +10552,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom6_spi_master.c</file>
-         <hash>c6e0d204e69302a53d41ed38fe2a772ad9d1c29f0fc56926ba6f1b9e9031ee58</hash>
+         <hash>b8b6b7edb9b8eb55f74f6ba9e427c99c09aaeb2ed0be4020ef1095937d53f8be</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom6_spi_master.h</file>
@@ -10564,7 +10564,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\sercom\usart\plib_sercom2_usart.c</file>
-         <hash>5cf12d4318fdc1d32ad42e369e5de8c3c7beab6d009fee63a22b908aaef4aec9</hash>
+         <hash>f5560db67294ccaecf2d4fcd5d746e3add65d1cc9a41bc26d2a17490051c7f07</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\sercom\usart\plib_sercom2_usart.h</file>
@@ -10576,7 +10576,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\tc\plib_tc3.c</file>
-         <hash>8792e4f47a8b03869eb1d990032aac4902a006890f19265e4094541fc68850af</hash>
+         <hash>9354058b3c965874379b5027339dcaa29d4cfbf3cb9ac03f0c984f41ef1f50e8</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e54_xpro_winc3400\peripheral\tc\plib_tc3.h</file>

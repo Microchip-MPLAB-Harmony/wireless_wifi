@@ -57,7 +57,7 @@
 /* SERCOM3 USART baud value for 115200 Hz baud rate */
 #define SERCOM3_USART_INT_BAUD_VALUE            (63019UL)
 
-volatile static SERCOM_USART_OBJECT sercom3USARTObj;
+static volatile SERCOM_USART_OBJECT sercom3USARTObj;
 
 
 // *****************************************************************************
@@ -66,7 +66,7 @@ volatile static SERCOM_USART_OBJECT sercom3USARTObj;
 // *****************************************************************************
 // *****************************************************************************
 
-void static SERCOM3_USART_ErrorClear( void )
+static void SERCOM3_USART_ErrorClear( void )
 {
     uint8_t  u8dummyData = 0U;
     USART_ERROR errorStatus = (USART_ERROR) (SERCOM3_REGS->USART_INT.SERCOM_STATUS & (uint16_t)(SERCOM_USART_INT_STATUS_PERR_Msk | SERCOM_USART_INT_STATUS_FERR_Msk | SERCOM_USART_INT_STATUS_BUFOVF_Msk ));
@@ -456,7 +456,7 @@ void SERCOM3_USART_ReadCallbackRegister( SERCOM_USART_CALLBACK callback, uintptr
 }
 
 
-void static __attribute__((used)) SERCOM3_USART_ISR_ERR_Handler( void )
+static void __attribute__((used)) SERCOM3_USART_ISR_ERR_Handler( void )
 {
     USART_ERROR errorStatus;
 
@@ -485,7 +485,7 @@ void static __attribute__((used)) SERCOM3_USART_ISR_ERR_Handler( void )
     }
 }
 
-void static __attribute__((used)) SERCOM3_USART_ISR_RX_Handler( void )
+static void __attribute__((used)) SERCOM3_USART_ISR_RX_Handler( void )
 {
     uint16_t temp;
 
@@ -532,7 +532,7 @@ void static __attribute__((used)) SERCOM3_USART_ISR_RX_Handler( void )
     }
 }
 
-void static __attribute__((used)) SERCOM3_USART_ISR_TX_Handler( void )
+static void __attribute__((used)) SERCOM3_USART_ISR_TX_Handler( void )
 {
     bool  dataRegisterEmpty;
     bool  dataAvailable;

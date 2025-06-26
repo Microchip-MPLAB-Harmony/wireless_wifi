@@ -4,19 +4,19 @@
 
 
 project: serial_bridge
-creation_date: 2024-12-20T15:31:32.662Z[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
-operating_system: Windows 10
+creation_date: 2025-06-26T15:01:32.804+01:00[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+operating_system: Windows 11
 mcc_mode: IDE            # [IDE|Standalone|Headless]
-mcc_version: v5.5.1
+mcc_version: v5.5.2
 mcc_core_version: v5.7.1
-mplabx_version: v6.20        # if MPLAB X plugin only
+mplabx_version: v6.25        # if MPLAB X plugin only
 harmony_version: v1.5.4
-compiler: XC32 4.45
+compiler: XC32 4.60
 
 modules:
     - {name: "wireless_wifi", version: "v3.12.1"}
-    - {name: "csp", version: "v3.20.0"}
-    - {name: "core", version: "v3.14.1"}
+    - {name: "csp", version: "v3.22.2"}
+    - {name: "core", version: "v3.15.1"}
     - {name: "CMSIS_5", version: "5.9.0"}
 
 packs:

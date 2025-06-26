@@ -54,7 +54,7 @@ typedef struct
     bool busyStatus;
 } XDMAC_CH_OBJECT ;
 
-volatile static XDMAC_CH_OBJECT xdmacChannelObj[XDMAC_ACTIVE_CHANNELS_MAX];
+static volatile XDMAC_CH_OBJECT xdmacChannelObj[XDMAC_ACTIVE_CHANNELS_MAX];
 
 // *****************************************************************************
 // *****************************************************************************

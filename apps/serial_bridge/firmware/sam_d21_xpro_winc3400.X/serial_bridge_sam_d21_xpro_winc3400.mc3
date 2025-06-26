@@ -8728,11 +8728,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\definitions.h</file>
-         <hash>28a346b86c1fe2c771714d55e600726c12f31cce5727a8c250158e2e104ab069</hash>
+         <hash>42843a1e039dd5f8bcbe72e0315b9076bf9b9ab6488015d87dcb8915f3fd01e4</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\device.h</file>
-         <hash>3c978311bac2e13b73a420a163facffbb69f51584572acc349c1c3d167c23409</hash>
+         <hash>b47b11ceb9f360e667a14c68f72033c9a8c1dcb7abb5fb77d0b2cb4abe939249</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\device_cache.h</file>
@@ -8916,7 +8916,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc_api.h</file>
-         <hash>7c1b6d44a5fd2d2d7be9cfbed572d503fa2951393332d7d9819d781ef4786a9e</hash>
+         <hash>1cae5562cc011285bb31025783f94cf91792fa26e585b1514597b14a8045f3a6</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\include\wdrv_winc_assoc.h</file>
@@ -8996,7 +8996,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc.c</file>
-         <hash>9060c9b8915a3692b56485d313102db37e4a7f0cafe9c7a6e2e75520ad3f864e</hash>
+         <hash>0f14c3c09956beb23963012bb4f6600e270a6481fb6456de5fa465a524452cd1</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\driver\winc\wdrv_winc_assoc.c</file>
@@ -9064,15 +9064,15 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\initialization.c</file>
-         <hash>7c9b3a8c994706e26d022d4e082c66b4a884458bc6210fb647474f8b2502bb86</hash>
+         <hash>991d40949806a05297957659e975de7946058512fd703aa8721121e4f74a3c01</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\interrupts.c</file>
-         <hash>2de3f49453bc9fb22133fffec9206f18dab76ad0a3eee50f1768b6ec2d1a4c26</hash>
+         <hash>eb7ee618e1a58a736000d0075190409ab43fc6c2b803a2d91bc7afa2bcab15bd</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\interrupts.h</file>
-         <hash>c314fe80e9e4e0c5de842370082e741e7f872b2cfb8a0d555dc28429316136d7</hash>
+         <hash>25e5f3d3ce46a1565c9df915a6759114eea95d1708fe7f1b63b1187831640639</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\libc_syscalls.c</file>
@@ -9100,7 +9100,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\dmac\plib_dmac.c</file>
-         <hash>eaef053b68f40ed0dbe40058e3c72194755aac7c849c6199100eb4156ba2c952</hash>
+         <hash>2dcb389dd7d396b93b73d463e04260402a1ad3bee33498c58da9ac9b8e23a403</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\dmac\plib_dmac.h</file>
@@ -9108,7 +9108,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\eic\plib_eic.c</file>
-         <hash>31492c1d345a493e41fde308c44ccfe9725fba317179fa7820be97ac29b610e1</hash>
+         <hash>28f72071379405e70e6d5edfce08df2ed89970fe9c2a6dc343bf89ba0984a540</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\eic\plib_eic.h</file>
@@ -9148,7 +9148,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom0_spi_master.c</file>
-         <hash>d1ef1eb0c6d616e61607746b9390f145b008a3673a818a9b855ccb89276c079d</hash>
+         <hash>7cd8b5976a4453d298318176fc0a06b21c82e790e26d7b1109d6091c362d8a37</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom0_spi_master.h</file>
@@ -9156,7 +9156,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom1_spi_master.c</file>
-         <hash>da1a3e38e39da8a024c8246aec69329dea44de9f478594edfb4789ac10934369</hash>
+         <hash>cea968aff8c07cf9933044be6555d6841de2b7cbc3c6a38d5be8ace79e0c4e38</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\spi_master\plib_sercom1_spi_master.h</file>
@@ -9168,7 +9168,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\usart\plib_sercom3_usart.c</file>
-         <hash>d0e083b3bf848dd99471c0f41b8ce2180d51f45cc02b05cbbd8c141008b6844c</hash>
+         <hash>c72b3003dfafcc9b20351092fa7598685afb92ed21d16ca185b8db8a599db657</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\sercom\usart\plib_sercom3_usart.h</file>
@@ -9180,7 +9180,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\tc\plib_tc3.c</file>
-         <hash>1f3a8e522d1e9b4af3595ef33a40dd23c27d8f49ba1a12176f002766127ae511</hash>
+         <hash>0241ddd3c8ff7a8b1854615989524c66486eb5fbc0fe74a8de4cc517f44398a2</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_d21_xpro_winc3400\peripheral\tc\plib_tc3.h</file>

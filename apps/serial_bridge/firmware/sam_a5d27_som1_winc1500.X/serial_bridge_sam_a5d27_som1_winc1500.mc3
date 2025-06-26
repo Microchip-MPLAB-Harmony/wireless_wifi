@@ -7008,11 +7008,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\definitions.h</file>
-         <hash>8e17de156f464214766aa4821dc0c618eb87c4354685aefdb0d7c0b89467c034</hash>
+         <hash>41625596a93038b72cf7b19b8db8902a7036e350c346d5b447f6643c445471bd</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\device.h</file>
-         <hash>11a8f8b0117a756dce1391269f23ce00912796fbb892fbf77ea4060535dc6d8c</hash>
+         <hash>18f89c91820c9e22fdb95f10bb00c2d2c03431b389d09e33632dedc9487777ea</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\device_cache.h</file>
@@ -7208,7 +7208,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\driver\winc\include\wdrv_winc_api.h</file>
-         <hash>7c1b6d44a5fd2d2d7be9cfbed572d503fa2951393332d7d9819d781ef4786a9e</hash>
+         <hash>1cae5562cc011285bb31025783f94cf91792fa26e585b1514597b14a8045f3a6</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\driver\winc\include\wdrv_winc_assoc.h</file>
@@ -7292,7 +7292,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\driver\winc\wdrv_winc.c</file>
-         <hash>9060c9b8915a3692b56485d313102db37e4a7f0cafe9c7a6e2e75520ad3f864e</hash>
+         <hash>0f14c3c09956beb23963012bb4f6600e270a6481fb6456de5fa465a524452cd1</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\driver\winc\wdrv_winc_assoc.c</file>
@@ -7364,15 +7364,15 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\initialization.c</file>
-         <hash>e41f23ce4b9ac11eb96d12975fc46ff4066033a70805c95c91b9f3991d76a892</hash>
+         <hash>14eea7a180cfe4a68f40413dd1baef7eceadc97304636461581b2ab1f37b4df6</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\interrupts.c</file>
-         <hash>6c897205519661daeb3f03fbade1997db33fdc6e32a2a569b7a7c6da150bff23</hash>
+         <hash>3722fa2b8adb5ddfd5a8db1f1102eeb82422c9bc8350d45f992e8f9a3f7a6dbd</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\interrupts.h</file>
-         <hash>62a2da344b97449633803b792d6830dcd41b4f1d0e13caac0585bc79f4142234</hash>
+         <hash>0553f021d2fb580bca970d2d45efb1d5cf0af5302926365a6e4a021222d4d053</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\osal\osal.h</file>
@@ -7404,7 +7404,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\flexcom\spi\master\plib_flexcom4_spi_master.c</file>
-         <hash>afa0303d3fb78da9451bacaa17fab06cb38e2d13ceeca95f2d7be8ad80ca0bb0</hash>
+         <hash>ab7172dedeffae4befe380f557867218237c6925bb3e5dd9da614c8383c96b64</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\flexcom\spi\master\plib_flexcom4_spi_master.h</file>
@@ -7432,7 +7432,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\pio\plib_pio.c</file>
-         <hash>c7e32bae335a83f5f26a919cfcd3cda5cd640aebf49cdd1cdf84b762545c7750</hash>
+         <hash>e5af7b56c899f0fcb1bc8ace0ce164be80a481bc4f3e6f09b4e796f433fa0cfe</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\pio\plib_pio.h</file>
@@ -7440,7 +7440,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\tc\plib_tc0.c</file>
-         <hash>af3e0f211a187f4f4b8268f29d8cd8256eb3d2b420349d59a7188707a4c0e4d0</hash>
+         <hash>973813cc7e0baae12bc7d9b65476c661053d201fe33cc9576ff496568c3389ae</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\tc\plib_tc0.h</file>
@@ -7452,7 +7452,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\uart\plib_uart1.c</file>
-         <hash>83fd7f73bb2bbb09bddb4d7de1ac638b89eefdb39d0949b60a41e54ede0e0c0a</hash>
+         <hash>ee085d33a56b82288986fa7d3e05b2dfc0b674780ca05b4b14d48188c025672a</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\uart\plib_uart1.h</file>
@@ -7464,7 +7464,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\xdmac\plib_xdmac0.c</file>
-         <hash>3cadaf2ba786594a323cc63344343d57f20b329fb2635bdf18b26ace953aac25</hash>
+         <hash>c0665c9e3353e4e0071c4e2d625f48158841b62d56df2cadbcebf0265e05414c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_a5d27_som1_winc1500\peripheral\xdmac\plib_xdmac0.h</file>
