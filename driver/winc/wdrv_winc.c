@@ -866,7 +866,7 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
         /* The IP address of the connection has been updated due to DHCP. */
         case M2M_WIFI_REQ_DHCP_CONF:
         {
-            const uint8_t *const pIP = (const uint8_t *const)pMsgContent;
+            const tstrM2MIPConfig *const pIPConfig = (const tstrM2MIPConfig *const)pMsgContent;
 
             if (false == pDcpt->pCtrl->isAP)
             {
@@ -874,10 +874,11 @@ static void _WDRV_WINC_WifiCallback(uint8_t msgType, const void *const pMsgConte
                 pDcpt->pCtrl->haveIPAddress = true;
             }
 
-            pDcpt->pCtrl->ipAddress = ( (uint32_t)pIP[3] << 24) |
-                                      ( (uint32_t)pIP[2] << 16) |
-                                      ( (uint32_t)pIP[1] << 8 ) |
-                                      ( (uint32_t)pIP[0]);
+            /* Extract complete network configuration from DHCP response */
+            pDcpt->pCtrl->ipAddress = pIPConfig->u32StaticIP;
+            pDcpt->pCtrl->netMask = pIPConfig->u32SubnetMask;
+            pDcpt->pCtrl->gatewayAddress = pIPConfig->u32Gateway;
+            pDcpt->pCtrl->dnsServerAddress = pIPConfig->u32DNS;
 
             if (NULL != pDcpt->pCtrl->pfDHCPAddressEventCB)
             {
