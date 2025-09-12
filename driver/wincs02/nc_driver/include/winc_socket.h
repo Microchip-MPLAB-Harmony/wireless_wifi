@@ -1,24 +1,18 @@
 /*
-Copyright (C) 2023-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
 
 #ifndef WINC_SOCKET_H
@@ -26,6 +20,7 @@ Microchip or any third party.
 
 #include <stdint.h>
 #include <errno.h>
+#include <sys/types.h>
 
 #include "winc_dev.h"
 
@@ -58,6 +53,25 @@ typedef struct
     size_t          slabSize;
     int8_t          numSlabs;
 } WINC_SOCKET_INIT_TYPE;
+
+#ifdef WINC_SOCK_SLAB_STATS_ENABLE
+/*****************************************************************************
+  Description:
+    Slab statistics structure.
+
+  Remarks:
+    Slab statistics.
+
+ *****************************************************************************/
+
+typedef struct
+{
+    uint32_t numAllocs;
+    uint32_t numFrees;
+    uint16_t numFailed;
+    int8_t   peakUsage;
+} WINC_SOCK_SLAB_STATS;
+#endif
 
 /*****************************************************************************
   Description:
@@ -125,7 +139,16 @@ typedef void (*WINC_SOCKET_EVENT_CALLBACK)(uintptr_t context, int socket, WINC_S
 bool WINC_SockInit(WINC_DEVICE_HANDLE devHandle, WINC_SOCKET_INIT_TYPE *pInitData);
 bool WINC_SockDeinit(WINC_DEVICE_HANDLE devHandle);
 bool WINC_SockRegisterEventCallback(WINC_DEVICE_HANDLE devHandle, WINC_SOCKET_EVENT_CALLBACK pfSocketEventCB, uintptr_t context);
+#ifdef WINC_SOCK_SLAB_STATS_ENABLE
+int WINC_SockSlabStatsGet(WINC_SOCK_SLAB_STATS *pStats, int numStats);
+#endif /* WINC_SOCK_SLAB_STATS_ENABLE */
 
+/* If no socket namespace defined use raw function names. */
+#ifndef WINC_SOCK_NS
+#define WINC_SOCK_NS(FUNC)                  FUNC
+#endif
+
+#ifndef WINC_CONF_USE_EXT_SOCK_HDRS
 /*****************************************************************************
                           Berekeley Sockets API
  *****************************************************************************/
@@ -139,27 +162,31 @@ typedef unsigned short sa_family_t;
 
 typedef uint16_t in_port_t;
 typedef uint32_t in_addr_t;
-struct in_addr { in_addr_t s_addr; };
+struct in_addr
+{
+    in_addr_t s_addr;
+};
 
-struct sockaddr_in {
+struct sockaddr_in
+{
     sa_family_t sin_family;
     in_port_t sin_port;
     struct in_addr sin_addr;
     uint8_t sin_zero[8];
 };
 
-struct in6_addr {
-    union {
-        uint8_t __s6_addr[16];
-        uint16_t __s6_addr16[8];
-        uint32_t __s6_addr32[4];
-    } __in6_union;
+struct in6_addr
+{
+    union
+    {
+        uint8_t s6_addr[16];
+        uint16_t s6_addr16[8];
+        uint32_t s6_addr32[4];
+    };
 };
-#define s6_addr __in6_union.__s6_addr
-#define s6_addr16 __in6_union.__s6_addr16
-#define s6_addr32 __in6_union.__s6_addr32
 
-struct sockaddr_in6 {
+struct sockaddr_in6
+{
     sa_family_t     sin6_family;
     in_port_t       sin6_port;
     uint32_t        sin6_flowinfo;
@@ -190,7 +217,8 @@ uint32_t ntohl(uint32_t n);
 #define IP_TOS                  1U
 #define IP_ADD_MEMBERSHIP       35U
 
-struct ip_mreqn {
+struct ip_mreqn
+{
     struct in_addr imr_multiaddr; /* IP multicast group address */
     struct in_addr imr_address;   /* IP address of local interface */
     int            imr_ifindex;   /* interface index */
@@ -199,24 +227,21 @@ struct ip_mreqn {
 #define IPV6_ADD_MEMBERSHIP     20
 #define IPV6_JOIN_GROUP         IPV6_ADD_MEMBERSHIP
 
-struct ipv6_mreq {
+struct ipv6_mreq
+{
     struct in6_addr ipv6mr_multiaddr;   /* IPv6 multicast addr */
     unsigned int    ipv6mr_interface;   /* interface index */
 };
 
-#define	IPTOS_TOS_MASK		0x1E
-#define	IPTOS_TOS(tos)		((tos) & IPTOS_TOS_MASK)
-#define	IPTOS_LOWDELAY		0x10
-#define	IPTOS_THROUGHPUT	0x08
-#define	IPTOS_RELIABILITY	0x04
+#define IPTOS_TOS_MASK      0x1E
+#define IPTOS_TOS(tos)      ((tos) & IPTOS_TOS_MASK)
+#define IPTOS_LOWDELAY      0x10
+#define IPTOS_THROUGHPUT    0x08
+#define IPTOS_RELIABILITY   0x04
 
 /***************************** netinet/tcp.h *********************************/
 
 #define TCP_NODELAY     1
-
-/***************************** netinet/tls.h *********************************/
-
-#define TLS_CONF_IDX    1
 
 /***************************** arpa/inet.h ***********************************/
 
@@ -253,22 +278,24 @@ const char *inet_ntop(int af, const void *a0, char *s, socklen_t l);
 #define MSG_PEEK        0x0002U
 #define MSG_TRUNC       0x0020U
 
-struct sockaddr {
+struct sockaddr
+{
     sa_family_t sa_family;
     char sa_data[14];
 };
 
 /******************************** netdb.h ************************************/
 
-struct addrinfo {
-	int ai_flags;
-	int ai_family;
-	int ai_socktype;
-	int ai_protocol;
-	socklen_t ai_addrlen;
-	struct sockaddr *ai_addr;
-	char *ai_canonname;
-	struct addrinfo *ai_next;
+struct addrinfo
+{
+    int ai_flags;
+    int ai_family;
+    int ai_socktype;
+    int ai_protocol;
+    socklen_t ai_addrlen;
+    struct sockaddr *ai_addr;
+    char *ai_canonname;
+    struct addrinfo *ai_next;
 };
 
 #define EAI_BADFLAGS   -1
@@ -283,19 +310,60 @@ struct addrinfo {
 #define EAI_SYSTEM     -11
 #define EAI_OVERFLOW   -12
 
+/******************************** poll.h *************************************/
+
+#define POLLIN     0x001
+#define POLLOUT    0x004
+#define POLLERR    0x008
+#define POLLHUP    0x010
+#define POLLNVAL   0x020
+
+typedef unsigned int nfds_t;
+
+struct pollfd
+{
+    int   fd;         /* file descriptor */
+    short events;     /* requested events */
+    short revents;    /* returned events */
+};
+
+/*****************************************************************************/
 /* sockets API */
-int socket(int domain, int type, int protocol);
-int shutdown(int fd, int how);
-int bind(int fd, const struct sockaddr *addr, socklen_t len);
-int listen(int fd, int backlog);
-int accept(int fd, struct sockaddr *addr, socklen_t *len);
-int connect(int fd, const struct sockaddr *addr, socklen_t len);
-ssize_t recv(int fd, void *buf, size_t len, int flags);
-ssize_t recvfrom(int fd, void *buf, size_t len, int flags, struct sockaddr *addr, socklen_t *alen);
-ssize_t send(int fd, const void *buf, size_t len, int flags);
-ssize_t sendto(int fd, const void *buf, size_t len, int flags, const struct sockaddr *addr, socklen_t alen);
-int getaddrinfo(const char *host, const char *serv, const struct addrinfo *hint, struct addrinfo **res);
-void freeaddrinfo(const struct addrinfo *p);
-int setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen);
+int     WINC_SOCK_NS(socket)        (int domain, int type, int protocol);
+int     WINC_SOCK_NS(shutdown)      (int fd, int how);
+int     WINC_SOCK_NS(bind)          (int fd, const struct sockaddr *addr, socklen_t len);
+int     WINC_SOCK_NS(listen)        (int fd, int backlog);
+int     WINC_SOCK_NS(accept)        (int fd, struct sockaddr *addr, socklen_t *len);
+int     WINC_SOCK_NS(connect)       (int fd, const struct sockaddr *addr, socklen_t len);
+ssize_t WINC_SOCK_NS(recv)          (int fd, void *buf, size_t len, int flags);
+ssize_t WINC_SOCK_NS(recvfrom)      (int fd, void *buf, size_t len, int flags, struct sockaddr *addr, socklen_t *alen);
+ssize_t WINC_SOCK_NS(send)          (int fd, const void *buf, size_t len, int flags);
+ssize_t WINC_SOCK_NS(sendto)        (int fd, const void *buf, size_t len, int flags, const struct sockaddr *addr, socklen_t alen);
+int     WINC_SOCK_NS(getaddrinfo)   (const char *host, const char *serv, const struct addrinfo *hint, struct addrinfo **res);
+void    WINC_SOCK_NS(freeaddrinfo)  (struct addrinfo *p);
+int     WINC_SOCK_NS(setsockopt)    (int fd, int level, int optname, const void *optval, socklen_t optlen);
+int     WINC_SOCK_NS(poll)          (struct pollfd *fds, nfds_t nfds, int timeout);
+int     WINC_SOCK_NS(getsockname)   (int fd, struct sockaddr *addr, socklen_t *addrlen);
+int     WINC_SOCK_NS(getpeername)   (int fd, struct sockaddr *addr, socklen_t *addrlen);
+
+#endif /* WINC_CONF_USE_EXT_SOCK_HDRS */
+
+/***************************** netinet/tls.h *********************************/
+
+#define TLS_CONF_IDX    1
+
+/*****************************************************************************/
+
+typedef union sockaddr_union
+{
+    struct
+    {
+        sa_family_t      sin_family;
+        in_port_t        sin_port;
+    };
+    struct sockaddr      sa;
+    struct sockaddr_in   in4;
+    struct sockaddr_in6  in6;
+} SOCKADDR_UNION;
 
 #endif /* WINC_SOCKET_H */

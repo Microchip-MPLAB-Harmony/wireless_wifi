@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver Soft-AP Implementation
+  WINC Wireless Driver Soft-AP Source File
 
   File Name:
     wdrv_winc_softap.c
@@ -11,34 +11,26 @@
     Provides an interface to create and manage a Soft-AP.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
 
@@ -51,14 +43,296 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver Soft-AP Implementation
+// Section: WINC Driver Soft-AP Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
 
 //*******************************************************************************
 /*
   Function:
-    static void apWAPCmdRspCallbackHandler
+    static void wapProcessStatus
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t cmdID,
+        WINC_CMD_REQ_HANDLE cmdReqHandle,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        uint16_t statusCode
+    )
+
+  Summary:
+    Process command status responses.
+
+  Description:
+    Processes command status responses received via WINC_DEV_CMDREQ_EVENT_CMD_STATUS events.
+
+  Precondition:
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
+
+  Parameters:
+    pDcpt        - Pointer to device descriptor.
+    cmdID        - Command ID.
+    cmdReqHandle - Command request handle.
+    pSrcCmd      - Pointer to source command.
+    statusCode   - Status code.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void wapProcessStatus
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t cmdID,
+    WINC_CMD_REQ_HANDLE cmdReqHandle,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    uint16_t statusCode
+)
+{
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pSrcCmd))
+    {
+        return;
+    }
+
+    switch (cmdID)
+    {
+        case WINC_CMD_ID_WAP:
+        {
+            WINC_DEV_PARAM_ELEM elems[10];
+            int state;
+
+            if (NULL == pDcpt->pCtrl->pfConnectNotifyCB)
+            {
+                break;
+            }
+
+            if (pSrcCmd->numParams < 1U)
+            {
+                break;
+            }
+
+            /* Unpack original command parameters. */
+            if (false == WINC_DevUnpackElements(pSrcCmd->numParams, pSrcCmd->pParams, elems))
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &state, sizeof(state));
+
+            /* Update user application via callback if set. */
+            if (0 == state)
+            {
+                pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, WDRV_WINC_ASSOC_HANDLE_INVALID, (WINC_STATUS_OK == statusCode) ? WDRV_WINC_CONN_STATE_DISCONNECTED : WDRV_WINC_CONN_STATE_FAILED);
+            }
+            else if (1 == state)
+            {
+                pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, WDRV_WINC_ASSOC_HANDLE_INVALID, (WINC_STATUS_OK == statusCode) ? WDRV_WINC_CONN_STATE_CONNECTED : WDRV_WINC_CONN_STATE_FAILED);
+            }
+            else
+            {
+                /* Do nothing. */
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void wapProcessAEC
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process AECs.
+
+  Description:
+    Processes AECs for this module.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void wapProcessAEC
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    WDRV_WINC_CTRLDCPT *pCtrl;
+    WDRV_WINC_ASSOC_INFO *pStaAssocInfo;
+    WDRV_WINC_MAC_ADDR peerAddress;
+    uint16_t assocID;
+
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    pCtrl = pDcpt->pCtrl;
+
+    switch (aecId)
+    {
+        case WINC_AEC_ID_WAPSC:
+        {
+            if (2U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
+            peerAddress.valid = true;
+
+            pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
+
+            if (NULL != pStaAssocInfo)
+            {
+                WDRV_DBG_ERROR_PRINT("JOIN: Association found for new connection\r\n");
+            }
+            else
+            {
+                pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, NULL);
+            }
+
+            if (NULL != pStaAssocInfo)
+            {
+                pStaAssocInfo->handle            = (DRV_HANDLE)pCtrl;
+                pStaAssocInfo->peerAddress.valid = true;
+                pStaAssocInfo->authType          = WDRV_WINC_AUTH_TYPE_DEFAULT;
+                pStaAssocInfo->rssi              = 0;
+                pStaAssocInfo->assocID           = assocID;
+
+                (void)memcpy(&pStaAssocInfo->peerAddress, &peerAddress, sizeof(WDRV_WINC_MAC_ADDR));
+            }
+            else
+            {
+                WDRV_DBG_ERROR_PRINT("JOIN: New association failed\r\n");
+            }
+
+            if (NULL != pStaAssocInfo)
+            {
+                if (NULL != pCtrl->pfConnectNotifyCB)
+                {
+                    /* Update user application via callback if set. */
+                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)pStaAssocInfo, WDRV_WINC_CONN_STATE_CONNECTED);
+                }
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_WAPAIP:
+        {
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
+            WDRV_WINC_DHCPS_EVENT_INFO leaseInfo;
+            unsigned int i;
+#endif
+
+            if (2U != numElems)
+            {
+                break;
+            }
+
+#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
+            if (NULL == pCtrl->pfDHCPSEventCB)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_IPV4ADDR, &leaseInfo.leaseAssignment.ipAddr, sizeof(leaseInfo.leaseAssignment.ipAddr));
+
+            for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
+            {
+                if ((DRV_HANDLE_INVALID != pDcpt->pCtrl->assocInfoAP[i].handle) &&
+                        (true == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid) &&
+                        (assocID == pDcpt->pCtrl->assocInfoAP[i].assocID))
+                {
+                    memcpy(&leaseInfo.leaseAssignment.macAddr, &pDcpt->pCtrl->assocInfoAP[i].peerAddress, sizeof(WDRV_WINC_MAC_ADDR));
+
+                    pCtrl->pfDHCPSEventCB((DRV_HANDLE)pDcpt, WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED, &leaseInfo);
+                }
+            }
+#endif
+            break;
+        }
+
+        case WINC_AEC_ID_WAPSD:
+        {
+            if (2U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
+            peerAddress.valid = true;
+
+            pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
+
+            if (NULL != pStaAssocInfo)
+            {
+                pStaAssocInfo->handle            = DRV_HANDLE_INVALID;
+                pStaAssocInfo->peerAddress.valid = false;
+                pStaAssocInfo->assocID           = 0xffffU;
+            }
+            else
+            {
+                WDRV_DBG_ERROR_PRINT("JOIN: No association found\r\n");
+            }
+
+            if (NULL != pCtrl->pfConnectNotifyCB)
+            {
+                /* Update user application via callback if set. */
+                pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)pStaAssocInfo, WDRV_WINC_CONN_STATE_DISCONNECTED);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void wapCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
@@ -124,7 +398,7 @@ Microchip or any third party.
 
 */
 
-static void apWAPCmdRspCallbackHandler
+static void wapCmdRspCallbackHandler
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
@@ -135,12 +409,12 @@ static void apWAPCmdRspCallbackHandler
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl))
+    if (NULL == pDcpt)
     {
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("WAP CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("WAP CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -159,58 +433,11 @@ static void apWAPCmdRspCallbackHandler
         {
             /* Status response received for command. */
 
-            WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
+            const WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (const WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
 
             if (NULL != pStatusInfo)
             {
-                switch (pStatusInfo->rspCmdId)
-                {
-                    case WINC_CMD_ID_WAP:
-                    {
-                        WINC_DEV_PARAM_ELEM elems[10];
-                        int state;
-
-                        if (NULL == pDcpt->pCtrl->pfConnectNotifyCB)
-                        {
-                            break;
-                        }
-
-                        if (pStatusInfo->srcCmd.numParams < 1U)
-                        {
-                            break;
-                        }
-
-                        /* Unpack original command parameters. */
-                        if (false == WINC_DevUnpackElements(pStatusInfo->srcCmd.numParams, pStatusInfo->srcCmd.pParams, elems))
-                        {
-                            break;
-                        }
-
-                        (void)WINC_CmdReadParamElem(&elems[0], WINC_TYPE_INTEGER, &state, sizeof(state));
-
-                        /* Update user application via callback if set. */
-                        if (0 == state)
-                        {
-                            pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, WDRV_WINC_ASSOC_HANDLE_INVALID, (WINC_STATUS_OK == pStatusInfo->status) ? WDRV_WINC_CONN_STATE_DISCONNECTED : WDRV_WINC_CONN_STATE_FAILED);
-                        }
-                        else if (1 == state)
-                        {
-                            pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, WDRV_WINC_ASSOC_HANDLE_INVALID, (WINC_STATUS_OK == pStatusInfo->status) ? WDRV_WINC_CONN_STATE_CONNECTED : WDRV_WINC_CONN_STATE_FAILED);
-                        }
-                        else
-                        {
-                            /* Do nothing. */
-                        }
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        WDRV_DBG_VERBOSE_PRINT("WAP CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
-                        break;
-                    }
-                }
+                wapProcessStatus(pDcpt, pStatusInfo->rspCmdId, cmdReqHandle, &pStatusInfo->srcCmd, pStatusInfo->status);
             }
 
             break;
@@ -218,16 +445,23 @@ static void apWAPCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
+            /* Do nothing. */
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("WAP CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Soft-AP Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -258,135 +492,13 @@ void WDRV_WINC_WAPProcessAEC
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
-    WDRV_WINC_CTRLDCPT *pCtrl;
 
-    WDRV_WINC_ASSOC_INFO *pStaAssocInfo;
-
-    uint16_t assocID;
-    WDRV_WINC_MAC_ADDR peerAddress;
-
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pElems))
     {
         return;
     }
 
-    pCtrl = pDcpt->pCtrl;
-
-    switch (pElems->rspId)
-    {
-        case WINC_AEC_ID_WAPSC:
-        {
-            if (2U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
-            peerAddress.valid = true;
-
-            pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
-
-            if (NULL != pStaAssocInfo)
-            {
-                WDRV_DBG_ERROR_PRINT("JOIN: Association found for new connection\r\n");
-            }
-            else
-            {
-                pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, NULL);
-            }
-
-            if (NULL != pStaAssocInfo)
-            {
-                pStaAssocInfo->handle            = (DRV_HANDLE)pCtrl;
-                pStaAssocInfo->peerAddress.valid = true;
-                pStaAssocInfo->authType          = WDRV_WINC_AUTH_TYPE_DEFAULT;
-                pStaAssocInfo->rssi              = 0;
-                pStaAssocInfo->assocID           = assocID;
-
-                (void)memcpy(&pStaAssocInfo->peerAddress, &peerAddress, sizeof(WDRV_WINC_MAC_ADDR));
-            }
-            else
-            {
-                WDRV_DBG_ERROR_PRINT("JOIN: New association failed\r\n");
-            }
-
-
-            if (NULL != pStaAssocInfo)
-            {
-                if (NULL != pCtrl->pfConnectNotifyCB)
-                {
-                    /* Update user application via callback if set. */
-                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)pStaAssocInfo, WDRV_WINC_CONN_STATE_CONNECTED);
-                }
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_WAPAIP:
-        {
-#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
-            uint32_t ipv4Addr = 0;
-#endif
-
-            if (2U != pElems->numElems)
-            {
-                break;
-            }
-
-#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
-            if (NULL == pCtrl->pfDHCPSEventCB)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_IPV4ADDR, &ipv4Addr, sizeof(ipv4Addr));
-
-            pCtrl->pfDHCPSEventCB((DRV_HANDLE)pDcpt, WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED, &ipv4Addr);
-#endif
-            break;
-        }
-
-        case WINC_AEC_ID_WAPSD:
-        {
-            if (2U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
-            peerAddress.valid = true;
-
-            pStaAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
-
-            if (NULL != pStaAssocInfo)
-            {
-                pStaAssocInfo->handle            = DRV_HANDLE_INVALID;
-                pStaAssocInfo->peerAddress.valid = false;
-                pStaAssocInfo->assocID           = 0xffffU;
-            }
-            else
-            {
-                WDRV_DBG_ERROR_PRINT("JOIN: No association found\r\n");
-            }
-
-            if (NULL != pCtrl->pfConnectNotifyCB)
-            {
-                /* Update user application via callback if set. */
-                pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)pStaAssocInfo, WDRV_WINC_CONN_STATE_DISCONNECTED);
-            }
-
-            break;
-        }
-
-        default:
-        {
-            WDRV_DBG_VERBOSE_PRINT("WAP AECCB ID %04x not handled\r\n", pElems->rspId);
-            break;
-        }
-    }
+    wapProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
 }
 
 //*******************************************************************************
@@ -555,7 +667,7 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
         pDcpt->pCtrl->assocInfoAP[i].assocID           = 0xffffU;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(9, 0, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(9, 0, wapCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -564,6 +676,7 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
 
     /* SSID and channel */
     (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_SSID, WINC_TYPE_STRING, (uintptr_t)pBSSCtx->ssid.name, (uintptr_t)pBSSCtx->ssid.length);
+
     (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_CHANNEL, WINC_TYPE_INTEGER, channel, 0);
 
     if (NULL != pAuthCtx)
@@ -601,13 +714,15 @@ WDRV_WINC_STATUS WDRV_WINC_APStart
     if (NULL != pWiFiCfg)
     {
         (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_HIDDEN, WINC_TYPE_BOOL, (true == pWiFiCfg->ap.cloaked) ? 1U : 0U, 0);
+
         (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_NETIF_IDX, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->ifIdx, 0);
+
         (void)WINC_CmdWAPC(cmdReqHandle, WINC_CFG_PARAM_ID_WAP_REKEY_INTERVAL, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->ap.rekeyInterval, 0);
     }
 
     (void)WINC_CmdWAP(cmdReqHandle, (int32_t)WINC_CONST_WAP_STATE_ENABLED);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -654,7 +769,7 @@ WDRV_WINC_STATUS WDRV_WINC_APStop(DRV_HANDLE handle)
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, apWAPCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wapCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -663,7 +778,7 @@ WDRV_WINC_STATUS WDRV_WINC_APStop(DRV_HANDLE handle)
 
     (void)WINC_CmdWAP(cmdReqHandle, (int32_t)WINC_CONST_WAP_STATE_DISABLED);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }

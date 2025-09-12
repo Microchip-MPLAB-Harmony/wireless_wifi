@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver Authentication Context Implementation
+  WINC Wireless Driver Authentication Context Source File
 
   File Name:
     wdrv_winc_authctx.c
@@ -9,33 +9,25 @@
 
   Description:
     This interface manages the authentication contexts which 'wrap' the state
-      associated with authentication schemes.
+    associated with authentication schemes.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
@@ -51,7 +43,7 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver Authentication Context Data Types
+// Section: WINC Driver Authentication Context Defines
 // *****************************************************************************
 // *****************************************************************************
 
@@ -76,7 +68,7 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver Authentication Context Global Data
+// Section: WINC Driver Authentication Context Local Data
 // *****************************************************************************
 // *****************************************************************************
 
@@ -89,30 +81,30 @@ static const uint16_t mapAuthTypeTo11i[] =
     DRV_WINC_11I_NONE,
     /* WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL */
     DRV_WINC_PRIVACY
-        | DRV_WINC_11I_WPAIE | DRV_WINC_11I_TKIP
-        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
-        | DRV_WINC_11I_BIPCMAC128
-        | DRV_WINC_11I_PSK,
+    | DRV_WINC_11I_WPAIE | DRV_WINC_11I_TKIP
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128
+    | DRV_WINC_11I_PSK,
     /* WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL */
     DRV_WINC_PRIVACY
-        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
-        | DRV_WINC_11I_BIPCMAC128
-        | DRV_WINC_11I_PSK,
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128
+    | DRV_WINC_11I_PSK,
     /* WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL */
     DRV_WINC_PRIVACY
-        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
-        | DRV_WINC_11I_BIPCMAC128
-        | DRV_WINC_11I_PSK | DRV_WINC_11I_SAE,
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128
+    | DRV_WINC_11I_PSK | DRV_WINC_11I_SAE,
     /* WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL */
     DRV_WINC_PRIVACY
-        | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
-        | DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED
-        | DRV_WINC_11I_SAE,
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED
+    | DRV_WINC_11I_SAE,
 };
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver Authentication Context Implementation
+// Section: WINC Driver Authentication Context Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
 
@@ -181,7 +173,7 @@ static bool authctxPersonalKeyIsValid
 
                 /* Each character must be in the range '0-9', 'A-F' or 'a-f'. */
                 if (
-                        (('0' > character) || ('9' < character))
+                    (('0' > character) || ('9' < character))
                     &&  (('A' > character) || ('F' < character))
                     &&  (('a' > character) || ('f' < character))
                 )
@@ -195,7 +187,7 @@ static bool authctxPersonalKeyIsValid
             /* Password. */
             /* Check password size. */
             if (
-                    (WDRV_WINC_MAX_PSK_PASSWORD_LEN < size)
+                (WDRV_WINC_MAX_PSK_PASSWORD_LEN < size)
                 ||  (WDRV_WINC_MIN_PSK_PASSWORD_LEN > size)
             )
             {
@@ -260,7 +252,7 @@ static uint16_t authctxGet11iMask
     if (WDRV_WINC_AUTH_MOD_NONE != (authMod & WDRV_WINC_AUTH_MOD_MFP_REQ))
     {
         if (
-                (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
+            (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
             ||  (WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL == authType)
         )
         {
@@ -270,7 +262,7 @@ static uint16_t authctxGet11iMask
     else if (WDRV_WINC_AUTH_MOD_NONE != (authMod & WDRV_WINC_AUTH_MOD_MFP_OFF))
     {
         if (
-                (WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL == authType)
+            (WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL == authType)
             ||  (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
         )
         {
@@ -284,6 +276,12 @@ static uint16_t authctxGet11iMask
 
     return dot11iInfo;
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Authentication Context Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -326,10 +324,10 @@ bool WDRV_WINC_AuthCtxIsValid(const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx)
         case WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL:
         {
             if (false == authctxPersonalKeyIsValid(
-                    pAuthCtx->authInfo.personal.password,
-                    pAuthCtx->authInfo.personal.size,
-                    authctxGet11iMask(pAuthCtx->authType, pAuthCtx->authMod)
-            ))
+                        pAuthCtx->authInfo.personal.password,
+                        pAuthCtx->authInfo.personal.size,
+                        authctxGet11iMask(pAuthCtx->authType, pAuthCtx->authMod)
+                    ))
             {
                 retVal = false;
             }
@@ -497,8 +495,8 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     /* Copy the key and zero out unused parts of the buffer. */
     pAuthCtx->authInfo.personal.size = size;
     (void)memset( pAuthCtx->authInfo.personal.password,
-            0,
-            sizeof(pAuthCtx->authInfo.personal.password));
+                  0,
+                  sizeof(pAuthCtx->authInfo.personal.password));
     (void)memcpy(pAuthCtx->authInfo.personal.password, pPassword, size);
 
     return WDRV_WINC_STATUS_OK;
@@ -571,4 +569,3 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
 
     return status;
 }
-

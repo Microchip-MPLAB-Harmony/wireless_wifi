@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver Client API Header File
+  WINC Wireless Driver Client API Header File
 
   Company:
     Microchip Technology Inc.
@@ -8,52 +8,49 @@
     wdrv_winc_client_api.h
 
   Summary:
-    WINC wireless driver client API header file.
+    WINC wireless driver client API interface.
 
   Description:
-    This file pulls together the elements which make up the client API
+    This file pulls together the elements which make up the client API:
       assoc       - Current association.
       bssfind     - BSS scan functionality.
+      bssfind     - BSS scan functionality.
+      dhcps       - DHCP server functionality.
+      dns         - DNS client functionality.
+      file        - File operation functionality.
+      mqtt        - MQTT client functionality.
+      netif       - Network interface functionality.
       softap      - Soft-AP mode.
       sta         - Infrastructure stations mode.
-
+      tls         - TLS functionality.
+      wifi        - WiFi configuration functionality.
  *******************************************************************************/
 
-// DOM-IGNORE-BEGIN
-/*******************************************************************************
-Copyright (C) 2024 released Microchip Technology Inc. All rights reserved.
+/*
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-Microchip licenses to you the right to use, modify, copy and distribute
-Software only when embedded on a Microchip microcontroller or digital signal
-controller that is integrated into your product or third party product
-(pursuant to the sublicense terms in the accompanying license agreement).
-
-You should refer to the license agreement accompanying this Software for
-additional information regarding your rights and obligations.
-
-SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
-EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
-MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
-IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
-CONTRACT, NEGLIGENCE, STRICT LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR
-OTHER LEGAL EQUITABLE THEORY ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES
-INCLUDING BUT NOT LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR
-CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
-SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
-(INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
- *******************************************************************************/
-// DOM-IGNORE-END
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
+*/
 
 #ifndef WDRV_WINC_CLIENT_API_H
 #define WDRV_WINC_CLIENT_API_H
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
-
-#include "configuration.h"
 
 #include "wdrv_winc.h"
 #include "wdrv_winc_bssfind.h"

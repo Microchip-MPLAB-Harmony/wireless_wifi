@@ -1,24 +1,18 @@
 /*
-Copyright (C) 2023-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
 
 #include <stdint.h>
@@ -31,6 +25,10 @@ Microchip or any third party.
 #include "winc_dev.h"
 #include "winc_debug.h"
 
+#ifndef WINC_CONF_SPI_MOSI_IDLE_LEVEL
+#define WINC_CONF_SPI_MOSI_IDLE_LEVEL   1
+#endif
+
 typedef struct
 {
     uint32_t    regAddr;
@@ -40,7 +38,8 @@ typedef struct
 #define SPI_SDIO_BLOCK_SZ       512U
 #define SPI_SDIO_RETRY_CNT      100
 
-static const uint8_t crc7[256] = {
+static const uint8_t crc7[256] =
+{
     0x00, 0x12, 0x24, 0x36, 0x48, 0x5a, 0x6c, 0x7e, 0x90, 0x82, 0xb4, 0xa6, 0xd8, 0xca, 0xfc, 0xee,
     0x32, 0x20, 0x16, 0x04, 0x7a, 0x68, 0x5e, 0x4c, 0xa2, 0xb0, 0x86, 0x94, 0xea, 0xf8, 0xce, 0xdc,
     0x64, 0x76, 0x40, 0x52, 0x2c, 0x3e, 0x08, 0x1a, 0xf4, 0xe6, 0xd0, 0xc2, 0xbc, 0xae, 0x98, 0x8a,
@@ -90,11 +89,17 @@ static const WINC_SDIO_CMD52_REG_ENTRY cmd52InitSeq1[] =
     {(uint32_t)WINC_SDIOREG_FN0_CCCR_BUS_IF_CTRL,     (uint8_t)WINC_SDIO_REG_CCCR_BUS_IF_CTRL_ECSI | WINC_SDIO_REG_CCCR_BUS_IF_CTRL_BUS_1},
     {(uint32_t)WINC_SDIOREG_FN0_CCCR_INT_EN,          (uint8_t)WINC_SDIO_REG_CCCR_INT_EN_MASTER | WINC_SDIO_REG_CCCR_FN_INT_1},
     {(uint32_t)WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP,    (uint8_t)0x01},
-    {(uint32_t)WINC_SDIOREG_FN1_INT_EN,               (uint8_t)WINC_SDIO_REG_FN1_INT_DATA_RDY},
+    {(uint32_t)WINC_SDIOREG_FN1_INT_EN,               (uint8_t)WINC_SDIO_REG_FN1_INT_MSG_FROM_ARM},
 };
 
 static bool useCRCs = false;
 static WINC_SDIO_SEND_RECEIVE_FP pfSDIOSendReceive = NULL;
+#if WINC_CONF_SPI_MOSI_IDLE_LEVEL == 0
+static uint8_t forceTxBuffer[SPI_SDIO_BLOCK_SZ];
+#define SPI_TX_NULL_BUFFER  forceTxBuffer
+#else
+#define SPI_TX_NULL_BUFFER  NULL
+#endif
 
 /*****************************************************************************
   Description:
@@ -360,7 +365,7 @@ uint8_t WINC_SDIOCmd52(uint32_t fnRegAddr, const uint8_t* const pWriteValue, uin
     WINC_DEV_CACHE_ATTRIB uint8_t sdioCmd[WINC_DEV_CACHE_GET_SIZE(13)];
     WINC_DEV_CACHE_ATTRIB uint8_t sdioCmdRsp[WINC_DEV_CACHE_GET_SIZE(13)];
 
-    WINC_VERBOSE_PRINT("C52{%04x}", fnRegAddr);
+    WINC_VERBOSE_PRINT("C52[%04x]", fnRegAddr);
 
     if (NULL == pfSDIOSendReceive)
     {
@@ -488,7 +493,7 @@ uint16_t WINC_SDIOCmd53Write(uint32_t fnRegAddr, uint8_t *pWritePtr, size_t writ
     bool blockMode;
     int retry;
 
-    WINC_VERBOSE_PRINT("C53W{%08x %d}\n", fnRegAddr, writeLength);
+    WINC_VERBOSE_PRINT("C53W[%08x %d]\n", fnRegAddr, writeLength);
 
     if (NULL == pfSDIOSendReceive)
     {
@@ -573,7 +578,7 @@ uint16_t WINC_SDIOCmd53Write(uint32_t fnRegAddr, uint8_t *pWritePtr, size_t writ
                 /* Wait for data response token. */
                 while ((0x00 == sdioCmdRsp[6U+transferSize]) && (retry > 0))
                 {
-                    if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[6U+transferSize], 1))
+                    if (false == pfSDIOSendReceive(SPI_TX_NULL_BUFFER, &sdioCmdRsp[6U+transferSize], 1))
                     {
                         return WINC_SDIO_R1RSP_FAILED;
                     }
@@ -611,7 +616,7 @@ uint16_t WINC_SDIOCmd53Write(uint32_t fnRegAddr, uint8_t *pWritePtr, size_t writ
                 /* Wait for data response token. */
                 while ((0x00 == sdioCmdRsp[4]) && (retry > 0))
                 {
-                    if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[4], 1))
+                    if (false == pfSDIOSendReceive(SPI_TX_NULL_BUFFER, &sdioCmdRsp[4], 1))
                     {
                         return WINC_SDIO_R1RSP_FAILED;
                     }
@@ -663,7 +668,7 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
     uint8_t cmd52Status;
     int retry;
 
-    WINC_VERBOSE_PRINT("C53R{%08x %d}\n", fnRegAddr, readLength);
+    WINC_VERBOSE_PRINT("C53R[%08x %d]\n", fnRegAddr, readLength);
 
     if (NULL == pfSDIOSendReceive)
     {
@@ -749,7 +754,7 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
             retry = SPI_SDIO_RETRY_CNT;
             while ((0x00 == sdioCmdRsp[2]) && (retry > 0))
             {
-                if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[2], 1))
+                if (false == pfSDIOSendReceive(SPI_TX_NULL_BUFFER, &sdioCmdRsp[2], 1))
                 {
                     return WINC_SDIO_R1RSP_FAILED;
                 }
@@ -763,7 +768,7 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
                 retry = SPI_SDIO_RETRY_CNT;
                 while ((0x00 != (sdioCmdRsp[2] & 0x01U)) && (retry > 0))
                 {
-                    if (false == pfSDIOSendReceive(NULL, &sdioCmdRsp[2], 1))
+                    if (false == pfSDIOSendReceive(SPI_TX_NULL_BUFFER, &sdioCmdRsp[2], 1))
                     {
                         return WINC_SDIO_R1RSP_FAILED;
                     }
@@ -780,7 +785,7 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
             if (transferSize <= 4U)
             {
                 /* Receive data block and CRC. */
-                if (false == pfSDIOSendReceive(NULL, sdioCmdRsp, 3U+transferSize))
+                if (false == pfSDIOSendReceive(SPI_TX_NULL_BUFFER, sdioCmdRsp, 3U+transferSize))
                 {
                     return WINC_SDIO_R1RSP_FAILED;
                 }
@@ -792,7 +797,7 @@ uint16_t WINC_SDIOCmd53Read(uint32_t fnRegAddr, uint8_t *pReadPtr, size_t readLe
             else
             {
                 /* Receive data block. */
-                if (false == pfSDIOSendReceive(NULL, pReadPtr, transferSize))
+                if (false == pfSDIOSendReceive(SPI_TX_NULL_BUFFER, pReadPtr, transferSize))
                 {
                     return WINC_SDIO_R1RSP_FAILED;
                 }
@@ -883,6 +888,9 @@ WINC_SDIO_STATUS_TYPE WINC_SDIODeviceInit(WINC_SDIO_STATE_TYPE *pState, WINC_SDI
                     }
                 }
 
+#if WINC_CONF_SPI_MOSI_IDLE_LEVEL == 0
+                memset(forceTxBuffer, 0xFFU, sizeof(forceTxBuffer));
+#endif
                 *pState = WINC_SDIO_STATE_RESETTING;
 
                 /* Drop through */

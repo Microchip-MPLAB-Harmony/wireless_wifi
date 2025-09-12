@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Wireless Driver
+  WINC Wireless Driver DNS Client Source File
 
   File Name:
     wdrv_winc_dns.c
@@ -11,29 +11,28 @@
     WINC wireless interface for DNS client configuration.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
 
 #include <stdint.h>
 #include <string.h>
@@ -45,10 +44,142 @@ Microchip or any third party.
 
 #ifndef WDRV_WINC_MOD_DISABLE_DNS
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver DNS Client Internal Implementation
+// *****************************************************************************
+// *****************************************************************************
+
 //*******************************************************************************
 /*
   Function:
-    static void timeCmdRspCallbackHandler
+    static void dnsProcessAEC
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process AECs.
+
+  Description:
+    Processes AECs for this module.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void dnsProcessAEC
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    uint8_t recordType;
+    char domain[WINC_CMD_PARAM_SZ_DNS_DOMAIN_NAME];
+
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    switch (aecId)
+    {
+        case WINC_AEC_ID_DNSRESOLV:
+        {
+            WDRV_WINC_IP_MULTI_TYPE_ADDRESS addr;
+            size_t domainLen;
+
+            if (3U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
+            domainLen = WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_STRING, &domain, sizeof(domain));
+
+            if (0 == domainLen)
+            {
+                break;
+            }
+
+            if (WINC_TYPE_IPV4ADDR == pElems[2].type)
+            {
+                (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_IPV4ADDR, &addr.addr, sizeof(WDRV_WINC_IPV4_ADDR));
+                addr.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
+            }
+            else if (WINC_TYPE_IPV6ADDR == pElems[2].type)
+            {
+                (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_IPV6ADDR, &addr.addr, sizeof(WDRV_WINC_IPV6_ADDR));
+                addr.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
+            }
+            else
+            {
+                break;
+            }
+
+            if (NULL != pDcpt->pCtrl->pfDNSResolveResponseCB)
+            {
+                pDcpt->pCtrl->pfDNSResolveResponseCB((DRV_HANDLE)pDcpt, WDRV_WINC_DNS_STATUS_OK, recordType, domain, &addr);
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_DNSERR:
+        {
+            uint16_t status;
+
+            if (3U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_STATUS, &status, sizeof(status));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
+            (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_STRING, &domain, sizeof(domain));
+
+            if (NULL != pDcpt->pCtrl->pfDNSResolveResponseCB)
+            {
+                WDRV_WINC_DNS_RESOLVE_CALLBACK pfDNSResolveResponseCB = pDcpt->pCtrl->pfDNSResolveResponseCB;
+
+                pDcpt->pCtrl->pfDNSResolveResponseCB = NULL;
+
+                pfDNSResolveResponseCB((DRV_HANDLE)pDcpt, status, recordType, domain, NULL);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void dnsCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
@@ -123,7 +254,7 @@ static void dnsCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
+    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
 
     if (NULL == pDcpt)
     {
@@ -147,21 +278,29 @@ static void dnsCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_CMD_STATUS:
         {
+            /* Do nothing. */
             break;
         }
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
+            /* Do nothing. */
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("DNS CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver DNS Client Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -184,82 +323,21 @@ static void dnsCmdRspCallbackHandler
 
 */
 
-void WDRV_WINC_DNSProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+void WDRV_WINC_DNSProcessAEC
+(
+    uintptr_t context,
+    WINC_DEVICE_HANDLE devHandle,
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+)
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
-    uint8_t recordType;
-    char domain[WINC_CMD_PARAM_SZ_DNS_DOMAIN_NAME];
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pElems))
     {
         return;
     }
 
-    switch (pElems->rspId)
-    {
-        case WINC_AEC_ID_DNSRESOLV:
-        {
-            WDRV_WINC_IP_MULTI_TYPE_ADDRESS addr;
-
-            if (3U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, &domain, sizeof(domain));
-
-            if (WINC_TYPE_IPV4ADDR == pElems->elems[2].type)
-            {
-                (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_IPV4ADDR, &addr.addr, sizeof(WDRV_WINC_IPV4_ADDR));
-                addr.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
-            }
-            else if (WINC_TYPE_IPV6ADDR == pElems->elems[2].type)
-            {
-                (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_IPV6ADDR, &addr.addr, sizeof(WDRV_WINC_IPV6_ADDR));
-                addr.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
-            }
-            else
-            {
-                break;
-            }
-
-            if (NULL != pDcpt->pCtrl->pfDNSResolveResponseCB)
-            {
-                pDcpt->pCtrl->pfDNSResolveResponseCB((DRV_HANDLE)pDcpt, WDRV_WINC_DNS_STATUS_OK, recordType, domain, &addr);
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_DNSERR:
-        {
-            uint16_t status;
-
-            if (3U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_STATUS, &status, sizeof(status));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
-            (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_STRING, &domain, sizeof(domain));
-
-            if (NULL != pDcpt->pCtrl->pfDNSResolveResponseCB)
-            {
-                pDcpt->pCtrl->pfDNSResolveResponseCB((DRV_HANDLE)pDcpt, status, recordType, domain, NULL);
-                pDcpt->pCtrl->pfDNSResolveResponseCB = NULL;
-            }
-
-            break;
-        }
-
-        default:
-        {
-            WDRV_DBG_VERBOSE_PRINT("DNS AECCB ID %04x not handled\r\n", pElems->rspId);
-            break;
-        }
-    }
+    dnsProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
 }
 
 //*******************************************************************************
@@ -309,7 +387,7 @@ WDRV_WINC_STATUS WDRV_WINC_DNSAutoSet(DRV_HANDLE handle, bool enabled)
 
     (void)WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_AUTO, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 1);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -409,7 +487,7 @@ WDRV_WINC_STATUS WDRV_WINC_DNSServerAddressSet
         }
     }
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -486,9 +564,10 @@ WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
     }
 
     (void)WINC_CmdDNSC(cmdReqHandle, WINC_CFG_PARAM_ID_DNS_DNS_TIMEOUT, WINC_TYPE_INTEGER_UNSIGNED, timeoutMs, sizeof(timeoutMs));
+
     (void)WINC_CmdDNSRESOLV(cmdReqHandle, recordType, (const uint8_t*)pDomainName, addressLen);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -498,5 +577,4 @@ WDRV_WINC_STATUS WDRV_WINC_DNSResolveDomain
     return WDRV_WINC_STATUS_OK;
 }
 
-//DOM-IGNORE-END
 #endif /* WDRV_WINC_MOD_DISABLE_DNS */

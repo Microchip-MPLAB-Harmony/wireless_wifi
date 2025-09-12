@@ -1,24 +1,18 @@
 /*
-Copyright (C) 2023-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
 
 #include <stdint.h>
@@ -96,4 +90,46 @@ WINC_CMD_REQ_HANDLE WINC_CmdReqInit(uint8_t* pBuffer, size_t lenBuffer, int numC
     pSendReqState->cmdRspCallbackCtx   = cmdRspCallbackCtx;
 
     return (uintptr_t)pSendReqState;
+}
+
+/*****************************************************************************
+  Description:
+    Discard a command request burst.
+
+  Parameters:
+    devHandle    - Device handle obtained from WINC_DevInit
+    cmdReqHandle - Command request handle obtained from WINC_CmdReqInit
+
+  Returns:
+    true or false
+
+  Remarks:
+    devHandle may be WINC_DEVICE_INVALID_HANDLE if command request is not yet
+    in use by the device.
+
+ *****************************************************************************/
+
+bool WINC_CmdReqDiscard(WINC_DEVICE_HANDLE devHandle, WINC_CMD_REQ_HANDLE cmdReqHandle)
+{
+    WINC_SEND_REQ_STATE *pSendReqState = (WINC_SEND_REQ_STATE*)cmdReqHandle;
+    WINC_SEND_REQ_STATE *pNextCmdReq;
+
+    if (NULL == pSendReqState)
+    {
+        return false;
+    }
+
+    while (NULL != pSendReqState)
+    {
+        pNextCmdReq = (WINC_SEND_REQ_STATE*)pSendReqState->nextCmdReq;
+
+        if (NULL != pSendReqState->pfCmdRspCallback)
+        {
+            pSendReqState->pfCmdRspCallback(pSendReqState->cmdRspCallbackCtx, devHandle, (WINC_CMD_REQ_HANDLE)pSendReqState, WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE, 0);
+        }
+
+        pSendReqState = pNextCmdReq;
+    }
+
+    return true;
 }

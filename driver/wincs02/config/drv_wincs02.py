@@ -6,6 +6,62 @@ global sort_alphanumeric
 global isDMAPresent
 global wincs02_help_keyword
 
+socketProfiles = [
+    {
+        'Key':              'UserDefined',
+        'Value':            '0',
+        'Description':      'User defined',
+    },
+    {
+        'Key':              'LowMemory',
+        'Value':            '1',
+        'Description':      'Low memory',
+        'NUM':              2,
+        'TX_BUF_SZ':        1472,
+        'RX_BUF_SZ':        1472,
+        'TX_PKT_BUF_NUM':   2,
+        'RX_PKT_BUF_NUM':   2,
+        'SLAB_ALLOC_MODE':  'Combined',
+    },
+    {
+        'Key':              'HighThroughput',
+        'Value':            '2',
+        'Description':      'High throughput',
+        'NUM':              5,
+        'TX_BUF_SZ':        1472*3,
+        'RX_BUF_SZ':        1472*5,
+        'TX_PKT_BUF_NUM':   5,
+        'RX_PKT_BUF_NUM':   5,
+        'SLAB_ALLOC_MODE':  'PerSocket',
+    },
+    {
+        'Key':              'HighTPTCP1',
+        'Value':            '3',
+        'Description':      'High throughput TCP TX single (Combined)',
+        'NUM':              1,
+        'TX_BUF_SZ':        1472*3,
+        'RX_BUF_SZ':        1472,
+        'TX_PKT_BUF_NUM':   0,
+        'RX_PKT_BUF_NUM':   0,
+        'SLAB_ALLOC_MODE':  'Combined',
+        'SLAB_SZ':          1472,
+        'SLAB_NUM':         20,
+    },
+    {
+        'Key':              'LowTPTCP1',
+        'Value':            '4',
+        'Description':      'Low throughput TCP TX single (Combined)',
+        'NUM':              1,
+        'TX_BUF_SZ':        1472,
+        'RX_BUF_SZ':        256,
+        'TX_PKT_BUF_NUM':   0,
+        'RX_PKT_BUF_NUM':   0,
+        'SLAB_ALLOC_MODE':  'Combined',
+        'SLAB_SZ':          256,
+        'SLAB_NUM':         25,
+    },
+]
+
 wincs02_help_keyword = "wireless_wifi_MPLAB_Harmony_WINCS02_WLAN"
 
 wincEventDebug = False
@@ -334,10 +390,20 @@ def instantiateComponent(drvWincComponent):
     wincModulesOTAEn.setVisible(True)
     wincModulesOTAEn.setDefaultValue(True)
 
+    wincModulesPPSEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_PPS_EN', wincModulesMenu)
+    wincModulesPPSEn.setLabel('Enable PPS')
+    wincModulesPPSEn.setVisible(True)
+    wincModulesPPSEn.setDefaultValue(True)
+
     wincModulesNVMEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_NVM_EN', wincModulesMenu)
     wincModulesNVMEn.setLabel('Enable NVM')
     wincModulesNVMEn.setVisible(True)
     wincModulesNVMEn.setDefaultValue(True)
+
+    wincModulesSYSLOGEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_SYSLOG_EN', wincModulesMenu)
+    wincModulesSYSLOGEn.setLabel('Enable SYSLOG')
+    wincModulesSYSLOGEn.setVisible(True)
+    wincModulesSYSLOGEn.setDefaultValue(False)
 
     # Use NC Berkeley Sockets Option
     wincUseNCBerkSock = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS', None)
@@ -353,33 +419,73 @@ def instantiateComponent(drvWincComponent):
     wincSocketMenu.setVisible(wincUseNCBerkSock.getValue())
     wincSocketMenu.setDependencies(setVisibilitySocketsMenu, ['DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS'])
 
+    wincSocketProfile = drvWincComponent.createKeyValueSetSymbol('DRV_WIFI_WINC_SOCKET_PROFILE', wincSocketMenu)
+    wincSocketProfile.setLabel('Profile')
+    for profile in socketProfiles:
+        wincSocketProfile.addKey(profile['Key'], profile['Value'], profile['Description'])
+    wincSocketProfile.setOutputMode('Value')
+    wincSocketProfile.setDisplayMode('Description')
+    wincSocketProfile.setDefaultValue(0)
+
     wincSocketNumber = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_NUM', wincSocketMenu)
     wincSocketNumber.setLabel('Number of Sockets')
     wincSocketNumber.setDefaultValue(10)
+    wincSocketNumber.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
 
     wincSocketTxBufSz = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_TX_BUF_SZ', wincSocketMenu)
     wincSocketTxBufSz.setLabel('Send Buffer Size')
     wincSocketTxBufSz.setDefaultValue(1472*3)
+    wincSocketTxBufSz.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
 
     wincSocketRxBufSz = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_RX_BUF_SZ', wincSocketMenu)
     wincSocketRxBufSz.setLabel('Receive Buffer Size')
     wincSocketRxBufSz.setDefaultValue(1472*5)
+    wincSocketRxBufSz.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
 
     wincSocketTxPktBufNum = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_TX_PKT_BUF_NUM', wincSocketMenu)
     wincSocketTxPktBufNum.setLabel('Send Packet Buffers')
     wincSocketTxPktBufNum.setDefaultValue(5)
+    wincSocketTxPktBufNum.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
 
     wincSocketRxPktBufNum = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_RX_PKT_BUF_NUM', wincSocketMenu)
     wincSocketRxPktBufNum.setLabel('Receive Packet Buffers')
     wincSocketRxPktBufNum.setDefaultValue(5)
+    wincSocketRxPktBufNum.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
+
+    wincSocketSlabMode = drvWincComponent.createKeyValueSetSymbol('DRV_WIFI_WINC_SOCKET_SLAB_ALLOC_MODE', wincSocketMenu)
+    wincSocketSlabMode.setLabel('Slab Allocation Mode')
+    wincSocketSlabMode.addKey('Combined',  '1', 'Single combined slab for all allocations')
+    wincSocketSlabMode.addKey('PerSocket', '2', 'Management slab + per socket slab')
+    wincSocketSlabMode.setOutputMode('Value')
+    wincSocketSlabMode.setDisplayMode('Description')
+    wincSocketSlabMode.setDefaultValue(0)
+    wincSocketSlabMode.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
 
     wincSocketSlabSize = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_SLAB_SZ', wincSocketMenu)
     wincSocketSlabSize.setLabel('Slab Size')
     wincSocketSlabSize.setDefaultValue(1472)
+    wincSocketSlabSize.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
 
     wincSocketSlabNum = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_SLAB_NUM', wincSocketMenu)
     wincSocketSlabNum.setLabel('Slab Number')
     wincSocketSlabNum.setDefaultValue(50)
+    wincSocketSlabNum.setMin(0)
+    wincSocketSlabNum.setMax(127)
+    wincSocketSlabNum.setDependencies(updateSocketProfile, ['DRV_WIFI_WINC_SOCKET_PROFILE'])
+
+    wincSocketSlabEstMem = drvWincComponent.createIntegerSymbol('DRV_WIFI_WINC_SOCKET_SLAB_EST_MEM', wincSocketMenu)
+    wincSocketSlabEstMem.setLabel('Estimated Heap Usage')
+    wincSocketSlabEstMem.setReadOnly(True)
+    wincSocketSlabEstMem.setDependencies(updateSlabEstMem, [
+                                                            'DRV_WIFI_WINC_SOCKET_NUM',
+                                                            'DRV_WIFI_WINC_SOCKET_TX_BUF_SZ',
+                                                            'DRV_WIFI_WINC_SOCKET_RX_BUF_SZ',
+                                                            'DRV_WIFI_WINC_SOCKET_TX_PKT_BUF_NUM',
+                                                            'DRV_WIFI_WINC_SOCKET_RX_PKT_BUF_NUM',
+                                                            'DRV_WIFI_WINC_SOCKET_SLAB_ALLOC_MODE',
+                                                            'DRV_WIFI_WINC_SOCKET_SLAB_NUM',
+                                                            'DRV_WIFI_WINC_SOCKET_SLAB_SZ'
+                                                            ])
 
     wincL3Support = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_L3_SUPPORT', None)
     wincL3Support.setLabel('Layer 3 Support')
@@ -522,18 +628,22 @@ def instantiateComponent(drvWincComponent):
     #### Code Generation ####
     ############################################################################
 
-    flagUseNCBerkSock = (wincUseNCBerkSock.getValue())
-    flagL3Support     = (wincL3Support.getValue())
-    flagModuleMQTTEn  = (wincModulesMQTTEn.getValue())
-    flagModuleOTAEn   = (wincModulesOTAEn.getValue())
-    flagModuleNVMEn   = (wincModulesNVMEn.getValue())
+    flagUseNCBerkSock  = (wincUseNCBerkSock.getValue())
+    flagL3Support      = (wincL3Support.getValue())
+    flagModuleMQTTEn   = (wincModulesMQTTEn.getValue())
+    flagModuleOTAEn    = (wincModulesOTAEn.getValue())
+    flagModulePPSEn    = (wincModulesPPSEn.getValue())
+    flagModuleNVMEn    = (wincModulesNVMEn.getValue())
+    flagModuleSYSLOGEn = (wincModulesSYSLOGEn.getValue())
 
-    condAlways        = [True,              None,             []]
-    condUseNCBerkSock = [flagUseNCBerkSock, setUseNCBerkSock, ['DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS']]
-    condL3Support     = [flagL3Support,     setL3Support,     ['DRV_WIFI_WINC_L3_SUPPORT']]
-    condModuleMQTTEn  = [flagModuleMQTTEn,  setModuleMQTTEn,  ['DRV_WIFI_WINC_MODULE_MQTT_EN']]
-    condModuleOTAEn   = [flagModuleOTAEn,   setModuleOTAEn,   ['DRV_WIFI_WINC_MODULE_OTA_EN']]
-    condModuleNVMEn   = [flagModuleNVMEn,   setModuleNVMEn,   ['DRV_WIFI_WINC_MODULE_NVM_EN']]
+    condAlways         = [True,               None,              []]
+    condUseNCBerkSock  = [flagUseNCBerkSock,  setUseNCBerkSock,  ['DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS']]
+    condL3Support      = [flagL3Support,      setL3Support,      ['DRV_WIFI_WINC_L3_SUPPORT']]
+    condModuleMQTTEn   = [flagModuleMQTTEn,   setModuleMQTTEn,   ['DRV_WIFI_WINC_MODULE_MQTT_EN']]
+    condModuleOTAEn    = [flagModuleOTAEn,    setModuleOTAEn,    ['DRV_WIFI_WINC_MODULE_OTA_EN']]
+    condModulePPSEn    = [flagModulePPSEn,    setModulePPSEn,    ['DRV_WIFI_WINC_MODULE_PPS_EN']]
+    condModuleNVMEn    = [flagModuleNVMEn,    setModuleNVMEn,    ['DRV_WIFI_WINC_MODULE_NVM_EN']]
+    condModuleSYSLOGEn = [flagModuleSYSLOGEn, setModuleSYSLOGEn, ['DRV_WIFI_WINC_MODULE_SYSLOG_EN']]
 
     wdrvIncFiles = [
         ['wdrv_winc.h',                                         condAlways],
@@ -552,6 +662,8 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_netif.h',                                   condAlways],
         ['wdrv_winc_nvm.h',                                     condModuleNVMEn],
         ['wdrv_winc_ota.h',                                     condModuleOTAEn],
+        ['wdrv_winc_pps.h',                                     condModulePPSEn],
+        ['wdrv_winc_syslog.h',                                  condModuleSYSLOGEn],
         ['wdrv_winc_prov.h',                                    condL3Support],
         ['wdrv_winc_mqtt.h',                                    condModuleMQTTEn],
         ['wdrv_winc_sntp.h',                                    condL3Support],
@@ -566,7 +678,7 @@ def instantiateComponent(drvWincComponent):
     ]
 
     wdrvFirmwareDriverIncFiles = [
-        ['nc_driver/microchip_pic32mzw2_nc_intf.h',             condAlways],
+        ['nc_driver/microchip_wincs02_intf.h',                  condAlways],
         ['nc_driver/winc_cmds.h',                               condAlways],
         ['nc_driver/winc_cmd_req.h',                            condAlways],
         ['nc_driver/winc_debug.h',                              condAlways],
@@ -595,7 +707,9 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_mqtt.c',                                    condModuleMQTTEn],
         ['wdrv_winc_netif.c',                                   condAlways],
         ['wdrv_winc_ota.c',                                     condModuleOTAEn],
+        ['wdrv_winc_pps.c',                                     condModulePPSEn],
         ['wdrv_winc_nvm.c',                                     condModuleNVMEn],
+        ['wdrv_winc_syslog.c',                                  condModuleSYSLOGEn],
         ['wdrv_winc_prov.c',                                    condL3Support],
         ['wdrv_winc_sntp.c',                                    condL3Support],
         ['wdrv_winc_socket.c',                                  condL3Support],
@@ -886,9 +1000,63 @@ def setModuleOTAEn(symbol, event):
     moduleOTAEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_OTA_EN')
     symbol.setEnabled(moduleOTAEn)
 
+def setModulePPSEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    modulePPSEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_PPS_EN')
+    symbol.setEnabled(modulePPSEn)
+
 def setModuleNVMEn(symbol, event):
     debugSymbolEvent(symbol, event)
     component = symbol.getComponent()
 
     moduleNVMEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_NVM_EN')
     symbol.setEnabled(moduleNVMEn)
+    
+def setModuleSYSLOGEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    moduleSYSLOGEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_SYSLOG_EN')
+    symbol.setEnabled(moduleSYSLOGEn)
+
+def updateSlabEstMem(symbol, event):
+    def calcSlabNum(slabSize, bufSize):
+        return ((bufSize + (slabSize-1)) / slabSize)
+
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    slabAllocMode = component.getSymbolByID('DRV_WIFI_WINC_SOCKET_SLAB_ALLOC_MODE').getSelectedKey()
+    slabSz        = component.getSymbolValue('DRV_WIFI_WINC_SOCKET_SLAB_SZ')
+    slabNum       = component.getSymbolValue('DRV_WIFI_WINC_SOCKET_SLAB_NUM')
+
+    if slabAllocMode == 'Combined':
+        estMemUsage = slabSz * slabNum
+    elif slabAllocMode == 'PerSocket':
+        socketSlabNum = calcSlabNum(slabSz, component.getSymbolValue('DRV_WIFI_WINC_SOCKET_TX_BUF_SZ'))
+        socketSlabNum += calcSlabNum(slabSz, component.getSymbolValue('DRV_WIFI_WINC_SOCKET_RX_BUF_SZ'))
+        socketSlabNum += calcSlabNum(slabSz, 32 * component.getSymbolValue('DRV_WIFI_WINC_SOCKET_TX_PKT_BUF_NUM'))
+        socketSlabNum += calcSlabNum(slabSz, 32 * component.getSymbolValue('DRV_WIFI_WINC_SOCKET_RX_PKT_BUF_NUM'))
+        estMemUsage = slabSz * (slabNum + (socketSlabNum * component.getSymbolValue('DRV_WIFI_WINC_SOCKET_NUM')))
+    else:
+        estMemUsage = -1
+
+    symbol.setValue(estMemUsage)
+
+def updateSocketProfile(symbol, event):
+    debugSymbolEvent(symbol, event)
+
+    if event['id'] == 'DRV_WIFI_WINC_SOCKET_PROFILE':
+        profileKey = event['symbol'].getSelectedKey()
+        key = symbol.getID()[21:]
+
+        profile = next(item for item in socketProfiles if item['Key'] == profileKey)
+
+        if profile:
+            if key in profile:
+                if hasattr(symbol, 'setSelectedKey'):
+                    symbol.setSelectedKey(profile[key])
+                else:
+                    symbol.setValue(profile[key])

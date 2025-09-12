@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver BSS Find Header File
+  WINC Wireless Driver BSS Scanning Header File
 
   Company:
     Microchip Technology Inc.
@@ -8,53 +8,45 @@
     wdrv_winc_bssfind.h
 
   Summary:
-    WINC wireless driver BSS scanning header file.
+    WINC wireless driver BSS scanning interface.
 
   Description:
     This interface manages the operation of searching for a BSS.
 
     Searching operates on the find-first/find-next principal. When a find-first
-      operation is requested the WINC will scan for available BSSs on the
-      channels specified. The results will be provided via callback or polling
-      and iterated over using a find-next operation.
+    operation is requested the WINC will scan for available BSSs on the
+    channels specified. The results  will be provided via callback or polling
+    and iterated over using a find-next operation.
 
-    The callback function supplied to WDRV_WINC_BSSFindFirst may return true
-      if the user wishes the next scan results to be automatically requested. By
-      returning true the user can avoid needing to call WDRV_WINC_BSSFindNext,
-      the callback will be called for each BSS found.
+    The callback function supplied to WDRV_WINC_BSSFindFirst may return true if
+    the user wishes the next scan results to be automatically requested. By
+    returning true the  user can avoid needing to call WDRV_WINC_BSSFindNext,
+    the callback will be called  for each BSS found.
  *******************************************************************************/
 
-// DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-// DOM-IGNORE-END
 
 #ifndef WDRV_WINC_BSSFIND_H
 #define WDRV_WINC_BSSFIND_H
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
 
@@ -63,6 +55,12 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_authctx.h"
 #include "wdrv_winc_bssctx.h"
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver BSS Scanning Defines
+// *****************************************************************************
+// *****************************************************************************
 
 /* Maximum scan time in milliseconds. */
 #define DRV_WINC_MAX_SCAN_TIME                  1500U
@@ -81,7 +79,7 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver BSS Find Data Types
+// Section: WINC Driver BSS Scanning Data Types
 // *****************************************************************************
 // *****************************************************************************
 
@@ -163,6 +161,28 @@ typedef enum
 } WDRV_WINC_CHANNEL24_MASK;
 
 // *****************************************************************************
+/*  Scan Matching Mode.
+
+  Summary:
+    List of possible scan matching modes.
+
+  Description:
+    The scan matching mode can be to stop on first match or match all.
+
+  Remarks:
+    None.
+*/
+
+typedef enum
+{
+    /* Stop scan on first match. */
+    WDRV_WINC_SCAN_MATCH_MODE_STOP_ON_FIRST,
+
+    /* Scan for all matches. */
+    WDRV_WINC_SCAN_MATCH_MODE_FIND_ALL
+} WDRV_WINC_SCAN_MATCH_MODE;
+
+// *****************************************************************************
 /*  BSS Information
 
   Summary:
@@ -200,7 +220,7 @@ typedef struct
         uint8_t ofTotal,
         WDRV_WINC_BSS_INFO *pBSSInfo
     )
- 
+
   Summary:
     Callback to signal discovery of a BSS.
 
@@ -237,9 +257,14 @@ typedef bool (*WDRV_WINC_BSSFIND_NOTIFY_CALLBACK)
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver BSS Find Routines
+// Section: WINC Driver BSS Scanning Routines
 // *****************************************************************************
 // *****************************************************************************
+
+#ifdef __cplusplus // Provide C++ Compatibility
+extern "C"
+{
+#endif
 
 //*******************************************************************************
 /*
@@ -324,6 +349,10 @@ void WDRV_WINC_WSCNProcessAEC
       channels are scanned. The enabled channels can be configured using
       WDRV_WINC_BSSFindSetEnabledChannels. How the scan is performed can
       be configured using WDRV_WINC_BSSFindSetScanParameters.
+
+    If active is false and pSSIDList is not NULL then the result is
+      WDRV_WINC_STATUS_INVALID_ARG. Passive scan with an SSID List is
+      not supported.
 
 */
 
@@ -489,7 +518,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
 
   Parameters:
     handle          - Client handle obtained by a call to WDRV_WINC_Open.
-    numSlots        - Number if slots (minimum is 2).
+    numSlots        - Number of slots (minimum is 2).
     activeSlotTime  - Time waiting for responses (10ms <= slotTime <= 250ms)
                         for active scans.
     passiveSlotTime - Time waiting for responses (10ms <= slotTime <= 1200ms)
@@ -698,4 +727,47 @@ uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle);
 
 bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle);
 
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanMatchMode
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_SCAN_MATCH_MODE matchMode
+    )
+
+  Summary:
+    Configures the scan matching mode.
+
+  Description:
+    This function configures the matching mode, either stop on first or
+      match all, used when scanning for SSIDs.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    matchMode - Required scan matching mode.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanMatchMode
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_SCAN_MATCH_MODE matchMode
+);
+
+#ifdef __cplusplus
+}
+#endif
 #endif /* WDRV_WINC_BSSFIND_H */

@@ -1,39 +1,38 @@
 /*******************************************************************************
-  WINC Wireless Driver SNTP
+  WINC Wireless Driver SNTP Source File
 
   File Name:
     wdrv_winc_sntp.c
 
   Summary:
-    WINC wireless driver SNTP client implementation.
+    WINC wireless driver SNTP implementation.
 
   Description:
     WINC wireless driver interface for SNTP client configuration.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
 
 #include <stdint.h>
 #include <string.h>
@@ -43,6 +42,12 @@ Microchip or any third party.
 #include "wdrv_winc_sntp.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_SNTP
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver SNTP Internal Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -122,7 +127,7 @@ static void sntpCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT*)context;
+    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
 
     if (NULL == pDcpt)
     {
@@ -146,21 +151,29 @@ static void sntpCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_CMD_STATUS:
         {
+            /* Do nothing. */
             break;
         }
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
+            /* Do nothing. */
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("SNTP CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver SNTP Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -212,7 +225,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
 
     (void)WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_ENABLED, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -270,7 +283,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPStaticSet
 
     (void)WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_STATIC, WINC_TYPE_BOOL, (true == enabled) ? 1U : 0U, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -336,7 +349,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
 
     (void)WINC_CmdSNTPC(cmdReqHandle, WINC_CFG_PARAM_ID_SNTP_NTP_SVR, WINC_TYPE_STRING, (uintptr_t)pAddr, addressLen);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -344,5 +357,4 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
     return WDRV_WINC_STATUS_OK;
 }
 
-//DOM-IGNORE-END
 #endif /* WDRV_WINC_MOD_DISABLE_SNTP */

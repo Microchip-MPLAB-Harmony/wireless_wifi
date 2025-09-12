@@ -1,24 +1,18 @@
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
 
 #include <stdint.h>
@@ -102,16 +96,20 @@ static const WINC_STRING_ID_TABLE_TYPE wincCmdIdTable[WINC_CMD_ID_TABLE_SZ+1U] =
     {.id = WINC_CMD_ID_NVMWR, .length = 6, .pName = "+NVMWR"},
     {.id = WINC_CMD_ID_NVMCHK, .length = 7, .pName = "+NVMCHK"},
     {.id = WINC_CMD_ID_NVMRD, .length = 6, .pName = "+NVMRD"},
+    {.id = WINC_CMD_ID_DFUADR, .length = 7, .pName = "+DFUADR"},
+    {.id = WINC_CMD_ID_DFUSEQ, .length = 7, .pName = "+DFUSEQ"},
+    {.id = WINC_CMD_ID_PPSC, .length = 5, .pName = "+PPSC"},
+    {.id = WINC_CMD_ID_PPS, .length = 4, .pName = "+PPS"},
+    {.id = WINC_CMD_ID_SYSLOGC, .length = 8, .pName = "+SYSLOGC"},
+    {.id = WINC_CMD_ID_ARB, .length = 4, .pName = "+ARB"},
     {.id = 0, .length = 0, .pName = NULL}
 };
 
 static const WINC_STRING_ID_TABLE_TYPE wincAecIdTable[WINC_AEC_ID_TABLE_SZ+1U] =
 {
-    {.id = WINC_AEC_ID_ASSOC, .length = 6, .pName = "+ASSOC"},
     {.id = WINC_AEC_ID_BOOT, .length = 5, .pName = "+BOOT"},
     {.id = WINC_AEC_ID_DNSRESOLV, .length = 10, .pName = "+DNSRESOLV"},
     {.id = WINC_AEC_ID_DNSERR, .length = 7, .pName = "+DNSERR"},
-    {.id = WINC_AEC_ID_EXTCRYPTO, .length = 10, .pName = "+EXTCRYPTO"},
     {.id = WINC_AEC_ID_MQTTCONN, .length = 9, .pName = "+MQTTCONN"},
     {.id = WINC_AEC_ID_MQTTCONNACK, .length = 12, .pName = "+MQTTCONNACK"},
     {.id = WINC_AEC_ID_MQTTPUBACK, .length = 11, .pName = "+MQTTPUBACK"},
@@ -122,19 +120,10 @@ static const WINC_STRING_ID_TABLE_TYPE wincAecIdTable[WINC_AEC_ID_TABLE_SZ+1U] =
     {.id = WINC_AEC_ID_MQTTSUBRX, .length = 10, .pName = "+MQTTSUBRX"},
     {.id = WINC_AEC_ID_MQTTPROPRX, .length = 11, .pName = "+MQTTPROPRX"},
     {.id = WINC_AEC_ID_NETIFRX, .length = 8, .pName = "+NETIFRX"},
-    {.id = WINC_AEC_ID_NVMER, .length = 6, .pName = "+NVMER"},
-    {.id = WINC_AEC_ID_NVMCHK, .length = 7, .pName = "+NVMCHK"},
-    {.id = WINC_AEC_ID_NVMERR, .length = 7, .pName = "+NVMERR"},
     {.id = WINC_AEC_ID_OTA, .length = 4, .pName = "+OTA"},
     {.id = WINC_AEC_ID_OTAERR, .length = 7, .pName = "+OTAERR"},
     {.id = WINC_AEC_ID_PING, .length = 5, .pName = "+PING"},
     {.id = WINC_AEC_ID_PINGERR, .length = 8, .pName = "+PINGERR"},
-    {.id = WINC_AEC_ID_SIMSTAT, .length = 8, .pName = "+SIMSTAT"},
-    {.id = WINC_AEC_ID_SIMERR, .length = 7, .pName = "+SIMERR"},
-    {.id = WINC_AEC_ID_SIWPKTS, .length = 8, .pName = "+SIWPKTS"},
-    {.id = WINC_AEC_ID_SIHEAP, .length = 7, .pName = "+SIHEAP"},
-    {.id = WINC_AEC_ID_SIHERR, .length = 7, .pName = "+SIHERR"},
-    {.id = WINC_AEC_ID_SISTACK, .length = 8, .pName = "+SISTACK"},
     {.id = WINC_AEC_ID_SNTPERR, .length = 8, .pName = "+SNTPERR"},
     {.id = WINC_AEC_ID_SOCKIND, .length = 8, .pName = "+SOCKIND"},
     {.id = WINC_AEC_ID_SOCKRXT, .length = 8, .pName = "+SOCKRXT"},
@@ -143,12 +132,11 @@ static const WINC_STRING_ID_TABLE_TYPE wincAecIdTable[WINC_AEC_ID_TABLE_SZ+1U] =
     {.id = WINC_AEC_ID_SOCKTLS, .length = 8, .pName = "+SOCKTLS"},
     {.id = WINC_AEC_ID_SOCKERR, .length = 8, .pName = "+SOCKERR"},
     {.id = WINC_AEC_ID_TIME, .length = 5, .pName = "+TIME"},
+    {.id = WINC_AEC_ID_TLSERR, .length = 7, .pName = "+TLSERR"},
     {.id = WINC_AEC_ID_WAPAIP, .length = 7, .pName = "+WAPAIP"},
     {.id = WINC_AEC_ID_WAPSC, .length = 6, .pName = "+WAPSC"},
     {.id = WINC_AEC_ID_WAPSD, .length = 6, .pName = "+WAPSD"},
     {.id = WINC_AEC_ID_WAPERR, .length = 7, .pName = "+WAPERR"},
-    {.id = WINC_AEC_ID_WPROVAT, .length = 8, .pName = "+WPROVAT"},
-    {.id = WINC_AEC_ID_WPROVDT, .length = 8, .pName = "+WPROVDT"},
     {.id = WINC_AEC_ID_WSCNIND, .length = 8, .pName = "+WSCNIND"},
     {.id = WINC_AEC_ID_WSCNDONE, .length = 9, .pName = "+WSCNDONE"},
     {.id = WINC_AEC_ID_WSTAAIP, .length = 8, .pName = "+WSTAAIP"},
@@ -156,6 +144,21 @@ static const WINC_STRING_ID_TABLE_TYPE wincAecIdTable[WINC_AEC_ID_TABLE_SZ+1U] =
     {.id = WINC_AEC_ID_WSTAERR, .length = 8, .pName = "+WSTAERR"},
     {.id = WINC_AEC_ID_WSTALU, .length = 7, .pName = "+WSTALU"},
     {.id = WINC_AEC_ID_WSTAROAM, .length = 9, .pName = "+WSTAROAM"},
+    {.id = WINC_AEC_ID_ASSOC, .length = 6, .pName = "+ASSOC"},
+    {.id = WINC_AEC_ID_SIMSTAT, .length = 8, .pName = "+SIMSTAT"},
+    {.id = WINC_AEC_ID_SIMERR, .length = 7, .pName = "+SIMERR"},
+    {.id = WINC_AEC_ID_SIWPKTS, .length = 8, .pName = "+SIWPKTS"},
+    {.id = WINC_AEC_ID_SIHEAP, .length = 7, .pName = "+SIHEAP"},
+    {.id = WINC_AEC_ID_SIHERR, .length = 7, .pName = "+SIHERR"},
+    {.id = WINC_AEC_ID_SISTACK, .length = 8, .pName = "+SISTACK"},
+    {.id = WINC_AEC_ID_WPROVAT, .length = 8, .pName = "+WPROVAT"},
+    {.id = WINC_AEC_ID_WPROVDT, .length = 8, .pName = "+WPROVDT"},
+    {.id = WINC_AEC_ID_EXTCRYPTO, .length = 10, .pName = "+EXTCRYPTO"},
+    {.id = WINC_AEC_ID_NVMER, .length = 6, .pName = "+NVMER"},
+    {.id = WINC_AEC_ID_NVMCHK, .length = 7, .pName = "+NVMCHK"},
+    {.id = WINC_AEC_ID_NVMERR, .length = 7, .pName = "+NVMERR"},
+    {.id = WINC_AEC_ID_PPS, .length = 4, .pName = "+PPS"},
+    {.id = WINC_AEC_ID_SYSLOG, .length = 7, .pName = "+SYSLOG"},
     {.id = 0, .length = 0, .pName = NULL}
 };
 
@@ -216,6 +219,11 @@ static const WINC_STRING_ID_TABLE_TYPE wincStatusIdTable[WINC_STATUS_ID_TABLE_SZ
     {.id = WINC_STATUS_SOCKET_NOT_READY, .length = 16, .pName = "Socket Not Ready"},
     {.id = WINC_STATUS_SOCKET_SEQUENCE_ERROR, .length = 21, .pName = "Socket Sequence Error"},
     {.id = WINC_STATUS_TIME_ERROR, .length = 10, .pName = "Time Error"},
+    {.id = WINC_STATUS_TLS_CA_CERT_MISSING, .length = 15, .pName = "CA Cert Missing"},
+    {.id = WINC_STATUS_TLS_CA_CERT_VALIDATION, .length = 18, .pName = "CA Cert Validation"},
+    {.id = WINC_STATUS_TLS_CA_CERT_DATE_VALIDATION, .length = 23, .pName = "CA Cert Date Validation"},
+    {.id = WINC_STATUS_TLS_KEY_PAIR_INCOMPLETE, .length = 19, .pName = "Key Pair Incomplete"},
+    {.id = WINC_STATUS_TLS_PEER_DOMAIN_MISSING, .length = 19, .pName = "Peer Domain Missing"},
     {.id = WINC_STATUS_WAP_STOP_REFUSED, .length = 26, .pName = "Soft AP Stop Not Permitted"},
     {.id = WINC_STATUS_WAP_STOP_FAILED, .length = 19, .pName = "Soft AP Stop Failed"},
     {.id = WINC_STATUS_WAP_START_REFUSED, .length = 27, .pName = "Soft AP Start Not Permitted"},
@@ -226,12 +234,18 @@ static const WINC_STRING_ID_TABLE_TYPE wincStatusIdTable[WINC_STATUS_ID_TABLE_SZ
     {.id = WINC_STATUS_STA_CONN_REFUSED, .length = 28, .pName = "STA Connection Not Permitted"},
     {.id = WINC_STATUS_STA_CONN_FAILED, .length = 21, .pName = "STA Connection Failed"},
     {.id = WINC_STATUS_ASSOC_NOT_FOUND, .length = 21, .pName = "Association Not Found"},
+    {.id = WINC_STATUS_NVM_LOCKED, .length = 22, .pName = "NVM Locked Until Reset"},
+    {.id = WINC_STATUS_DFU_ADDRESS_WARNING, .length = 36, .pName = "No Bootable Image In Other Partition"},
+    {.id = WINC_STATUS_PPS_WIFI_PS_NOT_ENABLED, .length = 20, .pName = "Wi-Fi PS Not Enabled"},
+    {.id = WINC_STATUS_PPS_TIMEOUT, .length = 11, .pName = "PPS Timeout"},
+    {.id = WINC_STATUS_ARB_NO_INCREASE, .length = 45, .pName = "The Value Provided Would Not Increase The ARB"},
+    {.id = WINC_STATUS_ARB_REJECTED, .length = 53, .pName = "The Value Provided Would Invalidate The Current Image"},
     {.id = 0, .length = 0, .pName = NULL}
 };
 
 static const uint8_t wincModuleIdList[WINC_NUM_MODULES] =
 {
-    0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29
+    0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33
 };
 
 /*****************************************************************************

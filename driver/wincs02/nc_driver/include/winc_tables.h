@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -24,12 +24,12 @@ Microchip or any third party.
 #ifndef WINC_TABLES_H
 #define WINC_TABLES_H
 
-#include "microchip_pic32mzw2_nc_intf.h"
+#include "microchip_wincs02_intf.h"
 
-#define WINC_CMD_ID_TABLE_SZ        66U
-#define WINC_AEC_ID_TABLE_SZ        49U
-#define WINC_STATUS_ID_TABLE_SZ     65U
-#define WINC_NUM_MODULES            26U
+#define WINC_CMD_ID_TABLE_SZ        72U
+#define WINC_AEC_ID_TABLE_SZ        52U
+#define WINC_STATUS_ID_TABLE_SZ     76U
+#define WINC_NUM_MODULES            30U
 
 uintptr_t   WINC_TablesCommandIterate(uintptr_t iterState, uint16_t *pId, const char **ppName);
 uint16_t    WINC_TablesCommandLookupByString(const char *pName);

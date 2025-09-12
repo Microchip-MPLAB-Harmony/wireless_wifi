@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Wireless Driver OTA Implementation
+  WINC Wireless Driver OTA Source File
 
   File Name:
     wdrv_winc_ota.c
@@ -11,34 +11,26 @@
     This interface provides functionality required for the OTA service.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
 
@@ -50,14 +42,165 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver OTA Implementation
+// Section: WINC Driver OTA Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
 
 //*******************************************************************************
 /*
   Function:
-    static void otaProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+    static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
+
+  Summary:
+    Check if an OTA operation is in progress.
+
+  Description:
+    Checks if an OTA operation is in progress and other handle/pointer validation.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    pDcpt - Descriptor pointer obtained from WDRV_WINC_Open handle.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - There is no OTA operation in progress.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+
+  Remarks:
+    None.
+
+*/
+
+static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
+{
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == (DRV_HANDLE)pDcpt) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    /* Ensure an update is not in progress. */
+    if (WDRV_WINC_OTA_OPERATION_NONE != pDcpt->pCtrl->otaState.operation)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void otaProcessStatus
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t cmdID,
+        WINC_CMD_REQ_HANDLE cmdReqHandle,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        uint16_t statusCode
+    )
+
+  Summary:
+    Process command status responses.
+
+  Description:
+    Processes command status responses received via WINC_DEV_CMDREQ_EVENT_CMD_STATUS events.
+
+  Precondition:
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
+
+  Parameters:
+    pDcpt        - Pointer to device descriptor.
+    cmdID        - Command ID.
+    cmdReqHandle - Command request handle.
+    pSrcCmd      - Pointer to source command.
+    statusCode   - Status code.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void otaProcessStatus
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t cmdID,
+    WINC_CMD_REQ_HANDLE cmdReqHandle,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    uint16_t statusCode
+)
+{
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pSrcCmd))
+    {
+        return;
+    }
+
+    switch (cmdID)
+    {
+        case WINC_CMD_ID_OTADL:
+        case WINC_CMD_ID_OTAVFY:
+        case WINC_CMD_ID_OTAACT:
+        case WINC_CMD_ID_OTAINV:
+        {
+            if (WINC_STATUS_OK != statusCode)
+            {
+                if (NULL != pDcpt->pCtrl->otaState.pfOperationStatusCB)
+                {
+                    pDcpt->pCtrl->otaState.pfOperationStatusCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->otaState.operation, pDcpt->pCtrl->otaState.opId, WDRV_WINC_OTA_STATUS_FAIL);
+                }
+
+                pDcpt->pCtrl->otaState.operation = WDRV_WINC_OTA_OPERATION_NONE;
+
+                if (WINC_CMD_ID_OTAVFY != cmdID)
+                {
+                    /* We invalidated our device information when sending the        */
+                    /* update, activate or invalidate command, so refresh it now.    */
+                    (void)WDRV_WINC_InfoDeviceRefresh((DRV_HANDLE)pDcpt);
+                }
+            }
+            else
+            {
+                if (NULL != pDcpt->pCtrl->otaState.pfOperationStatusCB)
+                {
+                    pDcpt->pCtrl->otaState.pfOperationStatusCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->otaState.operation, pDcpt->pCtrl->otaState.opId, WDRV_WINC_OTA_STATUS_STARTED);
+                }
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void otaProcessCmdRsp
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t rspId,
+        WINC_CMD_REQ_HANDLE cmdReqHandle,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
 
   Summary:
     Process command responses.
@@ -69,8 +212,12 @@ Microchip or any third party.
     WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    handle - WINC device handle.
-    pElems - Pointer to command response elements.
+    pDcpt        - Pointer to device descriptor.
+    rspId        - Response command ID.
+    cmdReqHandle - Command request handle.
+    pSrcCmd      - Pointer to source command.
+    numElems     - Number of elements in response.
+    pElems       - Pointer to response elements.
 
   Returns:
     None.
@@ -80,34 +227,201 @@ Microchip or any third party.
 
 */
 
-static void otaProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+static void otaProcessCmdRsp
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t rspId,
+    WINC_CMD_REQ_HANDLE cmdReqHandle,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
-
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems) || (NULL == pSrcCmd))
     {
         return;
     }
 
-    switch (pElems->rspId)
+    switch (rspId)
     {
         case WINC_CMD_ID_OTADL:
         case WINC_CMD_ID_OTAVFY:
         case WINC_CMD_ID_OTAACT:
         case WINC_CMD_ID_OTAINV:
         {
-            if (1U != pElems->numElems)
+            if (1U != numElems)
             {
                 break;
             }
 
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->otaState.opId, sizeof(pDcpt->pCtrl->otaState.opId));
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->otaState.opId, sizeof(pDcpt->pCtrl->otaState.opId));
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("OTA CmdRspCB ID %04x not handled\r\n", pElems->rspId);
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void otaProcessAEC
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process AECs.
+
+  Description:
+    Processes AECs for this module.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void otaProcessAEC
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    switch (aecId)
+    {
+        case WINC_AEC_ID_OTA:
+        case WINC_AEC_ID_OTAERR:
+        {
+            WDRV_WINC_OTA_UPDATE_STATUS otaStatus = WDRV_WINC_OTA_STATUS_FAIL;
+            uint16_t status;
+            uint8_t opId;
+            bool isComplete = true;
+
+            if (WDRV_WINC_OTA_OPERATION_NONE == pDcpt->pCtrl->otaState.operation)
+            {
+                break;
+            }
+
+            if (2U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER_UNSIGNED, &opId, sizeof(opId));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_STATUS, &status, sizeof(status));
+
+            if (opId != pDcpt->pCtrl->otaState.opId)
+            {
+                break;
+            }
+
+            switch (status)
+            {
+                case WINC_STATUS_ERASE_DONE:
+                case WINC_STATUS_WRITE_DONE:
+                {
+                    isComplete = false;
+                    break;
+                }
+
+                case WINC_STATUS_VERIFY_DONE:
+                case WINC_STATUS_ACTIVATE_DONE:
+                case WINC_STATUS_INVALIDATE_DONE:
+                {
+                    otaStatus = WDRV_WINC_OTA_STATUS_COMPLETE;
+                    break;
+                }
+
+                case WINC_STATUS_OTA_ERROR:
+                {
+                    otaStatus = WDRV_WINC_OTA_STATUS_FAIL;
+                    break;
+                }
+
+                case WINC_STATUS_OTA_NO_STA_CONN:
+                {
+                    otaStatus = WDRV_WINC_OTA_STATUS_CONN_ERROR;
+                    break;
+                }
+
+                case WINC_STATUS_OTA_PROTOCOL_ERROR:
+                case WINC_STATUS_OTA_TLS_ERROR:
+                {
+                    otaStatus = WDRV_WINC_OTA_STATUS_SERVER_ERROR;
+                    break;
+                }
+
+                case WINC_STATUS_OTA_IMG_TOO_LARGE:
+                {
+                    otaStatus = WDRV_WINC_OTA_STATUS_INSUFFICIENT_FLASH;
+                    break;
+                }
+
+                case WINC_STATUS_OTA_TIMEOUT:
+                {
+                    otaStatus = WDRV_WINC_OTA_STATUS_CONN_ERROR;
+                    break;
+                }
+
+                default:
+                {
+                    WDRV_DBG_VERBOSE_PRINT("OTA AECCB status %d not handled\r\n", status);
+                    break;
+                }
+            }
+
+            if (true == isComplete)
+            {
+                WDRV_WINC_OTA_OPERATION_TYPE otaOperation = pDcpt->pCtrl->otaState.operation;
+
+                pDcpt->pCtrl->otaState.operation = WDRV_WINC_OTA_OPERATION_NONE;
+
+                if (NULL != pDcpt->pCtrl->otaState.pfOperationStatusCB)
+                {
+                    pDcpt->pCtrl->otaState.pfOperationStatusCB((DRV_HANDLE)pDcpt, otaOperation, pDcpt->pCtrl->otaState.opId, otaStatus);
+
+                    if (WDRV_WINC_OTA_OPERATION_NONE == pDcpt->pCtrl->otaState.operation)
+                    {
+                        pDcpt->pCtrl->otaState.pfOperationStatusCB = NULL;
+                    }
+                }
+
+                /* OTA operations have completed, so refresh our device information. */
+                (void)WDRV_WINC_InfoDeviceRefresh((DRV_HANDLE)pDcpt);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
             break;
         }
     }
@@ -193,12 +507,12 @@ static void otaCmdRspCallbackHandler
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl))
+    if (NULL == pDcpt)
     {
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("OTA CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("OTA CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -221,40 +535,9 @@ static void otaCmdRspCallbackHandler
 
             if (NULL != pStatusInfo)
             {
-                switch (pStatusInfo->rspCmdId)
-                {
-                    case WINC_CMD_ID_OTADL:
-                    case WINC_CMD_ID_OTAVFY:
-                    case WINC_CMD_ID_OTAACT:
-                    case WINC_CMD_ID_OTAINV:
-                    {
-                        if (WINC_STATUS_OK != pStatusInfo->status)
-                        {
-                            if (NULL != pDcpt->pCtrl->otaState.pfOperationStatusCB)
-                            {
-                                pDcpt->pCtrl->otaState.pfOperationStatusCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->otaState.operation, pDcpt->pCtrl->otaState.opId, WDRV_WINC_OTA_STATUS_FAIL);
-                            }
-
-                            pDcpt->pCtrl->otaState.operation = WDRV_WINC_OTA_OPERATION_NONE;
-                        }
-                        else
-                        {
-                            if (NULL != pDcpt->pCtrl->otaState.pfOperationStatusCB)
-                            {
-                                pDcpt->pCtrl->otaState.pfOperationStatusCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->otaState.operation, pDcpt->pCtrl->otaState.opId, WDRV_WINC_OTA_STATUS_STARTED);
-                            }
-                        }
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        WDRV_DBG_VERBOSE_PRINT("OTA CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
-                        break;
-                    }
-                }
+                otaProcessStatus(pDcpt, pStatusInfo->rspCmdId, cmdReqHandle, &pStatusInfo->srcCmd, pStatusInfo->status);
             }
+
             break;
         }
 
@@ -264,7 +547,7 @@ static void otaCmdRspCallbackHandler
 
             if (NULL != pRspElems)
             {
-                otaProcessCmdRsp((DRV_HANDLE)pDcpt, pRspElems);
+                otaProcessCmdRsp(pDcpt, pRspElems->rspId, cmdReqHandle, &pRspElems->srcCmd, pRspElems->numElems, pRspElems->elems);
             }
 
             break;
@@ -272,62 +555,17 @@ static void otaCmdRspCallbackHandler
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("OTA CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
 }
 
-//*******************************************************************************
-/*
-  Function:
-    static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
-
-  Summary:
-    Check if an OTA operation is in progress.
-
-  Description:
-    Checks if an OTA operation is in progress and other handle/pointer validation.
-
-  Precondition:
-    WDRV_WINC_Initialize must have been called.
-    WDRV_WINC_Open must have been called to obtain a valid handle.
-
-  Parameters:
-    pDcpt - Descriptor pointer obtained from WDRV_WINC_Open handle.
-
-  Returns:
-    WDRV_WINC_STATUS_OK            - There is no OTA operation in progress.
-    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
-    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
-
-  Remarks:
-    None.
-
-*/
-
-static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
-{
-    /* Ensure the driver handle and user pointer is valid. */
-    if ((DRV_HANDLE_INVALID == (DRV_HANDLE)pDcpt) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
-    {
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Ensure the driver instance has been opened for use. */
-    if (false == pDcpt->isOpen)
-    {
-        return WDRV_WINC_STATUS_NOT_OPEN;
-    }
-
-    /* Ensure an update is not in progress. */
-    if (WDRV_WINC_OTA_OPERATION_NONE != pDcpt->pCtrl->otaState.operation)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
-    return WDRV_WINC_STATUS_OK;
-}
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver OTA Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -359,120 +597,12 @@ void WDRV_WINC_OTAProcessAEC
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pElems))
     {
         return;
     }
 
-    switch (pElems->rspId)
-    {
-        case WINC_AEC_ID_OTA:
-        case WINC_AEC_ID_OTAERR:
-        {
-            WDRV_WINC_OTA_UPDATE_STATUS otaStatus = WDRV_WINC_OTA_STATUS_FAIL;
-            uint16_t status;
-            uint8_t opId;
-            bool isComplete = true;
-
-            if (WDRV_WINC_OTA_OPERATION_NONE == pDcpt->pCtrl->otaState.operation)
-            {
-                break;
-            }
-
-            if (2U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_UNSIGNED, &opId, sizeof(opId));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STATUS, &status, sizeof(status));
-
-            if (opId != pDcpt->pCtrl->otaState.opId)
-            {
-                break;
-            }
-
-            switch (status)
-            {
-                case WINC_STATUS_ERASE_DONE:
-                case WINC_STATUS_WRITE_DONE:
-                {
-                    isComplete = false;
-                    break;
-                }
-
-                case WINC_STATUS_VERIFY_DONE:
-                case WINC_STATUS_ACTIVATE_DONE:
-                case WINC_STATUS_INVALIDATE_DONE:
-                {
-                    otaStatus = WDRV_WINC_OTA_STATUS_COMPLETE;
-                    break;
-                }
-
-                case WINC_STATUS_OTA_ERROR:
-                {
-                    otaStatus = WDRV_WINC_OTA_STATUS_FAIL;
-                    break;
-                }
-
-                case WINC_STATUS_OTA_NO_STA_CONN:
-                {
-                    otaStatus = WDRV_WINC_OTA_STATUS_CONN_ERROR;
-                    break;
-                }
-
-                case WINC_STATUS_OTA_PROTOCOL_ERROR:
-                case WINC_STATUS_OTA_TLS_ERROR:
-                {
-                    otaStatus = WDRV_WINC_OTA_STATUS_SERVER_ERROR;
-                    break;
-                }
-
-                case WINC_STATUS_OTA_IMG_TOO_LARGE:
-                {
-                    otaStatus = WDRV_WINC_OTA_STATUS_INSUFFICIENT_FLASH;
-                    break;
-                }
-
-                case WINC_STATUS_OTA_TIMEOUT:
-                {
-                    otaStatus = WDRV_WINC_OTA_STATUS_CONN_ERROR;
-                    break;
-                }
-
-                default:
-                {
-                    WDRV_DBG_VERBOSE_PRINT("OTA AECCB status %d not handled\r\n", status);
-                    break;
-                }
-            }
-
-            if (true == isComplete)
-            {
-                WDRV_WINC_OTA_OPERATION_TYPE otaOperation = pDcpt->pCtrl->otaState.operation;
-
-                pDcpt->pCtrl->otaState.operation = WDRV_WINC_OTA_OPERATION_NONE;
-
-                if (NULL != pDcpt->pCtrl->otaState.pfOperationStatusCB)
-                {
-                    pDcpt->pCtrl->otaState.pfOperationStatusCB((DRV_HANDLE)pDcpt, otaOperation, pDcpt->pCtrl->otaState.opId, otaStatus);
-
-                    if (WDRV_WINC_OTA_OPERATION_NONE == pDcpt->pCtrl->otaState.operation)
-                    {
-                        pDcpt->pCtrl->otaState.pfOperationStatusCB = NULL;
-                    }
-                }
-            }
-
-            break;
-        }
-
-        default:
-        {
-            WDRV_DBG_VERBOSE_PRINT("OTA AECCB ID %04x not handled\r\n", pElems->rspId);
-            break;
-        }
-    }
+    otaProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
 }
 
 //*******************************************************************************
@@ -547,13 +677,6 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
 
     urlLength = strlen(pURL);
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(6, urlLength, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
-
-    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
-    {
-        return WDRV_WINC_STATUS_REQUEST_ERROR;
-    }
-
     /*
         URI       = scheme ":" ["/" "/" authority ] path ["?" query] ["#" fragment]
         authority = [userinfo "@"] host [":" port]
@@ -576,7 +699,6 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
     if ((0U == schemeLen) || (':' != *pURL))
     {
         WDRV_DBG_ERROR_PRINT("URL: Invalid scheme\r\n");
-        WDRV_WINC_DevDiscardCmdReq(cmdReqHandle);
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
@@ -636,7 +758,6 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
             if ((']' != *pURL) || (hostLen >= sizeof(ipAddrBuf)))
             {
                 WDRV_DBG_ERROR_PRINT("URL: IP address not terminated\r\n");
-                WDRV_WINC_DevDiscardCmdReq(cmdReqHandle);
                 return WDRV_WINC_STATUS_INVALID_ARG;
             }
 
@@ -657,7 +778,6 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
                 else
                 {
                     WDRV_DBG_ERROR_PRINT("URL: Unknown IP address format\r\n");
-                    WDRV_WINC_DevDiscardCmdReq(cmdReqHandle);
                     return WDRV_WINC_STATUS_INVALID_ARG;
                 }
             }
@@ -703,7 +823,6 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
             if (0 != errno)
             {
                 WDRV_DBG_ERROR_PRINT("URL: Invalid port number\r\n");
-                WDRV_WINC_DevDiscardCmdReq(cmdReqHandle);
                 return WDRV_WINC_STATUS_INVALID_ARG;
             }
 
@@ -746,8 +865,14 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
     else
     {
         WDRV_DBG_ERROR_PRINT("URL: Scheme not supported\r\n");
-        WDRV_WINC_DevDiscardCmdReq(cmdReqHandle);
         return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    cmdReqHandle = WDRV_WINC_CmdReqInit(6, urlLength, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     if ((userinfoLen > 0U) || (hostLen > 0U))
@@ -813,9 +938,10 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
     }
 
     (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_TLS_CONF, WINC_TYPE_INTEGER, tlsIdx, 0);
+
     (void)WINC_CmdOTADL(cmdReqHandle, WINC_CONST_OTA_STATE_ENABLE);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -824,6 +950,10 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
     pDcpt->pCtrl->otaState.operation           = WDRV_WINC_OTA_OPERATION_DOWNLOAD_VERIFY;
     pDcpt->pCtrl->otaState.opId                = 0;
     pDcpt->pCtrl->otaState.pfOperationStatusCB = pfUpdateStatusCB;
+
+    /* The OTA update is likely to change the device's image information.    */
+    /* We will refresh it when the operation completes or fails.             */
+    pDcpt->pCtrl->devInfo.isValid = false;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -876,7 +1006,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageVerify
 
     (void)WINC_CmdOTAVFY(cmdReqHandle);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -937,7 +1067,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageActivate
 
     (void)WINC_CmdOTAACT(cmdReqHandle);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -946,6 +1076,10 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageActivate
     pDcpt->pCtrl->otaState.operation           = WDRV_WINC_OTA_OPERATION_ACTIVATE;
     pDcpt->pCtrl->otaState.opId                = 0;
     pDcpt->pCtrl->otaState.pfOperationStatusCB = pfUpdateStatusCB;
+
+    /* The OTA activate is likely to change the device's image information.  */
+    /* We will refresh it when the operation completes or fails.             */
+    pDcpt->pCtrl->devInfo.isValid = false;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -998,7 +1132,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageInvalidate
 
     (void)WINC_CmdOTAINV(cmdReqHandle);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1007,6 +1141,10 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageInvalidate
     pDcpt->pCtrl->otaState.operation           = WDRV_WINC_OTA_OPERATION_INVALIDATE;
     pDcpt->pCtrl->otaState.opId                = 0;
     pDcpt->pCtrl->otaState.pfOperationStatusCB = pfUpdateStatusCB;
+
+    /* The OTA invalidate is likely to change the device's image information.*/
+    /* We will refresh it when the operation completes or fails.             */
+    pDcpt->pCtrl->devInfo.isValid = false;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -1060,7 +1198,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAOptionsSet
 
     (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_TIMEOUT, WINC_TYPE_INTEGER_UNSIGNED, pOTAOptions->timeout, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }

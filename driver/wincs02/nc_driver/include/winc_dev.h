@@ -1,24 +1,18 @@
 /*
-Copyright (C) 2023-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
 
 #ifndef WINC_DEV_H
@@ -30,9 +24,15 @@ Microchip or any third party.
 #include "winc_debug.h"
 #include "winc_tables.h"
 
+#if __STDC_VERSION__ >= 201112L
+#define STR_LIT_U(STR)              U##STR
+#else
+#define STR_LIT_U(STR)              STR
+#endif
+
 /* Driver version number. */
 #define WINC_DEV_DRIVER_VERSION_MAJOR_NO    3
-#define WINC_DEV_DRIVER_VERSION_MINOR_NO    0
+#define WINC_DEV_DRIVER_VERSION_MINOR_NO    1
 #define WINC_DEV_DRIVER_VERSION_PATCH_NO    0
 
 /* Definition of WINC device handle type. */
@@ -66,12 +66,28 @@ typedef uintptr_t WINC_DEVICE_HANDLE;
  *****************************************************************************/
 
 typedef enum
-{                                               /* eventArg: */
+{
     WINC_DEV_CMDREQ_EVENT_TX_COMPLETE,
     WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE,      /* WINC_DEV_EVENT_COMPLETE_ARGS */
     WINC_DEV_CMDREQ_EVENT_CMD_STATUS,           /* WINC_DEV_EVENT_STATUS_ARGS */
     WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED,         /* WINC_DEV_EVENT_RSP_ELEMS */
 } WINC_DEV_CMDREQ_EVENT_TYPE;
+
+/*****************************************************************************
+  Description:
+    Device bus state types.
+
+  Remarks:
+
+ *****************************************************************************/
+
+typedef enum
+{
+    WINC_DEV_BUS_STATE_UNKNOWN,
+    WINC_DEV_BUS_STATE_ERROR,
+    WINC_DEV_BUS_STATE_IDLE,
+    WINC_DEV_BUS_STATE_ACTIVE,
+} WINC_DEV_BUS_STATE_TYPE;
 
 /*****************************************************************************
   Description:
@@ -162,7 +178,7 @@ typedef void (*WINC_DEV_RX_INTERCEPT_CB)(uintptr_t context, WINC_DEVICE_HANDLE d
 typedef bool (*WINC_DEV_EVENT_CHECK_FP)(void);
 
 /* Helper macro to combine common structure 16-bit split bytes into one value. */
-#define WINC_FIELD_UNPACK_16(field)     (((uint16_t)(field##_h)) << 8) | (field##_l);
+#define WINC_FIELD_UNPACK_16(field)     (((uint16_t)(field##_h)) << 8) | (field##_l)
 
 #ifdef WINC_DEV_CACHE_LINE_SIZE
 #define WINC_DEV_CACHE_GET_SIZE(size)       (((size) + (WINC_DEV_CACHE_LINE_SIZE-1U)) & ~(WINC_DEV_CACHE_LINE_SIZE-1U))
@@ -186,5 +202,7 @@ bool WINC_DevAECCallbackRegister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RSP_
 bool WINC_DevAECCallbackDeregister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_AEC_RSP_CB pfAecRspCallback);
 bool WINC_DevUnpackElements(uint8_t numTlvs, const uint8_t *pTLVBytes, WINC_DEV_PARAM_ELEM *pElems);
 bool WINC_DevInterceptCallbackRegister(WINC_DEVICE_HANDLE devHandle, WINC_DEV_RX_INTERCEPT_CB pfInterceptCallback, uintptr_t interceptCallbackCtx);
+WINC_DEV_BUS_STATE_TYPE WINC_DevBusStateGet(WINC_DEVICE_HANDLE devHandle);
+bool WINC_DevBusStateSet(WINC_DEVICE_HANDLE devHandle, WINC_DEV_BUS_STATE_TYPE busState);
 
 #endif /* WINC_DEV_H */

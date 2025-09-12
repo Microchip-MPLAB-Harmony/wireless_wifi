@@ -1,24 +1,18 @@
 /*
-Copyright (C) 2023-24, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
 
 #ifndef WINC_DEBUG_H
@@ -34,11 +28,13 @@ Microchip or any third party.
 #define WINC_ANSI_ESC_SEQ_RED_BOLD      "\033" "[31;1m"
 #define WINC_ANSI_ESC_SEQ_RED           "\033" "[31m"
 #define WINC_ANSI_ESC_SEQ_YELLOW        "\033" "[33m"
+#define WINC_ANSI_ESC_SEQ_BLUE          "\033" "[34m"
+#define WINC_ANSI_ESC_SEQ_MAGENTA       "\033" "[35m"
 
 #define WINC_DEBUG_ANSI_SEQ_END         WINC_ANSI_ESC_SEQ_END
 #define WINC_DEBUG_ANSI_SEQ_ERROR       WINC_ANSI_ESC_SEQ_RED_BOLD
-#define WINC_DEBUG_ANSI_SEQ_INFORM      WINC_ANSI_ESC_SEQ_RED
-#define WINC_DEBUG_ANSI_SEQ_TRACE       WINC_ANSI_ESC_SEQ_RED
+#define WINC_DEBUG_ANSI_SEQ_INFORM      WINC_ANSI_ESC_SEQ_BLUE
+#define WINC_DEBUG_ANSI_SEQ_TRACE       WINC_ANSI_ESC_SEQ_MAGENTA
 #define WINC_DEBUG_ANSI_SEQ_VERBOSE     WINC_ANSI_ESC_SEQ_YELLOW
 
 #ifndef WINC_DEBUG_LEVEL

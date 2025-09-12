@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver MQTT Implementation
+  WINC Wireless Driver MQTT Source File
 
   File Name:
     wdrv_winc_mqtt.c
@@ -11,30 +11,22 @@
     This interface manages MQTT.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
@@ -52,6 +44,12 @@ Microchip or any third party.
 
 #ifndef WDRV_WINC_MOD_DISABLE_MQTT
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver MQTT Local Data
+// *****************************************************************************
+// *****************************************************************************
+
 static const WDRV_WINC_MQTT_MSG_INFO defaultQoS0MsgInfo =
 {
     .duplicate = false,
@@ -61,9 +59,560 @@ static const WDRV_WINC_MQTT_MSG_INFO defaultQoS0MsgInfo =
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver MQTT Implementation
+// Section: WINC Driver MQTT Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
+
+//*******************************************************************************
+/*
+  Function:
+    static void mqttProcessStatus
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t cmdID,
+        WINC_CMD_REQ_HANDLE cmdReqHandle,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        uint16_t statusCode
+    )
+
+  Summary:
+    Process command status responses.
+
+  Description:
+    Processes command status responses received via WINC_DEV_CMDREQ_EVENT_CMD_STATUS events.
+
+  Precondition:
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
+
+  Parameters:
+    pDcpt        - Pointer to device descriptor.
+    cmdID        - Command ID.
+    cmdReqHandle - Command request handle.
+    pSrcCmd      - Pointer to source command.
+    statusCode   - Status code.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void mqttProcessStatus
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t cmdID,
+    WINC_CMD_REQ_HANDLE cmdReqHandle,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    uint16_t statusCode
+)
+{
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pSrcCmd))
+    {
+        return;
+    }
+
+    switch (cmdID)
+    {
+        case WINC_CMD_ID_MQTTPUB:
+        {
+            if (WINC_STATUS_OK != statusCode)
+            {
+                if (NULL != pDcpt->pCtrl->mqtt.pfPubStatusCb)
+                {
+                    pDcpt->pCtrl->mqtt.pfPubStatusCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.pubStatusCbCtx, (WDRV_WINC_MQTT_PUB_HANDLE)cmdReqHandle, 0, WDRV_WINC_MQTT_PUB_STATUS_ERROR);
+                }
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void mqttProcessCmdRsp
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t rspId,
+        WINC_CMD_REQ_HANDLE cmdReqHandle,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process command responses.
+
+  Description:
+    Processes command responses received via WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED events.
+
+  Precondition:
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
+
+  Parameters:
+    pDcpt        - Pointer to device descriptor.
+    rspId        - Response command ID.
+    cmdReqHandle - Command request handle.
+    pSrcCmd      - Pointer to source command.
+    numElems     - Number of elements in response.
+    pElems       - Pointer to response elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void mqttProcessCmdRsp
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t rspId,
+    WINC_CMD_REQ_HANDLE cmdReqHandle,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems) || (NULL == pSrcCmd))
+    {
+        return;
+    }
+
+    switch (rspId)
+    {
+        case WINC_CMD_ID_MQTTPUB:
+        {
+            uint16_t packetId;
+            WDRV_WINC_MQTT_PUB_STATUS_TYPE pubStatus = WDRV_WINC_MQTT_PUB_STATUS_SENT;
+
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &packetId, sizeof(packetId));
+
+            if (NULL != pDcpt->pCtrl->mqtt.pfPubStatusCb)
+            {
+                pDcpt->pCtrl->mqtt.pfPubStatusCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.pubStatusCbCtx, (WDRV_WINC_MQTT_PUB_HANDLE)cmdReqHandle, packetId, pubStatus);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void mqttProcessAEC
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process AECs.
+
+  Description:
+    Processes AECs for this module.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void mqttProcessAEC
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    WDRV_WINC_CTRLDCPT *pCtrl;
+
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    pCtrl = pDcpt->pCtrl;
+
+    switch (aecId)
+    {
+        case WINC_AEC_ID_MQTTCONN:
+        {
+            uint8_t connState;
+            WDRV_WINC_MQTT_CONN_STATUS_TYPE prevConnState;
+
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &connState, sizeof(connState));
+
+            prevConnState = pCtrl->mqtt.connState;
+
+            if (WDRV_WINC_MQTT_CONN_STATUS_CONNECTING == pCtrl->mqtt.connState)
+            {
+                if (0U == connState)
+                {
+                    pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED;
+                }
+                else
+                {
+                    pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_CONNECTED;
+
+                    (void)memset(&pCtrl->mqtt.pubProps, 0, sizeof(WDRV_WINC_MQTT_PUB_PROP));
+                }
+            }
+            else if (WDRV_WINC_MQTT_CONN_STATUS_CONNECTED == pCtrl->mqtt.connState)
+            {
+                if (0U == connState)
+                {
+                    pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED;
+                }
+            }
+            else if (WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTING == pCtrl->mqtt.connState)
+            {
+                if (0U == connState)
+                {
+                    pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED;
+                }
+            }
+            else
+            {
+                /* Do nothing. */
+            }
+
+            if (prevConnState != pCtrl->mqtt.connState)
+            {
+                if (NULL != pCtrl->mqtt.pfConnCB)
+                {
+                    pCtrl->mqtt.pfConnCB((DRV_HANDLE)pDcpt, pCtrl->mqtt.connCbCtx, pCtrl->mqtt.connState, &pCtrl->mqtt.connInfo);
+                }
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_MQTTCONNACK:
+        {
+            uint8_t connAckFlags;
+
+            if (2U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &connAckFlags, sizeof(connAckFlags));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->mqtt.connInfo.connectReasonCode, sizeof(pCtrl->mqtt.connInfo.connectReasonCode));
+
+            pCtrl->mqtt.connInfo.sessionPresent = (0 != (connAckFlags & WINC_CONST_MQTT_CONNACK_FLAGS_SESSION_PRESENT)) ? true : false;
+            break;
+        }
+
+        case WINC_AEC_ID_MQTTPUBACK:
+        case WINC_AEC_ID_MQTTPUBCOMP:
+        case WINC_AEC_ID_MQTTPUBERR:
+        {
+            uint16_t packetId;
+            WDRV_WINC_MQTT_PUB_STATUS_TYPE pubStatus = WDRV_WINC_MQTT_PUB_STATUS_RECV;
+
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            if (WINC_AEC_ID_MQTTPUBERR == aecId)
+            {
+                pubStatus = WDRV_WINC_MQTT_PUB_STATUS_ERROR;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &packetId, sizeof(packetId));
+
+            if (NULL != pCtrl->mqtt.pfPubStatusCb)
+            {
+                pCtrl->mqtt.pfPubStatusCb((DRV_HANDLE)pDcpt, pCtrl->mqtt.pubStatusCbCtx, WDRV_WINC_MQTT_PUB_INVALID_HANDLE, packetId, pubStatus);
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_MQTTSUB:
+        {
+            uint16_t reasonCode;
+            WDRV_WINC_MQTT_SUB_STATUS_TYPE subStatus = WDRV_WINC_MQTT_SUB_STATUS_ACKED;
+
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &reasonCode, sizeof(reasonCode));
+
+            if (reasonCode > WINC_CONST_MQTT_QOS_QOS2)
+            {
+                subStatus = WDRV_WINC_MQTT_SUB_STATUS_ERROR;
+            }
+
+            if (NULL != pCtrl->mqtt.pfSubscribeCb)
+            {
+                pCtrl->mqtt.pfSubscribeCb((DRV_HANDLE)pDcpt, pCtrl->mqtt.subscribeCbCtx, NULL, NULL, NULL, 0, subStatus);
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_MQTTUNSUB:
+        {
+            uint16_t reasonCode;
+            WDRV_WINC_MQTT_SUB_STATUS_TYPE subStatus = WDRV_WINC_MQTT_SUB_STATUS_END;
+
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &reasonCode, sizeof(reasonCode));
+
+            if (0U != reasonCode)
+            {
+                subStatus = WDRV_WINC_MQTT_SUB_STATUS_ERROR;
+            }
+
+            if (NULL != pCtrl->mqtt.pfSubscribeCb)
+            {
+                pCtrl->mqtt.pfSubscribeCb((DRV_HANDLE)pDcpt, pCtrl->mqtt.subscribeCbCtx, NULL, NULL, NULL, 0, subStatus);
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_MQTTSUBRX:
+        {
+            WDRV_WINC_MQTT_MSG_INFO msgInfo;
+
+            if ((5U != numElems) && (6U != numElems))
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &msgInfo.duplicate, sizeof(msgInfo.duplicate));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &msgInfo.qos, sizeof(msgInfo.qos));
+            (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_INTEGER, &msgInfo.retain, sizeof(msgInfo.retain));
+
+            msgInfo.pProperties = NULL;
+
+            if (5U == numElems)
+            {
+                if (NULL != pCtrl->mqtt.pfSubscribeCb)
+                {
+                    if (true == pCtrl->mqtt.pubProps.isValid)
+                    {
+                        msgInfo.pProperties = &pCtrl->mqtt.pubProps;
+                    }
+
+                    pCtrl->mqtt.pfSubscribeCb((DRV_HANDLE)pDcpt, pCtrl->mqtt.subscribeCbCtx, &msgInfo, (const char*)pElems[3].pData, pElems[4].pData, pElems[4].length, WDRV_WINC_MQTT_SUB_STATUS_RXDATA);
+                }
+            }
+            else
+            {
+                uint16_t msgId;
+                uint16_t msgLength;
+
+                (void)WINC_CmdReadParamElem(&pElems[4], WINC_TYPE_INTEGER, &msgId, sizeof(msgId));
+                (void)WINC_CmdReadParamElem(&pElems[5], WINC_TYPE_INTEGER, &msgLength, sizeof(msgLength));
+            }
+
+            (void)memset(&pCtrl->mqtt.pubProps, 0, sizeof(WDRV_WINC_MQTT_PUB_PROP));
+
+            break;
+        }
+
+        case WINC_AEC_ID_MQTTPROPRX:
+        {
+            uint8_t propId;
+            bool pubPropUpdated = false;
+
+            if (numElems < 2U)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &propId, sizeof(propId));
+
+            switch (propId)
+            {
+                case WINC_CFG_PARAM_ID_MQTTPROP_PAYLOAD_FORMAT_IND:
+                {
+                    if (0U != WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.pubProps.payloadFormatIndicator, sizeof(pCtrl->mqtt.pubProps.payloadFormatIndicator)))
+                    {
+                        pubPropUpdated = true;
+                    }
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_MSG_EXPIRY_INTERVAL:
+                {
+                    if (0U != WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.pubProps.messageExpiryInterval, sizeof(pCtrl->mqtt.pubProps.messageExpiryInterval)))
+                    {
+                        pubPropUpdated = true;
+                    }
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_CONTENT_TYPE:
+                {
+                    if (0U != WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_STRING, &pCtrl->mqtt.pubProps.contentType, WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN))
+                    {
+                        pCtrl->mqtt.pubProps.contentType[WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN] = (uint8_t)'\0';
+                        pubPropUpdated = true;
+                    }
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_SUBSCRIPTION_ID:
+                {
+                    if (0U != WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.pubProps.subscriptionIdentifer, sizeof(pCtrl->mqtt.pubProps.subscriptionIdentifer)))
+                    {
+                        pubPropUpdated = true;
+                    }
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_SESSION_EXPIRY_INTERVAL:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.connInfo.properties.sessionExpiryInterval, sizeof(pCtrl->mqtt.connInfo.properties.sessionExpiryInterval));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_ASSIGNED_CLIENT_ID:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_STRING, &pCtrl->mqtt.connInfo.properties.assignedClientId, WDRV_WINC_MQTT_CONN_MAX_ASSIGNED_CLIENT_ID);
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_RECEIVE_MAX:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.connInfo.properties.receiveMax, sizeof(pCtrl->mqtt.connInfo.properties.receiveMax));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_TOPIC_ALIAS_MAX:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.connInfo.properties.topicAliasMax, sizeof(pCtrl->mqtt.connInfo.properties.topicAliasMax));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_MAX_QOS:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.connInfo.properties.maxQoS, sizeof(pCtrl->mqtt.connInfo.properties.maxQoS));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_RETAIN_AVAIL:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BOOL, &pCtrl->mqtt.connInfo.properties.retainAvailable, sizeof(pCtrl->mqtt.connInfo.properties.retainAvailable));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_USER_PROP:
+                {
+                    if ((3U == numElems) && (NULL != pCtrl->mqtt.pfUserPropCb))
+                    {
+                        WDRV_WINC_MQTT_USER_PROP userProp;
+
+                        userProp.pKey     = pElems[1].pData;
+                        userProp.lenKey   = pElems[1].length;
+                        userProp.pValue   = pElems[2].pData;
+                        userProp.lenValue = pElems[2].length;
+
+                        pCtrl->mqtt.pfUserPropCb((DRV_HANDLE)pDcpt, &userProp);
+                    }
+
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_MAX_PACKET_SZ:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER_UNSIGNED, &pCtrl->mqtt.connInfo.properties.maxPacketSize, sizeof(pCtrl->mqtt.connInfo.properties.maxPacketSize));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_WILDCARD_SUB_AVAIL:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BOOL, &pCtrl->mqtt.connInfo.properties.wildcardSubsAvailable, sizeof(pCtrl->mqtt.connInfo.properties.wildcardSubsAvailable));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_SUBSCRIPTION_ID_AVAIL:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BOOL, &pCtrl->mqtt.connInfo.properties.subIDsAvailable, sizeof(pCtrl->mqtt.connInfo.properties.subIDsAvailable));
+                    break;
+                }
+
+                case WINC_CFG_PARAM_ID_MQTTPROP_SHARED_SUBSCRIPTION_AVAIL:
+                {
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BOOL, &pCtrl->mqtt.connInfo.properties.sharedSubsAvailable, sizeof(pCtrl->mqtt.connInfo.properties.sharedSubsAvailable));
+                    break;
+                }
+
+                default:
+                {
+                    WDRV_DBG_VERBOSE_PRINT("MQTT AECCB property %d not handled\r\n", propId);
+                    break;
+                }
+            }
+
+            if (true == pubPropUpdated)
+            {
+                pCtrl->mqtt.pubProps.isValid = true;
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
 
 //*******************************************************************************
 /*
@@ -150,7 +699,7 @@ static void mqttCmdRspCallbackHandler
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("MQTT CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("MQTT CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -169,80 +718,41 @@ static void mqttCmdRspCallbackHandler
         {
             /* Status response received for command. */
 
-            const WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
+            const WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (const WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
 
             if (NULL != pStatusInfo)
             {
-                switch (pStatusInfo->rspCmdId)
-                {
-                    case WINC_CMD_ID_MQTTPUB:
-                    {
-                        if (WINC_STATUS_OK != pStatusInfo->status)
-                        {
-                            if (NULL != pDcpt->pCtrl->mqtt.pfPubStatusCb)
-                            {
-                                pDcpt->pCtrl->mqtt.pfPubStatusCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.pubStatusCbCtx, (WDRV_WINC_MQTT_PUB_HANDLE)cmdReqHandle, 0, WDRV_WINC_MQTT_PUB_STATUS_ERROR);
-                            }
-                        }
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        WDRV_DBG_VERBOSE_PRINT("MQTT CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
-                        break;
-                    }
-                }
+                mqttProcessStatus(pDcpt, pStatusInfo->rspCmdId, cmdReqHandle, &pStatusInfo->srcCmd, pStatusInfo->status);
             }
+
             break;
         }
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-            WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
+            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
 
             if (NULL != pRspElems)
             {
-                switch (pRspElems->rspId)
-                {
-                    case WINC_CMD_ID_MQTTPUB:
-                    {
-                        uint16_t packetId;
-                        WDRV_WINC_MQTT_PUB_STATUS_TYPE pubStatus = WDRV_WINC_MQTT_PUB_STATUS_SENT;
-
-                        if (1U != pRspElems->numElems)
-                        {
-                            break;
-                        }
-
-                        (void)WINC_CmdReadParamElem(&pRspElems->elems[0], WINC_TYPE_INTEGER, &packetId, sizeof(packetId));
-
-                        if (NULL != pDcpt->pCtrl->mqtt.pfPubStatusCb)
-                        {
-                            pDcpt->pCtrl->mqtt.pfPubStatusCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.pubStatusCbCtx, (WDRV_WINC_MQTT_PUB_HANDLE)cmdReqHandle, packetId, pubStatus);
-                        }
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        WDRV_DBG_VERBOSE_PRINT("MQTT CmdRspCB ID %04x not handled\r\n", pRspElems->rspId);
-                        break;
-                    }
-                }
+                mqttProcessCmdRsp(pDcpt, pRspElems->rspId, cmdReqHandle, &pRspElems->srcCmd, pRspElems->numElems, pRspElems->elems);
             }
+
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("MQTT CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver MQTT Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -272,355 +782,14 @@ void WDRV_WINC_MQTTProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pElems))
     {
         return;
     }
 
-    switch (pElems->rspId)
-    {
-        case WINC_AEC_ID_MQTTCONN:
-        {
-            uint8_t connState;
-            WDRV_WINC_MQTT_CONN_STATUS_TYPE prevConnState;
-
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &connState, sizeof(connState));
-
-            prevConnState = pDcpt->pCtrl->mqtt.connState;
-
-            if (WDRV_WINC_MQTT_CONN_STATUS_CONNECTING == pDcpt->pCtrl->mqtt.connState)
-            {
-                if (0U == connState)
-                {
-                    pDcpt->pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED;
-                }
-                else
-                {
-                    pDcpt->pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_CONNECTED;
-
-                    (void)memset(&pDcpt->pCtrl->mqtt.pubProps, 0, sizeof(WDRV_WINC_MQTT_PUB_PROP));
-                }
-            }
-            else if (WDRV_WINC_MQTT_CONN_STATUS_CONNECTED == pDcpt->pCtrl->mqtt.connState)
-            {
-                if (0U == connState)
-                {
-                    pDcpt->pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED;
-                }
-            }
-            else if (WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTING == pDcpt->pCtrl->mqtt.connState)
-            {
-                if (0U == connState)
-                {
-                    pDcpt->pCtrl->mqtt.connState = WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED;
-                }
-            }
-            else
-            {
-                /* Do nothing. */
-            }
-
-            if (prevConnState != pDcpt->pCtrl->mqtt.connState)
-            {
-                if (NULL != pDcpt->pCtrl->mqtt.pfConnCB)
-                {
-                    pDcpt->pCtrl->mqtt.pfConnCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.connCbCtx, pDcpt->pCtrl->mqtt.connState, &pDcpt->pCtrl->mqtt.connInfo);
-                }
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_MQTTCONNACK:
-        {
-            uint8_t connAckFlags;
-
-            if (2U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &connAckFlags, sizeof(connAckFlags));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pDcpt->pCtrl->mqtt.connInfo.connectReasonCode, sizeof(pDcpt->pCtrl->mqtt.connInfo.connectReasonCode));
-
-            pDcpt->pCtrl->mqtt.connInfo.sessionPresent = (0 != (connAckFlags & WINC_CONST_MQTT_CONNACK_FLAGS_SESSION_PRESENT)) ? true : false;
-            break;
-        }
-
-        case WINC_AEC_ID_MQTTPUBACK:
-        case WINC_AEC_ID_MQTTPUBCOMP:
-        case WINC_AEC_ID_MQTTPUBERR:
-        {
-            uint16_t packetId;
-            WDRV_WINC_MQTT_PUB_STATUS_TYPE pubStatus = WDRV_WINC_MQTT_PUB_STATUS_RECV;
-
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            if (WINC_AEC_ID_MQTTPUBERR == pElems->rspId)
-            {
-                pubStatus = WDRV_WINC_MQTT_PUB_STATUS_ERROR;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &packetId, sizeof(packetId));
-
-            if (NULL != pDcpt->pCtrl->mqtt.pfPubStatusCb)
-            {
-                pDcpt->pCtrl->mqtt.pfPubStatusCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.pubStatusCbCtx, WDRV_WINC_MQTT_PUB_INVALID_HANDLE, packetId, pubStatus);
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_MQTTSUB:
-        {
-            uint16_t reasonCode;
-            WDRV_WINC_MQTT_SUB_STATUS_TYPE subStatus = WDRV_WINC_MQTT_SUB_STATUS_ACKED;
-
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &reasonCode, sizeof(reasonCode));
-
-            if (reasonCode > WINC_CONST_MQTT_QOS_QOS2)
-            {
-                subStatus = WDRV_WINC_MQTT_SUB_STATUS_ERROR;
-            }
-
-            if (NULL != pDcpt->pCtrl->mqtt.pfSubscribeCb)
-            {
-                pDcpt->pCtrl->mqtt.pfSubscribeCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.subscribeCbCtx, NULL, NULL, NULL, 0, subStatus);
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_MQTTUNSUB:
-        {
-            uint16_t reasonCode;
-            WDRV_WINC_MQTT_SUB_STATUS_TYPE subStatus = WDRV_WINC_MQTT_SUB_STATUS_END;
-
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &reasonCode, sizeof(reasonCode));
-
-            if (0U != reasonCode)
-            {
-                subStatus = WDRV_WINC_MQTT_SUB_STATUS_ERROR;
-            }
-
-            if (NULL != pDcpt->pCtrl->mqtt.pfSubscribeCb)
-            {
-                pDcpt->pCtrl->mqtt.pfSubscribeCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.subscribeCbCtx, NULL, NULL, NULL, 0, subStatus);
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_MQTTSUBRX:
-        {
-            WDRV_WINC_MQTT_MSG_INFO msgInfo;
-
-            if ((5U != pElems->numElems) && (6U != pElems->numElems))
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &msgInfo.duplicate, sizeof(msgInfo.duplicate));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &msgInfo.qos, sizeof(msgInfo.qos));
-            (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER, &msgInfo.retain, sizeof(msgInfo.retain));
-
-            msgInfo.pProperties = NULL;
-
-            if (5U == pElems->numElems)
-            {
-                if (NULL != pDcpt->pCtrl->mqtt.pfSubscribeCb)
-                {
-                    if (true == pDcpt->pCtrl->mqtt.pubProps.isValid)
-                    {
-                        msgInfo.pProperties = &pDcpt->pCtrl->mqtt.pubProps;
-                    }
-
-                    pDcpt->pCtrl->mqtt.pfSubscribeCb((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.subscribeCbCtx, &msgInfo, (const char*)pElems->elems[3].pData, pElems->elems[4].pData, pElems->elems[4].length, WDRV_WINC_MQTT_SUB_STATUS_RXDATA);
-                }
-            }
-            else
-            {
-                uint16_t msgId;
-                uint16_t msgLength;
-
-                (void)WINC_CmdReadParamElem(&pElems->elems[4], WINC_TYPE_INTEGER, &msgId, sizeof(msgId));
-                (void)WINC_CmdReadParamElem(&pElems->elems[5], WINC_TYPE_INTEGER, &msgLength, sizeof(msgLength));
-            }
-
-            (void)memset(&pDcpt->pCtrl->mqtt.pubProps, 0, sizeof(WDRV_WINC_MQTT_PUB_PROP));
-
-            break;
-        }
-
-        case WINC_AEC_ID_MQTTPROPRX:
-        {
-            uint8_t propId;
-            bool pubPropUpdated = false;
-
-            if (pElems->numElems < 2U)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &propId, sizeof(propId));
-
-            switch (propId)
-            {
-                case WINC_CFG_PARAM_ID_MQTTPROP_PAYLOAD_FORMAT_IND:
-                {
-                    if (0U != WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.pubProps.payloadFormatIndicator, sizeof(pDcpt->pCtrl->mqtt.pubProps.payloadFormatIndicator)))
-                    {
-                        pubPropUpdated = true;
-                    }
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_MSG_EXPIRY_INTERVAL:
-                {
-                    if (0U != WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.pubProps.messageExpiryInterval, sizeof(pDcpt->pCtrl->mqtt.pubProps.messageExpiryInterval)))
-                    {
-                        pubPropUpdated = true;
-                    }
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_CONTENT_TYPE:
-                {
-                    if (0U != WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, &pDcpt->pCtrl->mqtt.pubProps.contentType, WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN))
-                    {
-                        pDcpt->pCtrl->mqtt.pubProps.contentType[WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN] = (uint8_t)'\0';
-                        pubPropUpdated = true;
-                    }
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_SUBSCRIPTION_ID:
-                {
-                    if (0U != WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.pubProps.subscriptionIdentifer, sizeof(pDcpt->pCtrl->mqtt.pubProps.subscriptionIdentifer)))
-                    {
-                        pubPropUpdated = true;
-                    }
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_SESSION_EXPIRY_INTERVAL:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.connInfo.properties.sessionExpiryInterval, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.sessionExpiryInterval));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_ASSIGNED_CLIENT_ID:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_STRING, &pDcpt->pCtrl->mqtt.connInfo.properties.assignedClientId, WDRV_WINC_MQTT_CONN_MAX_ASSIGNED_CLIENT_ID);
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_RECEIVE_MAX:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.connInfo.properties.receiveMax, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.receiveMax));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_TOPIC_ALIAS_MAX:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.connInfo.properties.topicAliasMax, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.topicAliasMax));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_MAX_QOS:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.connInfo.properties.maxQoS, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.maxQoS));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_RETAIN_AVAIL:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BOOL, &pDcpt->pCtrl->mqtt.connInfo.properties.retainAvailable, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.retainAvailable));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_USER_PROP:
-                {
-                    if ((3U == pElems->numElems) && (NULL != pDcpt->pCtrl->mqtt.pfUserPropCb))
-                    {
-                        WDRV_WINC_MQTT_USER_PROP userProp;
-
-                        userProp.pKey     = pElems->elems[1].pData;
-                        userProp.lenKey   = pElems->elems[1].length;
-                        userProp.pValue   = pElems->elems[2].pData;
-                        userProp.lenValue = pElems->elems[2].length;
-
-                        pDcpt->pCtrl->mqtt.pfUserPropCb((DRV_HANDLE)pDcpt, &userProp);
-                    }
-
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_MAX_PACKET_SZ:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER_UNSIGNED, &pDcpt->pCtrl->mqtt.connInfo.properties.maxPacketSize, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.maxPacketSize));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_WILDCARD_SUB_AVAIL:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BOOL, &pDcpt->pCtrl->mqtt.connInfo.properties.wildcardSubsAvailable, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.wildcardSubsAvailable));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_SUBSCRIPTION_ID_AVAIL:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BOOL, &pDcpt->pCtrl->mqtt.connInfo.properties.subIDsAvailable, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.subIDsAvailable));
-                    break;
-                }
-
-                case WINC_CFG_PARAM_ID_MQTTPROP_SHARED_SUBSCRIPTION_AVAIL:
-                {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BOOL, &pDcpt->pCtrl->mqtt.connInfo.properties.sharedSubsAvailable, sizeof(pDcpt->pCtrl->mqtt.connInfo.properties.sharedSubsAvailable));
-                    break;
-                }
-
-                default:
-                {
-                    WDRV_DBG_VERBOSE_PRINT("MQTT AECCB property %d not handled\r\n", propId);
-                    break;
-                }
-            }
-
-            if (true == pubPropUpdated)
-            {
-                pDcpt->pCtrl->mqtt.pubProps.isValid = true;
-            }
-
-            break;
-        }
-
-        default:
-        {
-            WDRV_DBG_VERBOSE_PRINT("MQTT AECCB ID %04x not handled\r\n", pElems->rspId);
-            break;
-        }
-    }
+    mqttProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
 }
 
 //*******************************************************************************
@@ -710,10 +879,12 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTBrokerSet
     }
 
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_BROKER_ADDR, WINC_TYPE_STRING, (uintptr_t)pAddress, addressLen);
+
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_BROKER_PORT, WINC_TYPE_INTEGER, port, 0);
+
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_TLS_CONF, WINC_TYPE_INTEGER, tlsIdx, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -802,10 +973,12 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTClientCfgSet
     }
 
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_CLIENT_ID, WINC_TYPE_STRING, (uintptr_t)pClientId, clientIdLen);
+
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_USERNAME, WINC_TYPE_STRING, (uintptr_t)pUsername, usernameLen);
+
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_PASSWORD, WINC_TYPE_STRING, (uintptr_t)pPassword, passwordLen);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -894,6 +1067,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTLWTSet
         if (pMsgInfo->pProperties->willDelayInterval > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_WILL_DELAY_INTERVAL, WINC_TYPE_INTEGER_UNSIGNED, pMsgInfo->pProperties->willDelayInterval, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_WILL_DELAY_INTERVAL, 1);
         }
     }
@@ -904,7 +1078,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTLWTSet
 
     (void)WINC_CmdMQTTLWT(cmdReqHandle, (uint8_t)pMsgInfo->qos, (uint8_t)pMsgInfo->retain, (const uint8_t*)pTopicName, topicLen, pTopicData, topicDataLen);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1012,24 +1186,28 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTConnect
         if (pConnProp->sessionExpiryInterval > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_SESSION_EXPIRY_INTERVAL, WINC_TYPE_INTEGER_UNSIGNED, pConnProp->sessionExpiryInterval, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_SESSION_EXPIRY_INTERVAL, 1);
         }
 
         if (pConnProp->receiveMax > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_RECEIVE_MAX, WINC_TYPE_INTEGER_UNSIGNED, pConnProp->receiveMax, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_RECEIVE_MAX, 1);
         }
 
         if (pConnProp->maxPacketSize > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_MAX_PACKET_SZ, WINC_TYPE_INTEGER_UNSIGNED, pConnProp->maxPacketSize, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_MAX_PACKET_SZ, 1);
         }
 
         if (pConnProp->topicAliasMax > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_TOPIC_ALIAS_MAX, WINC_TYPE_INTEGER_UNSIGNED, pConnProp->topicAliasMax, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_TOPIC_ALIAS_MAX, 1);
         }
     }
@@ -1043,10 +1221,12 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTConnect
     }
 
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_KEEP_ALIVE, WINC_TYPE_INTEGER, keepAliveTime, 0);
+
     (void)WINC_CmdMQTTC(cmdReqHandle, WINC_CFG_PARAM_ID_MQTT_PROTO_VER, WINC_TYPE_INTEGER, (uintptr_t)protocolVer, 0);
+
     (void)WINC_CmdMQTTCONN(cmdReqHandle, (true == cleanSession) ? 1 : 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1123,7 +1303,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTDisconnect
 
     (void)WINC_CmdMQTTDISCONN(cmdReqHandle, (int32_t)reasonCode);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1235,12 +1415,14 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPublish
         if (pMsgInfo->pProperties->payloadFormatIndicator > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_PAYLOAD_FORMAT_IND, WINC_TYPE_INTEGER_UNSIGNED, pMsgInfo->pProperties->payloadFormatIndicator, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_PAYLOAD_FORMAT_IND, 1);
         }
 
         if (pMsgInfo->pProperties->messageExpiryInterval > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_MSG_EXPIRY_INTERVAL, WINC_TYPE_INTEGER_UNSIGNED, pMsgInfo->pProperties->messageExpiryInterval, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_MSG_EXPIRY_INTERVAL, 1);
         }
 
@@ -1248,12 +1430,14 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPublish
         {
             /* Only include topic alias if the topic name is also being included. */
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_TOPIC_ALIAS, WINC_TYPE_INTEGER_UNSIGNED, pMsgInfo->pProperties->topicAlias, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_TOPIC_ALIAS, 1);
         }
 
         if (0U != pMsgInfo->pProperties->contentType[0])
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, WINC_CONST_MQTT_PROP_ID_CONTENT_TYPE, WINC_TYPE_STRING, (uintptr_t)pMsgInfo->pProperties->contentType, strnlen((const char*)pMsgInfo->pProperties->contentType, WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN));
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_CONTENT_TYPE, 1);
         }
     }
@@ -1279,7 +1463,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPublish
         (void)WINC_CmdMQTTPUB(cmdReqHandle, (true == pMsgInfo->duplicate) ? 1U : 0U, (uint8_t)pMsgInfo->qos, (true == pMsgInfo->retain) ? 1U : 0U, WINC_TYPE_INTEGER_UNSIGNED, pMsgInfo->pProperties->topicAlias, 0, pTopicData, topicDataLen);
     }
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1372,6 +1556,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTSubscribe
         if (pSubProp->subscriptionIdentifer > 0U)
         {
             (void)WINC_CmdMQTTPROPTX(cmdReqHandle, (uint32_t)WINC_CONST_MQTT_PROP_ID_SUBSCRIPTION_ID, WINC_TYPE_INTEGER_UNSIGNED, pSubProp->subscriptionIdentifer, 0);
+
             (void)WINC_CmdMQTTPROPTXS(cmdReqHandle, (int32_t)WINC_CONST_MQTT_PROP_ID_SUBSCRIPTION_ID, 1);
         }
     }
@@ -1386,7 +1571,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTSubscribe
 
     (void)WINC_CmdMQTTSUB(cmdReqHandle, (const uint8_t*)pTopicName, topicLen, (uint8_t)qos);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1449,7 +1634,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUnsubscribe
 
     (void)WINC_CmdMQTTUNSUB(cmdReqHandle, (const uint8_t*)pTopicName, topicLen);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1520,7 +1705,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUserPropSet
 
     (void)WINC_CmdMQTTPROPTXKV(cmdReqHandle, pKey, lenKey, pValue, lenValue);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1863,7 +2048,12 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPubPropContentTypeSet
     }
     else
     {
-        size_t len = strnlen((const char*)pContentType, WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN);
+        size_t len = strnlen((const char*)pContentType, WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN+1U);
+
+        if (len > WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN)
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
 
         (void)memcpy(pPubProp->contentType, pContentType, len);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver Debugging Header File
+  WINC Wireless Driver Debug Header File
 
   Company:
     Microchip Technology Inc.
@@ -8,43 +8,35 @@
     wdrv_winc_debug.h
 
   Summary:
-    WINC wireless driver debug header file.
+    WINC wireless driver debug interface.
 
   Description:
     Provides methods to send formatted debugging information.
  *******************************************************************************/
 
-// DOM-IGNORE-BEGIN
-/*******************************************************************************
-Copyright (C) 2024 released Microchip Technology Inc. All rights reserved.
+/*
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-Microchip licenses to you the right to use, modify, copy and distribute
-Software only when embedded on a Microchip microcontroller or digital signal
-controller that is integrated into your product or third party product
-(pursuant to the sublicense terms in the accompanying license agreement).
-
-You should refer to the license agreement accompanying this Software for
-additional information regarding your rights and obligations.
-
-SOFTWARE AND DOCUMENTATION ARE PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
-EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
-MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
-IN NO EVENT SHALL MICROCHIP OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER
-CONTRACT, NEGLIGENCE, STRICT LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR
-OTHER LEGAL EQUITABLE THEORY ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES
-INCLUDING BUT NOT LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR
-CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, COST OF PROCUREMENT OF
-SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
-(INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
- *******************************************************************************/
-// DOM-IGNORE-END
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
+*/
 
 #ifndef WDRV_WINC_DEBUG_H
 #define WDRV_WINC_DEBUG_H
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
 
@@ -55,41 +47,13 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <stdbool.h>
 #include <inttypes.h>
 
-#include "configuration.h"
-#include "definitions.h"
-
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus // Provide C++ Compatibility
-    extern "C" {
-#endif
-// DOM-IGNORE-END
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Debug Defines
+// *****************************************************************************
+// *****************************************************************************
 
 #ifndef WDRV_WINC_DEVICE_USE_SYS_DEBUG
-// *****************************************************************************
-/*  Debug Callback
-
-  Function:
-    void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...)
-
-  Summary:
-    Defines the debug callback.
-
-  Description:
-    The function callback provides a printf-like prototype.
-
- Parameters:
-    format - Format specifiers in printf style.
-    ...    - Variable number of arguments.
-
- Returns:
-    None.
-
-  Remarks:
-    None.
-*/
-
-typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...);
-
 // *****************************************************************************
 /*  Debug Levels
 
@@ -161,9 +125,6 @@ typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...);
 #endif /* WDRV_WINC_DEBUG_TYPE_TRACE */
 #endif /* WDRV_WINC_DEBUG_TYPE_INFORM */
 #endif /* WDRV_WINC_DEBUG_TYPE_ERROR */
-
-// Reference debug output channel printf-like function.
-extern WDRV_WINC_DEBUG_PRINT_CALLBACK pfWINCDebugPrintCb;
 #else
 #define WDRV_DBG_VERBOSE_PRINT(...)         do { SYS_DEBUG_PRINT(SYS_ERROR_DEBUG, __VA_ARGS__); } while (false)
 #define WDRV_DBG_TRACE_PRINT(...)           do { SYS_DEBUG_PRINT(SYS_ERROR_INFO, __VA_ARGS__); } while (false)
@@ -172,10 +133,42 @@ extern WDRV_WINC_DEBUG_PRINT_CALLBACK pfWINCDebugPrintCb;
 
 #endif
 
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus
-}
-#endif
-// DOM-IGNORE-END
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Debug Data Types
+// *****************************************************************************
+// *****************************************************************************
 
+#ifndef WDRV_WINC_DEVICE_USE_SYS_DEBUG
+// *****************************************************************************
+/*  Debug Callback
+
+  Function:
+    void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...)
+
+  Summary:
+    Defines the debug callback.
+
+  Description:
+    The function callback provides a printf-like prototype.
+
+ Parameters:
+    format - Format specifiers in printf style.
+    ...    - Variable number of arguments.
+
+ Returns:
+    None.
+
+  Remarks:
+    None.
+*/
+
+typedef void (*WDRV_WINC_DEBUG_PRINT_CALLBACK)(const char *format, ...);
+
+#endif
+
+#ifndef WDRV_WINC_DEVICE_USE_SYS_DEBUG
+// Reference debug output channel printf-like function.
+extern WDRV_WINC_DEBUG_PRINT_CALLBACK pfWINCDebugPrintCb;
+#endif
 #endif /* WDRV_WINC_DEBUG_H */

@@ -8,11 +8,12 @@
     wdrv_winc.h
 
   Summary:
-    WINC Wireless Driver Header File
+    WINC wireless driver interface.
 
   Description:
     The WINC device driver provides an interface to manage the WINC device.
-    This file contains the main driver descriptor structure and ancillary functions
+    This file contains the main driver descriptor structure and ancillary
+    functions
     and definitions.
 
     Other API's are provided in other header files, specifically:
@@ -24,6 +25,7 @@
       file        - File operation functionality.
       mqtt        - MQTT client functionality.
       netif       - Network interface functionality.
+      nvm         - NVM access functionality.
       ota         - OTA functionality.
       prov        - Provisioning functionality.
       sntp        - SNTP client functionality.
@@ -38,37 +40,29 @@
       bssctx      - BSS context management.
  *******************************************************************************/
 
-// DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-// DOM-IGNORE-END
 
 #ifndef WDRV_WINC_H
 #define WDRV_WINC_H
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
 
@@ -78,8 +72,8 @@ Microchip or any third party.
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "configuration.h"
-#include "definitions.h"
+#include "wdrv_winc_api.h"
+#include "wdrv_winc_common.h"
 #include "wdrv_winc_bssfind.h"
 #include "wdrv_winc_assoc.h"
 #include "wdrv_winc_file.h"
@@ -114,16 +108,16 @@ Microchip or any third party.
 #ifndef WDRV_WINC_MOD_DISABLE_NVM
 #include "wdrv_winc_nvm.h"
 #endif
-
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus // Provide C++ Compatibility
-    extern "C" {
+#ifndef WDRV_WINC_MOD_DISABLE_PPS
+#include "wdrv_winc_pps.h"
 #endif
-// DOM-IGNORE-END
+#ifndef WDRV_WINC_MOD_DISABLE_SYSLOG
+#include "wdrv_winc_syslog.h"
+#endif
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Data Type Definitions
+// Section: WINC Driver Defines
 // *****************************************************************************
 // *****************************************************************************
 
@@ -138,6 +132,117 @@ Microchip or any third party.
 
 /* Number of file contexts. */
 #define WDRV_WINC_FILE_CTX_NUM          1U
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Data Types
+// *****************************************************************************
+// *****************************************************************************
+
+// *****************************************************************************
+/*  WINC Device Partitions For Firmware Images
+
+  Summary:
+    List of possible WINC device partitions for device firmware images.
+
+  Description:
+    This type defines the possible WINC device partitions that can be used to
+    hold device firmware images.
+
+  Remarks:
+    None.
+
+*/
+
+typedef enum
+{
+    /* The partition which does not contain the currently running firmware image. */
+    WDRV_WINC_PARTITION_ALTERNATE,
+
+    /* The partition which contains the currently running firmware image. */
+    WDRV_WINC_PARTITION_CURRENT,
+
+    /* The low partition. */
+    WDRV_WINC_PARTITION_LOW,
+
+    /* The high partition. */
+    WDRV_WINC_PARTITION_HIGH,
+} WDRV_WINC_PARTITION;
+
+// *****************************************************************************
+/*  WINC Device Firmware Image States
+
+  Summary:
+    List of possible states of WINC device firmware images.
+
+  Description:
+    This type defines the possible states of WINC device firmware images.
+
+  Remarks:
+    None.
+
+*/
+
+typedef enum
+{
+    /* The image state is unknown. */
+    WDRV_WINC_IMAGE_STATE_UNKNOWN = -1,
+
+    /* The image has not yet been activated. */
+    WDRV_WINC_IMAGE_STATE_LATENT = 0,
+
+    /* The image will run on next boot (subject to verification). */
+    WDRV_WINC_IMAGE_STATE_ACTIVATED,
+
+    /* The image is currently running. */
+    WDRV_WINC_IMAGE_STATE_CURRENT,
+
+    /* The image will run on next boot (subject to verification) if the current image is invalidated. */
+    WDRV_WINC_IMAGE_STATE_ROLLBACK,
+} WDRV_WINC_IMAGE_STATE;
+
+// *****************************************************************************
+/*  Anti-rollback Information Status
+
+  Summary:
+    Defines possible statuses of the anti-rollback information.
+
+  Description:
+    A list of possible statuses of the anti-rollback information.
+
+  Remarks:
+    None.
+
+*/
+
+typedef enum
+{
+    /* Anti-rollback information is not valid, requires refresh. */
+    WDRV_WINC_ARB_STATUS_MISSING = -3,
+
+    /* Anti-rollback information is not valid, awaiting response. */
+    WDRV_WINC_ARB_STATUS_PENDING_RESPONSE = -2,
+
+    /* Anti-rollback information is not valid, awaiting status. */
+    WDRV_WINC_ARB_STATUS_PENDING_STATUS = -1,
+
+    /* Anti-rollback information is valid. */
+    WDRV_WINC_ARB_STATUS_VALID = 0,
+
+    /* Anti-rollback information is valid and latest attempt to increase the
+        the WINC device's anti-rollback counter succeeded. */
+    WDRV_WINC_ARB_STATUS_SUCCESS,
+
+    /* Anti-rollback information is valid and latest attempt to increase the
+        the WINC device's anti-rollback counter was ignored because it would
+        not cause an increase. */
+    WDRV_WINC_ARB_STATUS_NO_INCREASE,
+
+    /* Anti-rollback information is valid and latest attempt to increase the
+        the WINC device's anti-rollback counter was rejected because it might
+        invalidate the current WINC device firmware. */
+    WDRV_WINC_ARB_STATUS_REJECTED,
+} WDRV_WINC_ARB_STATUS;
 
 // *****************************************************************************
 /* L2 Data Frame Monitor Callback Function Pointer
@@ -177,6 +282,39 @@ typedef void (*WDRV_WINC_L2DATA_MONITOR_CALLBACK)
     WDRV_WINC_NETIF_IDX ifIdx,
     const uint8_t *const pL2DataPtr,
     size_t l2DataLen
+);
+
+// *****************************************************************************
+/* Device Information Callback Function Pointer
+
+  Function:
+    void (*WDRV_WINC_INFO_DEVICE_CALLBACK)
+    (
+        DRV_HANDLE handle
+    )
+
+  Summary:
+    Pointer to a callback function for when device information is refreshed.
+
+  Description:
+    This defines a function pointer for a callback to receive notification
+    that the device information has been refreshed.
+
+  Parameters:
+    handle  - Client handle obtained by a call to WDRV_WINC_Open.
+
+  Returns:
+    None.
+
+  Remarks:
+    The refreshed device information can be obtained by calling
+    WDRV_WINC_InfoDeviceGet.
+
+*/
+
+typedef void (*WDRV_WINC_INFO_DEVICE_CALLBACK)
+(
+    DRV_HANDLE handle
 );
 
 // *****************************************************************************
@@ -257,8 +395,73 @@ typedef struct
 
         /* Source address. */
         uint32_t srcAddr;
+
+        /* Image state. */
+        WDRV_WINC_IMAGE_STATE imgState;
     } image[WINC_CFG_PARAM_NUM_DI_IMAGE_INFO];
 } WDRV_WINC_DEVICE_INFO;
+
+// *****************************************************************************
+/*  Anti-rollback Information
+
+  Summary:
+    Defines the device anti-rollback information.
+
+  Description:
+    This data type defines the WINC device's anti-rollback counter value and
+    the current firmware's security version.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Status of the information in this structure. */
+    WDRV_WINC_ARB_STATUS status;
+
+    /* WINC device anti-rollback counter value. */
+    uint8_t arb;
+
+    /* WINC firmware security version. */
+    uint8_t fwSecurityVersion;
+} WDRV_WINC_ANTIROLLBACK_INFO;
+
+// *****************************************************************************
+/* Anti-rollback Information Callback Function Pointer
+
+  Function:
+    void (*WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        const WDRV_WINC_ANTIROLLBACK_INFO *const pArbInfo
+    )
+
+  Summary:
+    Pointer to a callback function for providing anti-rollback information.
+
+  Description:
+    This defines a function pointer for a callback to receive anti-rollback
+    information.
+
+  Parameters:
+    handle   - Client handle obtained by a call to WDRV_WINC_Open.
+    pArbInfo - Pointer to anti-rollback information, or NULL if the information
+                is unavailable.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+typedef void (*WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK)
+(
+    DRV_HANDLE handle,
+    const WDRV_WINC_ANTIROLLBACK_INFO *const pArbInfo
+);
 
 // *****************************************************************************
 /*  Driver Version Information
@@ -332,11 +535,35 @@ typedef struct
     /* Delay timer handle. */
     SYS_TIME_HANDLE delayTimer;
 
+    /* Flag indicating if delay timer is active. */
+    bool delayTimerRunning;
+
     /* Firmware version information. */
     WDRV_WINC_FIRMWARE_VERSION_INFO fwVersion;
 
+    /* Partition of current firmware. */
+    WDRV_WINC_PARTITION partition;
+
+    /* Flag indicating whether a partition refresh is in progress. */
+    bool partitionBusy;
+
     /* Device information. */
     WDRV_WINC_DEVICE_INFO devInfo;
+
+    /* Flag indicating whether a devInfo refresh is in progress. */
+    bool devInfoBusy;
+
+    /* Device information callback. */
+    WDRV_WINC_INFO_DEVICE_CALLBACK pfInfoDeviceCB;
+
+    /* Anti-rollback information. */
+    WDRV_WINC_ANTIROLLBACK_INFO arbInfo;
+
+    /* Anti-rollback information callback. */
+    WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfInfoArbCB;
+
+    /* Flag indicating if the latest ARB command was a set attempt. */
+    bool arbIsSet;
 
     /* Flag indicating if this instance is operating as s station or soft-AP. */
     bool isAP;
@@ -349,9 +576,6 @@ typedef struct
 
     /* Current index of the BSS scan results. */
     uint8_t scanIndex;
-
-    /* Flag indicating if the scan parameters have been modified. */
-    bool scanParamDefault;
 
     /* Number of available reg-domains. */
     uint8_t availRegDomNum;
@@ -373,6 +597,9 @@ typedef struct
 
     /* Time spent on each passive channel listening for beacons. */
     uint16_t scanPassiveListenTime;
+
+    /* Scan match mode */
+    WDRV_WINC_SCAN_MATCH_MODE scanMatchMode;
 
     /* Main event semaphore. */
     OSAL_SEM_HANDLE_TYPE drvEventSemaphore;
@@ -434,6 +661,7 @@ typedef struct
         struct
         {
             uint8_t confValid : 1;
+            uint8_t reqInProgress : 1;
             uint8_t enabled : 1;
             uint8_t use2Wire : 1;
             uint8_t wlanRxHigherThanBt : 1;
@@ -495,7 +723,10 @@ typedef struct
 
     /* Callback to use for retrieving association RSSI information from the WINC. */
     WDRV_WINC_ASSOC_RSSI_CALLBACK pfAssociationRSSICB;
-
+#ifndef WDRV_WINC_MOD_DISABLE_SYSLOG
+    /* Callback to use for system logging. */
+    WDRV_WINC_SYSLOG_CALLBACK pfSyslogCB;
+#endif
 #ifndef WDRV_WINC_MOD_DISABLE_OTA
     /* State of OTA operation. */
     WDRV_WINC_OTA_OPERATION_STATE otaState;
@@ -503,6 +734,16 @@ typedef struct
 #ifndef WDRV_WINC_MOD_DISABLE_NVM
     /* State of NVM operation. */
     WDRV_WINC_NVM_OPERATION_STATE nvmState;
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_PPS
+    /* PPS state */
+    WDRV_WINC_PPS_STATE ppsState;
+
+    /* XDS state */
+    WDRV_WINC_XDS_STATE xdsState;
+
+    /* Callback for PPS state */
+    WDRV_WINC_PPS_EVENT_HANDLER pfPPSEventCB;
 #endif
 #ifndef WDRV_WINC_DISABLE_L3_SUPPORT
     /* Callback to use for ICHO echo responses. */
@@ -532,8 +773,10 @@ typedef struct
     /* Callback for provisioning service attach events */
     WDRV_WINC_PROV_ATTACH_CALLBACK pfProvAttachCB;
 #endif
+    /* STA mode network interface index. */
     WDRV_WINC_NETIF_IDX netIfSTA;
 
+    /* AP mode network interface index. */
     WDRV_WINC_NETIF_IDX netIfAP;
 } WDRV_WINC_CTRLDCPT;
 
@@ -563,11 +806,23 @@ typedef struct
         a call to WDRV_WINC_Open. */
     bool isOpen;
 
+    /* System event callback. */
     WDRV_WINC_SYSTEM_EVENT_CALLBACK pfEventCallback;
 
     /* Pointer to instance specific descriptor (Control). */
     WDRV_WINC_CTRLDCPT  *pCtrl;
 } WDRV_WINC_DCPT;
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Routines
+// *****************************************************************************
+// *****************************************************************************
+
+#ifdef __cplusplus // Provide C++ Compatibility
+extern "C"
+{
+#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -639,7 +894,7 @@ void WDRV_WINC_DebugRegisterCallback(WDRV_WINC_DEBUG_PRINT_CALLBACK const pfDebu
                 of the driver
 
   Returns:
-    - Valid handle - if the open function succeeded
+    - Valid handle       - if the open function succeeded
     - DRV_HANDLE_INVALID - if an error occurs
 
   Remarks:
@@ -876,7 +1131,7 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDriverVersionGet
 
   Parameters:
     handle           - Client handle obtained by a call to WDRV_WINC_Open.
-    active           - Flag indicating if the active of inactive image is queried.
+    active           - Flag indicating if the active or inactive image is queried.
     pFirmwareVersion - Pointer to structure to receive version information.
 
   Returns:
@@ -886,7 +1141,8 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDriverVersionGet
     WDRV_WINC_STATUS_RETRY_REQUEST  - Version information not available, try again.
 
   Remarks:
-    None.
+    This function only supports querying the active image; active parameter
+    must be set to true.
 
 */
 
@@ -895,6 +1151,58 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceFirmwareVersionGet
     DRV_HANDLE handle,
     bool active,
     WDRV_WINC_FIRMWARE_VERSION_INFO *const pFirmwareVersion
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_DeviceFirmwareImagePrepare
+    (
+        DRV_HANDLE handle,
+        uint8_t *const pImage,
+        size_t imageLength,
+        WDRV_WINC_PARTITION partition,
+        WDRV_WINC_IMAGE_STATE imageState
+    )
+
+  Summary:
+    Prepares a WINC device firmware image for use.
+
+  Description:
+    Modifies the Firmware Image Source Address and Sequence Number fields of a
+    WINC device firmware image.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle      - Client handle obtained by a call to WDRV_WINC_Open.
+    pImage      - Pointer to the image to be modified.
+    imageLength - Length of the image to be modified.
+    partition   - The device partition into which the image is to be programmed.
+    imageState  - The desired state of the image after programming.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The image has been modified.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR  - A request to the WINC was rejected.
+    WDRV_WINC_STATUS_RETRY_REQUEST  - Functionality not available, try again.
+
+  Remarks:
+    The only values of imageState parameter supported by this function are
+    WDRV_WINC_IMAGE_STATE_LATENT and WDRV_WINC_IMAGE_STATE_ACTIVATED.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_DeviceFirmwareImagePrepare
+(
+    DRV_HANDLE handle,
+    uint8_t *const pImage,
+    size_t imageLength,
+    WDRV_WINC_PARTITION partition,
+    WDRV_WINC_IMAGE_STATE imageState
 );
 
 //*******************************************************************************
@@ -924,6 +1232,7 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceFirmwareVersionGet
     WDRV_WINC_STATUS_OK             - The information has been returned.
     WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR  - A request to the WINC was rejected.
     WDRV_WINC_STATUS_RETRY_REQUEST  - Version information not available, try again.
 
   Remarks:
@@ -937,6 +1246,213 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceGet
     WDRV_WINC_DEVICE_INFO *const pDeviceInfo
 );
 
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoDeviceRefresh
+    (
+        DRV_HANDLE handle
+    )
+
+  Summary:
+    Refreshes WINC device information.
+
+  Description:
+    Triggers a refresh of WINC device information.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle - Client handle obtained by a call to WDRV_WINC_Open.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoDeviceRefresh
+(
+    DRV_HANDLE handle
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoDeviceCallbackSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_INFO_DEVICE_CALLBACK pfInfoDeviceCB
+    )
+
+  Summary:
+    Set a device information refresh callback.
+
+  Description:
+    Sets a callback to be used when device information is refreshed.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle         - Client handle obtained by a call to WDRV_WINC_Open.
+    pfInfoDeviceCB - Pointer to callback to set.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoDeviceCallbackSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_INFO_DEVICE_CALLBACK pfInfoDeviceCB
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoAntiRollbackGet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_ANTIROLLBACK_INFO *const pArbInfo,
+        WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+    )
+
+  Summary:
+    Provides WINC device anti-rollback information.
+
+  Description:
+    Provides the WINC device's anti-rollback counter value and the current
+    firmware's security version.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle   - Client handle obtained by a call to WDRV_WINC_Open.
+    pArbInfo - Pointer to structure to receive anti-rollback information.
+    pfArbCB  - Pointer to callback to be called when anti-rollback information is available.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been provided.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_RETRY_REQUEST  - The information is not available, try again.
+
+  Remarks:
+    The caller may choose to receive the information directly or via callback.
+    Either pArbInfo or pfArbCB may be set to NULL accordingly.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoAntiRollbackGet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_ANTIROLLBACK_INFO *const pArbInfo,
+    WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AntiRollbackSet
+    (
+        DRV_HANDLE handle,
+        uint8_t value,
+        WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+    )
+
+  Summary:
+    Increases the value in the WINC device's anti-rollback counter.
+
+  Description:
+    Sets the WINC device's anti-rollback counter to a higher value.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle  - Client handle obtained by a call to WDRV_WINC_Open.
+    value   - Value to which to increase the WINC device's anti-rollback counter.
+                A value of WINC_CMDARB_VALUE_IGNORE_VAL triggers a refresh of
+                the anti-rollback information without increasing the WINC
+                device's anti-rollback counter.
+    pfArbCB - Pointer to callback to be called when anti-rollback information is available.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The request has been sent to the WINC.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR  - The request to the WINC was rejected.
+    WDRV_WINC_STATUS_RETRY_REQUEST  - The request could not be processed, try again.
+
+  Remarks:
+    pfArbCB is optional and may be set to NULL.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AntiRollbackSet
+(
+    DRV_HANDLE handle,
+    uint8_t value,
+    WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoOpChanGet
+    (
+        DRV_HANDLE handle,
+        uint8_t *const pMACAddress
+    )
+
+  Summary:
+    Retrieves the operating channel of the PIC32MZW.
+
+  Description:
+    Retrieves the current operating channel.
+
+  Precondition:
+    WDRV_WINC_Initialize should have been called.
+    WDRV_WINC_Open should have been called to obtain a valid handle.
+
+  Parameters:
+    handle  - Client handle obtained by a call to WDRV_WINC_Open.
+    pOpChan - Pointer to variable to receive the operating channel.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The information has been returned.
+    WDRV_WINC_STATUS_NOT_OPEN       - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+    WDRV_WINC_STATUS_NOT_CONNECTED  - No current connection.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoOpChanGet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_CHANNEL_ID *const pOpChan
+);
 
 // *****************************************************************************
 // *****************************************************************************
@@ -1123,7 +1639,7 @@ WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit
   Function:
     bool WDRV_WINC_DevTransmitCmdReq
     (
-        WINC_DEVICE_HANDLE devHandle,
+        WDRV_WINC_CTRLDCPT *pCtrl,
         WINC_CMD_REQ_HANDLE cmdReqHandle
     )
 
@@ -1137,7 +1653,7 @@ WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit
     WDRV_WINC_CmdReqInit must have been called to create a command request.
 
   Parameters:
-    devHandle    - WINCS02 device handle.
+    pCtrl        - Pointer to WINCS02 control descriptor.
     cmdReqHandle - Command request handle.
 
   Returns:
@@ -1150,7 +1666,7 @@ WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit
 
 bool WDRV_WINC_DevTransmitCmdReq
 (
-    WINC_DEVICE_HANDLE devHandle,
+    WDRV_WINC_CTRLDCPT *pCtrl,
     WINC_CMD_REQ_HANDLE cmdReqHandle
 );
 
@@ -1181,10 +1697,7 @@ bool WDRV_WINC_DevTransmitCmdReq
 
 void WDRV_WINC_DevDiscardCmdReq(WINC_CMD_REQ_HANDLE cmdReqHandle);
 
-// DOM-IGNORE-BEGIN
 #ifdef __cplusplus
 }
 #endif
-// DOM-IGNORE-END
-
 #endif /* WDRV_WINC_H */

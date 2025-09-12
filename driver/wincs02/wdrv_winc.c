@@ -1,40 +1,32 @@
 /*******************************************************************************
-  WINC Wireless Driver
+  WINC Wireless Driver Source File
 
   File Name:
     wdrv_winc.c
 
   Summary:
-    WINC wireless driver.
+    WINC wireless driver implementation.
 
   Description:
     WINC wireless driver.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
@@ -49,7 +41,6 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_eint.h"
 #include "wdrv_winc_spi.h"
-#include "nc_driver/winc_debug.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -57,9 +48,20 @@ Microchip or any third party.
 // *****************************************************************************
 // *****************************************************************************
 
+/* Defines for modifying Firmware Image Source Address field of image. */
+#define WDRV_WINC_IMAGE_ADR_OFFSET  20U
+#define WDRV_WINC_IMAGE_ADR_LENGTH  4U
+#define WDRV_WINC_IMAGE_ADR_LOW     0x60000000U
+#define WDRV_WINC_IMAGE_ADR_HIGH    0x600F0000U
+/* Defines for modifying Sequence Number field of image. */
+#define WDRV_WINC_IMAGE_SEQ_OFFSET  0U
+#define WDRV_WINC_IMAGE_SEQ_LENGTH  4U
+#define WDRV_WINC_IMAGE_SEQ_LATENT  0xFFFFFFFFU
+#define WDRV_WINC_IMAGE_SEQ_MAX     0xFFFFFFE0U
+
 // *****************************************************************************
 // *****************************************************************************
-// Section: Global Data
+// Section: WINC Driver Global Data
 // *****************************************************************************
 // *****************************************************************************
 
@@ -67,6 +69,12 @@ Microchip or any third party.
 #ifndef WDRV_WINC_DEVICE_USE_SYS_DEBUG
 WDRV_WINC_DEBUG_PRINT_CALLBACK pfWINCDebugPrintCb;
 #endif
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Local Data
+// *****************************************************************************
+// *****************************************************************************
 
 /* This is the driver instance structure. */
 static WDRV_WINC_DCPT wincDescriptor[2] =
@@ -113,6 +121,12 @@ static const WINC_DEV_AEC_RSP_CB wincAecCallbackTable[] =
 #ifndef WDRV_WINC_MOD_DISABLE_NVM
     WDRV_WINC_NVMProcessAEC,
 #endif
+#ifndef WDRV_WINC_MOD_DISABLE_PPS
+    WDRV_WINC_PPSProcessAEC,
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_SYSLOG
+    WDRV_WINC_SYSLOGProcessAEC,
+#endif
 };
 
 // *****************************************************************************
@@ -126,15 +140,20 @@ static WDRV_WINC_CTRLDCPT wincCtrlDescriptor;
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver Callback Implementation
+// Section: WINC Driver Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
 
-// *****************************************************************************
-// *****************************************************************************
-// Section: WINC Driver System Implementation
-// *****************************************************************************
-// *****************************************************************************
+static void wincRegDomainCallback
+(
+    DRV_HANDLE handle,
+    uint8_t index,
+    uint8_t ofTotal,
+    bool isCurrent,
+    const WDRV_WINC_REGDOMAIN_INFO *const pRegDomInfo
+)
+{
+}
 
 //*******************************************************************************
 /*
@@ -225,7 +244,7 @@ static void wincSystemEvent
     WDRV_WINC_Initialize must have been called before calling this function.
 
   Parameters:
-    handle - WINC device handle.
+    pCtrl - Pointer to WINCS02 control descriptor.
 
   Returns:
     None.
@@ -244,6 +263,14 @@ static void wincResetDeviceState(WDRV_WINC_CTRLDCPT *pCtrl)
         return;
     }
 
+    pCtrl->partition            = WDRV_WINC_PARTITION_CURRENT;
+    pCtrl->partitionBusy        = false;
+    pCtrl->devInfo.isValid      = false;
+    pCtrl->devInfoBusy          = false;
+    pCtrl->pfInfoDeviceCB       = NULL;
+    pCtrl->arbInfo.status       = WDRV_WINC_ARB_STATUS_MISSING;
+    pCtrl->pfInfoArbCB          = NULL;
+    pCtrl->arbIsSet             = false;
     pCtrl->isAP                 = false;
     pCtrl->connectedState       = WDRV_WINC_CONN_STATE_DISCONNECTED;
     pCtrl->scanInProgress       = false;
@@ -306,7 +333,223 @@ static void wincResetDeviceState(WDRV_WINC_CTRLDCPT *pCtrl)
 //*******************************************************************************
 /*
   Function:
-    static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+    static void wincProcessStatus
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t cmdID,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        uint16_t statusCode
+    )
+
+  Summary:
+    Process command status responses.
+
+  Description:
+    Processes command status responses received via WINC_DEV_CMDREQ_EVENT_CMD_STATUS events.
+
+  Precondition:
+    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
+
+  Parameters:
+    pDcpt      - Pointer to device descriptor.
+    cmdID      - Command ID.
+    pSrcCmd    - Pointer to source command.
+    statusCode - Status code.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void wincProcessStatus
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t cmdID,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    uint16_t statusCode
+)
+{
+    WDRV_WINC_CTRLDCPT *pCtrl;
+
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pSrcCmd))
+    {
+        return;
+    }
+
+    pCtrl = pDcpt->pCtrl;
+
+    switch (cmdID)
+    {
+        case WINC_CMD_ID_CFG:
+        {
+            if (WDRV_WINC_STATUS_OK == (WDRV_WINC_STATUS)statusCode)
+            {
+                pCtrl->fwVersion.isValid = true;
+            }
+            break;
+        }
+
+        case WINC_CMD_ID_DFUADR:
+        {
+            pDcpt->pCtrl->partitionBusy = false;
+            break;
+        }
+
+        case WINC_CMD_ID_DI:
+        {
+            if (WDRV_WINC_STATUS_OK == (WDRV_WINC_STATUS)statusCode)
+            {
+                pCtrl->devInfo.isValid = true;
+            }
+
+            pDcpt->pCtrl->devInfoBusy = false;
+
+            if (NULL != pCtrl->pfInfoDeviceCB)
+            {
+                pCtrl->pfInfoDeviceCB((DRV_HANDLE)pDcpt);
+            }
+            break;
+        }
+
+        case WINC_CMD_ID_ARB:
+        {
+            if (WDRV_WINC_ARB_STATUS_PENDING_STATUS == pCtrl->arbInfo.status)
+            {
+                if (true == pCtrl->arbIsSet)
+                {
+                    switch (statusCode)
+                    {
+                        case WDRV_WINC_STATUS_OK:
+                        {
+                            pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_SUCCESS;
+                            break;
+                        }
+
+                        case WINC_STATUS_ARB_NO_INCREASE:
+                        {
+                            pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_NO_INCREASE;
+                            break;
+                        }
+
+                        case WINC_STATUS_ARB_REJECTED:
+                        {
+                            pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_REJECTED;
+                            break;
+                        }
+
+                        default:
+                        {
+                            pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_VALID;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_VALID;
+                }
+            }
+            else
+            {
+                pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_MISSING;
+            }
+
+            if (NULL != pCtrl->pfInfoArbCB)
+            {
+                pCtrl->pfInfoArbCB((DRV_HANDLE)pDcpt,
+                                   (pCtrl->arbInfo.status < 0) ? NULL :
+                                   (const WDRV_WINC_ANTIROLLBACK_INFO *const)&pDcpt->pCtrl->arbInfo);
+                pCtrl->pfInfoArbCB = NULL;
+            }
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void wincNotifyDisconn(WDRV_WINC_DCPT *const pDcpt)
+
+  Summary:
+    Notify disconnected states related to WINC device.
+
+  Description:
+    Notify disconnected states related to WINC device.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called before calling this function.
+
+  Parameters:
+    pDcpt - Pointer to WINC device descriptor.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+static void wincNotifyDisconn(WDRV_WINC_DCPT *const pDcpt)
+{
+#ifdef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
+    (void)WINC_SockInit(pDcpt->pCtrl->wincDevHandle, NULL);
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_MQTT
+    if (NULL != pDcpt->pCtrl->mqtt.pfConnCB)
+    {
+        if (WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED != pDcpt->pCtrl->mqtt.connState)
+        {
+            pDcpt->pCtrl->mqtt.pfConnCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.connCbCtx, WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED, &pDcpt->pCtrl->mqtt.connInfo);
+        }
+    }
+#endif
+
+    if (NULL != pDcpt->pCtrl->pfConnectNotifyCB)
+    {
+        if (true == pDcpt->pCtrl->isAP)
+        {
+            unsigned int i;
+
+            for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
+            {
+                if ((DRV_HANDLE_INVALID != pDcpt->pCtrl->assocInfoAP[i].handle) &&
+                        (true == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid))
+                {
+                    pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pDcpt->pCtrl->assocInfoAP[i], WDRV_WINC_CONN_STATE_DISCONNECTED);
+                }
+            }
+        }
+        else
+        {
+            if (WDRV_WINC_CONN_STATE_DISCONNECTED != pDcpt->pCtrl->connectedState)
+            {
+                pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pDcpt->pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_DISCONNECTED);
+            }
+        }
+    }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void wincProcessCmdRsp
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t rspId,
+        const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
 
   Summary:
     Process command responses.
@@ -318,8 +561,11 @@ static void wincResetDeviceState(WDRV_WINC_CTRLDCPT *pCtrl)
     WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
 
   Parameters:
-    handle - WINC device handle.
-    pElems - Pointer to command response elements.
+    pDcpt    - Pointer to device descriptor.
+    rspId    - Response command ID.
+    pSrcCmd  - Pointer to source command.
+    numElems - Number of elements in response.
+    pElems   - Pointer to response elements.
 
   Returns:
     None.
@@ -329,9 +575,15 @@ static void wincResetDeviceState(WDRV_WINC_CTRLDCPT *pCtrl)
 
 */
 
-static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+static void wincProcessCmdRsp
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t rspId,
+    const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
 {
-    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT *)handle;
     WDRV_WINC_CTRLDCPT *pCtrl;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
@@ -341,18 +593,18 @@ static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
 
     pCtrl = pDcpt->pCtrl;
 
-    switch (pElems->rspId)
+    switch (rspId)
     {
         case WINC_CMD_ID_CFG:
         {
             uint8_t id;
 
-            if (2U != pElems->numElems)
+            if (2U != numElems)
             {
                 break;
             }
 
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
 
             switch (id)
             {
@@ -360,7 +612,7 @@ static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
                 {
                     uint32_t majMinVer;
 
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &majMinVer, sizeof(majMinVer));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &majMinVer, sizeof(majMinVer));
 
                     pCtrl->fwVersion.version.major = (uint16_t)(majMinVer >> 16);
                     pCtrl->fwVersion.version.minor = (uint16_t)(majMinVer & 0xffffU);
@@ -369,19 +621,19 @@ static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
 
                 case WINC_CFG_PARAM_ID_CFG_PATCH:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BYTE_ARRAY, &pCtrl->fwVersion.version.patch, sizeof(pCtrl->fwVersion.version.patch));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BYTE_ARRAY, &pCtrl->fwVersion.version.patch, sizeof(pCtrl->fwVersion.version.patch));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_CFG_BUILD_HASH:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BYTE_ARRAY, &pCtrl->fwVersion.build.hash, sizeof(pCtrl->fwVersion.build.hash));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BYTE_ARRAY, &pCtrl->fwVersion.build.hash, sizeof(pCtrl->fwVersion.build.hash));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_CFG_BUILD_TIME:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_BYTE_ARRAY, &pCtrl->fwVersion.build.timeUTC, sizeof(pCtrl->fwVersion.build.timeUTC));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BYTE_ARRAY, &pCtrl->fwVersion.build.timeUTC, sizeof(pCtrl->fwVersion.build.timeUTC));
                     break;
                 }
 
@@ -395,43 +647,123 @@ static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
             break;
         }
 
-        case WINC_CMD_ID_DI:
+        case WINC_CMD_ID_DFUADR:
         {
-            WINC_DEV_FRACT_INT_TYPE id;
+            uint32_t adr;
 
-            if (pElems->numElems < 2U)
+            if (numElems < 3U)
             {
                 break;
             }
 
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
+            (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_INTEGER, &adr, sizeof(adr));
+
+            switch (adr)
+            {
+                case WDRV_WINC_IMAGE_ADR_LOW:
+                {
+                    pCtrl->partition = WDRV_WINC_PARTITION_LOW;
+                    break;
+                }
+
+                case WDRV_WINC_IMAGE_ADR_HIGH:
+                {
+                    pCtrl->partition = WDRV_WINC_PARTITION_HIGH;
+                    break;
+                }
+
+                default:
+                {
+                    /* Use "current" to indicate that the current partition is unknown. */
+                    pCtrl->partition = WDRV_WINC_PARTITION_CURRENT;
+                    break;
+                }
+            }
+
+            break;
+        }
+
+        case WINC_CMD_ID_DI:
+        {
+            WINC_DEV_FRACT_INT_TYPE id;
+
+            if (numElems < 2U)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER_FRAC, &id, sizeof(id));
 
             switch (id.i)
             {
                 case WINC_CFG_PARAM_ID_DI_DEVICE_ID:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->devInfo.id, sizeof(pCtrl->devInfo.id));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->devInfo.id, sizeof(pCtrl->devInfo.id));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_DI_NUM_IMAGES:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->devInfo.numImages, sizeof(pCtrl->devInfo.numImages));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->devInfo.numImages, sizeof(pCtrl->devInfo.numImages));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_DI_IMAGE_INFO:
                 {
-                    if (pElems->numElems < 4U)
+                    if (numElems < 4U)
                     {
                         return;
                     }
 
                     if (id.f < (int16_t)WINC_CFG_PARAM_NUM_DI_IMAGE_INFO)
                     {
-                        (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->devInfo.image[id.f].seqNum, sizeof(pCtrl->devInfo.image[id.f].seqNum));
-                        (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER, &pCtrl->devInfo.image[id.f].version, sizeof(pCtrl->devInfo.image[id.f].version));
-                        (void)WINC_CmdReadParamElem(&pElems->elems[3], WINC_TYPE_INTEGER, &pCtrl->devInfo.image[id.f].srcAddr, sizeof(pCtrl->devInfo.image[id.f].srcAddr));
+                        (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->devInfo.image[id.f].seqNum, sizeof(pCtrl->devInfo.image[id.f].seqNum));
+                        (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_INTEGER, &pCtrl->devInfo.image[id.f].version, sizeof(pCtrl->devInfo.image[id.f].version));
+                        (void)WINC_CmdReadParamElem(&pElems[3], WINC_TYPE_INTEGER, &pCtrl->devInfo.image[id.f].srcAddr, sizeof(pCtrl->devInfo.image[id.f].srcAddr));
+
+                        if (numElems < 5U)
+                        {
+                            pCtrl->devInfo.image[id.f].imgState = WDRV_WINC_IMAGE_STATE_UNKNOWN;
+                        }
+                        else
+                        {
+                            uint8_t imgState;
+
+                            (void)WINC_CmdReadParamElem(&pElems[4], WINC_TYPE_INTEGER, &imgState, sizeof(imgState));
+
+                            switch (imgState)
+                            {
+                                case WINC_CONST_DI_IMG_STATE_LATENT:
+                                {
+                                    pCtrl->devInfo.image[id.f].imgState = WDRV_WINC_IMAGE_STATE_LATENT;
+                                    break;
+                                }
+
+                                case WINC_CONST_DI_IMG_STATE_ACTIVATED:
+                                {
+                                    pCtrl->devInfo.image[id.f].imgState = WDRV_WINC_IMAGE_STATE_ACTIVATED;
+                                    break;
+                                }
+
+                                case WINC_CONST_DI_IMG_STATE_CURRENT:
+                                {
+                                    pCtrl->devInfo.image[id.f].imgState = WDRV_WINC_IMAGE_STATE_CURRENT;
+                                    break;
+                                }
+
+                                case WINC_CONST_DI_IMG_STATE_ROLLBACK:
+                                {
+                                    pCtrl->devInfo.image[id.f].imgState = WDRV_WINC_IMAGE_STATE_ROLLBACK;
+                                    break;
+                                }
+
+                                default:
+                                {
+                                    pCtrl->devInfo.image[id.f].imgState = WDRV_WINC_IMAGE_STATE_UNKNOWN;
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                     break;
@@ -447,35 +779,50 @@ static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
             break;
         }
 
+        case WINC_CMD_ID_ARB:
+        {
+            if (numElems < 2U)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &pCtrl->arbInfo.arb, sizeof(pCtrl->arbInfo.arb));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->arbInfo.fwSecurityVersion, sizeof(pCtrl->arbInfo.fwSecurityVersion));
+
+            pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_PENDING_STATUS;
+
+            break;
+        }
+
 #ifndef WDRV_WINC_MOD_DISABLE_NVM
         case WINC_CMD_ID_NVMC:
         {
             uint8_t id;
 
-            if (2U != pElems->numElems)
+            if (2U != numElems)
             {
                 break;
             }
 
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
 
             switch (id)
             {
                 case WINC_CFG_PARAM_ID_NVM_START_OFFSET:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->nvmState.geom.address.start, sizeof(pCtrl->nvmState.geom.address.start));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->nvmState.geom.address.start, sizeof(pCtrl->nvmState.geom.address.start));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_NVM_NUM_SECTORS:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->nvmState.geom.sector.number, sizeof(pCtrl->nvmState.geom.sector.number));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->nvmState.geom.sector.number, sizeof(pCtrl->nvmState.geom.sector.number));
                     break;
                 }
 
                 case WINC_CFG_PARAM_ID_NVM_SECTOR_SZ:
                 {
-                    (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &pCtrl->nvmState.geom.sector.size, sizeof(pCtrl->nvmState.geom.sector.size));
+                    (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pCtrl->nvmState.geom.sector.size, sizeof(pCtrl->nvmState.geom.sector.size));
                     break;
                 }
 
@@ -492,7 +839,7 @@ static void wincProcessCmdRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("WINC CmdRspCB ID %04x not handled\r\n", pElems->rspId);
+            /* Do nothing. */
             break;
         }
     }
@@ -604,33 +951,7 @@ static void wincCmdRspCallbackHandler
 
             if (NULL != pStatusInfo)
             {
-                switch (pStatusInfo->rspCmdId)
-                {
-                    case WINC_CMD_ID_CFG:
-                    {
-                        if (WDRV_WINC_STATUS_OK == (WDRV_WINC_STATUS)pStatusInfo->status)
-                        {
-                            pDcpt->pCtrl->fwVersion.isValid = true;
-                        }
-
-                        break;
-                    }
-
-                    case WINC_CMD_ID_DI:
-                    {
-                        if (WDRV_WINC_STATUS_OK == (WDRV_WINC_STATUS)pStatusInfo->status)
-                        {
-                            pDcpt->pCtrl->devInfo.isValid = true;
-                        }
-                        break;
-                    }
-
-                    default:
-                    {
-                        WDRV_DBG_VERBOSE_PRINT("WINC CmdRspCB %08x ID %04x status %04x not handled\r\n", cmdReqHandle, pStatusInfo->rspCmdId, pStatusInfo->status);
-                        break;
-                    }
-                }
+                wincProcessStatus(pDcpt, pStatusInfo->rspCmdId, &pStatusInfo->srcCmd, pStatusInfo->status);
             }
 
             break;
@@ -642,14 +963,14 @@ static void wincCmdRspCallbackHandler
 
             if (NULL != pRspElems)
             {
-                wincProcessCmdRsp((DRV_HANDLE)pDcpt, pRspElems);
+                wincProcessCmdRsp(pDcpt, pRspElems->rspId, &pRspElems->srcCmd, pRspElems->numElems, pRspElems->elems);
             }
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("WINC CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
@@ -708,6 +1029,18 @@ static void wincProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, cons
     }
 }
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Implementation
+// *****************************************************************************
+// *****************************************************************************
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver System Implementation
+// *****************************************************************************
+// *****************************************************************************
+
 //*******************************************************************************
 /*
   Function:
@@ -753,12 +1086,6 @@ SYS_MODULE_OBJ WDRV_WINC_Initialize
 
         pDcpt->pfEventCallback = NULL;
 
-#ifndef WDRV_WINC_DEVICE_USE_SYS_DEBUG
-        pfWINCDebugPrintCb = NULL;
-#endif
-
-        (void)OSAL_SEM_Create(&wincCtrlDescriptor.drvEventSemaphore, OSAL_SEM_TYPE_COUNTING, 10, 0);
-
         wincCtrlDescriptor.extSysStat = (WDRV_WINC_SYS_STATUS)SYS_STATUS_UNINITIALIZED;
 
         if (NULL == pInitData)
@@ -766,6 +1093,12 @@ SYS_MODULE_OBJ WDRV_WINC_Initialize
             pDcpt->sysStat = SYS_STATUS_ERROR;
             return SYS_MODULE_OBJ_INVALID;
         }
+
+#ifndef WDRV_WINC_DEVICE_USE_SYS_DEBUG
+        pfWINCDebugPrintCb = NULL;
+#endif
+
+        (void)OSAL_SEM_Create(&wincCtrlDescriptor.drvEventSemaphore, OSAL_SEM_TYPE_COUNTING, 10, 0);
 
         WDRV_WINC_SPIInitialize(pInitData->pSPICfg);
 
@@ -816,6 +1149,7 @@ SYS_MODULE_OBJ WDRV_WINC_Initialize
         (void)WINC_DevAECCallbackRegister(wincCtrlDescriptor.wincDevHandle, wincProcessAEC, (uintptr_t)pDcpt);
 
         wincCtrlDescriptor.delayTimer = SYS_TIME_HANDLE_INVALID;
+        wincCtrlDescriptor.delayTimerRunning = false;
 
         wincCtrlDescriptor.pfL2DataMonitorCB = NULL;
 #ifndef WDRV_WINC_MOD_DISABLE_PROV
@@ -1091,14 +1425,14 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                 break;
             }
 
-            if (SYS_TIME_HANDLE_INVALID != pDcpt->pCtrl->delayTimer)
+            if (true == pDcpt->pCtrl->delayTimerRunning)
             {
                 if (true != SYS_TIME_DelayIsComplete(pDcpt->pCtrl->delayTimer))
                 {
                     break;
                 }
 
-                pDcpt->pCtrl->delayTimer = SYS_TIME_HANDLE_INVALID;
+                pDcpt->pCtrl->delayTimerRunning = false;
                 delayComplete = true;
             }
 
@@ -1109,6 +1443,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                     WDRV_DBG_INFORM_PRINT("WINC: Reset\r\n");
                     WDRV_WINC_RESETN_Clear();
                     (void)SYS_TIME_DelayMS(100, &pDcpt->pCtrl->delayTimer);
+                    pDcpt->pCtrl->delayTimerRunning = true;
 
                     wincSystemEvent(pDcpt, WDRV_WINC_SYSTEM_EVENT_DEVICE_HARD_RESET);
                     break;
@@ -1119,6 +1454,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                     {
                         WDRV_WINC_RESETN_Set();
                         (void)SYS_TIME_DelayMS(100, &pDcpt->pCtrl->delayTimer);
+                        pDcpt->pCtrl->delayTimerRunning = true;
                         break;
                     }
 
@@ -1144,9 +1480,11 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
             {
                 WINC_CMD_REQ_HANDLE cmdReqHandle;
 
+                WINC_DevBusStateSet(pDcpt->pCtrl->wincDevHandle, WINC_DEV_BUS_STATE_ACTIVE);
+
                 wincSystemEvent(pDcpt, WDRV_WINC_SYSTEM_EVENT_DEVICE_INIT_COMPLETE);
 
-                cmdReqHandle = WDRV_WINC_CmdReqInit(3, 0, wincCmdRspCallbackHandler, (uintptr_t)pDcpt);
+                cmdReqHandle = WDRV_WINC_CmdReqInit(5, 0, wincCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
                 if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
                 {
@@ -1155,20 +1493,27 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                 }
 
                 (void)WINC_CmdCFG(cmdReqHandle, WINC_CMDCFG_ID_IGNORE_VAL, WINC_TYPE_INVALID, 0, 0);
+                (void)WINC_CmdDFUADR(cmdReqHandle, WINC_CONST_DFU_PARTITION_CURRENT);
                 (void)WINC_CmdDI(cmdReqHandle, WINC_CMDDI_ID_IGNORE_VAL);
+                (void)WINC_CmdARB(cmdReqHandle, WINC_CMDARB_VALUE_IGNORE_VAL);
 #ifndef WDRV_WINC_MOD_DISABLE_NVM
                 (void)WINC_CmdNVMC(cmdReqHandle, WINC_CMDNVMC_ID_IGNORE_VAL, WINC_TYPE_INVALID, 0, 0);
 #endif
 
-                if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+                if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
                 {
                     pDcpt->sysStat = SYS_STATUS_ERROR;
                     break;
                 }
 
+                pDcpt->pCtrl->partitionBusy = true;
+                pDcpt->pCtrl->devInfoBusy = true;
+
                 pDcpt->sysStat = SYS_STATUS_READY;
 
                 WDRV_DBG_INFORM_PRINT("complete\r\n");
+
+                while (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, 0));
 
                 if (true == wincEventCheck())
                 {
@@ -1199,6 +1544,14 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
             {
                 if (WINC_SDIO_STATUS_RESET_WAITING == wincSDIOStatus)
                 {
+                    /* No timeout specified, reset now */
+                    if (0U == pDcpt->pCtrl->wincSDIOResetTimeoutCount)
+                    {
+                        pDcpt->pCtrl->wincSDIOState = WINC_SDIO_STATE_UNKNOWN;
+                        wincSystemEvent(pDcpt, WDRV_WINC_SYSTEM_EVENT_DEVICE_RESET_RETRY);
+                        break;
+                    }
+
                     pDcpt->pCtrl->wincSDIOResetTimeoutCount--;
 
                     if (0U == pDcpt->pCtrl->wincSDIOResetTimeoutCount)
@@ -1224,6 +1577,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 
                 WDRV_DBG_INFORM_PRINT(".");
                 (void)SYS_TIME_DelayMS(100, &pDcpt->pCtrl->delayTimer);
+                pDcpt->pCtrl->delayTimerRunning = true;
             }
 
             break;
@@ -1232,6 +1586,31 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
         /* Running steady state. */
         case SYS_STATUS_READY:
         {
+            if (WDRV_WINC_XDS_SLEEP_REQ == pDcpt->pCtrl->xdsState)
+            {
+                wincNotifyDisconn(pDcpt);
+
+                wincResetDeviceState(pDcpt->pCtrl);
+
+                pDcpt->pCtrl->xdsState = WDRV_WINC_XDS_SLEEP;
+                break;
+            }
+            else if (WDRV_WINC_XDS_WAKE_REQ == pDcpt->pCtrl->xdsState)
+            {
+                pDcpt->pCtrl->wincSDIOState = WINC_SDIO_STATE_RESETTING;
+                pDcpt->pCtrl->wincDevHandle = WINC_DevInit(NULL);
+
+                pDcpt->pCtrl->wincSDIOResetTimeoutCount = 0;
+                pDcpt->pCtrl->wincHardReset             = false;
+
+                pDcpt->pCtrl->ppsState = WDRV_WINC_PPS_DISABLED;
+                pDcpt->pCtrl->xdsState = WDRV_WINC_XDS_IDLE;
+                pDcpt->sysStat = SYS_STATUS_BUSY;
+
+                wincSystemEvent(pDcpt, WDRV_WINC_SYSTEM_EVENT_DEVICE_INIT_BEGIN);
+                break;
+            }
+
             if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pDcpt->pCtrl->drvEventSemaphore, 0))
             {
                 (void)WINC_DevHandleEvent(pDcpt->pCtrl->wincDevHandle, wincEventCheck);
@@ -1243,18 +1622,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
 
                 wincSystemEvent(pDcpt, WDRV_WINC_SYSTEM_EVENT_DEVICE_COMMS_ERROR);
 
-#ifdef WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS
-                (void)WINC_SockInit(pDcpt->pCtrl->wincDevHandle, NULL);
-#endif
-#ifndef WDRV_WINC_MOD_DISABLE_MQTT
-                if (NULL != pDcpt->pCtrl->mqtt.pfConnCB)
-                {
-                    if (WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED != pDcpt->pCtrl->mqtt.connState)
-                    {
-                        pDcpt->pCtrl->mqtt.pfConnCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->mqtt.connCbCtx, WDRV_WINC_MQTT_CONN_STATUS_DISCONNECTED, &pDcpt->pCtrl->mqtt.connInfo);
-                    }
-                }
-#endif
+                wincNotifyDisconn(pDcpt);
 
                 if (NULL != pDcpt->pCtrl->pfConnectNotifyCB)
                 {
@@ -1265,7 +1633,7 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                         for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
                         {
                             if ((DRV_HANDLE_INVALID != pDcpt->pCtrl->assocInfoAP[i].handle) &&
-                                (true == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid))
+                                    (true == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid))
                             {
                                 pDcpt->pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pDcpt->pCtrl->assocInfoAP[i], WDRV_WINC_CONN_STATE_DISCONNECTED);
                             }
@@ -1279,6 +1647,8 @@ void WDRV_WINC_Tasks(SYS_MODULE_OBJ object)
                         }
                     }
                 }
+
+                WINC_DevBusStateSet(pDcpt->pCtrl->wincDevHandle, WINC_DEV_BUS_STATE_IDLE);
 
                 wincResetDeviceState(pDcpt->pCtrl);
 
@@ -1401,6 +1771,7 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
         pDcpt->pCtrl->handle                  = (DRV_HANDLE)pDcpt;
         pDcpt->pCtrl->scanChannelMask24       = WDRV_WINC_CM_2_4G_DEFAULT;
         pDcpt->pCtrl->scanRssiThreshold       = 0;
+        pDcpt->pCtrl->scanMatchMode           = WDRV_WINC_SCAN_MATCH_MODE_FIND_ALL;
         pDcpt->pCtrl->regulatoryChannelMask24 = WDRV_WINC_CM_2_4G_DEFAULT;
         pDcpt->pCtrl->pfBSSFindNotifyCB       = NULL;
         pDcpt->pCtrl->pfConnectNotifyCB       = NULL;
@@ -1409,7 +1780,7 @@ DRV_HANDLE WDRV_WINC_Open(const SYS_MODULE_INDEX index, const DRV_IO_INTENT inte
 
     pDcpt->isOpen = true;
 
-    (void)WDRV_WINC_WifiRegDomainGet((DRV_HANDLE)pDcpt, WDRV_WINC_REGDOMAIN_SELECT_CURRENT, NULL);
+    (void)WDRV_WINC_WifiRegDomainGet((DRV_HANDLE)pDcpt, WDRV_WINC_REGDOMAIN_SELECT_CURRENT, wincRegDomainCallback);
     (void)WDRV_WINC_WifiCoexConfGet((DRV_HANDLE)pDcpt, NULL, NULL);
 
     return (DRV_HANDLE)pDcpt;
@@ -1475,7 +1846,7 @@ void WDRV_WINC_Close(DRV_HANDLE handle)
     Sets the callback used to report L2 data frames.
 
   Remarks:
-    See wdrv_winc_mac.h for usage information.
+    See wdrv_winc.h for usage information.
 
 */
 
@@ -1512,7 +1883,7 @@ WDRV_WINC_STATUS WDRV_WINC_L2DataMonitorCallbackSet
     (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)WDRV_WINC_NETIF_IDX_DEFAULT, WINC_CFG_PARAM_ID_NETIF_L2_MONITOR_MODE, WINC_TYPE_INTEGER_UNSIGNED, (NULL != pfL2DataMonitorCB) ? 7U : 0U, 0);
     (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)WDRV_WINC_NETIF_IDX_DEFAULT, WINC_CFG_PARAM_ID_NETIF_L2_MONITOR_MAX_LEN, WINC_TYPE_INTEGER_UNSIGNED, 0, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1538,7 +1909,7 @@ WDRV_WINC_STATUS WDRV_WINC_L2DataMonitorCallbackSet
     Queues an L2 frame to the WiFi subsystem for transmission.
 
   Remarks:
-    See wdrv_winc_mac.h for usage information.
+    See wdrv_winc.h for usage information.
 
 */
 
@@ -1574,7 +1945,7 @@ WDRV_WINC_STATUS WDRV_WINC_L2DataFrameSend
 
     (void)WINC_CmdNETIFTX(cmdReqHandle, (uint8_t)WDRV_WINC_NETIF_IDX_DEFAULT, pl2Data, l2DataLen);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1670,7 +2041,12 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceFirmwareVersionGet
     const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle and user pointer is valid. */
-    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt)|| (NULL == pDcpt->pCtrl) || (NULL == pFirmwareVersion))
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pFirmwareVersion))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    if (true != active)
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -1686,10 +2062,183 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceFirmwareVersionGet
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    if (true == active)
+    (void)memcpy(pFirmwareVersion, &pDcpt->pCtrl->fwVersion, sizeof(WDRV_WINC_FIRMWARE_VERSION_INFO));
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_DeviceFirmwareImagePrepare
+    (
+        DRV_HANDLE handle,
+        uint8_t *const pImage,
+        WDRV_WINC_PARTITION partition,
+        WDRV_WINC_IMAGE_STATE imageState
+    )
+
+  Summary:
+    Prepares a WINC device firmware image for use.
+
+  Description:
+    Modifies the Firmware Image Source Address and Sequence Number fields of a
+    WINC device firmware image.
+
+  Remarks:
+    See wdrv_winc.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_DeviceFirmwareImagePrepare
+(
+    DRV_HANDLE handle,
+    uint8_t *const pImage,
+    size_t imageLength,
+    WDRV_WINC_PARTITION partition,
+    WDRV_WINC_IMAGE_STATE imageState
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+    uint32_t adr;
+    uint32_t seq;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
-        (void)memcpy(pFirmwareVersion, &pDcpt->pCtrl->fwVersion, sizeof(WDRV_WINC_FIRMWARE_VERSION_INFO));
+        return WDRV_WINC_STATUS_INVALID_ARG;
     }
+
+    /* Ensure the image parameters are valid. */
+    if (
+        (NULL == pImage)
+        ||  (imageLength < (WDRV_WINC_IMAGE_ADR_OFFSET + WDRV_WINC_IMAGE_ADR_LENGTH))
+    )
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    if (WDRV_WINC_PARTITION_CURRENT == partition)
+    {
+        partition = pDcpt->pCtrl->partition;
+    }
+    else if (WDRV_WINC_PARTITION_ALTERNATE == partition)
+    {
+        switch (pDcpt->pCtrl->partition)
+        {
+            case WDRV_WINC_PARTITION_LOW:
+            {
+                partition = WDRV_WINC_PARTITION_HIGH;
+                break;
+            }
+
+            case WDRV_WINC_PARTITION_HIGH:
+            {
+                partition = WDRV_WINC_PARTITION_LOW;
+                break;
+            }
+
+            default:
+            {
+                partition = WDRV_WINC_PARTITION_CURRENT;
+                break;
+            }
+        }
+    }
+
+    switch (partition)
+    {
+        case WDRV_WINC_PARTITION_CURRENT:
+        {
+            if (false == pDcpt->pCtrl->partitionBusy)
+            {
+                WINC_CMD_REQ_HANDLE cmdReqHandle;
+
+                cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wincCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+                if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+                {
+                    return WDRV_WINC_STATUS_REQUEST_ERROR;
+                }
+
+                (void)WINC_CmdDFUADR(cmdReqHandle, WINC_CONST_DFU_PARTITION_CURRENT);
+
+                if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
+                {
+                    return WDRV_WINC_STATUS_REQUEST_ERROR;
+                }
+                pDcpt->pCtrl->partitionBusy = true;
+            }
+
+            return WDRV_WINC_STATUS_RETRY_REQUEST;
+        }
+
+        case WDRV_WINC_PARTITION_LOW:
+        {
+            adr = WDRV_WINC_IMAGE_ADR_LOW;
+            break;
+        }
+
+        case WDRV_WINC_PARTITION_HIGH:
+        {
+            adr = WDRV_WINC_IMAGE_ADR_HIGH;
+            break;
+        }
+
+        default:
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
+    }
+
+    switch (imageState)
+    {
+        case WDRV_WINC_IMAGE_STATE_LATENT:
+        {
+            seq = WDRV_WINC_IMAGE_SEQ_LATENT;
+            break;
+        }
+
+        case WDRV_WINC_IMAGE_STATE_ACTIVATED:
+        {
+            int image_idx;
+
+            if (true != pDcpt->pCtrl->devInfo.isValid)
+            {
+                if (WDRV_WINC_STATUS_REQUEST_ERROR == WDRV_WINC_InfoDeviceRefresh(handle))
+                {
+                    return WDRV_WINC_STATUS_REQUEST_ERROR;
+                }
+
+                return WDRV_WINC_STATUS_RETRY_REQUEST;
+            }
+
+            seq = WDRV_WINC_IMAGE_SEQ_MAX;
+            for (image_idx = 0; image_idx < pDcpt->pCtrl->devInfo.numImages; image_idx++)
+            {
+                if (seq >= (pDcpt->pCtrl->devInfo.image[image_idx].seqNum & ~0xF))
+                {
+                    seq = (pDcpt->pCtrl->devInfo.image[image_idx].seqNum & ~0xF) - 0x10;
+                }
+            }
+
+            break;
+        }
+
+        default:
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
+    }
+
+    *(uint32_t*)(pImage + WDRV_WINC_IMAGE_SEQ_OFFSET) = seq;
+    *(uint32_t*)(pImage + WDRV_WINC_IMAGE_ADR_OFFSET) = adr;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -1736,10 +2285,327 @@ WDRV_WINC_STATUS WDRV_WINC_InfoDeviceGet
 
     if (false == pDcpt->pCtrl->devInfo.isValid)
     {
+        if (WDRV_WINC_STATUS_REQUEST_ERROR == WDRV_WINC_InfoDeviceRefresh(handle))
+        {
+            return WDRV_WINC_STATUS_REQUEST_ERROR;
+        }
+
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
     (void)memcpy(pDeviceInfo, &pDcpt->pCtrl->devInfo, sizeof(WDRV_WINC_DEVICE_INFO));
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoDeviceRefresh
+    (
+        DRV_HANDLE handle
+    )
+
+  Summary:
+    Refreshes WINC device information.
+
+  Description:
+    Triggers a refresh of WINC device information.
+
+  Remarks:
+    See wdrv_winc.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoDeviceRefresh
+(
+    DRV_HANDLE handle
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+    WINC_CMD_REQ_HANDLE cmdReqHandle;
+
+    /* Ensure the driver handle is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt)|| (NULL == pDcpt->pCtrl))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    pDcpt->pCtrl->devInfo.isValid = false;
+
+    if (false == pDcpt->pCtrl->devInfoBusy)
+    {
+        cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wincCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+        if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+        {
+            return WDRV_WINC_STATUS_REQUEST_ERROR;
+        }
+
+        (void)WINC_CmdDI(cmdReqHandle, WINC_CMDDI_ID_IGNORE_VAL);
+
+        if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
+        {
+            return WDRV_WINC_STATUS_REQUEST_ERROR;
+        }
+
+        pDcpt->pCtrl->devInfoBusy = true;
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoDeviceCallbackSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_INFO_DEVICE_CALLBACK pfInfoDeviceCB
+    )
+
+  Summary:
+    Set a device information refresh callback.
+
+  Description:
+    Sets a callback to be used when device information is refreshed.
+
+  Remarks:
+    See wdrv_winc.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoDeviceCallbackSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_INFO_DEVICE_CALLBACK pfInfoDeviceCB
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    pDcpt->pCtrl->pfInfoDeviceCB = pfInfoDeviceCB;
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoAntiRollbackGet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_ANTIROLLBACK_INFO *const pArbInfo,
+        WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+    )
+
+  Summary:
+    Provides WINC device anti-rollback information.
+
+  Description:
+    Provides the WINC device's anti-rollback counter value and the current
+    firmware's security version.
+
+  Remarks:
+    See wdrv_winc.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoAntiRollbackGet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_ANTIROLLBACK_INFO *const pArbInfo,
+    WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+
+    /* Ensure the driver handle is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt)|| (NULL == pDcpt->pCtrl))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure at least one of the user pointers is valid. */
+    if ((NULL == pfArbCB) && (NULL == pArbInfo))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    if (NULL != pDcpt->pCtrl->pfInfoArbCB)
+    {
+        return WDRV_WINC_STATUS_RETRY_REQUEST;
+    }
+
+    /* Ensure the information is valid. */
+    if (pDcpt->pCtrl->arbInfo.status < 0)
+    {
+        if (WDRV_WINC_ARB_STATUS_MISSING == pDcpt->pCtrl->arbInfo.status)
+        {
+            (void)WDRV_WINC_AntiRollbackSet(handle, WINC_CMDARB_VALUE_IGNORE_VAL, NULL);
+        }
+
+        pDcpt->pCtrl->pfInfoArbCB = pfArbCB;
+
+        return WDRV_WINC_STATUS_RETRY_REQUEST;
+    }
+
+    if (NULL != pArbInfo)
+    {
+        (void)memcpy(pArbInfo, &pDcpt->pCtrl->arbInfo, sizeof(WDRV_WINC_ANTIROLLBACK_INFO));
+    }
+
+    if (NULL != pfArbCB)
+    {
+        pfArbCB(handle, (const WDRV_WINC_ANTIROLLBACK_INFO *const)&pDcpt->pCtrl->arbInfo);
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AntiRollbackSet
+    (
+        DRV_HANDLE handle,
+        uint8_t value,
+        WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+    )
+
+  Summary:
+    Increases the value in the WINC device's anti-rollback counter.
+
+  Description:
+    Sets the WINC device's anti-rollback counter to a higher value.
+
+  Remarks:
+    See wdrv_winc.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AntiRollbackSet
+(
+    DRV_HANDLE handle,
+    uint8_t value,
+    WDRV_WINC_INFO_ANTIROLLBACK_CALLBACK pfArbCB
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+    WINC_CMD_REQ_HANDLE cmdReqHandle;
+
+    /* Ensure the driver handle is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt)|| (NULL == pDcpt->pCtrl))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    if (value > WINC_CMD_PARAM_MAX_ARB_VALUE)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    if (NULL != pDcpt->pCtrl->pfInfoArbCB)
+    {
+        return WDRV_WINC_STATUS_RETRY_REQUEST;
+    }
+
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wincCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    (void)WINC_CmdARB(cmdReqHandle, value);
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    pDcpt->pCtrl->pfInfoArbCB = pfArbCB;
+    pDcpt->pCtrl->arbInfo.status = WDRV_WINC_ARB_STATUS_PENDING_RESPONSE;
+    pDcpt->pCtrl->arbIsSet = (WINC_CMDARB_VALUE_IGNORE_VAL != value);
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_InfoOpChanGet
+    (
+        DRV_HANDLE handle,
+        uint8_t *const pMACAddress
+    )
+
+  Summary:
+    Retrieves the operating channel of the WINCS02.
+
+  Description:
+    Retrieves the current operating channel.
+
+  Remarks:
+    See wdrv_winc.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_InfoOpChanGet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_CHANNEL_ID *const pOpChan
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+
+    /* Ensure the driver handle and user pointer is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pOpChan))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    if (WDRV_WINC_CONN_STATE_CONNECTED != pDcpt->pCtrl->connectedState)
+    {
+        return WDRV_WINC_STATUS_NOT_CONNECTED;
+    }
+
+    *pOpChan = pDcpt->pCtrl->opChannel;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -1808,7 +2674,7 @@ WDRV_WINC_STATUS WDRV_WINC_CfgArchiveStore
 
     (void)WINC_CmdCFGCP(cmdReqHandle, WINC_TYPE_INTEGER_UNSIGNED, 0, 0, WINC_TYPE_STRING, (uintptr_t)pFilename, lenFilename);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1874,7 +2740,7 @@ WDRV_WINC_STATUS WDRV_WINC_CfgArchiveRecall
 
     (void)WINC_CmdCFGCP(cmdReqHandle, WINC_TYPE_STRING, (uintptr_t)pFilename, lenFilename, WINC_TYPE_INTEGER_UNSIGNED, 0, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -1950,7 +2816,7 @@ WDRV_WINC_STATUS WDRV_WINC_DebugUARTSet
         (void)WINC_CmdCFG(cmdReqHandle, WINC_CFG_PARAM_ID_CFG_DEBUG_BAUD, WINC_TYPE_INTEGER_UNSIGNED, uartBaudRate, 0);
     }
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -2009,7 +2875,7 @@ WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit(unsigned int numCommands, size_t extraD
   Function:
     bool WDRV_WINC_DevTransmitCmdReq
     (
-        WINC_DEVICE_HANDLE devHandle,
+        WDRV_WINC_CTRLDCPT *pCtrl,
         WINC_CMD_REQ_HANDLE cmdReqHandle
     )
 
@@ -2024,14 +2890,20 @@ WINC_CMD_REQ_HANDLE WDRV_WINC_CmdReqInit(unsigned int numCommands, size_t extraD
 
 */
 
-bool WDRV_WINC_DevTransmitCmdReq(WINC_DEVICE_HANDLE devHandle, WINC_CMD_REQ_HANDLE cmdReqHandle)
+bool WDRV_WINC_DevTransmitCmdReq(WDRV_WINC_CTRLDCPT *pCtrl, WINC_CMD_REQ_HANDLE cmdReqHandle)
 {
-    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+    if ((NULL == pCtrl) || (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle))
     {
         return false;
     }
 
-    if (false == WINC_DevTransmitCmdReq(devHandle, cmdReqHandle))
+    if (WDRV_WINC_XDS_SLEEP == pCtrl->xdsState)
+    {
+        pCtrl->xdsState = WDRV_WINC_XDS_WAKE_REQ;
+        WINC_DevBusStateSet(pCtrl->wincDevHandle, WINC_DEV_BUS_STATE_IDLE);
+    }
+
+    if (false == WINC_DevTransmitCmdReq(pCtrl->wincDevHandle, cmdReqHandle))
     {
         OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);
         return false;
@@ -2087,7 +2959,7 @@ void WDRV_WINC_ISR(SYS_MODULE_OBJ object)
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)object;
 
-    if (NULL == pDcpt->pCtrl)
+    if ((SYS_MODULE_OBJ_INVALID == object) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return;
     }

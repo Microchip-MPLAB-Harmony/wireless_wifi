@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver STA Implementation
+  WINC Wireless Driver STA Source File
 
   File Name:
     wdrv_winc_sta.c
@@ -8,37 +8,29 @@
     WINC wireless driver STA implementation.
 
   Description:
-    WINC wireless driver STA implementation.
+    Provides an interface to connect to a BSS as a station.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: File includes
+// Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
 
@@ -51,27 +43,35 @@ Microchip or any third party.
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: WINC Driver STA Implementation
+// Section: WINC Driver STA Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
 
 //*******************************************************************************
 /*
   Function:
-    static void staWSTAProcessRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+    static void wstaProcessAEC
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
 
   Summary:
-    Process command responses.
+    Process AECs.
 
   Description:
-    Processes command responses received via WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED events.
+    Processes AECs for this module.
 
   Precondition:
-    WDRV_WINC_DevTransmitCmdReq must have been called to submit command request.
+    None.
 
   Parameters:
-    handle - WINC device handle.
-    pElems - Pointer to command response elements.
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
 
   Returns:
     None.
@@ -81,20 +81,185 @@ Microchip or any third party.
 
 */
 
-static void staWSTAProcessRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS *const pElems)
+static void wstaProcessAEC
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
 {
-    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT *)handle;
+    WDRV_WINC_CTRLDCPT *pCtrl;
+    uint16_t assocID;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
     {
         return;
+    }
+
+    pCtrl = pDcpt->pCtrl;
+
+    switch (aecId)
+    {
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
+        case WINC_AEC_ID_WSTAAIP:
+        {
+            if (2U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+
+            if (assocID == pCtrl->assocInfoSTA.assocID)
+            {
+                if (NULL != pDcpt->pCtrl->pfNetIfEventCB)
+                {
+                    WDRV_WINC_NETIF_ADDR_UPDATE_TYPE eventUpdate;
+
+                    if ((WINC_TYPE_IPV4ADDR == pElems[1].type) && (pElems[1].length <= sizeof(WDRV_WINC_IPV4_ADDR)))
+                    {
+                        eventUpdate.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
+                        (void)memcpy((uint8_t*)&eventUpdate.addr.v4, pElems[1].pData, pElems[1].length);
+                    }
+                    else if ((WINC_TYPE_IPV6ADDR == pElems[1].type) && (pElems[1].length <= sizeof(WDRV_WINC_IPV6_ADDR)))
+                    {
+                        eventUpdate.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
+                        (void)memcpy((uint8_t*)&eventUpdate.addr.v6, pElems[1].pData, pElems[1].length);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    pDcpt->pCtrl->pfNetIfEventCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->netIfSTA, WDRV_WINC_NETIF_EVENT_ADDR_UPDATE, &eventUpdate);
+                }
+            }
+
+            break;
+        }
+#endif
+
+        case WINC_AEC_ID_WSTALD:
+        {
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            if (WDRV_WINC_CONN_STATE_DISCONNECTED != pCtrl->connectedState)
+            {
+                WDRV_WINC_CONN_STATE ConnState = WDRV_WINC_CONN_STATE_FAILED;
+
+                (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+
+                if (assocID == pCtrl->assocInfoSTA.assocID)
+                {
+                    pCtrl->opChannel = WDRV_WINC_CID_ANY;
+
+                    if (WDRV_WINC_CONN_STATE_CONNECTED == pCtrl->connectedState)
+                    {
+                        ConnState = WDRV_WINC_CONN_STATE_DISCONNECTED;
+                    }
+
+                    pCtrl->connectedState = WDRV_WINC_CONN_STATE_DISCONNECTED;
+
+                    if (NULL != pCtrl->pfConnectNotifyCB)
+                    {
+                        /* Update user application via callback if set. */
+
+                        pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, ConnState);
+                    }
+                }
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_WSTALU:
+        {
+            if (3U != numElems)
+            {
+                break;
+            }
+
+            if (WDRV_WINC_CONN_STATE_CONNECTED != pCtrl->connectedState)
+            {
+                pCtrl->connectedState = WDRV_WINC_CONN_STATE_CONNECTED;
+
+                pCtrl->assocInfoSTA.handle = (DRV_HANDLE)pCtrl;
+                pCtrl->assocInfoSTA.rssi   = 0;
+
+                (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &pCtrl->assocInfoSTA.assocID, sizeof(pCtrl->assocInfoSTA.assocID));
+                (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_MACADDR, pCtrl->assocInfoSTA.peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
+                (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_INTEGER, &pCtrl->opChannel, sizeof(pCtrl->opChannel));
+
+                pCtrl->assocInfoSTA.peerAddress.valid = true;
+
+                if (NULL != pCtrl->pfConnectNotifyCB)
+                {
+                    /* Update user application via callback if set. */
+
+                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_CONNECTED);
+                }
+            }
+
+            break;
+        }
+
+        case WINC_AEC_ID_WSTAERR:
+        {
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            if (WDRV_WINC_CONN_STATE_CONNECTING == pCtrl->connectedState)
+            {
+                pCtrl->connectedState = WDRV_WINC_CONN_STATE_DISCONNECTED;
+
+                if (NULL != pCtrl->pfConnectNotifyCB)
+                {
+                    /* Update user application via callback if set. */
+                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_FAILED);
+                }
+            }
+            break;
+        }
+
+        case WINC_AEC_ID_WSTAROAM:
+        {
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            if (WDRV_WINC_CONN_STATE_CONNECTED == pCtrl->connectedState)
+            {
+                (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+
+                if ((pCtrl->assocInfoSTA.assocID == assocID) && (NULL != pCtrl->pfConnectNotifyCB))
+                {
+                    /* Update user application via callback if set. */
+
+                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_ROAMED);
+                }
+            }
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
     }
 }
 
 //*******************************************************************************
 /*
   Function:
-    static void staWSTACmdRspCallbackHandler
+    static void wstaCmdRspCallbackHandler
     (
         uintptr_t context,
         WINC_DEVICE_HANDLE devHandle,
@@ -160,7 +325,7 @@ static void staWSTAProcessRsp(DRV_HANDLE handle, const WINC_DEV_EVENT_RSP_ELEMS 
 
 */
 
-static void staWSTACmdRspCallbackHandler
+static void wstaCmdRspCallbackHandler
 (
     uintptr_t context,
     WINC_DEVICE_HANDLE devHandle,
@@ -176,7 +341,7 @@ static void staWSTACmdRspCallbackHandler
         return;
     }
 
-    //WDRV_DBG_INFORM_PRINT("WSTA CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
+//    WDRV_DBG_INFORM_PRINT("WSTA CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -193,28 +358,29 @@ static void staWSTACmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_CMD_STATUS:
         {
-//            WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
+            /* Do nothing. */
             break;
         }
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
-
-            if (NULL != pRspElems)
-            {
-                staWSTAProcessRsp((DRV_HANDLE)pDcpt, pRspElems);
-            }
+            /* Do nothing. */
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("WSTA CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
 }
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver STA Implementation
+// *****************************************************************************
+// *****************************************************************************
 
 //*******************************************************************************
 /*
@@ -245,171 +411,13 @@ void WDRV_WINC_WSTAProcessAEC
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
-    WDRV_WINC_CTRLDCPT *pCtrl;
-    uint16_t assocID;
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pElems))
     {
         return;
     }
 
-    pCtrl = pDcpt->pCtrl;
-
-    switch (pElems->rspId)
-    {
-#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
-        case WINC_AEC_ID_WSTAAIP:
-        {
-            if (2U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-
-            if (assocID == pCtrl->assocInfoSTA.assocID)
-            {
-                if (NULL != pDcpt->pCtrl->pfNetIfEventCB)
-                {
-                    WDRV_WINC_NETIF_ADDR_UPDATE_TYPE eventUpdate;
-
-                    if ((WINC_TYPE_IPV4ADDR == pElems->elems[1].type) && (pElems->elems[1].length <= sizeof(WDRV_WINC_IPV4_ADDR)))
-                    {
-                        eventUpdate.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
-                        (void)memcpy((uint8_t*)&eventUpdate.addr.v4, pElems->elems[1].pData, pElems->elems[1].length);
-                    }
-                    else if ((WINC_TYPE_IPV6ADDR == pElems->elems[1].type) && (pElems->elems[1].length <= sizeof(WDRV_WINC_IPV6_ADDR)))
-                    {
-                        eventUpdate.type = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
-                        (void)memcpy((uint8_t*)&eventUpdate.addr.v6, pElems->elems[1].pData, pElems->elems[1].length);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    pDcpt->pCtrl->pfNetIfEventCB((DRV_HANDLE)pDcpt, pDcpt->pCtrl->netIfSTA, WDRV_WINC_NETIF_EVENT_ADDR_UPDATE, &eventUpdate);
-                }
-            }
-
-            break;
-        }
-#endif
-
-        case WINC_AEC_ID_WSTALD:
-        {
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            if (WDRV_WINC_CONN_STATE_DISCONNECTED != pCtrl->connectedState)
-            {
-                WDRV_WINC_CONN_STATE ConnState = WDRV_WINC_CONN_STATE_FAILED;
-
-                (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-
-                if (assocID == pCtrl->assocInfoSTA.assocID)
-                {
-                    pCtrl->opChannel = WDRV_WINC_CID_ANY;
-
-                    if (WDRV_WINC_CONN_STATE_CONNECTED == pCtrl->connectedState)
-                    {
-                        ConnState = WDRV_WINC_CONN_STATE_DISCONNECTED;
-                    }
-
-                    pCtrl->connectedState = WDRV_WINC_CONN_STATE_DISCONNECTED;
-
-                    if (NULL != pCtrl->pfConnectNotifyCB)
-                    {
-                        /* Update user application via callback if set. */
-
-                        pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, ConnState);
-                    }
-                }
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_WSTALU:
-        {
-            if (3U != pElems->numElems)
-            {
-                break;
-            }
-
-            if (WDRV_WINC_CONN_STATE_CONNECTED != pCtrl->connectedState)
-            {
-                pCtrl->connectedState = WDRV_WINC_CONN_STATE_CONNECTED;
-
-                pCtrl->assocInfoSTA.handle = (DRV_HANDLE)pCtrl;
-                pCtrl->assocInfoSTA.rssi   = 0;
-
-                (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &pCtrl->assocInfoSTA.assocID, sizeof(pCtrl->assocInfoSTA.assocID));
-                (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_MACADDR, pCtrl->assocInfoSTA.peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
-                (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_INTEGER, &pCtrl->opChannel, sizeof(pCtrl->opChannel));
-
-                pCtrl->assocInfoSTA.peerAddress.valid = true;
-
-                if (NULL != pCtrl->pfConnectNotifyCB)
-                {
-                    /* Update user application via callback if set. */
-
-                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_CONNECTED);
-                }
-            }
-
-            break;
-        }
-
-        case WINC_AEC_ID_WSTAERR:
-        {
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            if (WDRV_WINC_CONN_STATE_CONNECTING == pCtrl->connectedState)
-            {
-                pCtrl->connectedState = WDRV_WINC_CONN_STATE_DISCONNECTED;
-
-                if (NULL != pCtrl->pfConnectNotifyCB)
-                {
-                    /* Update user application via callback if set. */
-                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_FAILED);
-                }
-            }
-            break;
-        }
-
-        case WINC_AEC_ID_WSTAROAM:
-        {
-            if (1U != pElems->numElems)
-            {
-                break;
-            }
-
-            if (WDRV_WINC_CONN_STATE_CONNECTED == pCtrl->connectedState)
-            {
-                (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-
-                if ((pCtrl->assocInfoSTA.assocID == assocID) && (NULL != pCtrl->pfConnectNotifyCB))
-                {
-                    /* Update user application via callback if set. */
-
-                    pCtrl->pfConnectNotifyCB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)&pCtrl->assocInfoSTA, WDRV_WINC_CONN_STATE_ROAMED);
-                }
-            }
-            break;
-        }
-
-        default:
-        {
-            WDRV_DBG_VERBOSE_PRINT("WSTA AECCB ID %04x not handled\r\n", pElems->rspId);
-            break;
-        }
-    }
+    wstaProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
 }
 
 //*******************************************************************************
@@ -571,7 +579,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         }
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(11, 0, staWSTACmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(11, 0, wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -579,6 +587,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     }
 
     (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_SSID, WINC_TYPE_STRING, (uintptr_t)pBSSCtx->ssid.name, pBSSCtx->ssid.length);
+
     (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_CHANNEL, WINC_TYPE_INTEGER, channel, 0);
 
     /* Set BSSID if provided. */
@@ -627,7 +636,9 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     if (NULL != pWiFiCfg)
     {
         (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_CONN_TIMEOUT, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->sta.connTimeoutMs, 0);
+
         (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_NETIF_IDX, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->ifIdx, 0);
+
         (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ROAMING, WINC_TYPE_INTEGER_UNSIGNED, pWiFiCfg->sta.roaming, 0);
 
         (void)WINC_CmdNETIFC(cmdReqHandle, (int32_t)pWiFiCfg->ifIdx, WINC_CFG_PARAM_ID_NETIF_L2_ONLY, WINC_TYPE_BOOL, (uintptr_t)pWiFiCfg->l2Only, 0);
@@ -635,7 +646,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
     (void)WINC_CmdWSTA(cmdReqHandle, (int32_t)WINC_CONST_WSTA_STATE_ENABLE);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -691,7 +702,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSDisconnect(DRV_HANDLE handle)
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, staWSTACmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -700,7 +711,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSDisconnect(DRV_HANDLE handle)
 
     (void)WINC_CmdWSTA(cmdReqHandle, (int32_t)WINC_CONST_WSTA_STATE_DISABLE);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -751,7 +762,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSRoamingConfigure
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, staWSTACmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -760,7 +771,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSRoamingConfigure
 
     (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ROAMING, WINC_TYPE_INTEGER_UNSIGNED, (uintptr_t)roamingCfg, 0);
 
-    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl->wincDevHandle, cmdReqHandle))
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
-  WINC Driver Association Implementation
+  WINC Wireless Driver Association Source File
 
   File Name:
     wdrv_winc_assoc.c
@@ -12,30 +12,22 @@
     peer device.
  *******************************************************************************/
 
-//DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
-//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
@@ -83,6 +75,112 @@ static bool assocHandleIsValid
     }
 
     return false;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    static void assocProcessAEC
+    (
+        WDRV_WINC_DCPT *pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process AECs.
+
+  Description:
+    Processes AECs for this module.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void assocProcessAEC
+(
+    WDRV_WINC_DCPT *pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    WDRV_WINC_CTRLDCPT *pCtrl;
+
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    pCtrl = pDcpt->pCtrl;
+
+    switch (aecId)
+    {
+        case WINC_AEC_ID_ASSOC:
+        {
+            int8_t rssi;
+            bool peerIsSTA;
+            WDRV_WINC_MAC_ADDR peerAddress;
+            WDRV_WINC_ASSOC_INFO *pAssocInfo = NULL;
+            uint16_t assocID;
+
+            if (4U != numElems)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
+            (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &peerIsSTA, sizeof(peerIsSTA));
+            (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
+            (void)WINC_CmdReadParamElem(&pElems[3], WINC_TYPE_INTEGER, &rssi, sizeof(rssi));
+
+            peerAddress.valid = true;
+
+            if (false == peerIsSTA)
+            {
+                if (pCtrl->assocInfoSTA.assocID == assocID)
+                {
+                    pAssocInfo = &pCtrl->assocInfoSTA;
+                }
+            }
+            else
+            {
+                pAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
+            }
+
+            if (NULL != pAssocInfo)
+            {
+                pAssocInfo->rssi = rssi;
+
+                if (NULL != pCtrl->pfAssociationRSSICB)
+                {
+                    pCtrl->pfAssociationRSSICB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)pAssocInfo, rssi);
+                }
+            }
+
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
 }
 
 //*******************************************************************************
@@ -163,7 +261,14 @@ static void assocCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    //WDRV_DBG_INFORM_PRINT("ASSOC CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
+    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+
+    if (NULL == pDcpt)
+    {
+        return;
+    }
+
+//    WDRV_DBG_INFORM_PRINT("Assoc CmdRspCB %08x Event %d\r\n", cmdReqHandle, event);
 
     switch (event)
     {
@@ -180,19 +285,19 @@ static void assocCmdRspCallbackHandler
 
         case WINC_DEV_CMDREQ_EVENT_CMD_STATUS:
         {
-//            WINC_DEV_EVENT_STATUS_ARGS *pStatusInfo = (WINC_DEV_EVENT_STATUS_ARGS*)eventArg;
+            /* Do nothing. */
             break;
         }
 
         case WINC_DEV_CMDREQ_EVENT_RSP_RECEIVED:
         {
-//            const WINC_DEV_EVENT_RSP_ELEMS *pRspElems = (const WINC_DEV_EVENT_RSP_ELEMS*)eventArg;
+            /* Do nothing. */
             break;
         }
 
         default:
         {
-            WDRV_DBG_VERBOSE_PRINT("ASSOC CmdRspCB %08x event %d not handled\r\n", cmdReqHandle, event);
+            /* Do nothing. */
             break;
         }
     }
@@ -233,68 +338,13 @@ void WDRV_WINC_AssocProcessAEC
 )
 {
     WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
-    WDRV_WINC_CTRLDCPT *pCtrl;
-    uint16_t assocID;
 
-    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    if ((NULL == pDcpt) || (NULL == pElems))
     {
         return;
     }
 
-    pCtrl = pDcpt->pCtrl;
-
-    switch (pElems->rspId)
-    {
-        case WINC_AEC_ID_ASSOC:
-        {
-            int8_t rssi;
-            bool peerIsSTA;
-            WDRV_WINC_MAC_ADDR peerAddress;
-            WDRV_WINC_ASSOC_INFO *pAssocInfo = NULL;
-
-            if (4U != pElems->numElems)
-            {
-                break;
-            }
-
-            (void)WINC_CmdReadParamElem(&pElems->elems[0], WINC_TYPE_INTEGER, &assocID, sizeof(assocID));
-            (void)WINC_CmdReadParamElem(&pElems->elems[1], WINC_TYPE_INTEGER, &peerIsSTA, sizeof(peerIsSTA));
-            (void)WINC_CmdReadParamElem(&pElems->elems[2], WINC_TYPE_MACADDR, peerAddress.addr, WDRV_WINC_MAC_ADDR_LEN);
-            (void)WINC_CmdReadParamElem(&pElems->elems[3], WINC_TYPE_INTEGER, &rssi, sizeof(rssi));
-
-            peerAddress.valid = true;
-
-            if (false == peerIsSTA)
-            {
-                if (pCtrl->assocInfoSTA.assocID == assocID)
-                {
-                    pAssocInfo = &pCtrl->assocInfoSTA;
-                }
-            }
-            else
-            {
-                pAssocInfo = WDRV_WINC_AssocFindSTAInfo((DRV_HANDLE)pDcpt, &peerAddress);
-            }
-
-            if (NULL != pAssocInfo)
-            {
-                pAssocInfo->rssi = rssi;
-
-                if (NULL != pCtrl->pfAssociationRSSICB)
-                {
-                    pCtrl->pfAssociationRSSICB((DRV_HANDLE)pDcpt, (WDRV_WINC_ASSOC_HANDLE)pAssocInfo, rssi);
-                }
-            }
-
-            break;
-        }
-
-        default:
-        {
-            WDRV_DBG_VERBOSE_PRINT("ASSOC AECCB ID %04x not handled\r\n", pElems->rspId);
-            break;
-        }
-    }
+    assocProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
 }
 
 //*******************************************************************************
@@ -339,7 +389,7 @@ WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
         for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
         {
             if ((DRV_HANDLE_INVALID == pDcpt->pCtrl->assocInfoAP[i].handle) &&
-                (false == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid))
+                    (false == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid))
             {
                 pStaAssocInfo = &pDcpt->pCtrl->assocInfoAP[i];
                 break;
@@ -351,8 +401,8 @@ WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
         for (i=0; i<WDRV_WINC_NUM_ASSOCS; i++)
         {
             if ((DRV_HANDLE_INVALID != pDcpt->pCtrl->assocInfoAP[i].handle) &&
-                (true == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid) &&
-                (0 == memcmp(pDcpt->pCtrl->assocInfoAP[i].peerAddress.addr, pMacAddr->addr, WDRV_WINC_MAC_ADDR_LEN)))
+                    (true == pDcpt->pCtrl->assocInfoAP[i].peerAddress.valid) &&
+                    (0 == memcmp(pDcpt->pCtrl->assocInfoAP[i].peerAddress.addr, pMacAddr->addr, WDRV_WINC_MAC_ADDR_LEN)))
             {
                 pStaAssocInfo = &pDcpt->pCtrl->assocInfoAP[i];
                 break;
@@ -440,7 +490,7 @@ WDRV_WINC_STATUS WDRV_WINC_AssocPeerAddressGet
   Function:
     WDRV_WINC_STATUS WDRV_WINC_AssocRSSIGet
     (
-        DRV_HANDLE handle,
+        WDRV_WINC_ASSOC_HANDLE assocHandle,
         int8_t *const pRSSI,
         WDRV_WINC_ASSOC_RSSI_CALLBACK const pfAssociationRSSICB
     )
@@ -532,7 +582,7 @@ WDRV_WINC_STATUS WDRV_WINC_AssocRSSIGet
 
             (void)WINC_CmdASSOC(cmdReqHandle, pAssocInfo->assocID);
 
-            if (false == WDRV_WINC_DevTransmitCmdReq(pCtrl->wincDevHandle, cmdReqHandle))
+            if (false == WDRV_WINC_DevTransmitCmdReq(pCtrl, cmdReqHandle))
             {
                 return WDRV_WINC_STATUS_REQUEST_ERROR;
             }

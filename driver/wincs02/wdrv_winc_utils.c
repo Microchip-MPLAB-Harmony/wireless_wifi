@@ -1,25 +1,38 @@
+/*******************************************************************************
+  WINC Wireless Driver Utils Source File
+
+  File Name:
+    wdrv_winc_utils.c
+
+  Summary:
+    WINC wireless driver utils implementation.
+
+  Description:
+    This provides useful utility function to the driver.
+ *******************************************************************************/
+
 /*
-Copyright (C) 2024, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
-The software and documentation is provided by microchip and its contributors
-"as is" and any express, implied or statutory warranties, including, but not
-limited to, the implied warranties of merchantability, fitness for a particular
-purpose and non-infringement of third party intellectual property rights are
-disclaimed to the fullest extent permitted by law. In no event shall microchip
-or its contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to, procurement
-of substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in contract,
-strict liability, or tort (including negligence or otherwise) arising in any way
-out of the use of the software and documentation, even if advised of the
-possibility of such damage.
-
-Except as expressly permitted hereunder and subject to the applicable license terms
-for any third-party software incorporated in the software and any applicable open
-source software license terms, no license or other rights, whether express or
-implied, are granted under any patent or other intellectual property rights of
-Microchip or any third party.
+Subject to your compliance with these terms, you may use this Microchip software and any derivatives
+exclusively with Microchip products. You are responsible for complying with third party license terms
+applicable to your use of third party software (including open source software) that may accompany this
+Microchip software. SOFTWARE IS "AS IS." NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR
+STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF NON-
+INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL
+MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL LOSS,
+DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER
+CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE
+FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+CLAIMS RELATED TO THE SOFTWARE WILL NOT EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY
+TO MICROCHIP FOR THIS SOFTWARE.
 */
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -31,20 +44,34 @@ Microchip or any third party.
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_utils.h"
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Utils Internal Implementation
+// *****************************************************************************
+// *****************************************************************************
+
 #if !defined(TCPIP_STACK_USE_IPV4) && !defined(TCPIP_STACK_USE_IPV6)
 
 static uint8_t btohexa_high(uint8_t b)
 {
     b >>= 4;
-    return (uint8_t)((b > 0x9U) ? (b + U'a' - 10U) : (b + U'0'));
+    return (uint8_t)((b > 0x9U) ? (b + STR_LIT_U('a') - 10U) : (b + STR_LIT_U('0')));
 }
 
 static uint8_t btohexa_low(uint8_t b)
 {
     b &= 0x0FU;
-    return (uint8_t)((b > 9U) ? (b + U'a' - 10U) : (b + U'0'));
+    return (uint8_t)((b > 9U) ? (b + STR_LIT_U('a') - 10U) : (b + STR_LIT_U('0')));
 }
+#endif /* TCPIP_STACK_USE_IPV4 || TCPIP_STACK_USE_IPV6 */
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Utils Implementation
+// *****************************************************************************
+// *****************************************************************************
+
+#if !defined(TCPIP_STACK_USE_IPV4) && !defined(TCPIP_STACK_USE_IPV6)
 /*****************************************************************************
  *
  *****************************************************************************/
@@ -129,7 +156,8 @@ void WDRV_WINC_UtilsSingleListHeadAdd(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_L
     pN->next = pL->head;
     pL->head = pN;
     if (pL->tail == NULL)
-    {  // empty list
+    {
+        // empty list
         pL->tail = pN;
     }
     pL->nNodes++;
@@ -152,7 +180,8 @@ WDRV_WINC_SGL_LIST_NODE* WDRV_WINC_UtilsSingleListNodeRemove(WDRV_WINC_SINGLE_LI
         }
 
         if (prev == NULL)
-        {   // no such node
+        {
+            // no such node
             return NULL;
         }
         // found it
@@ -433,17 +462,20 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
     (void)memset(&convAddr, 0, sizeof(convAddr));
 
     while (0 != isspace((int)*addStr))
-    {   // skip leading space
+    {
+        // skip leading space
         addStr++;
         len--;
     }
     while (0 != isspace((int)*(addStr + len - 1U)))
-    {   // skip trailing space
+    {
+        // skip trailing space
         len--;
     }
 
     if (len > sizeof(str_buff) - 1U)
-    {   // not enough room to store
+    {
+        // not enough room to store
         return false;
     }
 
@@ -451,13 +483,15 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
     str_buff[len] = '\0';
     str = (unsigned char*)str_buff;
 
-    if (*str == U'[')
-    {   // match the end ]
-        if (str[len - 1U] != U']')
-        {   // bracket mismatch
+    if (*str == STR_LIT_U('['))
+    {
+        // match the end ]
+        if (str[len - 1U] != STR_LIT_U(']'))
+        {
+            // bracket mismatch
             return false;
         }
-        str[len - 1U] = U'\0';   // delete trailing ]
+        str[len - 1U] = STR_LIT_U('\0');   // delete trailing ]
         len--;
         str++;  // skip leading [
         len--;
@@ -465,21 +499,24 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
 
     currentWord = 0;
     while (0 != isspace((int)*str))
-    {   // skip leading space
+    {
+        // skip leading space
         str++;
         len--;
     }
     endPtr = (char*)&str[len];
     while (0 != isspace((int)*(endPtr - 1)))
-    {   // skip trailing space
+    {
+        // skip trailing space
         endPtr--;
     }
     *endPtr = '\0';
 
-    if (*str == U':')
+    if (*str == STR_LIT_U(':'))
     {
-        if (*++str != U':')
-        {   // cannot start with stray :
+        if (*++str != STR_LIT_U(':'))
+        {
+            // cannot start with stray :
             return false;
         }
         str++;
@@ -492,12 +529,12 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
     }
 
     c = *str++;
-    while ((c != U':') && (c != U'\0') && (c != U'.') && (c != U'/') && (c != U'\r') && (c != U'\n') && (c != U' ') && (c != U'\t'))
+    while ((c != STR_LIT_U(':')) && (c != STR_LIT_U('\0')) && (c != STR_LIT_U('.')) && (c != STR_LIT_U('/')) && (c != STR_LIT_U('\r')) && (c != STR_LIT_U('\n')) && (c != STR_LIT_U(' ')) && (c != STR_LIT_U('\t')))
     {
         uint16_t convertedValue;
 
         j = 0;
-        while ((c != U':') && (c != U'\0') && (c != U'.') && (c != U'/') && (c != U'\r') && (c != U'\n') && (c != U' ') && (c != U'\t'))
+        while ((c != STR_LIT_U(':')) && (c != STR_LIT_U('\0')) && (c != STR_LIT_U('.')) && (c != STR_LIT_U('/')) && (c != STR_LIT_U('\r')) && (c != STR_LIT_U('\n')) && (c != STR_LIT_U(' ')) && (c != STR_LIT_U('\t')))
         {
             if (j == 4)
             {
@@ -509,11 +546,11 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
         }
         subString[j] = 0;
 
-        if (c == U'.')
+        if (c == STR_LIT_U('.'))
         {
             conv_base = 10;
         }
-        else if ((c == U':') && (conv_base == 10))
+        else if ((c == STR_LIT_U(':')) && (conv_base == 10))
         {
             return false;
         }
@@ -530,20 +567,22 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
         }
 
         if ((convertedValue == 0U) && (endPtr != (char*)subString + j))
-        {   // could not convert all data in there
+        {
+            // could not convert all data in there
             return false;
         }
 
         convAddr.w[currentWord++] = WDRV_WINC_UtilsHToNS(convertedValue);
 
-        if (c == U'\0')
-        {   // end of stream
+        if (c == STR_LIT_U('\0'))
+        {
+            // end of stream
             break;
         }
 
-        if (c == U':')
+        if (c == STR_LIT_U(':'))
         {
-            if (*str == U':')
+            if (*str == STR_LIT_U(':'))
             {
                 // Double colon - pad with zeros here
                 if (shiftIndex == -1)
@@ -559,7 +598,7 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
             }
         }
 
-        if (c == U',')
+        if (c == STR_LIT_U(','))
         {
             return false;
         }
@@ -568,7 +607,8 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
     }
 
     if ((currentWord > 8) || ((currentWord < 8) && (shiftIndex == -1)))
-    {   // more than 8 words entered or less, but no ::
+    {
+        // more than 8 words entered or less, but no ::
         return false;
     }
 
@@ -675,7 +715,7 @@ uint16_t WDRV_WINC_UtilsNToHS(uint16_t N)
 
     return L;
 }
-#endif
-#endif
+#endif /* __BYTE_ORDER__ */
+#endif /* WINC_CONF_ENABLE_NC_BERKELEY_SOCKETS */
 
-#endif
+#endif /* TCPIP_STACK_USE_IPV4 || TCPIP_STACK_USE_IPV6 */
