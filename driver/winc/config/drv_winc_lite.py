@@ -471,10 +471,10 @@ def instantiateComponent(drvWincComponent):
         wincPioIntSrc.setLabel('***Above selected pins must be configured as PIO Output in Pin Manager***')
 
     # WINC1500 Version
-    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.7.7'])
+    winc1500Version = drvWincComponent.createComboSymbol('DRV_WIFI_WINC1500_VERSION', None, ['19.7.7', '19.7.10'])
     winc1500Version.setLabel('Firmware Version')
     winc1500Version.setVisible(True)
-    winc1500Version.setDefaultValue('19.7.7')
+    winc1500Version.setDefaultValue('19.7.10')
     winc1500Version.setDependencies(setVisibilityWincVersion, ['DRV_WIFI_WINC_DEVICE'])
     winc1500Version.setHelp(winclite_help_keyword)
 
@@ -684,6 +684,9 @@ def instantiateComponent(drvWincComponent):
         importIncFile(drvWincComponent, flagWinc1500, configName, incFileEntry, 'winc1500_19.7.7_lite')
 
     for incFileEntry in wdrvFirmwareDriverIncFiles:
+        importIncFile(drvWincComponent, flagWinc1500, configName, incFileEntry, 'winc1500_19.7.10_lite')
+
+    for incFileEntry in wdrvFirmwareDriverIncFiles:
         importIncFile(drvWincComponent, flagWinc3400, configName, incFileEntry, 'winc3400_1.4.7_lite')
 
     for incFileEntry in bledrvFirmwareDriverIncFiles:
@@ -754,6 +757,9 @@ def instantiateComponent(drvWincComponent):
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, flagWinc1500, configName, srcFileEntry, 'winc1500_19.7.7_lite')
+
+    for srcFileEntry in wdrvFirmwareDriverSrcFiles:
+        importSrcFile(drvWincComponent, flagWinc1500, configName, srcFileEntry, 'winc1500_19.7.10_lite')
 
     for srcFileEntry in wdrvFirmwareDriverSrcFiles:
         importSrcFile(drvWincComponent, flagWinc3400, configName, srcFileEntry, 'winc3400_1.4.7_lite')

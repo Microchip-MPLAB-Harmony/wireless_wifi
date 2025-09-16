@@ -38,7 +38,7 @@
         </#if>
         <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
         <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
-        <#if DRV_WIFI_WINC1500_VERSION == "19.7.7">
+        <#if DRV_WIFI_WINC1500_VERSION == "19.7.7" || DRV_WIFI_WINC1500_VERSION == "19.7.10">
             <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
             <#lt>#define WDRV_WINC_DEVICE_DEPRECATE_WEP
             <#lt>#define WDRV_WINC_DEVICE_OTA_SSL_OPTIONS

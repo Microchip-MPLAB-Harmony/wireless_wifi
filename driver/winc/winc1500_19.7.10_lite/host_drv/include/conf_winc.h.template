@@ -1,0 +1,87 @@
+/**
+ *
+ * \file
+ *
+ * \brief WINC1500 configuration.
+ */
+/*
+Copyright (C) 2022, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+
+The software and documentation is provided by microchip and its contributors
+"as is" and any express, implied or statutory warranties, including, but not
+limited to, the implied warranties of merchantability, fitness for a particular
+purpose and non-infringement of third party intellectual property rights are
+disclaimed to the fullest extent permitted by law. In no event shall microchip
+or its contributors be liable for any direct, indirect, incidental, special,
+exemplary, or consequential damages (including, but not limited to, procurement
+of substitute goods or services; loss of use, data, or profits; or business
+interruption) however caused and on any theory of liability, whether in contract,
+strict liability, or tort (including negligence or otherwise) arising in any way
+out of the use of the software and documentation, even if advised of the
+possibility of such damage.
+
+Except as expressly permitted hereunder and subject to the applicable license terms
+for any third-party software incorporated in the software and any applicable open
+source software license terms, no license or other rights, whether express or
+implied, are granted under any patent or other intellectual property rights of
+Microchip or any third party.
+*/
+/*
+ * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+ */
+
+#ifndef CONF_WINC_H_INCLUDED
+#define CONF_WINC_H_INCLUDED
+
+/* Define the time reset is asserted during start-up */
+//#define CONF_WINC_RESET_ASSERT_TIME                 50
+
+//#define CONF_WINC_HIF_CB_WIFI_HANDLER               m2m_wifi_cb
+//#define CONF_WINC_HIF_CB_IP_HANDLER                 m2m_ip_cb
+//#define CONF_WINC_HIF_CB_HIF_HANDLER
+//#define CONF_WINC_HIF_CB_OTA_HANDLER                m2m_ota_cb
+//#define CONF_WINC_HIF_CB_SSL_HANDLER                m2m_ssl_cb
+//#define CONF_WINC_HIF_CB_CRYPTO_HANDLER             m2m_crypto_cb
+//#define CONF_WINC_HIF_CB_SIGMA_HANDLER
+
+/* Debug Options */
+//#define CONF_WINC_DEBUG_LEVEL                       3
+//#define CONF_WINC_PRINTF                            printf
+//#define CONF_WINC_ASSERT
+
+/* Define only on MCU big endian architectures */
+//#define CONF_WINC_MCU_ARCH_BIG_ENDIAN
+
+/* Define only on MCU little endian architectures */
+//#define CONF_WINC_MCU_ARCH_LITTLE_ENDIAN
+
+/* Define macro to swap endianness of 32-bit unsigned integer */
+//#define CONF_WINC_UINT32_SWAP(U32)                  ((((U32) & 0x000000FF) << 24) | (((U32) & 0x0000FF00) << 8) | (((U32) & 0x00FF0000) >> 8) | (((U32) & 0xFF000000) >> 24))
+
+/* Define macro to swap endianness of 16-bit unsigned integer */
+//#define CONF_WINC_UINT16_SWAP(U16)                  ((((U16) & 0x00FF) << 8) | (((U16)  & 0xFF00) >> 8))
+
+/* Define if support for connecting to enterprise APs is required */
+//#define CONF_WINC_SUPPORT_ENTERPRISE_CONNECT
+
+/* Define to allow legacy definitions of types and preprocessor macros */
+//#define CONF_WINC_LEGACY_DEFINITIONS
+
+/* Define if _Static_assert/static_assert is not supported on this tool chain */
+//#define CONF_WINC_HIF_STRUCT_SIZE_CHECK(STRUCTNAME)
+
+/* Define to include support for serial bridge */
+//#define CONF_WINC_SERIAL_BRIDGE_INCLUDE
+
+/* Define if the serial bridge sends a sync ID before being requested */
+//#define CONF_WINC_SB_SEND_UNSOL_SYNC_ID
+
+/* Define if serial bridge will support variable baud rates */
+//#define CONF_WINC_SERIAL_BRIDGE_VARIABLE_BAUD_RATE
+
+/* Define if the socket API is exposed or not to the application */
+//#define CONF_WINC_DISABLE_SOCKET_API
+
+#include "include/conf_winc_defaults.h"
+
+#endif /* CONF_WINC_H_INCLUDED */
