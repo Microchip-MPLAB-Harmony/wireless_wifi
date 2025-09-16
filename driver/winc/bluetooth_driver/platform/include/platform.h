@@ -1,6 +1,6 @@
 // DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2017, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2017-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -31,6 +31,8 @@ Microchip or any third party.
 #include <stdbool.h>
 #include <string.h>
 #include "at_ble_api.h"
+
+#define VERSION_FIELD_VALID (0x5A5A5A5A)
 typedef struct {
     uint8_t major;
     uint8_t minor;
@@ -40,6 +42,7 @@ typedef struct {
     uintptr_t drvHandle;
     int8_t (*ble_write_cb)(uint8_t*, uint32_t);
     void (*plf_wait_cb)(uintptr_t);
+    uint32_t mv;
     frmw_ver fw_ver;
 }plf_params_t;
 
@@ -67,9 +70,13 @@ at_ble_status_t platform_init(plf_params_t* platform_params);
   *
   * @param[in] data data to send over the interface
   * @param[in] len length of data
+  * @return Zero if operation completed successfully
+  * @return Non zero for Generic error.
   *
   */
-void platform_interface_send(uint8_t* data, uint32_t len);
+at_ble_status_t platform_interface_send(uint8_t* data, uint32_t len);
+
+void platform_receive(uint8_t* data, uint32_t len);
 
  /** @brief the callback to upper layers to process received packets
   *
@@ -91,10 +98,10 @@ void platform_cmd_cmpl_signal(void);
  /** @brief blocks until the command-complete signal is fired
   *  @note more details at the platform porting guide
   *
-  * @return true Timeout
-  * @return false Operation completed successfully
+  * @return non-zero if Timeout
+  * @return zero if Operation completed successfully
   */
-bool platform_cmd_cmpl_wait(void);
+at_ble_status_t platform_cmd_cmpl_wait(void);
 
  /** @brief fires the event signal
   *  @note more details at the platform porting guide
@@ -108,7 +115,15 @@ void platform_event_signal(void);
   * @param[in] timeout timeout in ms passed by user
   *
   */
-uint8_t platform_event_wait(uint32_t timeout);
+at_ble_status_t platform_event_wait(uint32_t timeout);
+
+ /** @brief set timeout value used for wait functions.
+  *  @note more details at the platform porting guide
+  *
+  * @param[in] timeout timeout in ms passed by user
+  *
+  */
+void platform_set_timeout(uint32_t timeout);
  /** @}*/
 
 #endif // __PLATFORM_H__

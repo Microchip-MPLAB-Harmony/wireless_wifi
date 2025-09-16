@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * profiles.h
  *
- *  Created on: Mar 12, 2015
- *      Author: aabdelfattah
  */
 
 /*

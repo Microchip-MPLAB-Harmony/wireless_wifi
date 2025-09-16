@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * dbg_task.h
  *
- *  Created on: Oct 28, 2014
- *      Author: lali
  */
 #ifndef DBG_TASK_H_
 #define DBG_TASK_H_
@@ -112,14 +110,14 @@ enum dbg_evt_id
     DBG_LE_GET_BD_ADDR_CMP_EVT=0xc48
 };
 
-uint8_t dbg_le_set_bd_addr_req_handler(uint8_t* addr);
-uint8_t dbg_le_get_bd_addr_req_handler(uint8_t* addr);
-uint8_t dbg_set_tx_pw_req_handler(uint16_t conn_handle, uint8_t level);
-uint8_t dbg_wr_mem_req_handler(uint32_t memAddr,uint8_t * data,uint8_t size);
-uint8_t dbg_wr_mem_req_handler32(uint32_t memAddr,uint32_t * data,uint8_t size);
-void dbg_wr_mem_req_handler32_reset(uint32_t memAddr,uint32_t * data,uint8_t size);
-uint8_t dbg_rd_mem_req_handler(uint32_t memAddr,uint8_t* data ,uint8_t size);
-uint8_t dbg_rd_mem_req_handler32(uint32_t memAddr,uint8_t* data ,uint8_t size);
+at_ble_status_t dbg_le_set_bd_addr_req_handler(uint8_t* addr);
+at_ble_status_t dbg_le_get_bd_addr_req_handler(uint8_t* addr);
+at_ble_status_t dbg_set_tx_pw_req_handler(uint16_t conn_handle, uint8_t level);
+at_ble_status_t dbg_wr_mem_req_handler(uint32_t memAddr,uint8_t * data,uint8_t size);
+at_ble_status_t dbg_wr_mem_req_handler32(uint32_t memAddr,uint32_t * data,uint8_t size);
+at_ble_status_t dbg_wr_mem_req_handler32_reset(uint32_t memAddr,uint32_t * data,uint8_t size);
+at_ble_status_t dbg_rd_mem_req_handler(uint32_t memAddr,uint8_t* data ,uint8_t size);
+at_ble_status_t dbg_rd_mem_req_handler32(uint32_t memAddr,uint8_t* data ,uint8_t size);
 
 #endif
 

@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * ll_if.h
  *
- *  Created on: Sep 16, 2013
- *      Author: delsissy
  */
 
 #ifndef LL_IF_H_

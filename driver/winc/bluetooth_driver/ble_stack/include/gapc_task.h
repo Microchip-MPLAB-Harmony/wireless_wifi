@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * gapc_task.h
  *
- *  Created on: Jul 16, 2014
- *      Author: delsissy
  */
 #ifndef GAPC_TASK_H_
 #define GAPC_TASK_H_
@@ -67,49 +65,49 @@ typedef struct
 } gapc_con_tx_pow_set_ind;
 
 
-void gapc_connection_cfm_handler(uint8_t *pu8LocalKey,  uint32_t u32LocalSignCntr, uint8_t *pu8RemoteKey,
+at_ble_status_t gapc_connection_cfm_handler(uint8_t *pu8LocalKey,  uint32_t u32LocalSignCntr, uint8_t *pu8RemoteKey,
     uint32_t u32RemoteSignCntr, uint8_t u8Auth, uint8_t u8Authorize, uint16_t u16ConHdl);
 
-void gapc_bond_cfm_handler_pair_resp(uint8_t u8Accept, uint8_t u8IoCap, uint8_t u8OOB, uint8_t u8Auth,
+at_ble_status_t  gapc_bond_cfm_handler_pair_resp(uint8_t u8Accept, uint8_t u8IoCap, uint8_t u8OOB, uint8_t u8Auth,
     uint8_t u8KeySize, uint8_t u8IkeyDist, uint8_t u8RkeyDist, uint8_t u8SecReq,
     uint16_t u16ConHdl);
 
-void gapc_get_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t get_type); //get_type: current or maximum
+at_ble_status_t gapc_get_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t get_type); //get_type: current or maximum
 
-void gapc_set_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t u8txpow);
+at_ble_status_t gapc_set_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t u8txpow);
 
-void gapc_disconnect_cmd_handler(uint8_t reason, uint16_t handle);
+at_ble_status_t gapc_disconnect_cmd_handler(uint8_t reason, uint16_t handle);
 
-void gapc_param_update_cmd_handler(uint16_t handle,
+at_ble_status_t gapc_param_update_cmd_handler(uint16_t handle,
     uint16_t con_intv_min, uint16_t con_intv_max, uint16_t con_latency, uint16_t superv_to,
     uint16_t ce_len_min, uint16_t ce_len_max);
 
-void gapc_param_update_cfm_handler(uint16_t conn_handle,
+at_ble_status_t gapc_param_update_cfm_handler(uint16_t conn_handle,
     uint16_t ce_len_min, uint16_t ce_len_max);
 
-void gapc_bond_cmd_handler(uint16_t conn_handle, uint8_t io_capabilities,
+at_ble_status_t gapc_bond_cmd_handler(uint16_t conn_handle, uint8_t io_capabilities,
     uint8_t oob_available, uint8_t auth_req, uint8_t max_key_size,
     uint8_t initiator_keys, uint8_t responder_keys, uint8_t desired_auth);
 
-void gapc_security_cmd_handler(uint16_t conn_handle, uint8_t auth_req);
+at_ble_status_t gapc_security_cmd_handler(uint16_t conn_handle, uint8_t auth_req);
 
-void gapc_bond_cfm_handler_key_exch(uint8_t u8Req,  uint8_t u8Accept, uint8_t* key,
+at_ble_status_t gapc_bond_cfm_handler_key_exch(uint8_t u8Req,  uint8_t u8Accept, uint8_t* key,
     uint16_t u16ConHdl);
 
-void gapc_encrypt_cmd_handler(uint16_t conn_handle, uint8_t* key,
+at_ble_status_t gapc_encrypt_cmd_handler(uint16_t conn_handle, uint8_t* key,
     uint16_t ediv, uint8_t* rand, uint8_t key_size , uint8_t auth);
 
-void gapc_encrypt_cfm_handler(uint16_t conn_handle, uint8_t auth ,uint8_t key_found,
+at_ble_status_t gapc_encrypt_cfm_handler(uint16_t conn_handle, uint8_t auth ,uint8_t key_found,
     uint8_t* key, uint8_t key_size);
 
 
-void gapc_con_req_ind(uint8_t* data);
+at_ble_status_t gapc_con_req_ind(uint8_t* data);
 
-void gapc_disconnect_ind(uint8_t* data, at_ble_disconnected_t* param);
+at_ble_status_t gapc_disconnect_ind(uint8_t* data, at_ble_disconnected_t* param);
 
-void gapc_param_updated_ind(uint16_t src, uint8_t* data, at_ble_conn_param_update_done_t* param);
+at_ble_status_t gapc_param_updated_ind(uint16_t src, uint8_t* data, at_ble_conn_param_update_done_t* param);
 
-void gapc_param_update_req_ind(uint16_t src, uint8_t* data,
+at_ble_status_t gapc_param_update_req_ind(uint16_t src, uint8_t* data,
     at_ble_conn_param_update_request_t *param);
 
 void gapc_bond_req(uint16_t src, at_ble_pair_request_t* param);
@@ -123,20 +121,20 @@ at_ble_events_t gapc_bond_ind(uint16_t src, uint8_t* data, at_ble_pair_done_t* p
 at_ble_events_t gapc_cmp_evt(uint16_t src, uint8_t* data,
     at_ble_encryption_status_changed_t* params);
 
-void gapc_encrypt_req_ind(uint16_t src, uint8_t* data,
+at_ble_status_t gapc_encrypt_req_ind(uint16_t src, uint8_t* data,
     at_ble_encryption_request_t* params);
 
-void gapc_encrypt_ind(uint16_t src ,uint8_t* data ,at_ble_encryption_status_changed_t* params);
+at_ble_status_t gapc_encrypt_ind(uint16_t src ,uint8_t* data ,at_ble_encryption_status_changed_t* params);
 
-void gapc_sec_req_ind(uint16_t src, uint8_t* data,at_ble_slave_sec_request_t* params);
+at_ble_status_t gapc_sec_req_ind(uint16_t src, uint8_t* data,at_ble_slave_sec_request_t* params);
 
-void gapc_get_info_cmd_handler(uint16_t conn_handle, uint8_t operation);
+at_ble_status_t gapc_get_info_cmd_handler(uint16_t conn_handle, uint8_t operation);
 
-void gapc_con_rssi_ind_parser(uint16_t src, uint8_t* data, gapc_con_rssi_ind* params);
+at_ble_status_t gapc_con_rssi_ind_parser(uint16_t src, uint8_t* data, gapc_con_rssi_ind* params);
 
-void gapc_con_max_PA_gain_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_max_PA_gain_get_ind* params);
-void gapc_con_tx_pow_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_get_ind* params);
-void gapc_con_tx_pow_set_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_set_ind* params);
+at_ble_status_t gapc_con_max_PA_gain_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_max_PA_gain_get_ind* params);
+at_ble_status_t gapc_con_tx_pow_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_get_ind* params);
+at_ble_status_t gapc_con_tx_pow_set_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_set_ind* params);
 
 enum gapc_msg_id
 {

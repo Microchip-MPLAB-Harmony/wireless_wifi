@@ -34,13 +34,12 @@ Microchip or any third party.
 /*
  * gattm_task.h
  *
- *  Created on: Sep 16, 2013
- *      Author: delsissy
  */
 #ifndef GATTM_TASK_H_
 #define GATTM_TASK_H_
 
 #include "cmn_defs.h"
+#include "gattc_task.h"
 
 /// maximum number of handles returned
 #define GATT_MAX_HDL_LIST                            0x08
@@ -51,19 +50,19 @@ Microchip or any third party.
 /// size for 128-bit UUID
 #define GATT_UUID_16_OCTET_LEN                      0x10
 
-uint8_t gattm_add_svc_req_handler(uint16_t *start_hdl, uint16_t total_size, uint8_t nb_att_uuid_16,
+ATT_ERR gattm_add_svc_req_handler(uint16_t *start_hdl, uint16_t total_size, uint8_t nb_att_uuid_16,
         uint8_t nb_att_uuid_32, uint8_t nb_att_uuid_128);
-uint8_t gattm_add_attribute_req_handler (uint16_t start_hdl, uint16_t max_data_size, uint16_t perm,
+ATT_ERR gattm_add_attribute_req_handler (uint16_t start_hdl, uint16_t max_data_size, uint16_t perm,
         uint8_t uuid_len, uint8_t *uuid, uint16_t *handle);
-uint8_t gattm_att_set_value_req_handler(uint16_t handle, uint16_t length, uint8_t *value);
-uint8_t gattm_att_get_value_req_handler(uint16_t handle, uint16_t* length, uint8_t *value);
+ATT_ERR gattm_att_set_value_req_handler(uint16_t handle, uint16_t length, uint8_t *value);
+ATT_ERR gattm_att_get_value_req_handler(uint16_t handle, uint16_t* length, uint8_t *value);
 
-uint8_t gatt_notify_req_handler(uint16_t conhdl, uint16_t charhdl);
-uint8_t gatt_indicate_req_handler(uint16_t conhdl, uint16_t charhdl);
-uint8_t gatt_write_attribute_req_handler (uint16_t length, uint16_t attr_hdl, uint16_t perm,
+ATT_ERR gatt_notify_req_handler(uint16_t conhdl, uint16_t charhdl);
+ATT_ERR gatt_indicate_req_handler(uint16_t conhdl, uint16_t charhdl);
+ATT_ERR gatt_write_attribute_req_handler (uint16_t length, uint16_t attr_hdl, uint16_t perm,
         uint8_t *val);
-uint8_t gatt_clear_attribute_req_handler (uint16_t attr_hdl);
-uint8_t gatt_read_attribute_req_handler  (uint16_t attr_hdl, uint16_t *len, uint16_t *perm, uint8_t *uuid_len,
+ATT_ERR gatt_clear_attribute_req_handler (uint16_t attr_hdl);
+ATT_ERR gatt_read_attribute_req_handler  (uint16_t attr_hdl, uint16_t *len, uint16_t *perm, uint8_t *uuid_len,
         uint8_t *uuid, uint8_t *value);
 void gatt_resource_access_req_handler(uint16_t con_hdl);
 void gatt_resource_access_resp_handler (uint16_t con_hdl);

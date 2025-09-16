@@ -95,51 +95,59 @@ static uint8_t gapm_get_address_type(uint8_t *pu8Addr, uint8_t u8AddrType)
 */
 #define gapm_set_address_type(type) ((type>0 && type <4)?1:0)
 
-uint8_t gapm_reset_req_handler (void)
+at_ble_status_t gapm_reset_req_handler (void)
 {
-    uint8_t u8Operation = GAPM_RESET;
-    uint8_t u8Status;
+    at_ble_status_t status;
 
     INTERFACE_MSG_INIT(GAPM_RESET_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_RESET);
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
-    if(u8Status == AT_BLE_SUCCESS)
+    status = INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
+
+    if (status == AT_BLE_SUCCESS)
     {
+        uint8_t u8Operation, u8Status;
         INTERFACE_UNPACK_UINT8(&u8Operation);
         INTERFACE_UNPACK_UINT8(&u8Status);
+        if (u8Status != 0 || u8Operation != GAPM_RESET)
+        {
+            status = AT_BLE_FAILURE;
+        }
     }
     INTERFACE_MSG_DONE();
-    if(u8Operation!=GAPM_RESET)
-        return AT_BLE_FAILURE;
-    return u8Status;
+    return status;
 }
 
-uint8_t gapm_set_dev_name_handler(uint8_t len, uint8_t* name)
+at_ble_status_t gapm_set_dev_name_handler(uint8_t len, uint8_t* name)
 {
-
-    uint8_t u8Operation = GAPM_SET_DEV_NAME;
-    uint8_t u8Status;
+    at_ble_status_t    status;
 
     INTERFACE_MSG_INIT(GAPM_SET_DEV_NAME_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_SET_DEV_NAME);
     INTERFACE_PACK_ARG_UINT8(len);
     INTERFACE_PACK_ARG_BLOCK(name, len);
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
-    if(u8Status == AT_BLE_SUCCESS)
+    status = INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
+    
+    if (status == AT_BLE_SUCCESS)
     {
+        uint8_t u8Operation, u8Status;
         INTERFACE_UNPACK_UINT8(&u8Operation);
         INTERFACE_UNPACK_UINT8(&u8Status);
+        if(u8Status != 0 || u8Operation != GAPM_SET_DEV_NAME)
+        {
+            status = AT_BLE_FAILURE;
+        }
     }
     INTERFACE_MSG_DONE();
-    if(u8Operation!=GAPM_SET_DEV_NAME)
-        return AT_BLE_FAILURE;
-    return u8Status;
+    
+    return status;
 }
 
-void gapm_start_adv_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrSrc, uint16_t u16RenewDur,
+at_ble_status_t gapm_start_adv_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrSrc, uint16_t u16RenewDur,
         uint8_t *pu8BdAddr,uint8_t peer_addr_type ,uint8_t *peerBdAddr, uint16_t u16MinIntv, uint16_t u16MaxIntv, uint8_t u8ChnlMap, uint8_t u8Mode ,
     uint8_t u8AdvFiltPolicy, uint8_t u8AdvDataLen, uint8_t *pu8AdvData, uint8_t u8ScnRespLen, uint8_t *pu8ScnRespData)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GAPM_START_ADVERTISE_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(u8OpCode);
     INTERFACE_PACK_ARG_UINT8(u8AddrSrc);
@@ -185,17 +193,17 @@ void gapm_start_adv_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrSrc, uint16_t u
         INTERFACE_PACK_ARG_DUMMY((SCAN_RESP_DATA_MAX_SIZE - u8ScnRespLen));
     }
 
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    return status;
 }
 
-uint8_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key,
+at_ble_status_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key,
                 uint16_t u16Appearance, uint8_t u8AppWrPerm, uint8_t u8NameWrPerm, uint16_t u16MaxMTU,
                 uint16_t u16ConIntMin, uint16_t u16ConIntMax, uint16_t u16ConLatency,
                 uint16_t u16SupervTo, uint8_t u8Flags)
 {
-    uint8_t u8Operation = GAPM_SET_DEV_CONFIG;
-    uint8_t u8Status;
+    at_ble_status_t status;
 
     INTERFACE_MSG_INIT(GAPM_SET_DEV_CONFIG_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_SET_DEV_CONFIG);
@@ -213,22 +221,29 @@ uint8_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key,
         INTERFACE_PACK_ARG_UINT16(u16SupervTo);
         INTERFACE_PACK_ARG_UINT8(u8Flags);
     }
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
-    if(u8Status == AT_BLE_SUCCESS)
+   
+    status = INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
+    if (status == AT_BLE_SUCCESS)
     {
+        uint8_t u8Operation, u8Status;
         INTERFACE_UNPACK_UINT8(&u8Operation);
         INTERFACE_UNPACK_UINT8(&u8Status);
+        if(u8Status != 0 || u8Operation!=GAPM_SET_DEV_CONFIG)
+        {
+            status = AT_BLE_FAILURE;
+        }
     }
     INTERFACE_MSG_DONE();
-    if(u8Operation!=GAPM_SET_DEV_CONFIG)
-        return AT_BLE_FAILURE;
-    return u8Status;
+
+    return status;
 }
 
-void gapm_start_scan_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
+at_ble_status_t gapm_start_scan_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
         uint8_t *pu8BdAddr, uint16_t u16ScanInterval, uint16_t u16ScanWin, uint8_t u8ScanMode, uint8_t u8FiltPolicy,
         uint8_t u8FilterDuplic)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GAPM_START_SCAN_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(u8OpCode);
     INTERFACE_PACK_ARG_UINT8(u8AddrType);
@@ -240,17 +255,20 @@ void gapm_start_scan_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrType, uint16_t
     INTERFACE_PACK_ARG_UINT8(u8ScanMode);
     INTERFACE_PACK_ARG_UINT8(u8FiltPolicy);
     INTERFACE_PACK_ARG_UINT8(u8FilterDuplic);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gapm_start_connection_cmd_handler(uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
+at_ble_status_t gapm_start_connection_cmd_handler(uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
             uint8_t *pu8BdAddr, uint16_t u16ScanInterval, uint16_t u16ScanWin, uint16_t u16ConIntvMin,
             uint16_t u16ConIntvMax, uint16_t u16ConLatency, uint16_t u16SupervTO, uint16_t u16CeMin,
             uint16_t u16CeMAx, uint8_t u8NbOfPeers, at_ble_addr_t *peers)
 {
+    at_ble_status_t status;
+    uint8_t i = 0;
 
-    uint8_t count = 0;
     INTERFACE_MSG_INIT(GAPM_START_CONNECTION_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(u8OpCode);
     INTERFACE_PACK_ARG_UINT8(u8AddrType);
@@ -266,31 +284,36 @@ void gapm_start_connection_cmd_handler(uint8_t u8OpCode, uint8_t u8AddrType, uin
     INTERFACE_PACK_ARG_UINT16(u16CeMin);
     INTERFACE_PACK_ARG_UINT16(u16CeMAx);
     INTERFACE_PACK_ARG_UINT8(u8NbOfPeers);
-    for(count = 0; count < u8NbOfPeers; count++)
+    for(i = 0; i < u8NbOfPeers; i++)
     {
         INTERFACE_PACK_ARG_BLOCK((peers->addr), BD_ADDR_LEN);
         INTERFACE_PACK_ARG_UINT8(gapm_set_address_type(peers->type));
         peers +=1;
     }
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-uint8_t gapm_cancel_cmd_handler (void)
+at_ble_status_t gapm_cancel_cmd_handler(void)
 {
-    uint8_t u8Status = 0;
+    at_ble_status_t status;
 
     INTERFACE_MSG_INIT(GAPM_CANCEL_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_CANCEL);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
-    return u8Status;
+
+    return status;
 }
 
-void gapm_connection_cfm_handler ( uint8_t *pu8PeerBdAddr, uint8_t u8PeerAddrType,uint16_t u16ConIntvMin,
+at_ble_status_t gapm_connection_cfm_handler( uint8_t *pu8PeerBdAddr, uint8_t u8PeerAddrType,uint16_t u16ConIntvMin,
             uint16_t u16ConIntvMax, uint16_t u16ConLatency, uint16_t u16SupervTO, uint16_t u16CeMin,
             uint16_t u16CeMAx)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GAPM_CONNECTION_CFM, TASK_GAPM);
     INTERFACE_PACK_ARG_BLOCK(pu8PeerBdAddr, BD_ADDR_LEN);
     INTERFACE_PACK_ARG_UINT8(u8PeerAddrType);
@@ -301,25 +324,34 @@ void gapm_connection_cfm_handler ( uint8_t *pu8PeerBdAddr, uint8_t u8PeerAddrTyp
     INTERFACE_PACK_ARG_UINT16(u16SupervTO);
     INTERFACE_PACK_ARG_UINT16(u16CeMin);
     INTERFACE_PACK_ARG_UINT16(u16CeMAx);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gapm_resolv_addr_cmd_handler(uint8_t nb_key , uint8_t* rand_addr , uint8_t* irk)
+at_ble_status_t gapm_resolv_addr_cmd_handler(uint8_t nb_key , uint8_t* rand_addr , uint8_t* irk)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GAPM_RESOLV_ADDR_CMD,TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_RESOLV_ADDR);
     INTERFACE_PACK_ARG_UINT8(nb_key);
     INTERFACE_PACK_ARG_BLOCK(rand_addr,AT_BLE_ADDR_LEN);
     INTERFACE_PACK_ARG_BLOCK(irk, (KEY_LEN *nb_key));
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-uint8_t gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* address)
+at_ble_status_t gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* address)
 {
     // To do check complete effect operation or not
-    uint8_t u8Status;
+    at_ble_status_t status;
+
+    (void)(operation);
+
     INTERFACE_MSG_INIT(GAPM_WHITE_LIST_MGT_CMD, TASK_GAPM);
     INTERFACE_PACK_ARG_UINT8(GAPM_ADD_DEV_IN_WLIST);
     /// Number of device information present in command
@@ -329,12 +361,13 @@ uint8_t gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* a
         INTERFACE_PACK_ARG_BLOCK(address, AT_BLE_ADDR_LEN);
         INTERFACE_PACK_ARG_UINT8(addr_type);
     }
-    INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM, &u8Status);
+    status = INTERFACE_SEND_WAIT(GAPM_CMP_EVT, TASK_GAPM);
     INTERFACE_MSG_DONE();
-    return u8Status;
+
+    return status;
 }
 
-void gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param)
+at_ble_status_t gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param)
 {
     uint8_t evt_type;
     INTERFACE_UNPACK_INIT(data);
@@ -343,8 +376,8 @@ void gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param)
     INTERFACE_UNPACK_BLOCK(param->dev_addr.addr, AT_BLE_ADDR_LEN);
     INTERFACE_UNPACK_UINT8(&(param->adv_data_len));
     INTERFACE_UNPACK_BLOCK(param->adv_data ,param->adv_data_len);
-#ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
     INTERFACE_UNPACK_SKIP((AT_BLE_ADV_MAX_SIZE-param->adv_data_len));
+#ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
     INTERFACE_UNPACK_UINT8(&(param->rssi));
 #endif
     INTERFACE_UNPACK_DONE();
@@ -373,13 +406,17 @@ void gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param)
             param->type = AT_BLE_ADV_TYPE_SCAN_RESPONSE;
             break;
     }
+
+    return AT_BLE_SUCCESS;
 }
 
-void gapm_dev_bdaddr_ind_handler(uint8_t* data,at_ble_rand_addr_changed_t* param)
+at_ble_status_t gapm_dev_bdaddr_ind_handler(uint8_t* data,at_ble_rand_addr_changed_t* param)
 {
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_BLOCK(param->addr, AT_BLE_ADDR_LEN);
     INTERFACE_UNPACK_DONE();
+
+    return AT_BLE_SUCCESS;
 }
 
 at_ble_events_t gapm_cmp_evt(uint8_t* data, void* params)
@@ -431,12 +468,13 @@ at_ble_events_t gapm_cmp_evt(uint8_t* data, void* params)
     return evt_num;
 }
 
-void gapm_addr_solved_ind_handler(uint8_t* data , at_ble_resolv_rand_addr_status_t* params)
+at_ble_status_t gapm_addr_solved_ind_handler(uint8_t* data , at_ble_resolv_rand_addr_status_t* params)
 {
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_SKIP(6);
     INTERFACE_UNPACK_BLOCK(params->irk,AT_BLE_MAX_KEY_LEN);
     INTERFACE_UNPACK_DONE();
     params->status = AT_BLE_SUCCESS;
+    return AT_BLE_SUCCESS;
 }
 // DOM-IGNORE-END

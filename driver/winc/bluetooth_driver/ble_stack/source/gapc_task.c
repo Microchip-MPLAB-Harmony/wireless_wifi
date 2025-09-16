@@ -54,10 +54,11 @@ typedef struct
 
 static at_key_info_t peer_key_info;
 
-void gapc_bond_cfm_handler_pair_resp(uint8_t u8Accept, uint8_t u8IoCap, uint8_t u8OOB, uint8_t u8Auth,
+at_ble_status_t gapc_bond_cfm_handler_pair_resp(uint8_t u8Accept, uint8_t u8IoCap, uint8_t u8OOB, uint8_t u8Auth,
                                  uint8_t u8KeySize, uint8_t u8IkeyDist, uint8_t u8RkeyDist, uint8_t u8SecReq,
                                  uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
     INTERFACE_MSG_INIT(GAPC_BOND_CFM, KE_BUILD_ID(TASK_GAPC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(GAPC_PAIRING_RSP);
     INTERFACE_PACK_ARG_UINT8(u8Accept);
@@ -68,27 +69,32 @@ void gapc_bond_cfm_handler_pair_resp(uint8_t u8Accept, uint8_t u8IoCap, uint8_t 
     INTERFACE_PACK_ARG_UINT8(u8IkeyDist);
     INTERFACE_PACK_ARG_UINT8(u8RkeyDist);
     INTERFACE_PACK_ARG_UINT8(u8SecReq);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    return status;
 }
 
-void gapc_bond_cfm_handler_key_exch(uint8_t u8Req,  uint8_t u8Accept, uint8_t* key,
+at_ble_status_t gapc_bond_cfm_handler_key_exch(uint8_t u8Req,  uint8_t u8Accept, uint8_t* key,
                 uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
     INTERFACE_MSG_INIT(GAPC_BOND_CFM, KE_BUILD_ID(TASK_GAPC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(u8Req);
     INTERFACE_PACK_ARG_UINT8(u8Accept);
     INTERFACE_PACK_ARG_BLOCK(key, KEY_LEN);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    return status;
 }
 
-void gapc_encrypt_cmd_handler(uint16_t conn_handle, uint8_t* key,
+at_ble_status_t gapc_encrypt_cmd_handler(uint16_t conn_handle, uint8_t* key,
     uint16_t ediv, uint8_t* rand, uint8_t key_size ,uint8_t auth)
 {
+    at_ble_status_t status;
     static uint8_t dummy_key[KEY_LEN] =
         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
     INTERFACE_MSG_INIT(GAPC_ENCRYPT_CMD, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(GAPC_ENCRYPT);
     //Added for structure padding
@@ -97,60 +103,83 @@ void gapc_encrypt_cmd_handler(uint16_t conn_handle, uint8_t* key,
     INTERFACE_PACK_ARG_UINT16(ediv);
     INTERFACE_PACK_ARG_BLOCK(rand,8);
     INTERFACE_PACK_ARG_UINT8(key_size);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
-    gapc_connection_cfm_handler(dummy_key, 0, dummy_key, 0, auth,
+    if (status == AT_BLE_SUCCESS)
+    {
+        status = gapc_connection_cfm_handler(dummy_key, 0, dummy_key, 0, auth,
                     GAP_AUTHZ_NOT_SET, conn_handle);
 }
+    return status;
+}
 
-void gapc_encrypt_cfm_handler(uint16_t conn_handle, uint8_t auth ,uint8_t key_found,
+at_ble_status_t gapc_encrypt_cfm_handler(uint16_t conn_handle, uint8_t auth ,uint8_t key_found,
     uint8_t* key, uint8_t key_size)
 {
+    at_ble_status_t status;
     static uint8_t dummy_key[KEY_LEN] =
         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
     INTERFACE_MSG_INIT(GAPC_ENCRYPT_CFM, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(key_found);
     INTERFACE_PACK_ARG_BLOCK(key, KEY_LEN);
     //Encryption key size
     INTERFACE_PACK_ARG_UINT8(key_size);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
-    gapc_connection_cfm_handler(dummy_key, 0, dummy_key, 0, auth,
+
+    if (status == AT_BLE_SUCCESS)
+    {
+        status = gapc_connection_cfm_handler(dummy_key, 0, dummy_key, 0, auth,
                     GAP_AUTHZ_NOT_SET, conn_handle);
 }
+    return status;
+}
 
-void gapc_get_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t get_type)
+at_ble_status_t gapc_get_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t get_type)
 {
+    at_ble_status_t status;
     INTERFACE_MSG_INIT(GAPC_GET_TX_PWR_REQ, KE_BUILD_ID(TASK_GAPC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT16(u16ConHdl);
     INTERFACE_PACK_ARG_UINT8(get_type);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    return status;
 }
 
-void gapc_set_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t u8txpow)
+at_ble_status_t gapc_set_tx_pwr_req_handler(uint16_t u16ConHdl, uint8_t u8txpow)
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_SET_TX_PWR_REQ, KE_BUILD_ID(TASK_GAPC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT16(u16ConHdl);
     INTERFACE_PACK_ARG_UINT8(u8txpow);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_disconnect_cmd_handler(uint8_t reason, uint16_t handle)
+at_ble_status_t gapc_disconnect_cmd_handler(uint8_t reason, uint16_t handle)
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_DISCONNECT_CMD, KE_BUILD_ID(TASK_GAPC, handle));
     INTERFACE_PACK_ARG_UINT8(GAPC_DISCONNECT);
     INTERFACE_PACK_ARG_UINT8(reason);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_param_update_cmd_handler(uint16_t handle,
+at_ble_status_t gapc_param_update_cmd_handler(uint16_t handle,
     uint16_t con_intv_min, uint16_t con_intv_max, uint16_t con_latency, uint16_t superv_to,
     uint16_t ce_len_min, uint16_t ce_len_max )
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_PARAM_UPDATE_CMD, KE_BUILD_ID(TASK_GAPC, handle));
     INTERFACE_PACK_ARG_UINT8(GAPC_UPDATE_PARAMS);
     INTERFACE_PACK_ARG_UINT8(0);
@@ -160,26 +189,34 @@ void gapc_param_update_cmd_handler(uint16_t handle,
     INTERFACE_PACK_ARG_UINT16(superv_to);
     INTERFACE_PACK_ARG_UINT16(ce_len_min);
     INTERFACE_PACK_ARG_UINT16(ce_len_max);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_param_update_cfm_handler(uint16_t conn_handle,
+at_ble_status_t gapc_param_update_cfm_handler(uint16_t conn_handle,
         uint16_t ce_len_min, uint16_t ce_len_max )
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_PARAM_UPDATE_CFM, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(1);
     INTERFACE_PACK_ARG_UINT8(0);
     INTERFACE_PACK_ARG_UINT16(ce_len_min);
     INTERFACE_PACK_ARG_UINT16(ce_len_max);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_connection_cfm_handler(uint8_t *lcsrk,  uint32_t local_signcntr, uint8_t *rcsrk,
+at_ble_status_t gapc_connection_cfm_handler(uint8_t *lcsrk,  uint32_t local_signcntr, uint8_t *rcsrk,
                                  uint32_t remote_signcntr, uint8_t auth, uint8_t authorize,
                                  uint16_t handle)
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_CONNECTION_CFM,  KE_BUILD_ID(TASK_GAPC, handle));
     INTERFACE_PACK_ARG_BLOCK(lcsrk, KEY_LEN);
     INTERFACE_PACK_ARG_UINT32(local_signcntr);
@@ -187,14 +224,18 @@ void gapc_connection_cfm_handler(uint8_t *lcsrk,  uint32_t local_signcntr, uint8
     INTERFACE_PACK_ARG_UINT32(remote_signcntr);
     INTERFACE_PACK_ARG_UINT8(auth);
     INTERFACE_PACK_ARG_UINT8(authorize);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_bond_cmd_handler(uint16_t conn_handle, uint8_t io_capabilities,
+at_ble_status_t gapc_bond_cmd_handler(uint16_t conn_handle, uint8_t io_capabilities,
     uint8_t oob_available, uint8_t auth_req, uint8_t max_key_size,
     uint8_t initiator_keys, uint8_t responder_keys, uint8_t desired_auth)
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_BOND_CMD, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(GAPC_BOND);
     INTERFACE_PACK_ARG_UINT8(io_capabilities);
@@ -205,20 +246,26 @@ void gapc_bond_cmd_handler(uint16_t conn_handle, uint8_t io_capabilities,
     INTERFACE_PACK_ARG_UINT8(initiator_keys);
     INTERFACE_PACK_ARG_UINT8(responder_keys);
     INTERFACE_PACK_ARG_UINT8(desired_auth);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_security_cmd_handler(uint16_t conn_handle, uint8_t auth_req)
+at_ble_status_t gapc_security_cmd_handler(uint16_t conn_handle, uint8_t auth_req)
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_SECURITY_CMD, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(GAPC_SECURITY_REQ);
     INTERFACE_PACK_ARG_UINT8(auth_req);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gapc_con_req_ind(uint8_t* data)
+at_ble_status_t gapc_con_req_ind(uint8_t* data)
 {
     static uint8_t dummy_key[KEY_LEN] =
         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -231,20 +278,21 @@ void gapc_con_req_ind(uint8_t* data)
     INTERFACE_UNPACK_BLOCK(device.peer_addr.addr, AT_BLE_ADDR_LEN);
     INTERFACE_UNPACK_DONE();
 
-    gapc_connection_cfm_handler(dummy_key, 0, dummy_key, 0, GAP_AUTH_REQ_NO_MITM_NO_BOND,
+    return gapc_connection_cfm_handler(dummy_key, 0, dummy_key, 0, GAP_AUTH_REQ_NO_MITM_NO_BOND,
                     GAP_AUTHZ_NOT_SET, device.conn_handle);
 }
 
-void gapc_disconnect_ind(uint8_t* data, at_ble_disconnected_t* param)
+at_ble_status_t gapc_disconnect_ind(uint8_t* data, at_ble_disconnected_t* param)
 {
     device.conn_handle = 0xFFFF;
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT16(&(param->handle));
     INTERFACE_UNPACK_UINT8(&(param->reason));
     INTERFACE_UNPACK_DONE();
+    return AT_BLE_SUCCESS;
 }
 
-void gapc_param_updated_ind(uint16_t src, uint8_t* data, at_ble_conn_param_update_done_t* param)
+at_ble_status_t gapc_param_updated_ind(uint16_t src, uint8_t* data, at_ble_conn_param_update_done_t* param)
 {
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT16(&(param->con_intv));
@@ -254,9 +302,10 @@ void gapc_param_updated_ind(uint16_t src, uint8_t* data, at_ble_conn_param_updat
     // To do check add connection parameters or not
     param->handle = KE_IDX_GET(src);
     param->status = AT_BLE_SUCCESS;
+    return AT_BLE_SUCCESS;
 }
 
-void gapc_param_update_req_ind(uint16_t src, uint8_t* data,
+at_ble_status_t gapc_param_update_req_ind(uint16_t src, uint8_t* data,
     at_ble_conn_param_update_request_t *param)
 {
     // To do check ce_min and ce_max
@@ -267,6 +316,7 @@ void gapc_param_update_req_ind(uint16_t src, uint8_t* data,
     INTERFACE_UNPACK_UINT16(&(param->params.con_latency));
     INTERFACE_UNPACK_UINT16(&(param->params.superv_to));
     INTERFACE_UNPACK_DONE();
+    return AT_BLE_SUCCESS;
 }
 
 void gapc_bond_req(uint16_t src, at_ble_pair_request_t* param)
@@ -373,18 +423,10 @@ at_ble_events_t gapc_bond_ind(uint16_t src, uint8_t* data, at_ble_pair_done_t* p
             param->handle = KE_IDX_GET(src);
             param->status = AT_BLE_SUCCESS;
             param->auth = INTERFACE_UNPACK_UINT8(&u8Info);
-            if(peer_key_info.irk.key != NULL)
-            {
-                memcpy(&(param->peer_irk),&(peer_key_info.irk),sizeof(at_ble_IRK_t));
-            }
-            if(peer_key_info.csrk.key != NULL)
-            {
-                memcpy(&(param->peer_csrk),&(peer_key_info.csrk),sizeof(at_ble_CSRK_t));
-            }
-            if(peer_key_info.ltk.key != NULL)
-            {
-                memcpy(&(param->peer_ltk),&(peer_key_info.ltk),sizeof(at_ble_LTK_t));
-            }
+
+            memcpy(&(param->peer_irk),&(peer_key_info.irk),sizeof(at_ble_IRK_t));
+            memcpy(&(param->peer_csrk),&(peer_key_info.csrk),sizeof(at_ble_CSRK_t));
+            memcpy(&(param->peer_ltk),&(peer_key_info.ltk),sizeof(at_ble_LTK_t));
         }
         break;
         case GAPC_IRK_EXCH:
@@ -412,7 +454,7 @@ at_ble_events_t gapc_bond_ind(uint16_t src, uint8_t* data, at_ble_pair_done_t* p
     return evt_num;
 }
 
-void gapc_encrypt_ind(uint16_t src ,uint8_t* data ,at_ble_encryption_status_changed_t* params)
+at_ble_status_t gapc_encrypt_ind(uint16_t src ,uint8_t* data ,at_ble_encryption_status_changed_t* params)
 {
     uint8_t auth;
 
@@ -421,6 +463,7 @@ void gapc_encrypt_ind(uint16_t src ,uint8_t* data ,at_ble_encryption_status_chan
     INTERFACE_UNPACK_DONE();
     params->handle = KE_IDX_GET(src);
     params->status = AT_BLE_SUCCESS;
+    return AT_BLE_SUCCESS;
 }
 
 at_ble_events_t gapc_cmp_evt(uint16_t src, uint8_t* data,
@@ -493,22 +536,24 @@ at_ble_events_t gapc_cmp_evt(uint16_t src, uint8_t* data,
     return evt_num;
 }
 
-void gapc_encrypt_req_ind(uint16_t src, uint8_t* data, at_ble_encryption_request_t* params)
+at_ble_status_t gapc_encrypt_req_ind(uint16_t src, uint8_t* data, at_ble_encryption_request_t* params)
 {
     params->handle = KE_IDX_GET(src);
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT16(&(params->ediv));
     INTERFACE_UNPACK_BLOCK((params->nb),8);
     INTERFACE_UNPACK_DONE();
+    return AT_BLE_SUCCESS;
 }
 
-void gapc_sec_req_ind(uint16_t src, uint8_t* data,at_ble_slave_sec_request_t* params)
+at_ble_status_t gapc_sec_req_ind(uint16_t src, uint8_t* data,at_ble_slave_sec_request_t* params)
 {
     uint8_t auth;
     params->handle = KE_IDX_GET(src);
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&auth);
     INTERFACE_UNPACK_DONE();
+    
     if((auth & 0x01) == 0x01)
     {
         params->bond = 1;
@@ -526,51 +571,67 @@ void gapc_sec_req_ind(uint16_t src, uint8_t* data,at_ble_slave_sec_request_t* pa
     {
         params->mitm_protection = 0;
     }
+    return AT_BLE_SUCCESS;
 }
 
-void gapc_get_info_cmd_handler(uint16_t conn_handle, uint8_t operation)
+at_ble_status_t gapc_get_info_cmd_handler(uint16_t conn_handle, uint8_t operation)
 {
+    at_ble_status_t status;
+    
     INTERFACE_MSG_INIT(GAPC_GET_INFO_CMD, KE_BUILD_ID(TASK_GAPC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(operation);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
 
+    return status;
 }
 
 // Indication carrying status about whether transmit power has been set
 // as requested. On occasions, such as when the request exceeds maximum
 // permitted, the power will not be set.
-void gapc_con_tx_pow_set_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_set_ind* params)
+at_ble_status_t gapc_con_tx_pow_set_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_set_ind* params)
 {
+    (void)(src);
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&(params->status));
     INTERFACE_UNPACK_DONE();
 
+    return AT_BLE_SUCCESS;
 }
 
 // Indication carrying the maximum allowed PA gain
-void gapc_con_max_PA_gain_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_max_PA_gain_get_ind* params)
+at_ble_status_t gapc_con_max_PA_gain_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_max_PA_gain_get_ind* params)
 {
+    (void)(src);
+
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&(params->max_PA_gain));
     INTERFACE_UNPACK_DONE();
+    
+    return AT_BLE_SUCCESS;
 }
 
 // Indication carrying the transmit power being used
-void gapc_con_tx_pow_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_get_ind* params)
+at_ble_status_t gapc_con_tx_pow_get_ind_parser(uint16_t src, uint8_t* data, gapc_con_tx_pow_get_ind* params)
 {
+    (void)(src);
+
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&(params->tx_pow_lvl));
     INTERFACE_UNPACK_DONE();
 
+    return AT_BLE_SUCCESS;
 }
 
 // Indication carrying the rssi of received frames
-void gapc_con_rssi_ind_parser(uint16_t src, uint8_t* data, gapc_con_rssi_ind* params)
+at_ble_status_t gapc_con_rssi_ind_parser(uint16_t src, uint8_t* data, gapc_con_rssi_ind* params)
 {
+    (void)(src);
+
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&(params->rssi));
     INTERFACE_UNPACK_DONE();
 
+    return AT_BLE_SUCCESS;
 }
 // DOM-IGNORE-END

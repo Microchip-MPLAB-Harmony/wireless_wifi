@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * gattc_task.h
  *
- *  Created on: Sep 16, 2013
- *      Author: delsissy
  */
 #ifndef GATTC_TASK_H_
 #define GATTC_TASK_H_
@@ -43,54 +41,54 @@ Microchip or any third party.
 #include "cmn_defs.h"
 
 
-void gattc_write_cmd_ind_handler(uint8_t *msg, uint16_t len);
-void gattc_send_evt_cmd_handler(uint8_t u8ReqType, uint16_t u16AttHdl, uint16_t u16ConHdl);
-void gattc_disc_cmd_handler (uint8_t u8ReqType, uint8_t u8UUIDLen, uint16_t u16StartHdl,
+at_ble_status_t gattc_write_cmd_ind_handler(uint8_t *msg, uint16_t len);
+at_ble_status_t gattc_send_evt_cmd_handler(uint8_t u8ReqType, uint16_t u16AttHdl, uint16_t u16ConHdl);
+at_ble_status_t gattc_disc_cmd_handler (uint8_t u8ReqType, uint8_t u8UUIDLen, uint16_t u16StartHdl,
                              uint16_t u16EndHdl, uint8_t* pu8UUID, uint16_t u16ConHdl);
-void gattc_reg_to_peer_handler(uint8_t u8ReqType, uint16_t u16StartHdl, uint16_t u16EndHdl,
+at_ble_status_t gattc_reg_to_peer_handler(uint8_t u8ReqType, uint16_t u16StartHdl, uint16_t u16EndHdl,
                                uint16_t u16ConHdl);
 
-void gattc_execute_write_cmd_handler(uint8_t u8Execute, uint16_t u16ConHdl);
+at_ble_status_t gattc_execute_write_cmd_handler(uint8_t u8Execute, uint16_t u16ConHdl);
 
 
-void gattc_write_cmd_handler(uint8_t u8ReqType, uint8_t u8AutoExec, uint16_t u16AttHdl, uint16_t u16Offset,
+at_ble_status_t gattc_write_cmd_handler(uint8_t u8ReqType, uint8_t u8AutoExec, uint16_t u16AttHdl, uint16_t u16Offset,
                              uint16_t u16Length, uint8_t* pu8Val, uint16_t u16ConHdl);
 
-void gattc_read_cmd_handler_by_uuid(uint16_t u16StartHdl, uint16_t u16EndHdl,
+at_ble_status_t gattc_read_cmd_handler_by_uuid(uint16_t u16StartHdl, uint16_t u16EndHdl,
                              uint8_t u8UUIDLen, uint8_t *pu8UUID, uint16_t u16ConHdl);
 
-void gattc_read_cmd_handler_simple_read(uint16_t u16Handle, uint16_t u16Offset,
+at_ble_status_t gattc_read_cmd_handler_simple_read(uint16_t u16Handle, uint16_t u16Offset,
                              uint16_t u16Len, uint16_t u16ConHdl);
 
-void gattc_read_cmd_handler_multible(uint16_t* u16Handle_list, uint8_t u8Count,
+at_ble_status_t gattc_read_cmd_handler_multible(uint16_t* u16Handle_list, uint8_t u8Count,
                              uint16_t* u16Length_list, uint16_t u16ConHdl);
 
 
 
-void gattc_write_cmd_ind(uint16_t src, uint8_t* data, at_ble_characteristic_changed_t *params);
+at_ble_status_t gattc_write_cmd_ind(uint16_t src, uint8_t* data, at_ble_characteristic_changed_t *params);
 
 
-void gattc_disc_svc_ind_parser(uint16_t src, uint8_t* data, at_ble_primary_service_found_t* params);
+at_ble_status_t gattc_disc_svc_ind_parser(uint16_t src, uint8_t* data, at_ble_primary_service_found_t* params);
 
 
-void gattc_disc_svc_incl_ind_parser(uint16_t src, uint8_t* data, at_ble_included_service_found_t* params);
+at_ble_status_t gattc_disc_svc_incl_ind_parser(uint16_t src, uint8_t* data, at_ble_included_service_found_t* params);
 
 
-void gattc_disc_char_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_found_t* params);
+at_ble_status_t gattc_disc_char_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_found_t* params);
 
 
-void gattc_disc_char_desc_ind_parser(uint16_t src, uint8_t* data, at_ble_descriptor_found_t* params);
+at_ble_status_t gattc_disc_char_desc_ind_parser(uint16_t src, uint8_t* data, at_ble_descriptor_found_t* params);
 
 
-void gattc_read_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_read_response_t* params);
+at_ble_status_t gattc_read_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_read_response_t* params);
 
-void gattc_svc_changed_notification_cmd_handler(uint16_t conn_handle, uint16_t start_handle, uint16_t end_handle);
+at_ble_status_t gattc_svc_changed_notification_cmd_handler(uint16_t conn_handle, uint16_t start_handle, uint16_t end_handle);
 
 at_ble_events_t gattc_event_ind_parser(uint16_t src, uint8_t* data, void* params);
 
 at_ble_events_t gattc_complete_evt_handler(uint16_t src, uint8_t* data, void* params);
 
-void gattc_mtu_cmd_handler(uint16_t u16ConHdl);
+at_ble_status_t gattc_mtu_cmd_handler(uint16_t u16ConHdl);
 
 void at_ble_retrieve_indi_noti_record(bool is_notify, at_ble_handle_t *conn_handle,
     at_ble_handle_t *attr_handle);
@@ -263,7 +261,7 @@ enum gattc_operation
 };
 
 /// Attribute Error Code from BT 4.0 specs
-enum {
+typedef enum {
     /// 0x00: No error
     ATT_ERR_NO_ERROR            = 0x00,
     /// 0x01: Handle is invalid
@@ -306,6 +304,5 @@ enum {
     ATT_ERR_APP_ERROR = 0x80,
     /// Maximum attribute defined errors
     ATT_ERR_LAST
-};
+} ATT_ERR;
 #endif
-

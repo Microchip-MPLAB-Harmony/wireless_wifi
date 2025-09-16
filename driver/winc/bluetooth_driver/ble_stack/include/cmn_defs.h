@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * cmn_defs.h
  *
- *  Created on: Sep 15, 2013
- *      Author: delsissy
  */
 
 #ifndef CMN_DEFS_H_

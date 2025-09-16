@@ -124,8 +124,32 @@ void platform_interface_callback(uint8_t* data, uint32_t len)
     }
 }
 
-void interface_send(uint8_t* msg, uint16_t u16TxLen)
+at_ble_status_t interface_send(uint8_t* msg, uint16_t u16TxLen)
 {
-    platform_interface_send(msg, u16TxLen);
+    msg[7] = u16TxLen & 0x00FF;
+    msg[8] = ((u16TxLen)>>8) & 0x00FF;
+    
+    return platform_interface_send(msg, u16TxLen+INTERFACE_HDR_LENGTH);
+}
+
+
+at_ble_status_t interface_send_wait(uint8_t* msg, uint16_t u16TxLen, uint16_t msg_id, uint16_t src_id, uint8_t** rsp)
+{
+    at_ble_status_t status;
+
+    watched_event.msg_id = msg_id;
+    watched_event.src_id = src_id;
+
+    status = interface_send(msg, u16TxLen);
+    if (status == AT_BLE_SUCCESS)
+    {
+        status = platform_cmd_cmpl_wait();
+        if (status == AT_BLE_SUCCESS)
+        {
+            *rsp = watched_event.params;
+        }
+    }
+
+    return status;
 }
 // DOM-IGNORE-END

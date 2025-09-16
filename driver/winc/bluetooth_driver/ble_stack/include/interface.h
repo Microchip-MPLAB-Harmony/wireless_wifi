@@ -51,15 +51,14 @@ void platform_send_lock_release(void);
 #define INTERFACE_MSG_INIT(msg_id, dest_id) \
 do{\
     uint8_t* __ptr = interface_send_msg;\
-    uint16_t __len;\
     platform_send_lock_aquire();\
     *__ptr++ = (INTERFACE_API_PKT_ID);\
-    *__ptr++ = ((msg_id) & 0x00FF );\
-    *__ptr++ = (((msg_id)>>8) & 0x00FF );\
-    *__ptr++ = ((dest_id) & 0x00FF );\
-    *__ptr++ = (((dest_id)>>8) & 0x00FF );\
-    *__ptr++ = ((TASK_EXTERN) & 0x00FF );\
-    *__ptr++ = (((TASK_EXTERN)>>8) & 0x00FF );\
+    *__ptr++ = (uint8_t)((msg_id) & 0x00FF );\
+    *__ptr++ = (uint8_t)(((msg_id)>>8) & 0x00FF );\
+    *__ptr++ = (uint8_t)((dest_id) & 0x00FF );\
+    *__ptr++ = (uint8_t)(((dest_id)>>8) & 0x00FF );\
+    *__ptr++ = (uint8_t)((TASK_EXTERN) & 0x00FF );\
+    *__ptr++ = (uint8_t)(((TASK_EXTERN)>>8) & 0x00FF );\
     __ptr += 2
 
 #define INTERFACE_PACK_ARG_UINT8(arg)\
@@ -87,19 +86,24 @@ do{\
     interface_send_msg[7] = ((__len) & 0x00FF );\
     interface_send_msg[8] = (((__len)>>8) & 0x00FF);\
     __len += INTERFACE_HDR_LENGTH;
-
+/*
 #define INTERFACE_SEND_NO_WAIT()\
     INTERFACE_PACK_LEN();\
     interface_send(interface_send_msg, __len)
-
-#define INTERFACE_SEND_WAIT(msg, src, status)\
+*/
+#define INTERFACE_SEND_NO_WAIT()\
+    interface_send(interface_send_msg, (__ptr - &interface_send_msg[INTERFACE_HDR_LENGTH]))
+/*
+#define INTERFACE_SEND_WAIT(msg, src)\
     watched_event.msg_id = msg;\
     watched_event.src_id = src;\
     INTERFACE_PACK_LEN();\
-    interface_send(interface_send_msg, __len);\
-    *status = AT_BLE_SUCCESS;\
-    if(platform_cmd_cmpl_wait()){*status = AT_BLE_FAILURE;}\
+    if (interface_send(interface_send_msg, __len) != AT_BLE_SUCCESS){return AT_BLE_FAILURE;};\
+    if(platform_cmd_cmpl_wait()){return AT_BLE_FAILURE;}\
     __ptr = watched_event.params;\
+*/
+#define INTERFACE_SEND_WAIT(msg_id, src_id)\
+    interface_send_wait(interface_send_msg, (__ptr - &interface_send_msg[INTERFACE_HDR_LENGTH]), msg_id, src_id, &__ptr)
 
 #define INTERFACE_MSG_DONE()\
     platform_send_lock_release();\
@@ -134,6 +138,7 @@ do{\
 #define INTERFACE_UNPACK_DONE()\
 }while(0)
 
-void interface_send(uint8_t* msg, uint16_t u16TxLen);
+at_ble_status_t interface_send(uint8_t* msg, uint16_t u16TxLen);
+at_ble_status_t interface_send_wait(uint8_t* msg, uint16_t u16TxLen, uint16_t msg_id, uint16_t src_id, uint8_t**rsp);
 
 #endif /* HCI_H_ */

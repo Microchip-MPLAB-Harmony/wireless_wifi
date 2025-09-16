@@ -52,32 +52,40 @@ static at_ble_uuid_type_t at_ble_uuid_len2type(uint8_t len)
         return AT_BLE_UUID_32;
 
     default:
-    case AT_BLE_UUID_128_LEN :
         return AT_BLE_UUID_128;
     }
 }
 
-void gattc_write_cmd_ind_handler(uint8_t *msg, uint16_t len)
+at_ble_status_t gattc_write_cmd_ind_handler(uint8_t *msg, uint16_t len)
 {
+    at_ble_status_t status;
+   
     INTERFACE_MSG_INIT(GATTC_WRITE_CMD_IND, TASK_GATTM);
     INTERFACE_PACK_ARG_BLOCK(msg, len);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_send_evt_cmd_handler(uint8_t u8ReqType, uint16_t u16AttHdl, uint16_t u16ConHdl)
+at_ble_status_t gattc_send_evt_cmd_handler(uint8_t u8ReqType, uint16_t u16AttHdl, uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_SEND_EVT_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(u8ReqType);
     INTERFACE_PACK_ARG_UINT8(0);//zero padding
     INTERFACE_PACK_ARG_UINT16(u16AttHdl);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_disc_cmd_handler (uint8_t u8ReqType, uint8_t u8UUIDLen, uint16_t u16StartHdl,
+at_ble_status_t gattc_disc_cmd_handler (uint8_t u8ReqType, uint8_t u8UUIDLen, uint16_t u16StartHdl,
                              uint16_t u16EndHdl, uint8_t* pu8UUID, uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
     INTERFACE_MSG_INIT(GATTC_DISC_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(u8ReqType);
     if(pu8UUID == NULL)
@@ -99,34 +107,45 @@ void gattc_disc_cmd_handler (uint8_t u8ReqType, uint8_t u8UUIDLen, uint16_t u16S
     {
         INTERFACE_PACK_ARG_BLOCK(pu8UUID, u8UUIDLen);
     }
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    return status;
 }
 
-void gattc_reg_to_peer_handler(uint8_t u8ReqType, uint16_t u16StartHdl, uint16_t u16EndHdl,
+at_ble_status_t gattc_reg_to_peer_handler(uint8_t u8ReqType, uint16_t u16StartHdl, uint16_t u16EndHdl,
                                uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_REG_TO_PEER_EVT_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(u8ReqType);
     INTERFACE_PACK_ARG_UINT8(0); //zero padding
     INTERFACE_PACK_ARG_UINT16(u16StartHdl);
     INTERFACE_PACK_ARG_UINT16(u16EndHdl);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_execute_write_cmd_handler(uint8_t u8Execute, uint16_t u16ConHdl)
+at_ble_status_t gattc_execute_write_cmd_handler(uint8_t u8Execute, uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_EXECUTE_WRITE_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(GATTC_EXEC_WRITE);
     INTERFACE_PACK_ARG_UINT8(u8Execute);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_write_cmd_handler(uint8_t u8ReqType, uint8_t u8AutoExec, uint16_t u16AttHdl, uint16_t u16Offset,
+at_ble_status_t gattc_write_cmd_handler(uint8_t u8ReqType, uint8_t u8AutoExec, uint16_t u16AttHdl, uint16_t u16Offset,
                              uint16_t u16Length, uint8_t* pu8Val, uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_WRITE_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(u8ReqType);
     INTERFACE_PACK_ARG_UINT8(u8AutoExec);
@@ -135,13 +154,17 @@ void gattc_write_cmd_handler(uint8_t u8ReqType, uint8_t u8AutoExec, uint16_t u16
     INTERFACE_PACK_ARG_UINT16(u16Length);
     INTERFACE_PACK_ARG_UINT16(0); // Internal write cursor shall be initialized to 0
     INTERFACE_PACK_ARG_BLOCK(pu8Val, u16Length);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gattc_read_cmd_handler_by_uuid(uint16_t u16StartHdl, uint16_t u16EndHdl,
+at_ble_status_t gattc_read_cmd_handler_by_uuid(uint16_t u16StartHdl, uint16_t u16EndHdl,
                              uint8_t u8UUIDLen, uint8_t *pu8UUID, uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_READ_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(GATTC_READ_BY_UUID);
     INTERFACE_PACK_ARG_UINT8(0);
@@ -149,61 +172,79 @@ void gattc_read_cmd_handler_by_uuid(uint16_t u16StartHdl, uint16_t u16EndHdl,
     INTERFACE_PACK_ARG_UINT16(u16EndHdl);
     INTERFACE_PACK_ARG_UINT8(u8UUIDLen);
     INTERFACE_PACK_ARG_BLOCK(pu8UUID, u8UUIDLen);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_read_cmd_handler_simple_read(uint16_t u16Handle, uint16_t u16Offset,
+at_ble_status_t gattc_read_cmd_handler_simple_read(uint16_t u16Handle, uint16_t u16Offset,
                              uint16_t u16Len, uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_READ_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(GATTC_READ);
     INTERFACE_PACK_ARG_UINT8(0);
     INTERFACE_PACK_ARG_UINT16(u16Handle);
     INTERFACE_PACK_ARG_UINT16(u16Offset);
     INTERFACE_PACK_ARG_UINT16(u16Len);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_read_cmd_handler_multible(uint16_t* u16Handle_list, uint8_t u8Count,
+at_ble_status_t gattc_read_cmd_handler_multible(uint16_t* u16Handle_list, uint8_t u8Count,
                              uint16_t* u16Length_list, uint16_t u16ConHdl)
 {
-    uint8_t counter;
+    at_ble_status_t status;
+    uint8_t i;
 
     INTERFACE_MSG_INIT(GATTC_READ_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(GATTC_READ_MULTIPLE);
     INTERFACE_PACK_ARG_UINT8(u8Count);
-    for(counter = 0; counter < u8Count; counter++)
+    for(i = 0; i < u8Count; i++)
     {
-        INTERFACE_PACK_ARG_UINT16(u16Handle_list[counter]);
-        INTERFACE_PACK_ARG_UINT16(u16Length_list[counter]);
+        INTERFACE_PACK_ARG_UINT16(u16Handle_list[i]);
+        INTERFACE_PACK_ARG_UINT16(u16Length_list[i]);
     }
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gattc_svc_changed_notification_cmd_handler(uint16_t conn_handle, uint16_t start_handle, uint16_t end_handle)
+at_ble_status_t gattc_svc_changed_notification_cmd_handler(uint16_t conn_handle, uint16_t start_handle, uint16_t end_handle)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_SEND_SVC_CHANGED_CMD, KE_BUILD_ID(TASK_GATTC, conn_handle));
     INTERFACE_PACK_ARG_UINT8(GATTC_SVC_CHANGED);
     INTERFACE_PACK_ARG_UINT8(0);        // padding
     INTERFACE_PACK_ARG_UINT16(start_handle);
     INTERFACE_PACK_ARG_UINT16(end_handle);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_mtu_cmd_handler(uint16_t u16ConHdl)
+at_ble_status_t gattc_mtu_cmd_handler(uint16_t u16ConHdl)
 {
+    at_ble_status_t status;
+
     INTERFACE_MSG_INIT(GATTC_EXC_MTU_CMD, KE_BUILD_ID(TASK_GATTC, u16ConHdl));
     INTERFACE_PACK_ARG_UINT8(GATTC_MTU_EXCH);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+
+    return status;
 }
 
-void gattc_write_cmd_ind(uint16_t src, uint8_t* data, at_ble_characteristic_changed_t *params)
+at_ble_status_t gattc_write_cmd_ind(uint16_t src, uint8_t* data, at_ble_characteristic_changed_t *params)
 {
+    at_ble_status_t status;
     uint8_t resp, last;
 
     params->conn_handle =  KE_IDX_GET(src);
@@ -217,18 +258,20 @@ void gattc_write_cmd_ind(uint16_t src, uint8_t* data, at_ble_characteristic_chan
     INTERFACE_UNPACK_BLOCK(params->char_new_value, params->char_len);
     INTERFACE_UNPACK_DONE();
 
-    INTERFACE_MSG_INIT(GATTC_WRITE_CMD_IND, TASK_GATTM);
+    gattm_att_set_value_req_handler(params->char_handle, params->char_len, params->char_new_value);
+    
+    INTERFACE_MSG_INIT(GATTC_WRITE_CMD_CFM, src);
     INTERFACE_PACK_ARG_UINT16(params->char_handle);
-    INTERFACE_PACK_ARG_UINT16(params->char_len);
-    INTERFACE_PACK_ARG_UINT16(params->char_offset);
+    INTERFACE_PACK_ARG_UINT8(0);
     INTERFACE_PACK_ARG_UINT8(resp);
-    INTERFACE_PACK_ARG_UINT8(last);
-    INTERFACE_PACK_ARG_BLOCK(params->char_new_value, params->char_len);
-    INTERFACE_SEND_NO_WAIT();
+
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
+    
+    return status;
 }
 
-void gattc_disc_svc_ind_parser(uint16_t src, uint8_t* data, at_ble_primary_service_found_t* params)
+at_ble_status_t gattc_disc_svc_ind_parser(uint16_t src, uint8_t* data, at_ble_primary_service_found_t* params)
 {
     uint8_t uuid_len;
 
@@ -240,9 +283,11 @@ void gattc_disc_svc_ind_parser(uint16_t src, uint8_t* data, at_ble_primary_servi
     params->service_uuid.type = at_ble_uuid_len2type(uuid_len);
     INTERFACE_UNPACK_BLOCK(params->service_uuid.uuid, uuid_len);
     INTERFACE_UNPACK_DONE();
+
+    return AT_BLE_SUCCESS;
 }
 
-void gattc_disc_svc_incl_ind_parser(uint16_t src, uint8_t* data, at_ble_included_service_found_t* params)
+at_ble_status_t gattc_disc_svc_incl_ind_parser(uint16_t src, uint8_t* data, at_ble_included_service_found_t* params)
 {
     uint8_t uuid_len;
 
@@ -255,9 +300,11 @@ void gattc_disc_svc_incl_ind_parser(uint16_t src, uint8_t* data, at_ble_included
     params->service_uuid.type = at_ble_uuid_len2type(uuid_len);
     INTERFACE_UNPACK_BLOCK(params->service_uuid.uuid, uuid_len);
     INTERFACE_UNPACK_DONE();
+
+    return AT_BLE_SUCCESS;
 }
 
-void gattc_disc_char_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_found_t* params)
+at_ble_status_t gattc_disc_char_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_found_t* params)
 {
     uint8_t uuid_len;
 
@@ -271,9 +318,11 @@ void gattc_disc_char_ind_parser(uint16_t src, uint8_t* data, at_ble_characterist
     params->char_uuid.type = at_ble_uuid_len2type(uuid_len);
     INTERFACE_UNPACK_BLOCK(params->char_uuid.uuid, uuid_len);
     INTERFACE_UNPACK_DONE();
+
+    return AT_BLE_SUCCESS;
 }
 
-void gattc_disc_char_desc_ind_parser(uint16_t src, uint8_t* data, at_ble_descriptor_found_t* params)
+at_ble_status_t gattc_disc_char_desc_ind_parser(uint16_t src, uint8_t* data, at_ble_descriptor_found_t* params)
 {
     uint8_t uuid_len;
 
@@ -285,9 +334,11 @@ void gattc_disc_char_desc_ind_parser(uint16_t src, uint8_t* data, at_ble_descrip
     params->desc_uuid.type = at_ble_uuid_len2type(uuid_len);
     INTERFACE_UNPACK_BLOCK(params->desc_uuid.uuid, uuid_len);
     INTERFACE_UNPACK_DONE();
+
+    return AT_BLE_SUCCESS;
 }
 
-void gattc_read_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_read_response_t* params)
+at_ble_status_t gattc_read_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_read_response_t* params)
 {
     params->conn_handle = KE_IDX_GET(src);
 
@@ -297,6 +348,8 @@ void gattc_read_ind_parser(uint16_t src, uint8_t* data, at_ble_characteristic_re
     INTERFACE_UNPACK_UINT16(&params->char_len);
     INTERFACE_UNPACK_BLOCK(params->char_value, params->char_len);
     INTERFACE_UNPACK_DONE();
+
+    return AT_BLE_SUCCESS;
 }
 
 at_ble_events_t gattc_event_ind_parser(uint16_t src, uint8_t* data, void* params)
@@ -339,6 +392,7 @@ at_ble_events_t gattc_complete_evt_handler(uint16_t src, uint8_t* data, void* pa
     uint8_t req_type, status;
     at_ble_events_t evt = AT_BLE_UNDEFINED_EVENT;
     at_ble_handle_t char_handle, conn_handle;
+    (void)(src);
     INTERFACE_UNPACK_INIT(data);
     INTERFACE_UNPACK_UINT8(&req_type);
     INTERFACE_UNPACK_UINT8(&status);

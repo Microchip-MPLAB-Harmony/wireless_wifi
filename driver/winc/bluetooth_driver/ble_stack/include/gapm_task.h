@@ -34,8 +34,6 @@ Microchip or any third party.
 /*
  * gap_task.h
  *
- *  Created on: Sep 16, 2013
- *      Author: delsissy
  */
 
 #ifndef GAP_TASK_H_
@@ -440,42 +438,42 @@ enum gapm_write_att_perm
     GAPM_WRITE_AUTH     = PERM(WR, AUTH)
 };
 
-uint8_t gapm_reset_req_handler (void);
+at_ble_status_t gapm_reset_req_handler (void);
 
-uint8_t gapm_set_dev_name_handler(uint8_t len, uint8_t* name);
+at_ble_status_t gapm_set_dev_name_handler(uint8_t len, uint8_t* name);
 
-uint8_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key, uint16_t u16Appearance, uint8_t u8AppWrPerm,
+at_ble_status_t gapm_set_dev_config_cmd_handler(uint8_t u8Role, uint8_t *pu8Key, uint16_t u16Appearance, uint8_t u8AppWrPerm,
                 uint8_t u8NameWrPerm, uint16_t u16MaxMTU, uint16_t u16ConIntMin, uint16_t u16ConIntMax, uint16_t u16ConLatency,
                 uint16_t u16SupervTo, uint8_t u8Flags);
 
-void gapm_start_adv_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrSrc, uint16_t u16RenewDur,
+at_ble_status_t gapm_start_adv_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrSrc, uint16_t u16RenewDur,
         uint8_t *pu8BdAddr,uint8_t peer_addr_type ,uint8_t *peerBdAddr, uint16_t u16MinIntv, uint16_t u16MaxIntv, uint8_t u8ChnlMap, uint8_t u8Mode ,
     uint8_t u8AdvFiltPolicy, uint8_t u8AdvDataLen, uint8_t *pu8AdvData, uint8_t u8ScnRespLen, uint8_t *pu8ScnRespData);
 
-void gapm_start_scan_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
+at_ble_status_t gapm_start_scan_cmd_handler (uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
         uint8_t *pu8BdAddr, uint16_t u16ScanInterval, uint16_t u16ScanWin, uint8_t u8ScanMode, uint8_t u8FiltPolicy,
         uint8_t u8FilterDuplic);
 
-void gapm_start_connection_cmd_handler(uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
+at_ble_status_t gapm_start_connection_cmd_handler(uint8_t u8OpCode, uint8_t u8AddrType, uint16_t u16RenewDur,
             uint8_t *pu8BdAddr, uint16_t u16ScanInterval, uint16_t u16ScanWin, uint16_t u16ConIntvMin,
             uint16_t u16ConIntvMax, uint16_t u16ConLatency, uint16_t u16SupervTO, uint16_t u16CeMin,
             uint16_t u16CeMAx, uint8_t u8NbOfPeers, at_ble_addr_t *peers);
 
-uint8_t gapm_cancel_cmd_handler (void);
+at_ble_status_t gapm_cancel_cmd_handler(void);
 
-void gapm_connection_cfm_handler ( uint8_t *pu8PeerBdAddr, uint8_t u8PeerAddrType,uint16_t u16ConIntvMin,
+at_ble_status_t gapm_connection_cfm_handler( uint8_t *pu8PeerBdAddr, uint8_t u8PeerAddrType,uint16_t u16ConIntvMin,
             uint16_t u16ConIntvMax, uint16_t u16ConLatency, uint16_t u16SupervTO, uint16_t u16CeMin,
             uint16_t u16CeMAx);
 
-uint8_t  gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* address);
+at_ble_status_t  gapm_white_list_mgm_cmd(uint8_t operation, uint8_t addr_type, uint8_t* address);
 
-void gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param);
+at_ble_status_t gapm_adv_report_evt_handler(uint8_t* data, at_ble_scan_info_t* param);
 
-void gapm_dev_bdaddr_ind_handler(uint8_t* data,at_ble_rand_addr_changed_t* param);
+at_ble_status_t gapm_dev_bdaddr_ind_handler(uint8_t* data,at_ble_rand_addr_changed_t* param);
 
-void gapm_resolv_addr_cmd_handler(uint8_t nb_key , uint8_t* rand_addr , uint8_t* irk);
+at_ble_status_t gapm_resolv_addr_cmd_handler(uint8_t nb_key , uint8_t* rand_addr , uint8_t* irk);
 
-void gapm_addr_solved_ind_handler(uint8_t* data , at_ble_resolv_rand_addr_status_t* params);
+at_ble_status_t gapm_addr_solved_ind_handler(uint8_t* data , at_ble_resolv_rand_addr_status_t* params);
 
 at_ble_events_t gapm_cmp_evt(uint8_t* data, void* params);
 

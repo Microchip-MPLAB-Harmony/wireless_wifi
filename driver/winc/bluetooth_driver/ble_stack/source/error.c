@@ -32,11 +32,10 @@ Microchip or any third party.
 */
 
 #include "at_ble_api.h"
-#include "gattc_task.h"
 #include "gapm_task.h"
 #include "error.h"
 
-at_ble_status_t at_ble_att_error(uint8_t att_error_code)
+at_ble_status_t at_ble_att_error(ATT_ERR att_error_code)
 {
     at_ble_status_t status;
     switch(att_error_code)

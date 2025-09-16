@@ -34,15 +34,14 @@ Microchip or any third party.
 /*
  * dbg_task.h
  *
- *  Created on: Oct 28, 2014
- *      Author: lali
  */
 #ifndef ERROR_H_
 #define ERROR_H_
 
+#include "gattc_task.h"
 #include "cmn_defs.h"
 
-at_ble_status_t at_ble_att_error(uint8_t att_error_code);
+at_ble_status_t at_ble_att_error(ATT_ERR att_error_code);
 
 at_ble_status_t at_ble_gap_error(uint8_t gap_error_code);
 

@@ -13,7 +13,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2017-21, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2017-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -45,12 +45,20 @@ Microchip or any third party.
 /* certificate verification). Thus it is recommended that this communication */
 /* timeout is set greater than 4000 ms.                                      */
 #define TIMEOUT_VALUE 6000
-
+static uint32_t gu32Timeout = TIMEOUT_VALUE;
 static OSAL_SEM_HANDLE_TYPE cmdCmplSemaphore;
 static OSAL_SEM_HANDLE_TYPE eventSemaphore;
 static OSAL_SEM_HANDLE_TYPE sendSemaphore;
 
 static plf_params_t plf_params;
+
+#define MINIMUM_FW_MAJ (1)
+#define MINIMUM_FW_MIN (2)
+#define MINIMUM_FW_PATCH  (2)
+void platform_set_timeout(uint32_t timeout)
+{
+    gu32Timeout = timeout;
+}
 
 void platform_send_lock_aquire(void)
 {
@@ -64,6 +72,8 @@ void platform_send_lock_release(void)
 
 at_ble_status_t platform_init(plf_params_t* platform_params)
 {
+    at_ble_status_t ret = AT_BLE_SUCCESS;
+
     if (OSAL_RESULT_TRUE != OSAL_SEM_Create(&cmdCmplSemaphore, OSAL_SEM_TYPE_COUNTING, 10, 0))
     {
         return AT_BLE_FAILURE;
@@ -71,25 +81,50 @@ at_ble_status_t platform_init(plf_params_t* platform_params)
 
     if (OSAL_RESULT_TRUE != OSAL_SEM_Create(&eventSemaphore, OSAL_SEM_TYPE_COUNTING, 10, 0))
     {
-        return AT_BLE_FAILURE;
+        return  AT_BLE_FAILURE;
     }
 
     if (OSAL_RESULT_TRUE != OSAL_SEM_Create(&sendSemaphore, OSAL_SEM_TYPE_BINARY, 1, 1))
     {
-        return AT_BLE_FAILURE;
+        return  AT_BLE_FAILURE;
+    }
+
+    if (platform_params->mv == VERSION_FIELD_VALID)
+    {
+        ret = AT_BLE_FW_INCOMPAT;
+        if (platform_params->fw_ver.major > MINIMUM_FW_MAJ)
+        {
+            ret = AT_BLE_SUCCESS;
+        }
+        else if (platform_params->fw_ver.major == MINIMUM_FW_MAJ)
+        {
+            if (platform_params->fw_ver.minor > MINIMUM_FW_MIN)
+            {
+                ret = AT_BLE_SUCCESS;
+            }
+            else if (platform_params->fw_ver.minor == MINIMUM_FW_MIN)
+            {
+                if (platform_params->fw_ver.patch >= MINIMUM_FW_PATCH)
+                {
+                    ret = AT_BLE_SUCCESS;
+                }
+            }
+        }
     }
 
     memcpy(&plf_params, platform_params, sizeof(plf_params_t));
 
-    return AT_BLE_SUCCESS;
+    return ret;
 }
 
-void platform_interface_send(uint8_t* data, uint32_t len)
+at_ble_status_t platform_interface_send(uint8_t* data, uint32_t len)
 {
     if (NULL != plf_params.ble_write_cb)
     {
-        plf_params.ble_write_cb(data, len);
+        if (plf_params.ble_write_cb(data, len) == 0)
+            return AT_BLE_SUCCESS;
     }
+    return AT_BLE_FAILURE;
 }
 
 void platform_cmd_cmpl_signal()
@@ -97,12 +132,12 @@ void platform_cmd_cmpl_signal()
     OSAL_SEM_Post(&cmdCmplSemaphore);
 }
 
-bool platform_cmd_cmpl_wait(void)
+at_ble_status_t platform_cmd_cmpl_wait(void)
 {
 #ifndef DRV_WIFI_WINC_RTOS_STACK_SIZE
     SYS_TIME_HANDLE timer = SYS_TIME_HANDLE_INVALID;
 
-    if (SYS_TIME_DelayMS(TIMEOUT_VALUE, &timer) != SYS_TIME_SUCCESS)
+    if (SYS_TIME_DelayMS(gu32Timeout, &timer) != SYS_TIME_SUCCESS)
     {
         // Handle error
     }
@@ -124,12 +159,12 @@ bool platform_cmd_cmpl_wait(void)
         }
     }
 #else
-    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, TIMEOUT_VALUE))
+    if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&cmdCmplSemaphore, gu32Timeout))
     {
-        return false;
+        return AT_BLE_FAILURE;
     }
 #endif
-    return true;
+    return AT_BLE_SUCCESS;
 }
 
 void platform_event_signal()
@@ -137,7 +172,7 @@ void platform_event_signal()
     OSAL_SEM_Post(&eventSemaphore);
 }
 
-uint8_t platform_event_wait(uint32_t timeout)
+at_ble_status_t platform_event_wait(uint32_t timeout)
 {
 #ifndef DRV_WIFI_WINC_RTOS_STACK_SIZE
     if (0 != timeout)

@@ -44,75 +44,55 @@ Microchip or any third party.
 at_ble_status_t at_ble_authenticate(at_ble_handle_t conn_handle, at_ble_pair_features_t* features,
     at_ble_LTK_t* ltk, at_ble_CSRK_t* csrk)
 {
-    at_ble_status_t status = AT_BLE_SUCCESS;
+    at_ble_status_t status = AT_BLE_FAILURE;
     uint8_t auth_req;
 
-    do
+    if(((features->initiator_keys == AT_BLE_KEY_DIST_SIGN) && (csrk == NULL))||
+       ((features->initiator_keys == AT_BLE_KEY_DIST_ENC) && (ltk == NULL))||
+       ((features->bond) && (ltk == NULL))||
+       ((device.role != ROLE_MASTER)&&(device.role != ROLE_SLAVE)))
     {
-        if(((features->initiator_keys == AT_BLE_KEY_DIST_SIGN)&&(csrk == NULL))||
-            ((features->initiator_keys == AT_BLE_KEY_DIST_ENC)&&(ltk == NULL)))
+        return AT_BLE_INVALID_PARAM;
+    }
+
+    if (features->bond)
         {
-            status = AT_BLE_INVALID_PARAM;
-            break;
+            memcpy(&device.ltk, ltk , sizeof(at_ble_LTK_t));
         }
 
-        if((features->bond))
-        {
-            if(ltk == NULL)
-            {
-                status = AT_BLE_INVALID_PARAM;
-                break;
-            }
-            else
-            {
-                memcpy(&device.ltk, ltk , sizeof(at_ble_LTK_t));
-            }
-        }
+    if (csrk != NULL)
+    {
+        memcpy(&device.csrk , csrk , sizeof(at_ble_CSRK_t));
+    }
 
-        if(csrk != NULL)
-        {
-            memcpy(&device.csrk , csrk , sizeof(at_ble_CSRK_t));
-        }
-
-        // To do save local device keys
-        if(!features->mitm_protection)
-        {
-            if(features->bond)
-            {
-                auth_req = GAP_AUTH_REQ_NO_MITM_BOND;
-            }
-            else
-            {
-                auth_req = GAP_AUTH_REQ_NO_MITM_NO_BOND;
-            }
+    // To do save local device keys
+    if(!features->mitm_protection)
+    {
+    auth_req = (features->bond)? GAP_AUTH_REQ_NO_MITM_BOND:
+                                 GAP_AUTH_REQ_NO_MITM_NO_BOND;
         }
         else
         {
-            if(features->bond)
-            {
-                auth_req = GAP_AUTH_REQ_MITM_BOND;
-            }
-            else
-            {
-                auth_req = GAP_AUTH_REQ_MITM_NO_BOND;
-            }
-        }
+    auth_req = (features->bond)? GAP_AUTH_REQ_MITM_BOND:
+                                 GAP_AUTH_REQ_MITM_NO_BOND;
+    }
 
-        if(device.role == ROLE_MASTER)
-        {
-            gapc_bond_cmd_handler(conn_handle, features->io_capabilities, features->oob_available,
-                auth_req, features->max_key_size, features->initiator_keys, features->responder_keys,
-                features->desired_auth);
-        }
-        else if (device.role == ROLE_SLAVE)
-        {
-            gapc_bond_cfm_handler_pair_resp(1, features->io_capabilities,
-            features->oob_available, auth_req, features->max_key_size,
-            features->initiator_keys, features->responder_keys,
-            features->desired_auth, conn_handle);
-        }
+    if(device.role == ROLE_MASTER)
+    {
+    status = gapc_bond_cmd_handler(
+        conn_handle, features->io_capabilities, features->oob_available,
+            auth_req, features->max_key_size, features->initiator_keys, features->responder_keys,
+            features->desired_auth);
+    }
+    else if (device.role == ROLE_SLAVE)
+    {
+    status = gapc_bond_cfm_handler_pair_resp(
+        1, features->io_capabilities,
+        features->oob_available, auth_req, features->max_key_size,
+        features->initiator_keys, features->responder_keys,
+        features->desired_auth, conn_handle);
+    }
 
-    }while(0);
     return status;
 }
 
@@ -128,6 +108,7 @@ at_ble_status_t at_ble_pair_key_reply(at_ble_handle_t conn_handle,
     {
         return AT_BLE_FAILURE;
     }
+
     // To do add out of band pairing
     if(type == AT_BLE_PAIR_PASSKEY)
     {
@@ -150,38 +131,29 @@ at_ble_status_t at_ble_pair_key_reply(at_ble_handle_t conn_handle,
         }
     }
 
-    gapc_bond_cfm_handler_key_exch(GAPC_TK_EXCH, 1, tk,conn_handle);
-
-    // To do check return value
-    return AT_BLE_SUCCESS;
+    return gapc_bond_cfm_handler_key_exch(GAPC_TK_EXCH, 1, tk,conn_handle);
 }
 
 
 at_ble_status_t at_ble_encryption_start(at_ble_handle_t conn_handle ,at_ble_LTK_t* key ,at_ble_auth_t auth)
 {
-    if(key->key == NULL)
+    if (key == NULL)
     {
         return AT_BLE_FAILURE;
     }
 
-    gapc_encrypt_cmd_handler(conn_handle, key->key, key->ediv, key->nb, key->key_size , auth);
-
-    // To do check return value
-    return AT_BLE_SUCCESS;
+    return gapc_encrypt_cmd_handler(conn_handle, key->key, key->ediv, key->nb, key->key_size, auth);
 }
 
 at_ble_status_t at_ble_encryption_request_reply(at_ble_handle_t conn_handle,at_ble_auth_t auth ,
                     bool key_found, at_ble_LTK_t* key)
 {
-    if((key_found == 1)&& (key->key == NULL))
+    if (NULL == key)
     {
         return AT_BLE_FAILURE;
     }
 
-    gapc_encrypt_cfm_handler(conn_handle, auth ,key_found, key->key, key->key_size);
-
-    // To do check return value
-    return AT_BLE_SUCCESS;
+    return gapc_encrypt_cfm_handler(conn_handle, auth ,key_found, key->key, key->key_size);
 }
 
 at_ble_status_t at_ble_send_slave_sec_request(at_ble_handle_t conn_handle,bool mitm_protection,bool bond)
@@ -190,29 +162,15 @@ at_ble_status_t at_ble_send_slave_sec_request(at_ble_handle_t conn_handle,bool m
 
     if(!mitm_protection)
     {
-        if(bond)
-        {
-            auth_req = GAP_AUTH_REQ_NO_MITM_BOND;
-        }
-        else
-        {
-            auth_req = GAP_AUTH_REQ_NO_MITM_NO_BOND;
-        }
+        auth_req = bond? GAP_AUTH_REQ_NO_MITM_BOND:
+                         GAP_AUTH_REQ_NO_MITM_NO_BOND;
     }
     else
     {
-        if(bond)
-        {
-            auth_req = GAP_AUTH_REQ_MITM_BOND;
-        }
-        else
-        {
-            auth_req = GAP_AUTH_REQ_MITM_NO_BOND;
-        }
+        auth_req = bond? GAP_AUTH_REQ_MITM_BOND:
+                         GAP_AUTH_REQ_MITM_NO_BOND;
     }
 
-    gapc_security_cmd_handler(conn_handle, auth_req);
-
-    return AT_BLE_SUCCESS;
+    return gapc_security_cmd_handler(conn_handle, auth_req);
 }
 // DOM-IGNORE-END

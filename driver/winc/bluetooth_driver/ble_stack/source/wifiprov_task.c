@@ -44,7 +44,10 @@ at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
 #endif
 {
     //TODO: check on platform error
+    at_ble_status_t status;
     uint8_t lname_len = 0;
+    uint8_t u8Status;
+
     if (lname)
     {
         lname_len = strlen((const char*)lname);
@@ -52,96 +55,99 @@ at_ble_status_t wifiprov_configure_provisioning(uint8_t* lname)
             lname_len = MAX_LOCALNAME_LENGTH;
     }
 
-    at_ble_status_t status;
     INTERFACE_MSG_INIT(WIFIPROV_CONFIGURE_REQ, TASK_WIFIPROV);
 #ifdef WDRV_WINC_DEVICE_BLE_API_REV_2
     INTERFACE_PACK_ARG_UINT8(lauthtype);
 #endif    
     INTERFACE_PACK_ARG_UINT8(lname_len);
     INTERFACE_PACK_ARG_BLOCK(lname,lname_len);
-    INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV, &status);
+    status = INTERFACE_SEND_WAIT(WIFIPROV_CONFIGURE_CFM, TASK_WIFIPROV);
     if(status == AT_BLE_SUCCESS)
     {
-        INTERFACE_UNPACK_UINT8(&status);
+        INTERFACE_UNPACK_UINT8(&u8Status);
     }
-    if (status == 0) status = AT_BLE_SUCCESS;
     INTERFACE_MSG_DONE();
-    return status;
+
+    if (status == AT_BLE_SUCCESS)
+    {
+        return (at_ble_status_t)u8Status;
+    }
+    return AT_BLE_FAILURE;
 }
 
 at_ble_status_t wifiprov_create_db(void)
 {
     //TODO: check on platform error
     at_ble_status_t status;
+    uint8_t u8Status;
 
     INTERFACE_MSG_INIT(WIFIPROV_CREATE_DB_REQ, TASK_WIFIPROV);
     INTERFACE_PACK_ARG_UINT8(1|2); // We support both scanning and connection
-    INTERFACE_SEND_WAIT(WIFIPROV_CREATE_DB_CFM, TASK_WIFIPROV, &status);
+    status = INTERFACE_SEND_WAIT(WIFIPROV_CREATE_DB_CFM, TASK_WIFIPROV);
     if(status == AT_BLE_SUCCESS)
     {
-        INTERFACE_UNPACK_UINT8(&status);
+        INTERFACE_UNPACK_UINT8(&u8Status);
     }
-    //GTODO: Export status define from wifiprov to header file
-    if (status == 0) status = AT_BLE_SUCCESS;
     INTERFACE_MSG_DONE();
-    return status;
+
+    if (status == AT_BLE_SUCCESS)
+    {
+        return (at_ble_status_t)u8Status;
+    }
+    return AT_BLE_FAILURE;
+
 }
 
 at_ble_status_t wifiprov_start(uint8_t *pin, uint8_t len)
 {
-    //TODO: check on platform error
     at_ble_status_t status = AT_BLE_SUCCESS;
 
     INTERFACE_MSG_INIT(WIFIPROV_START_CMD, TASK_WIFIPROV);
     INTERFACE_PACK_ARG_BLOCK(pin,len);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
     return status;
 }
 
 at_ble_status_t wifiprov_disable(void)
 {
-    //TODO: check on platform error
     at_ble_status_t status= AT_BLE_SUCCESS;
 
     INTERFACE_MSG_INIT(WIFIPROV_DISABLE_CMD, TASK_WIFIPROV);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
     return status;
 }
 
 at_ble_status_t wifiprov_scan_mode_change_ind_send(uint8_t scanmode)
 {
-    //TODO: check on platform error
     at_ble_status_t status = AT_BLE_SUCCESS;
 
     INTERFACE_MSG_INIT(WIFIPROV_SCAN_MODE_CHANGE_IND, TASK_WIFIPROV);
     INTERFACE_PACK_ARG_UINT8(scanmode);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
     return status;
 }
 
 at_ble_status_t wifiprov_scan_list_ind_send(struct wifiprov_scanlist_ind *param)
 {
-    //TODO: check on platform error
     at_ble_status_t status = AT_BLE_SUCCESS;
 
     INTERFACE_MSG_INIT(WIFIPROV_SCANLIST_IND, TASK_WIFIPROV);
     INTERFACE_PACK_ARG_BLOCK(param, sizeof(struct wifiprov_scanlist_ind));  // GTODO: Does this need to be 'repacked' using pack macros?
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
     return status;
 }
 
 at_ble_status_t wifiprov_wifi_con_update(uint8_t conn_state)
 {
-    //TODO: check on platform error
     at_ble_status_t status = AT_BLE_SUCCESS;
 
     INTERFACE_MSG_INIT(WIFIPROV_CONNECTION_STATE_CHANGE_IND, TASK_WIFIPROV);
     INTERFACE_PACK_ARG_UINT8(conn_state);
-    INTERFACE_SEND_NO_WAIT();
+    status = INTERFACE_SEND_NO_WAIT();
     INTERFACE_MSG_DONE();
     return status;
 }
