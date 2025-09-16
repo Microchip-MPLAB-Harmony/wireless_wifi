@@ -28,18 +28,22 @@ def loadModule():
     drvWifiWincComponent = Module.CreateComponent('drvWifiWinc', 'WINC', '/Wireless/Drivers', 'driver/winc/config/drv_winc.py')
     drvWifiWincComponent.addCapability('wdrv_winc', 'WDRV_WINC', True)
     drvWifiWincComponent.addCapability('libdrvWincMac', 'MAC')
+    drvWifiWincComponent.setHelpKeyword("wireless_wifi_MPLAB_Harmony_WINC_WLAN")
 
     drvWifiWincLiteComponent = Module.CreateComponent('drvWifiWincLite', 'WINC (Lite)', '/Wireless/Drivers', 'driver/winc/config/drv_winc_lite.py')
     drvWifiWincLiteComponent.addCapability('wdrv_winc', 'WDRV_WINC', True)
     drvWifiWincLiteComponent.addCapability('libdrvWincMac', 'MAC')
+    drvWifiWincLiteComponent.setHelpKeyword("wireless_wifi_MPLAB_Harmony_WINC_WLAN")
 
     drvWifiWincS02Component = Module.CreateComponent('drvWifiWincS02', 'WINCS02', '/Wireless/Drivers', 'driver/wincs02/config/drv_wincs02.py')
     drvWifiWincS02Component.addCapability('wdrv_wincs02', 'WDRV_WINC', True)
+    drvWifiWincS02Component.setHelpKeyword("wireless_wifi_MPLAB_Harmony_WINCS02_WLAN")
 
     if 'PIC32MZ1025W104132' in Variables.get('__PROCESSOR') or 'PIC32MZ2051W104132' in Variables.get('__PROCESSOR') or 'WFI32E01' in Variables.get('__PROCESSOR') or 'WFI32E02' in Variables.get('__PROCESSOR') or 'WFI32E03' in Variables.get('__PROCESSOR'):
         drvWifiPic32mzw1Component = Module.CreateComponent('drvWifiPic32mzw1', 'PIC32MZW1', '/Wireless/Drivers/', 'driver/pic32mzw1/config/drv_pic32mzw1.py')
         drvWifiPic32mzw1Component.addCapability('wdrv_pic32mzw1', 'WDRV_PIC32MZW1', True)
         drvWifiPic32mzw1Component.addCapability('libdrvPic32mzw1Mac', 'MAC')
+        drvWifiPic32mzw1Component.setHelpKeyword("wireless_wifi_MPLAB_Harmony_PIC32MZW1_WLAN")
 
     ## Ethernet MAC driver for PIC32MZW1
         drvPic32mEthmacComponent = Module.CreateComponent('drvPic32mEthmac', 'ETHMAC', '/Harmony/Drivers/MAC Driver/Internal/', 'driver/ethmac/config/drv_intmac_ethmac.py')
