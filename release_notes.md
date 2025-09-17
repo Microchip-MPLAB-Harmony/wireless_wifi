@@ -3,6 +3,37 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.12.2
+
+This release includes improvements to the **WINCS02 and WINC1500** devices.
+
+### Dot Release Update for v3.12.2:
+
+- WINCS02: Expose new v3.1 functionality of WINCS02 device firmware, including:
+    - Fixed setting regulatory domain during startup resulting in two callbacks
+    - Fixed socket connect() fail when socket() open pending
+    - Fixed interop issue with new driver interfacing with older firmware
+    - Fixed strings being passed as parameters to WINCS02 API getting truncated
+    - Fixed Berkeley socket TCP listen leaving accepted socket locked, causing possible task stall on RTOS
+    - Ensure configuration clear pattern works
+    - Added passing of IP and MAC address as part of a WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED event
+    - Removed the need for socket callback and offer events in a more conventional Berkeley manner
+    - Improved socket memory config, removal of sysObj, ensure macros are easily ported
+    - Add getsockname(), getpeername(), reduce default socket memory requirements
+    - Add an API to set the scan match mode (WDRV_WINC_BSSFindSetScanMatchMode())
+
+    For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware
+
+- WINC1500: Add support for FW v19.7.10
+    - Allow enabling/disabling of specific Phase 1 WPA Enterprise methods
+    - Added EAPOLv3 support to WPA Enterprise Security
+    - Fixed issue causing unnecessary flash writes when writing connection info to flash
+    - The "critical" field of x.509 certificate extensions is now correctly handled
+    - Ensure Basic Constraint is checked in server certificate chain
+    - Fixed issue resulting in dropped TLS records when multiple records recieved in one packet
+
+    For more information see the release note in utilities/wifi/winc/files/winc1500/19.7.10/
+
 ## Wireless_wifi Release v3.12.1
 
 ### Dot Release Update for v3.12.1:
@@ -15,7 +46,7 @@
 
 ## Wireless_wifi Release v3.12.0
 
-This release includes improvements for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com.
+This release includes improvements for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware.
 
 ### New Features
 - WINCS02: Support for FreeRTOS.
