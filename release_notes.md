@@ -10,27 +10,25 @@ This release includes improvements to the **WINCS02 and WINC1500** devices.
 ### Dot Release Update for v3.12.2:
 
 - WINCS02: Expose new v3.1 functionality of WINCS02 device firmware, including:
-    - Fixed setting regulatory domain during startup resulting in two callbacks
-    - Fixed socket connect() fail when socket() open pending
-    - Fixed interop issue with new driver interfacing with older firmware
-    - Fixed strings being passed as parameters to WINCS02 API getting truncated
-    - Fixed Berkeley socket TCP listen leaving accepted socket locked, causing possible task stall on RTOS
-    - Ensure configuration clear pattern works
-    - Added passing of IP and MAC address as part of a WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED event
-    - Removed the need for socket callback and offer events in a more conventional Berkeley manner
-    - Improved socket memory config, removal of sysObj, ensure macros are easily ported
-    - Add getsockname(), getpeername(), reduce default socket memory requirements
-    - Add an API to set the scan match mode (WDRV_WINC_BSSFindSetScanMatchMode())
+    - Add ability to query or increase the device Anti Rollback Counter
+    - Add APIs to assist with modifying images for use with DFU
+    - Add arbitrary flash file read/write functionality
+    - Add getsockname(), getpeername(), reduce default socket memory requirements.
+    - Add an API to set the scan match mode (WDRV_WINC_BSSFindSetScanMatchMode()).
+    - Added passing of IP and MAC address as part of a WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED event.
+    - Removed the need for socket callback and offer events in a more conventional Berkeley manner.
+    - Improved socket memory config, removal of sysObj, ensure macros are easily ported.
+    - Fixed setting regulatory domain during startup resulting in two callbacks.
+    - Fixed socket connect() fail when socket() open pending.
+    - Fixed interop issue with new driver interfacing with older firmware.
+    - Fixed strings being passed as parameters to WINCS02 API getting truncated.
+    - Fixed Berkeley socket TCP listen leaving accepted socket locked, causing possible task stall on RTOS.
+    - Ensure configuration clear pattern works.
 
-    For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware
+    For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware.
 
 - WINC1500: Add support for FW v19.7.10
-    - Allow enabling/disabling of specific Phase 1 WPA Enterprise methods
-    - Added EAPOLv3 support to WPA Enterprise Security
-    - Fixed issue causing unnecessary flash writes when writing connection info to flash
-    - The "critical" field of x.509 certificate extensions is now correctly handled
-    - Ensure Basic Constraint is checked in server certificate chain
-    - Fixed issue resulting in dropped TLS records when multiple records recieved in one packet
+    - Allow enabling/disabling of specific Phase 1 WPA Enterprise methods.
 
     For more information see the release note in utilities/wifi/winc/files/winc1500/19.7.10/
 
@@ -39,14 +37,14 @@ This release includes improvements to the **WINCS02 and WINC1500** devices.
 ### Dot Release Update for v3.12.1:
 
 - WINC: Add support for WINC3400 FW v1.4.7.
-    - Correct the handling of BLE MAC address generation in the WINC firmware
-- WINC: Some MISRA fixes in the WINC driver
+    - Correct the handling of BLE MAC address generation in the WINC firmware.
+- WINC: Some MISRA fixes in the WINC driver.
 
 **Other release notes for v3.12.0 apply here too**
 
 ## Wireless_wifi Release v3.12.0
 
-This release includes improvements for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware.
+This release includes improvements for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware
 
 ### New Features
 - WINCS02: Support for FreeRTOS.
@@ -66,7 +64,7 @@ This release includes improvements for the **WINCS02** device. For WINCS02 devic
 - WINCS02: Added control to modify Management Frame Protection setting.
 
 ### Known Issues/Limitations
-- WINCS02: Unable to receive on sockets configured to be part of a multicast group.
+- WINCS02: Unable to receive on sockets configured to be part of a multicast group (only seen with WINCS02 fw prior to 3.1)
 
 ### Development Tools
 - [MPLAB® X IDE v6.20](https://www.microchip.com/mplab/mplab-x-ide)
@@ -92,7 +90,7 @@ This release includes improvements to the **PIC32MZW1 and WINC** devices.
 **Other release notes for v3.11.0 apply here too**
 
 ## Wireless_wifi Release v3.11.0
-This release introduces Harmony driver support for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com.
+This release introduces Harmony driver support for the **WINCS02** device. For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware
 
 ### New Features
 - **New part support** - **WINCS02** Wifi Network Controller.
