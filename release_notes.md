@@ -10,9 +10,9 @@ This release includes improvements to the **WINCS02 and WINC1500** devices.
 ### Dot Release Update for v3.12.2:
 
 - WINCS02: Expose new v3.1 functionality of WINCS02 device firmware, including:
-    - Add ability to query or increase the device Anti Rollback Counter
-    - Add APIs to assist with modifying images for use with DFU
-    - Add arbitrary flash file read/write functionality
+    - Add ability to query or increase the device Anti Rollback Counter.
+    - Add APIs to assist with modifying images for use with DFU.
+    - Add arbitrary flash file read/write functionality.
     - Add getsockname(), getpeername(), reduce default socket memory requirements.
     - Add an API to set the scan match mode (WDRV_WINC_BSSFindSetScanMatchMode()).
     - Added passing of IP and MAC address as part of a WDRV_WINC_DHCPS_EVENT_LEASE_ASSIGNED event.
