@@ -14,6 +14,8 @@ This release includes improvements to the **WINCS02 and WINC1500** devices.
     - Add APIs to assist with modifying images for use with DFU.
     - Add arbitrary flash file read/write functionality.
 
+- WINC: Add support for WINC1500 FW v19.7.10.
+
 ### Bug fixes/Improvements
 - WINCS02: Add getsockname(), getpeername(), reduce default socket memory requirements.
 - WINCS02: Add an API to set the scan match mode (WDRV_WINC_BSSFindSetScanMatchMode()).
@@ -28,8 +30,6 @@ This release includes improvements to the **WINCS02 and WINC1500** devices.
 - WINCS02: Fixed Berkeley socket TCP listen leaving accepted socket locked, causing possible task stall on RTOS.
 
 For WINCS02 device release packages, visit https://www.microchip.com/en-us/software-library/wincs02-firmware.
-
-- WINC: Add support for WINC1500 FW v19.7.10.
 For WINC1500 device firmware information see the release note in utilities/wifi/winc/files/winc1500/19.7.10/
 
 ## Wireless_wifi Release v3.12.1
