@@ -2,7 +2,7 @@
 
 manifest_file_version: 1.0.0
 project: serial_bridge_sam_e54_xpro_winc3400
-creation_date: 2025-09-30T14:32:37.927+01:00[Europe/London]
+creation_date: 2025-09-30T17:19:12.335+01:00[Europe/London]
 operating_system: Windows 11
 mcc_mode: IDE
 mcc_mode_version: v6.25
@@ -18,8 +18,8 @@ device_library: {library_class: com.microchip.mcc.harmony.Harmony3Library, name:
   version: Bundled}
 packs: {name: SAME54_DFP, version: 3.9.244}
 modules:
-- {name: csp, type: HARMONY, version: v3.22.2}
+- {name: csp, type: HARMONY, version: v3.23.0}
 - {name: wireless_wifi, type: HARMONY, version: v3.12.2}
-- {name: core, type: HARMONY, version: v3.15.1}
+- {name: core, type: HARMONY, version: v3.15.5}
 - {name: CMSIS_5, type: HARMONY, version: 5.9.0}
-- {name: bsp, type: HARMONY, version: v3.22.0}
+- {name: bsp, type: HARMONY, version: v3.23.0}

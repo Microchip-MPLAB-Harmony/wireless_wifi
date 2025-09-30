@@ -17,7 +17,7 @@
 
 // DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2019-22, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -104,6 +104,17 @@ typedef struct
 typedef struct
 {
 } TCPIP_MODULE_MAC_WINC_CONFIG;
+
+#ifdef WDRV_WINC_NETWORK_USE_HARMONY_TCPIP
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC MACObject
+// *****************************************************************************
+// *****************************************************************************
+
+extern const TCPIP_MAC_OBJECT WDRV_WINC_MACObject;
+
+#endif
 
 // *****************************************************************************
 // *****************************************************************************

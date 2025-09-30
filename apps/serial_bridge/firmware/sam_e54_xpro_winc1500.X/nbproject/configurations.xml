@@ -307,6 +307,11 @@
                      displayName="serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500"
                      projectFiles="true">
         <logicalFolder name="components" displayName="components" projectFiles="true">
+          <logicalFolder name="TCP_forwardSlash_IP STACK"
+                         displayName="TCP_forwardSlash_IP STACK"
+                         projectFiles="true">
+            <itemPath>serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500/components/TCP_forwardSlash_IP STACK/TCP_forwardSlash_IP STACK.yml</itemPath>
+          </logicalFolder>
           <itemPath>serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500/components/sercom4.yml</itemPath>
           <itemPath>serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500/components/sercom2.yml</itemPath>
           <itemPath>serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500/components/sercom6.yml</itemPath>
@@ -480,6 +485,13 @@
       </logicalFolder>
       <logicalFolder name="f2" displayName="serial_bridge" projectFiles="true">
         <itemPath>../src/serial_bridge/serial_bridge.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500"
+                     displayName="serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500"
+                     projectFiles="true">
+        <logicalFolder name="components" displayName="components" projectFiles="true">
+          <itemPath>serial_bridge_sam_e54_xpro_winc1500_sam_e54_xpro_winc1500/components/.core.yml.swp</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <itemPath>../src/main.c</itemPath>
       <itemPath>../src/app.c</itemPath>

@@ -11,7 +11,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2022, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2022-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -304,7 +304,33 @@ typedef enum {
         Values are of type @ref tenuSslCertExpSettings.
         Default is @ref SSL_CERT_EXP_CHECK_EN_IF_SYS_TIME.
     */
+    WIFI_1X_PHASE1_METHOD,
+    /*!< Specify the allowed 1X Phase 1 methods. Values are:
+        0 = any of the methods are allowed: EAP_TLS, PEAPv0/PEAPv1 and TTLS
+        1 = Only EAP-TLS is allowed.
+        2 = Only PEAP is allowed.
+        3 = Only TTLS is allowed.
+    */
 } tenu1xOption;
+
+/*!
+@enum   \
+    tenu1xPhase1Method
+@brief
+
+@remarks
+
+*/
+typedef enum {
+    WIFI_1X_PHASE1_METHOD_ANY = 0,
+    /*!< Any of the methods are allowed: EAP_TLS, PEAPv0/PEAPv1 and TTLS. */
+    WIFI_1X_PHASE1_METHOD_EAP_TLS,
+    /*!< Only EAP-TLS is allowed. */
+    WIFI_1X_PHASE1_METHOD_PEAP,
+    /*!< Only PEAP is allowed. */
+    WIFI_1X_PHASE1_METHOD_TTLS
+    /*!< Only TTLS is allowed. */
+} tenu1xPhase1Method;
 
 /*!
 @struct     \
@@ -910,8 +936,8 @@ int8_t m2m_wifi_default_connect(void);
 
 @param[in]  enuCredStoreOption
     Option to specify whether connection details (i.e. the contents
-    of pstrNetworkId) are stored in WINC's flash and, if so,
-    whether they are encrypted before storing.
+    of pstrNetworkId) and IP address info are stored in WINC's flash,
+    and, if so, whether they are encrypted before storing.
 
 @param[in]  pstrNetworkId
     Structure specifying SSID/BSSID and Wi-Fi channel.
@@ -952,7 +978,7 @@ int8_t m2m_wifi_connect_open(tenuCredStoreOption enuCredStoreOption, tstrNetwork
 
 @param[in]  enuCredStoreOption
     Option to specify whether connection details (i.e. the contents
-    of pstrNetworkId and pstrAuthWep) are stored in WINC's flash
+    of pstrNetworkId and pstrAuthWep) and IP address info are stored in WINC's flash
     and, if so, whether they are encrypted before storing.
 
 @param[in]  pstrNetworkId
@@ -1025,6 +1051,7 @@ int8_t m2m_wifi_connect_psk(tenuCredStoreOption enuCredStoreOption, tstrNetworkI
         @ref WIFI_1X_SESSION_CACHING \n
         @ref WIFI_1X_SPECIFIC_ROOTCERT \n
         @ref WIFI_1X_TIME_VERIF_MODE \n
+        @ref WIFI_1X_PHASE1_METHOD \n
     The setting applies to all subsequent connection attempts via @ref m2m_wifi_connect_1x_mschap2
     or @ref m2m_wifi_connect_1x_tls \n
     Connection attempts via @ref m2m_wifi_default_connect use the
@@ -1059,6 +1086,7 @@ int8_t m2m_wifi_1x_set_option(tenu1xOption enuOptionName, const void *pOptionVal
         @ref WIFI_1X_SESSION_CACHING \n
         @ref WIFI_1X_SPECIFIC_ROOTCERT \n
         @ref WIFI_1X_TIME_VERIF_MODE \n
+        @ref WIFI_1X_PHASE1_METHOD \n
 
 @param[in]      enuOptionName
     The option to get.
@@ -1108,7 +1136,7 @@ int8_t m2m_wifi_1x_get_option(tenu1xOption enuOptionName, void *pOptionValue, si
 
 @param[in]  enuCredStoreOption
     Option to specify whether connection details (i.e. the contents
-    of pstrNetworkId and pstrAuth1xMschap2) are stored in WINC's
+    of pstrNetworkId and pstrAuth1xMschap2) and IP address info are stored in WINC's
     flash and, if so, whether they are encrypted before storing.
 
 @param[in]  pstrNetworkId
@@ -1154,7 +1182,7 @@ int8_t m2m_wifi_connect_1x_mschap2(tenuCredStoreOption enuCredStoreOption, tstrN
 
 @param[in]  enuCredStoreOption
     Option to specify whether connection details (i.e. the contents
-    of pstrNetworkId and pstrAuth1xTls) are stored in WINC's
+    of pstrNetworkId and pstrAuth1xTls) and IP address info are stored in WINC's
     flash and, if so, whether they are encrypted before storing.
 
 @param[in]  pstrNetworkId
@@ -1303,7 +1331,8 @@ int8_t m2m_wifi_connect(char *pcSsid, uint8_t u8SsidLen, uint8_t u8SecType, void
     @ref M2M_DEFAULT_CONN_SCAN_MISMATCH.
 
 @param[in]  u8NoSaveCred
-    Option to store the access point SSID and password into the WINC flash memory or not.
+    Option to store the access point SSID, password and IP address info into the WINC flash memory or not.
+    Storing this info generally means faster reconnection when connecting back to the same access point and network.
 
 @pre
     Prior to a successful connection request, the wi-fi driver must have been successfully initialized through the call of the @ref m2m_wifi_init function.
@@ -3847,11 +3876,12 @@ int8_t m2m_wifi_set_receive_buffer(void *pvBuffer,uint16_t u16BufferLen);
     int8_t m2m_wifi_prng_get_random_bytes(uint8_t* pu8PrngBuff,uint16_t u16PrngSize);
 
 @brief
-    Asynchronous function for retrieving from the firmware a pseudo-random set of bytes.
+    Asynchronous function for requesting a pseudo-random set of bytes from the firmware.
 
 @details
-    Asynchronous function for retrieving from the firmware a pseudo-random set of bytes as specified in the size passed in as a parameter.
-    The registered wifi-cb function retrieves the random bytes through the response @ref M2M_WIFI_RESP_GET_PRNG
+    Asynchronous function for requesting a pseudo-random set of bytes from the firmware. Once the
+	bytes are received, the driver writes them to the buffer provided, then calls the registered
+	wi-fi callback function with @ref M2M_WIFI_RESP_GET_PRNG and @ref tstrPrng.
 
 @param [in] pu8PrngBuff
     Pointer to a buffer to receive data.
@@ -3861,6 +3891,14 @@ int8_t m2m_wifi_set_receive_buffer(void *pvBuffer,uint16_t u16BufferLen);
 
 @warning
     Size greater than the maximum specified (1580) causes a negative error @ref M2M_ERR_FAIL.
+
+@warning
+    Calling this function without any prior Wi-Fi activity results in the generation of weak or predictable values.
+    The strength of random generation is reported via the u8Status field of @ref tstrPrng in the response callback.
+
+@warning
+    This API should only be used to request one random set of bytes at a time; calling this API
+    invalidates any previous incomplete request.
 
 @return
     The function returns @ref M2M_SUCCESS for successful operations and a negative value otherwise.

@@ -1,7 +1,9 @@
 /*
- * Instance header file for ATSAMA5D29TA100
+ * Instance header file for ATSAMA5D28CLD2G
  *
- * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +19,18 @@
  *
  */
 
-/* file generated from device description file (ATDF) version 2024-06-24T14:43:55Z */
+/* file generated from device description file (ATDF) version 2025-07-15T11:00:00Z */
 #ifndef _SAMA5D2_FLEXCOM2_INSTANCE_
 #define _SAMA5D2_FLEXCOM2_INSTANCE_
 
 
 /* ========== Instance Parameter definitions for FLEXCOM2 peripheral ========== */
-#define FLEXCOM2_CLOCK_ID                        (21)       
-#define FLEXCOM2_DMAC_ID_RX                      (16)       
-#define FLEXCOM2_DMAC_ID_TX                      (15)       
-#define FLEXCOM2_INSTANCE_ID                     (21)       
-#define FLEXCOM2_SPI_FIFO_SIZE                   (32)       
-#define FLEXCOM2_TWI_FIFO_SIZE                   (16)       
-#define FLEXCOM2_USART_FIFO_SIZE                 (32)       
+#define FLEXCOM2_CLOCK_ID                        (21)
+#define FLEXCOM2_DMAC_ID_RX                      (16)
+#define FLEXCOM2_DMAC_ID_TX                      (15)
+#define FLEXCOM2_INSTANCE_ID                     (21)
+#define FLEXCOM2_SPI_FIFO_SIZE                   (32)
+#define FLEXCOM2_TWI_FIFO_SIZE                   (16)
+#define FLEXCOM2_USART_FIFO_SIZE                 (32)
 
 #endif /* _SAMA5D2_FLEXCOM2_INSTANCE_ */

@@ -9,7 +9,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2022, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2022-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -147,7 +147,7 @@ int8_t m2m_ssl_retrieve_next_for_verifying(tenuEcNamedCurve *penuCurve, uint8_t 
 @fn         int8_t m2m_ssl_retrieve_cert(uint16_t* pu16Curve, uint8_t* pu8Value, uint8_t* pu8Sig, tstrECPoint* pstrKey);
 @brief      Retrieve the next set of information from the WINC for ECDSA verification.
 @param[out] pu16Curve
-                The named curve, to be cast to type @ref tenuEcNamedCurve.
+                The named curve, see @ref tenuEcNamedCurve for values.
 @param[out] pu8Value
                 Value retrieved for verification. This is the digest of the message, truncated/prepended to the appropriate size.
                 The size of the value is equal to the field size of the curve, hence is determined by pu16Curve.

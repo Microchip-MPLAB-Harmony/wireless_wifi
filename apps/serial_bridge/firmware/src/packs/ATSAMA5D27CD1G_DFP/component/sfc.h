@@ -1,7 +1,9 @@
 /*
  * Component description for SFC
  *
- * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,106 +19,105 @@
  *
  */
 
-/* file generated from device description file (ATDF) version 2024-06-24T14:43:55Z */
+/*  file generated from device description file (ATDF) version 2025-07-15T11:00:00Z  */
 #ifndef _SAMA5D2_SFC_COMPONENT_H_
 #define _SAMA5D2_SFC_COMPONENT_H_
 
+#include "core_ca.h"
+
 /* ************************************************************************** */
-/*   SOFTWARE API DEFINITION FOR SFC                                          */
+/*                      SOFTWARE API DEFINITION FOR SFC                       */
 /* ************************************************************************** */
 
 /* -------- SFC_KR : (SFC Offset: 0x00) ( /W 32) SFC Key Register -------- */
 #define SFC_KR_KEY_Pos                        _UINT32_(0)                                          /* (SFC_KR) Key Code Position */
 #define SFC_KR_KEY_Msk                        (_UINT32_(0xFF) << SFC_KR_KEY_Pos)                   /* (SFC_KR) Key Code Mask */
-#define SFC_KR_KEY(value)                     (SFC_KR_KEY_Msk & (_UINT32_(value) << SFC_KR_KEY_Pos)) /* Assigment of value for KEY in the SFC_KR register */
+#define SFC_KR_KEY(value)                     (SFC_KR_KEY_Msk & (_UINT32_(value) << SFC_KR_KEY_Pos)) /* Assignment of value for KEY in the SFC_KR register */
 #define SFC_KR_Msk                            _UINT32_(0x000000FF)                                 /* (SFC_KR) Register Mask  */
 
 
 /* -------- SFC_MR : (SFC Offset: 0x04) (R/W 32) SFC Mode Register -------- */
 #define SFC_MR_MSK_Pos                        _UINT32_(0)                                          /* (SFC_MR) Mask Data Registers Position */
 #define SFC_MR_MSK_Msk                        (_UINT32_(0x1) << SFC_MR_MSK_Pos)                    /* (SFC_MR) Mask Data Registers Mask */
-#define SFC_MR_MSK(value)                     (SFC_MR_MSK_Msk & (_UINT32_(value) << SFC_MR_MSK_Pos)) /* Assigment of value for MSK in the SFC_MR register */
+#define SFC_MR_MSK(value)                     (SFC_MR_MSK_Msk & (_UINT32_(value) << SFC_MR_MSK_Pos)) /* Assignment of value for MSK in the SFC_MR register */
 #define SFC_MR_SASEL_Pos                      _UINT32_(4)                                          /* (SFC_MR) Sense Amplifier Selection Position */
 #define SFC_MR_SASEL_Msk                      (_UINT32_(0x1) << SFC_MR_SASEL_Pos)                  /* (SFC_MR) Sense Amplifier Selection Mask */
-#define SFC_MR_SASEL(value)                   (SFC_MR_SASEL_Msk & (_UINT32_(value) << SFC_MR_SASEL_Pos)) /* Assigment of value for SASEL in the SFC_MR register */
+#define SFC_MR_SASEL(value)                   (SFC_MR_SASEL_Msk & (_UINT32_(value) << SFC_MR_SASEL_Pos)) /* Assignment of value for SASEL in the SFC_MR register */
 #define SFC_MR_Msk                            _UINT32_(0x00000011)                                 /* (SFC_MR) Register Mask  */
 
 
 /* -------- SFC_IER : (SFC Offset: 0x10) ( /W 32) SFC Interrupt Enable Register -------- */
 #define SFC_IER_PGMC_Pos                      _UINT32_(0)                                          /* (SFC_IER) Programming Sequence Completed Interrupt Enable Position */
 #define SFC_IER_PGMC_Msk                      (_UINT32_(0x1) << SFC_IER_PGMC_Pos)                  /* (SFC_IER) Programming Sequence Completed Interrupt Enable Mask */
-#define SFC_IER_PGMC(value)                   (SFC_IER_PGMC_Msk & (_UINT32_(value) << SFC_IER_PGMC_Pos)) /* Assigment of value for PGMC in the SFC_IER register */
+#define SFC_IER_PGMC(value)                   (SFC_IER_PGMC_Msk & (_UINT32_(value) << SFC_IER_PGMC_Pos)) /* Assignment of value for PGMC in the SFC_IER register */
 #define SFC_IER_PGMF_Pos                      _UINT32_(1)                                          /* (SFC_IER) Programming Sequence Failed Interrupt Enable Position */
 #define SFC_IER_PGMF_Msk                      (_UINT32_(0x1) << SFC_IER_PGMF_Pos)                  /* (SFC_IER) Programming Sequence Failed Interrupt Enable Mask */
-#define SFC_IER_PGMF(value)                   (SFC_IER_PGMF_Msk & (_UINT32_(value) << SFC_IER_PGMF_Pos)) /* Assigment of value for PGMF in the SFC_IER register */
+#define SFC_IER_PGMF(value)                   (SFC_IER_PGMF_Msk & (_UINT32_(value) << SFC_IER_PGMF_Pos)) /* Assignment of value for PGMF in the SFC_IER register */
 #define SFC_IER_LCHECK_Pos                    _UINT32_(4)                                          /* (SFC_IER) Live Integrity Check Error Interrupt Enable Position */
 #define SFC_IER_LCHECK_Msk                    (_UINT32_(0x1) << SFC_IER_LCHECK_Pos)                /* (SFC_IER) Live Integrity Check Error Interrupt Enable Mask */
-#define SFC_IER_LCHECK(value)                 (SFC_IER_LCHECK_Msk & (_UINT32_(value) << SFC_IER_LCHECK_Pos)) /* Assigment of value for LCHECK in the SFC_IER register */
+#define SFC_IER_LCHECK(value)                 (SFC_IER_LCHECK_Msk & (_UINT32_(value) << SFC_IER_LCHECK_Pos)) /* Assignment of value for LCHECK in the SFC_IER register */
 #define SFC_IER_ACE_Pos                       _UINT32_(17)                                         /* (SFC_IER) Area Check Error Interrupt Enable Position */
 #define SFC_IER_ACE_Msk                       (_UINT32_(0x1) << SFC_IER_ACE_Pos)                   /* (SFC_IER) Area Check Error Interrupt Enable Mask */
-#define SFC_IER_ACE(value)                    (SFC_IER_ACE_Msk & (_UINT32_(value) << SFC_IER_ACE_Pos)) /* Assigment of value for ACE in the SFC_IER register */
+#define SFC_IER_ACE(value)                    (SFC_IER_ACE_Msk & (_UINT32_(value) << SFC_IER_ACE_Pos)) /* Assignment of value for ACE in the SFC_IER register */
 #define SFC_IER_Msk                           _UINT32_(0x00020013)                                 /* (SFC_IER) Register Mask  */
 
 
 /* -------- SFC_IDR : (SFC Offset: 0x14) ( /W 32) SFC Interrupt Disable Register -------- */
 #define SFC_IDR_PGMC_Pos                      _UINT32_(0)                                          /* (SFC_IDR) Programming Sequence Completed Interrupt Disable Position */
 #define SFC_IDR_PGMC_Msk                      (_UINT32_(0x1) << SFC_IDR_PGMC_Pos)                  /* (SFC_IDR) Programming Sequence Completed Interrupt Disable Mask */
-#define SFC_IDR_PGMC(value)                   (SFC_IDR_PGMC_Msk & (_UINT32_(value) << SFC_IDR_PGMC_Pos)) /* Assigment of value for PGMC in the SFC_IDR register */
+#define SFC_IDR_PGMC(value)                   (SFC_IDR_PGMC_Msk & (_UINT32_(value) << SFC_IDR_PGMC_Pos)) /* Assignment of value for PGMC in the SFC_IDR register */
 #define SFC_IDR_PGMF_Pos                      _UINT32_(1)                                          /* (SFC_IDR) Programming Sequence Failed Interrupt Disable Position */
 #define SFC_IDR_PGMF_Msk                      (_UINT32_(0x1) << SFC_IDR_PGMF_Pos)                  /* (SFC_IDR) Programming Sequence Failed Interrupt Disable Mask */
-#define SFC_IDR_PGMF(value)                   (SFC_IDR_PGMF_Msk & (_UINT32_(value) << SFC_IDR_PGMF_Pos)) /* Assigment of value for PGMF in the SFC_IDR register */
+#define SFC_IDR_PGMF(value)                   (SFC_IDR_PGMF_Msk & (_UINT32_(value) << SFC_IDR_PGMF_Pos)) /* Assignment of value for PGMF in the SFC_IDR register */
 #define SFC_IDR_LCHECK_Pos                    _UINT32_(4)                                          /* (SFC_IDR) Live Integrity Check Error Interrupt Disable Position */
 #define SFC_IDR_LCHECK_Msk                    (_UINT32_(0x1) << SFC_IDR_LCHECK_Pos)                /* (SFC_IDR) Live Integrity Check Error Interrupt Disable Mask */
-#define SFC_IDR_LCHECK(value)                 (SFC_IDR_LCHECK_Msk & (_UINT32_(value) << SFC_IDR_LCHECK_Pos)) /* Assigment of value for LCHECK in the SFC_IDR register */
+#define SFC_IDR_LCHECK(value)                 (SFC_IDR_LCHECK_Msk & (_UINT32_(value) << SFC_IDR_LCHECK_Pos)) /* Assignment of value for LCHECK in the SFC_IDR register */
 #define SFC_IDR_ACE_Pos                       _UINT32_(17)                                         /* (SFC_IDR) Area Check Error Interrupt Disable Position */
 #define SFC_IDR_ACE_Msk                       (_UINT32_(0x1) << SFC_IDR_ACE_Pos)                   /* (SFC_IDR) Area Check Error Interrupt Disable Mask */
-#define SFC_IDR_ACE(value)                    (SFC_IDR_ACE_Msk & (_UINT32_(value) << SFC_IDR_ACE_Pos)) /* Assigment of value for ACE in the SFC_IDR register */
+#define SFC_IDR_ACE(value)                    (SFC_IDR_ACE_Msk & (_UINT32_(value) << SFC_IDR_ACE_Pos)) /* Assignment of value for ACE in the SFC_IDR register */
 #define SFC_IDR_Msk                           _UINT32_(0x00020013)                                 /* (SFC_IDR) Register Mask  */
 
 
 /* -------- SFC_IMR : (SFC Offset: 0x18) ( R/ 32) SFC Interrupt Mask Register -------- */
 #define SFC_IMR_PGMC_Pos                      _UINT32_(0)                                          /* (SFC_IMR) Programming Sequence Completed Interrupt Mask Position */
 #define SFC_IMR_PGMC_Msk                      (_UINT32_(0x1) << SFC_IMR_PGMC_Pos)                  /* (SFC_IMR) Programming Sequence Completed Interrupt Mask Mask */
-#define SFC_IMR_PGMC(value)                   (SFC_IMR_PGMC_Msk & (_UINT32_(value) << SFC_IMR_PGMC_Pos)) /* Assigment of value for PGMC in the SFC_IMR register */
+#define SFC_IMR_PGMC(value)                   (SFC_IMR_PGMC_Msk & (_UINT32_(value) << SFC_IMR_PGMC_Pos)) /* Assignment of value for PGMC in the SFC_IMR register */
 #define SFC_IMR_PGMF_Pos                      _UINT32_(1)                                          /* (SFC_IMR) Programming Sequence Failed Interrupt Mask Position */
 #define SFC_IMR_PGMF_Msk                      (_UINT32_(0x1) << SFC_IMR_PGMF_Pos)                  /* (SFC_IMR) Programming Sequence Failed Interrupt Mask Mask */
-#define SFC_IMR_PGMF(value)                   (SFC_IMR_PGMF_Msk & (_UINT32_(value) << SFC_IMR_PGMF_Pos)) /* Assigment of value for PGMF in the SFC_IMR register */
+#define SFC_IMR_PGMF(value)                   (SFC_IMR_PGMF_Msk & (_UINT32_(value) << SFC_IMR_PGMF_Pos)) /* Assignment of value for PGMF in the SFC_IMR register */
 #define SFC_IMR_LCHECK_Pos                    _UINT32_(4)                                          /* (SFC_IMR) Live Integrity Checking Error Interrupt Mask Position */
 #define SFC_IMR_LCHECK_Msk                    (_UINT32_(0x1) << SFC_IMR_LCHECK_Pos)                /* (SFC_IMR) Live Integrity Checking Error Interrupt Mask Mask */
-#define SFC_IMR_LCHECK(value)                 (SFC_IMR_LCHECK_Msk & (_UINT32_(value) << SFC_IMR_LCHECK_Pos)) /* Assigment of value for LCHECK in the SFC_IMR register */
+#define SFC_IMR_LCHECK(value)                 (SFC_IMR_LCHECK_Msk & (_UINT32_(value) << SFC_IMR_LCHECK_Pos)) /* Assignment of value for LCHECK in the SFC_IMR register */
 #define SFC_IMR_ACE_Pos                       _UINT32_(17)                                         /* (SFC_IMR) Area Check Error Interrupt Mask Position */
 #define SFC_IMR_ACE_Msk                       (_UINT32_(0x1) << SFC_IMR_ACE_Pos)                   /* (SFC_IMR) Area Check Error Interrupt Mask Mask */
-#define SFC_IMR_ACE(value)                    (SFC_IMR_ACE_Msk & (_UINT32_(value) << SFC_IMR_ACE_Pos)) /* Assigment of value for ACE in the SFC_IMR register */
+#define SFC_IMR_ACE(value)                    (SFC_IMR_ACE_Msk & (_UINT32_(value) << SFC_IMR_ACE_Pos)) /* Assignment of value for ACE in the SFC_IMR register */
 #define SFC_IMR_Msk                           _UINT32_(0x00020013)                                 /* (SFC_IMR) Register Mask  */
 
 
 /* -------- SFC_SR : (SFC Offset: 0x1C) ( R/ 32) SFC Status Register -------- */
 #define SFC_SR_PGMC_Pos                       _UINT32_(0)                                          /* (SFC_SR) Programming Sequence Completed (cleared on read) Position */
 #define SFC_SR_PGMC_Msk                       (_UINT32_(0x1) << SFC_SR_PGMC_Pos)                   /* (SFC_SR) Programming Sequence Completed (cleared on read) Mask */
-#define SFC_SR_PGMC(value)                    (SFC_SR_PGMC_Msk & (_UINT32_(value) << SFC_SR_PGMC_Pos)) /* Assigment of value for PGMC in the SFC_SR register */
+#define SFC_SR_PGMC(value)                    (SFC_SR_PGMC_Msk & (_UINT32_(value) << SFC_SR_PGMC_Pos)) /* Assignment of value for PGMC in the SFC_SR register */
 #define SFC_SR_PGMF_Pos                       _UINT32_(1)                                          /* (SFC_SR) Programming Sequence Failed (cleared on read) Position */
 #define SFC_SR_PGMF_Msk                       (_UINT32_(0x1) << SFC_SR_PGMF_Pos)                   /* (SFC_SR) Programming Sequence Failed (cleared on read) Mask */
-#define SFC_SR_PGMF(value)                    (SFC_SR_PGMF_Msk & (_UINT32_(value) << SFC_SR_PGMF_Pos)) /* Assigment of value for PGMF in the SFC_SR register */
+#define SFC_SR_PGMF(value)                    (SFC_SR_PGMF_Msk & (_UINT32_(value) << SFC_SR_PGMF_Pos)) /* Assignment of value for PGMF in the SFC_SR register */
 #define SFC_SR_LCHECK_Pos                     _UINT32_(4)                                          /* (SFC_SR) Live Integrity Checking Error (cleared on read) Position */
 #define SFC_SR_LCHECK_Msk                     (_UINT32_(0x1) << SFC_SR_LCHECK_Pos)                 /* (SFC_SR) Live Integrity Checking Error (cleared on read) Mask */
-#define SFC_SR_LCHECK(value)                  (SFC_SR_LCHECK_Msk & (_UINT32_(value) << SFC_SR_LCHECK_Pos)) /* Assigment of value for LCHECK in the SFC_SR register */
-#define SFC_SR_APLE_Pos                       _UINT32_(16)                                         /* (SFC_SR) Area Programming Lock Error (cleared on read) Position */
-#define SFC_SR_APLE_Msk                       (_UINT32_(0x1) << SFC_SR_APLE_Pos)                   /* (SFC_SR) Area Programming Lock Error (cleared on read) Mask */
-#define SFC_SR_APLE(value)                    (SFC_SR_APLE_Msk & (_UINT32_(value) << SFC_SR_APLE_Pos)) /* Assigment of value for APLE in the SFC_SR register */
+#define SFC_SR_LCHECK(value)                  (SFC_SR_LCHECK_Msk & (_UINT32_(value) << SFC_SR_LCHECK_Pos)) /* Assignment of value for LCHECK in the SFC_SR register */
 #define SFC_SR_ACE_Pos                        _UINT32_(17)                                         /* (SFC_SR) Area Check Error (cleared on read) Position */
 #define SFC_SR_ACE_Msk                        (_UINT32_(0x1) << SFC_SR_ACE_Pos)                    /* (SFC_SR) Area Check Error (cleared on read) Mask */
-#define SFC_SR_ACE(value)                     (SFC_SR_ACE_Msk & (_UINT32_(value) << SFC_SR_ACE_Pos)) /* Assigment of value for ACE in the SFC_SR register */
-#define SFC_SR_Msk                            _UINT32_(0x00030013)                                 /* (SFC_SR) Register Mask  */
+#define SFC_SR_ACE(value)                     (SFC_SR_ACE_Msk & (_UINT32_(value) << SFC_SR_ACE_Pos)) /* Assignment of value for ACE in the SFC_SR register */
+#define SFC_SR_Msk                            _UINT32_(0x00020013)                                 /* (SFC_SR) Register Mask  */
 
 
 /* -------- SFC_DR : (SFC Offset: 0x20) (R/W 32) SFC Data Register -------- */
 #define SFC_DR_DATA_Pos                       _UINT32_(0)                                          /* (SFC_DR) Fuse Data Position */
 #define SFC_DR_DATA_Msk                       (_UINT32_(0xFFFFFFFF) << SFC_DR_DATA_Pos)            /* (SFC_DR) Fuse Data Mask */
-#define SFC_DR_DATA(value)                    (SFC_DR_DATA_Msk & (_UINT32_(value) << SFC_DR_DATA_Pos)) /* Assigment of value for DATA in the SFC_DR register */
+#define SFC_DR_DATA(value)                    (SFC_DR_DATA_Msk & (_UINT32_(value) << SFC_DR_DATA_Pos)) /* Assignment of value for DATA in the SFC_DR register */
 #define SFC_DR_Msk                            _UINT32_(0xFFFFFFFF)                                 /* (SFC_DR) Register Mask  */
 
 
-/** \brief SFC register offsets definitions */
+/* SFC register offsets definitions */
 #define SFC_KR_REG_OFST                _UINT32_(0x00)      /* (SFC_KR) SFC Key Register Offset */
 #define SFC_MR_REG_OFST                _UINT32_(0x04)      /* (SFC_MR) SFC Mode Register Offset */
 #define SFC_IER_REG_OFST               _UINT32_(0x10)      /* (SFC_IER) SFC Interrupt Enable Register Offset */
@@ -143,17 +144,17 @@
 #define SFC_DR16_REG_OFST              _UINT32_(0x60)      /* (SFC_DR16) SFC Data Register Offset */
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
-/** \brief SFC register API structure */
+/* SFC register API structure */
 typedef struct
 {
-  __O   uint32_t                       SFC_KR;             /**< Offset: 0x00 ( /W  32) SFC Key Register */
-  __IO  uint32_t                       SFC_MR;             /**< Offset: 0x04 (R/W  32) SFC Mode Register */
+  __O   uint32_t                       SFC_KR;             /* Offset: 0x00 ( /W  32) SFC Key Register */
+  __IO  uint32_t                       SFC_MR;             /* Offset: 0x04 (R/W  32) SFC Mode Register */
   __I   uint8_t                        Reserved1[0x08];
-  __O   uint32_t                       SFC_IER;            /**< Offset: 0x10 ( /W  32) SFC Interrupt Enable Register */
-  __O   uint32_t                       SFC_IDR;            /**< Offset: 0x14 ( /W  32) SFC Interrupt Disable Register */
-  __I   uint32_t                       SFC_IMR;            /**< Offset: 0x18 (R/   32) SFC Interrupt Mask Register */
-  __I   uint32_t                       SFC_SR;             /**< Offset: 0x1C (R/   32) SFC Status Register */
-  __IO  uint32_t                       SFC_DR[17];         /**< Offset: 0x20 (R/W  32) SFC Data Register */
+  __O   uint32_t                       SFC_IER;            /* Offset: 0x10 ( /W  32) SFC Interrupt Enable Register */
+  __O   uint32_t                       SFC_IDR;            /* Offset: 0x14 ( /W  32) SFC Interrupt Disable Register */
+  __I   uint32_t                       SFC_IMR;            /* Offset: 0x18 (R/   32) SFC Interrupt Mask Register */
+  __I   uint32_t                       SFC_SR;             /* Offset: 0x1C (R/   32) SFC Status Register */
+  __IO  uint32_t                       SFC_DR[17];         /* Offset: 0x20 (R/W  32) SFC Data Register */
 } sfc_registers_t;
 
 

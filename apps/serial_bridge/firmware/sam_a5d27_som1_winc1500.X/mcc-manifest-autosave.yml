@@ -2,7 +2,7 @@
 
 manifest_file_version: 1.0.0
 project: serial_bridge_sam_a5d27_som1_winc1500
-creation_date: 2025-09-30T14:43:34.087+01:00[Europe/London]
+creation_date: 2025-09-30T17:54:00.079+01:00[Europe/London]
 operating_system: Windows 11
 mcc_mode: IDE
 mcc_mode_version: v6.25
@@ -16,9 +16,9 @@ is_using_prerelease_versions: false
 mcc_content_registries: https://registry.npmjs.org/
 device_library: {library_class: com.microchip.mcc.harmony.Harmony3Library, name: Bundled,
   version: Bundled}
-packs: {name: SAMA5D2_DFP, version: 1.11.228}
+packs: {name: SAMA5D2_DFP, version: 1.14.264}
 modules:
 - {name: wireless_wifi, type: HARMONY, version: v3.12.2}
-- {name: csp, type: HARMONY, version: v3.22.2}
-- {name: core, type: HARMONY, version: v3.15.1}
+- {name: csp, type: HARMONY, version: v3.23.0}
+- {name: core, type: HARMONY, version: v3.15.5}
 - {name: CMSIS_5, type: HARMONY, version: 5.9.0}

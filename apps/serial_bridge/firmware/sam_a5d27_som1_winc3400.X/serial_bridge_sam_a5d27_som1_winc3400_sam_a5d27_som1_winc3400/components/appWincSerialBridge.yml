@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: wireless_wifi
   type: package
-  version: v3.12.1
+  version: v3.12.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -68,8 +68,8 @@ data:
     - children:
       - attributes:
           id: appWincSerialBridge
-          x: '400'
-          y: '271'
+          x: '351'
+          y: '377'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph

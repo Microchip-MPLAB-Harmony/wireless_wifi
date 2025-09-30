@@ -1,7 +1,9 @@
 /*
- * Instance header file for ATSAMA5D29TA100
+ * Instance header file for ATSAMA5D28CLD2G
  *
- * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +19,15 @@
  *
  */
 
-/* file generated from device description file (ATDF) version 2024-06-24T14:43:55Z */
+/* file generated from device description file (ATDF) version 2025-07-15T11:00:00Z */
 #ifndef _SAMA5D2_SSC0_INSTANCE_
 #define _SAMA5D2_SSC0_INSTANCE_
 
 
 /* ========== Instance Parameter definitions for SSC0 peripheral ========== */
-#define SSC0_CLOCK_ID                            (43)       
-#define SSC0_DMAC_ID_RX                          (22)       
-#define SSC0_DMAC_ID_TX                          (21)       
-#define SSC0_INSTANCE_ID                         (43)       
+#define SSC0_CLOCK_ID                            (43)
+#define SSC0_DMAC_ID_RX                          (22)
+#define SSC0_DMAC_ID_TX                          (21)
+#define SSC0_INSTANCE_ID                         (43)
 
 #endif /* _SAMA5D2_SSC0_INSTANCE_ */

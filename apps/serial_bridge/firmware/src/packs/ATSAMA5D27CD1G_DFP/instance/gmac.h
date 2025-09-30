@@ -1,7 +1,9 @@
 /*
- * Instance header file for ATSAMA5D29TA100
+ * Instance header file for ATSAMA5D28CLD2G
  *
- * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +19,13 @@
  *
  */
 
-/* file generated from device description file (ATDF) version 2024-06-24T14:43:55Z */
+/* file generated from device description file (ATDF) version 2025-07-15T11:00:00Z */
 #ifndef _SAMA5D2_GMAC_INSTANCE_
 #define _SAMA5D2_GMAC_INSTANCE_
 
 
 /* ========== Instance Parameter definitions for GMAC peripheral ========== */
-#define GMAC_CLOCK_ID                            (5)        
-#define GMAC_INSTANCE_ID                         (5)        /* Ethernet MAC */
-#define GMAC_INSTANCE_ID_Q1                      (66)       /* GMAC Queue 1 Interrupt */
-#define GMAC_INSTANCE_ID_Q2                      (67)       /* GMAC Queue 2 Interrupt */
+#define GMAC_CLOCK_ID                            (5)
+#define GMAC_INSTANCE_ID                         (5)
 
 #endif /* _SAMA5D2_GMAC_INSTANCE_ */

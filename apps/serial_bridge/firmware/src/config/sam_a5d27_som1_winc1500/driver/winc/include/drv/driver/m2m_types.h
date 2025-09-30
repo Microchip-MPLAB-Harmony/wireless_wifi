@@ -11,7 +11,7 @@
 
 //DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2022, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2022-25, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -83,6 +83,7 @@ MACROS
     ( ((uint32_t)M2M_MAKE_VERSION((fw_major),  (fw_minor),  (fw_patch)))  << M2M_FW_VERSION_SHIFT) | \
     ( ((uint32_t)M2M_MAKE_VERSION((drv_major), (drv_minor), (drv_patch))) << M2M_DRV_VERSION_SHIFT))
 
+#define REL_19_7_10_VER         M2M_MAKE_VERSION_INFO(19,7,10,19,3,0)
 #define REL_19_7_7_VER          M2M_MAKE_VERSION_INFO(19,7,7,19,3,0)
 #define REL_19_7_6_VER          M2M_MAKE_VERSION_INFO(19,7,6,19,3,0)
 #define REL_19_7_5_VER          M2M_MAKE_VERSION_INFO(19,7,5,19,3,0)
@@ -120,7 +121,7 @@ MACROS
 /*!< Firmware Minor release version number.
 */
 
-#define M2M_RELEASE_VERSION_PATCH_NO                        (7)
+#define M2M_RELEASE_VERSION_PATCH_NO                        (10)
 /*!< Firmware patch release version number.
 */
 
@@ -264,6 +265,22 @@ MACROS
 #define M2M_802_1X_TLS_FLAG                             0x02
 /*!< Flag to indicate 802.1x TLS credentials: domain/user-name/private-key/certificate.
 */
+
+#define M2M_802_1X_FLAGS_PHASE1_ANY              		(0)
+/*!< Flag to indicate any of the methods are allowed: EAP_TLS, PEAPv0/PEAPv1 and TTLS. */
+
+#define M2M_802_1X_FLAGS_PHASE1_EAP_TLS              	(1<<2)
+/*!< Any of the methods are allowed: EAP_TLS, PEAPv0/PEAPv1 and TTLS. */
+
+#define M2M_802_1X_FLAGS_PHASE1_PEAP					(2<<2)
+/*!< Only PEAP is allowed. */
+
+#define M2M_802_1X_FLAGS_PHASE1_TTLS					(3<<2)
+/*!< Only TTLS is allowed. */
+
+#define M2M_802_1X_FLAGS_PHASE1_MASK					(3<<2)
+/*!< Mask to clear all 1X Phase1 flags. */
+
 #define M2M_802_1X_TLS_CLIENT_CERTIFICATE               1
 /*!< Info type used in @ref tstrM2mWifiAuthInfoHdr to indicate Enterprise TLS client certificate.
 */
@@ -2420,18 +2437,24 @@ typedef struct {
     M2M Request PRNG
  */
 typedef struct {
-    /*!<
-    return buffer address
-    */
     uint8_t *pu8RngBuff;
     /*!<
-    PRNG size requested
+        PRNG buffer address (provided by application)
     */
-    uint16_t    u16PrngSize;
+    uint16_t u16PrngSize;
     /*!<
-        PRNG pads
+        PRNG size (provided by application)
     */
-    uint8_t __PAD16__[2];
+    uint8_t u8Status;
+    /*!<
+        PRNG status (feedback):
+        0: Strong PRNG
+        1: Weak PRNG
+    */
+    uint8_t u8Rsvd;
+    /*!<
+        Reserved
+    */
 } tstrPrng;
 
 /*!
@@ -3034,13 +3057,13 @@ typedef struct {
 
 typedef struct {
     uint32_t u32TotalLen;
-	/*!< Total length of the struct be sent over the HIF */
+    /*!< Total length of the struct be sent over the HIF */
     char acUrl[256];
-	/*!< NULL terminated HTTP(S) URL from which to fetch the OTA file */
+    /*!< NULL terminated HTTP(S) URL from which to fetch the OTA file */
     char acSNI[64];
-	/*!< NULL terminated server name to send in the TLS SNI extension (can be empty) */
+    /*!< NULL terminated server name to send in the TLS SNI extension (can be empty) */
     uint8_t u8SSLFlags;
-	/*!< Flags to set SSL options */
+    /*!< Flags to set SSL options */
     uint8_t   __PAD24__[3];
     /*!< Padding byte for forcing 4-byte alignment */
 } tstrOtaStart;

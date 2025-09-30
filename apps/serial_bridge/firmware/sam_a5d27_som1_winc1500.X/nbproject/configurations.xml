@@ -211,6 +211,7 @@
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/qspi.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/matrix.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/smc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/syscwp.h</itemPath>
           </logicalFolder>
           <logicalFolder name="instance" displayName="instance" projectFiles="true">
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/trng.h</itemPath>
@@ -279,13 +280,11 @@
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/qspi0.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart0.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/hsmc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/s_pio_ctrl.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/s_pio.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/piob.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pioa.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pio_ctrl.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/piod.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pioc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/syscwp.h</itemPath>
           </logicalFolder>
           <logicalFolder name="pio" displayName="pio" projectFiles="true">
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/pio/sama5d27cd1g.h</itemPath>
@@ -555,6 +554,7 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value="-marm"/>
         <property key="cast-align" value="false"/>
         <property key="code-model" value="default"/>
         <property key="const-model" value="default"/>
@@ -634,6 +634,7 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
+        <property key="appendMe" value="-dinit-compress=0"/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -680,6 +681,7 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
