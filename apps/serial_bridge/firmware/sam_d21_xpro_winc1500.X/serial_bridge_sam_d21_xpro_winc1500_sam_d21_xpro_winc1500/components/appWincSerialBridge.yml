@@ -1,0 +1,385 @@
+configVersion: 1.0.0
+componentName: appWincSerialBridge
+coreVersion: 5.8.2
+device: ATSAMD21J18A
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: appWincSerialBridge
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.2
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: spi_dependency
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: sercom1
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: SERCOM1_SPI
+            type: String
+          - attributes:
+              id: enabled
+            children:
+            - type: Value
+              value: 'true'
+            type: Boolean
+          type: Attributes
+        type: DirectDependency
+      - attributes:
+          id: uart
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: sercom3
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: SERCOM3_UART
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: appWincSerialBridge
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: appWincSerialBridge
+          x: '306'
+          y: '340'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    APP_EIC_SRC_0:
+      attributes:
+        id: APP_EIC_SRC_0
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_1:
+      attributes:
+        id: APP_EIC_SRC_1
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_10:
+      attributes:
+        id: APP_EIC_SRC_10
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_11:
+      attributes:
+        id: APP_EIC_SRC_11
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_12:
+      attributes:
+        id: APP_EIC_SRC_12
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_13:
+      attributes:
+        id: APP_EIC_SRC_13
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_14:
+      attributes:
+        id: APP_EIC_SRC_14
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_15:
+      attributes:
+        id: APP_EIC_SRC_15
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_2:
+      attributes:
+        id: APP_EIC_SRC_2
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_3:
+      attributes:
+        id: APP_EIC_SRC_3
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_4:
+      attributes:
+        id: APP_EIC_SRC_4
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_5:
+      attributes:
+        id: APP_EIC_SRC_5
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_6:
+      attributes:
+        id: APP_EIC_SRC_6
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_7:
+      attributes:
+        id: APP_EIC_SRC_7
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_8:
+      attributes:
+        id: APP_EIC_SRC_8
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_9:
+      attributes:
+        id: APP_EIC_SRC_9
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_EIC_SRC_SELECT:
+      attributes:
+        id: APP_EIC_SRC_SELECT
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: '14'
+          type: Dynamic
+        type: Values
+      type: Integer
+    APP_ENABLE_SEC_CONN:
+      attributes:
+        id: APP_ENABLE_SEC_CONN
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    APP_PLIB:
+      attributes:
+        id: APP_PLIB
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: SERCOM1
+          type: Dynamic
+        type: Values
+      type: String
+    APP_RX_DMA_CHANNEL:
+      attributes:
+        id: APP_RX_DMA_CHANNEL
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: '3'
+          type: Dynamic
+        type: Values
+      type: Integer
+    APP_SYS_DMA_ENABLE:
+      attributes:
+        id: APP_SYS_DMA_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_TX_DMA_CHANNEL:
+      attributes:
+        id: APP_TX_DMA_CHANNEL
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: '2'
+          type: Dynamic
+        type: Values
+      type: Integer
+    APP_TX_RX_DMA:
+      attributes:
+        id: APP_TX_RX_DMA
+      children:
+      - children:
+        - attributes:
+            id: readOnly
+          children:
+          - type: Value
+            value: 'false'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    APP_TX_RX_DMA_EN:
+      attributes:
+        id: APP_TX_RX_DMA_EN
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    APP_USART_PLIB:
+      attributes:
+        id: APP_USART_PLIB
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: SERCOM3
+          type: Dynamic
+        type: Values
+      type: String
+  userData: {}

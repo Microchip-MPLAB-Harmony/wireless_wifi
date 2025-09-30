@@ -1,0 +1,130 @@
+configVersion: 1.0.0
+componentName: appWincSerialBridge
+coreVersion: 5.8.2
+device: ATSAMA5D27CD1G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: appWincSerialBridge
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: wireless_wifi
+  type: package
+  version: v3.12.1
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: drv_spi_dependency
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: drv_spi_0
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: drv_spi
+            type: String
+          - attributes:
+              id: enabled
+            children:
+            - type: Value
+              value: 'true'
+            type: Boolean
+          type: Attributes
+        type: DirectDependency
+      - attributes:
+          id: uart
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: uart1
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: UART1_UART
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: appWincSerialBridge
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: appWincSerialBridge
+          x: '400'
+          y: '271'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    APP_ENABLE_SEC_CONN:
+      attributes:
+        id: APP_ENABLE_SEC_CONN
+      children:
+      - children:
+        - attributes:
+            value: 'true'
+          type: User
+        type: Values
+      type: Boolean
+    APP_PIO_SRC_SELECT:
+      attributes:
+        id: APP_PIO_SRC_SELECT
+      children:
+      - children:
+        - attributes:
+            value: '25'
+          type: User
+        type: Values
+      type: KeyValueSet
+    APP_SPI_INST:
+      attributes:
+        id: APP_SPI_INST
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: drv_spi_0
+          type: Dynamic
+        type: Values
+      type: String
+    APP_SPI_INST_IDX:
+      attributes:
+        id: APP_SPI_INST_IDX
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: '0'
+          type: Dynamic
+        type: Values
+      type: Integer
+    APP_USART_PLIB:
+      attributes:
+        id: APP_USART_PLIB
+      children:
+      - children:
+        - attributes:
+            id: appWincSerialBridge
+            value: UART1
+          type: Dynamic
+        type: Values
+      type: String
+  userData: {}

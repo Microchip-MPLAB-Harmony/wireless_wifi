@@ -1,0 +1,75 @@
+configVersion: 1.0.0
+componentName: sys_time
+coreVersion: 5.8.2
+device: ATSAMA5D27CD1G
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: sys_time
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: core
+  type: package
+  version: v3.15.1
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: sys_time_TMR_dependency
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: tc0
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: TC0_TMR
+            type: String
+          type: Attributes
+        type: DirectDependency
+      type: Attachments
+    type: sys_time
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: sys_time
+          x: '699'
+          y: '156'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    SYS_TIME_PLIB:
+      attributes:
+        id: SYS_TIME_PLIB
+      children:
+      - children:
+        - attributes:
+            id: sys_time
+            value: TC0
+          type: Dynamic
+        type: Values
+      type: String
+    SYS_TIME_REMOTE_COMPONENT_ID:
+      attributes:
+        id: SYS_TIME_REMOTE_COMPONENT_ID
+      children:
+      - children:
+        - attributes:
+            id: sys_time
+            value: tc0
+          type: Dynamic
+        type: Values
+      type: String
+  userData: {}

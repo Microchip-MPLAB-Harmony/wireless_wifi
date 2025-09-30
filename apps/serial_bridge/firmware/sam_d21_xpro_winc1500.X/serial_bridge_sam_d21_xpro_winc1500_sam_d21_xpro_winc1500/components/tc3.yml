@@ -1,0 +1,146 @@
+configVersion: 1.0.0
+componentName: tc3
+coreVersion: 5.8.2
+device: ATSAMD21J18A
+library: []
+dependency:
+- dependencyPackage: class com.microchip.mcc.harmony.HarmonyModule
+  name: tc3
+  type: module
+  version: ''
+- dependencyPackage: ''
+  name: csp
+  type: package
+  version: v3.23.0
+customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
+data:
+  attachments:
+    children:
+    - children:
+      - attributes:
+          id: TC3_TMR
+        children:
+        - children:
+          - attributes:
+              id: targetComponentID
+            children:
+            - type: Value
+              value: sys_time
+            type: String
+          - attributes:
+              id: targetAttachmentID
+            children:
+            - type: Value
+              value: sys_time_TMR_dependency
+            type: String
+          type: Attributes
+        type: DirectCapability
+      type: Attachments
+    type: tc3
+  elementPosition:
+    attributes:
+      id: __ROOTVIEW
+    children:
+    - children:
+      - attributes:
+          id: tc3
+          x: '0'
+          y: '184'
+        type: ElementPosition
+      type: ElementPositions
+    type: ComponentGraph
+  symbols:
+    SYS_TIME_COMPONENT_ID:
+      attributes:
+        id: SYS_TIME_COMPONENT_ID
+      children:
+      - children:
+        - attributes:
+            id: tc3
+            value: sys_time
+          type: Dynamic
+        type: Values
+      type: String
+    SYS_TIME_PLIB_OPERATION_MODE:
+      attributes:
+        id: SYS_TIME_PLIB_OPERATION_MODE
+      children:
+      - children:
+        - attributes:
+            id: tc3
+            value: SYS_TIME_PLIB_MODE_COMPARE
+          type: Dynamic
+        type: Values
+      type: String
+    TC_FREQUENCY:
+      attributes:
+        id: TC_FREQUENCY
+      children:
+      - children:
+        - attributes:
+            id: tc3
+            value: '48000000'
+          type: Dynamic
+        type: Values
+      type: Integer
+    TC_SYS_TIME_CONNECTED:
+      attributes:
+        id: TC_SYS_TIME_CONNECTED
+      children:
+      - children:
+        - attributes:
+            id: tc3
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    TC_TIMER_INTENSET_MC1:
+      attributes:
+        id: TC_TIMER_INTENSET_MC1
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: tc3
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    TC_TIMER_INTENSET_OVF:
+      attributes:
+        id: TC_TIMER_INTENSET_OVF
+      children:
+      - children:
+        - attributes:
+            id: tc3
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    TC_TIMER_PERIOD:
+      attributes:
+        id: TC_TIMER_PERIOD
+      children:
+      - children:
+        - attributes:
+            id: max
+          children:
+          - type: Value
+            value: '65535'
+          type: Long
+        type: Attributes
+      - children:
+        - attributes:
+            id: tc3
+            value: '48000'
+          type: Dynamic
+        type: Values
+      type: Long
+  userData: {}
