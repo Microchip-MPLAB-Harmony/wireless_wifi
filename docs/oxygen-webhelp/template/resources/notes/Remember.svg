@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xml:space="preserve"
+   style="enable-background:new 0 0 28.3 28.3;"
+   viewBox="0 0 28.3 28.3"
+   y="0px"
+   x="0px"
+   id="Layer_1"
+   version="1.1"><metadata
+   id="metadata12"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs10" />
+<style
+   id="style2"
+   type="text/css">
+	.st0{fill:#853275;}
+	.st1{fill:#FFFFFF;}
+</style>
+<rect
+   style="fill:#853275"
+   x="0"
+   ry="1.8654435"
+   height="28.299999"
+   width="28.299999"
+   class="st0"
+   y="0"
+   id="rect4529_00000061449998730043243630000000670997949188021154_" />
+<path
+   id="path5"
+   d="M25.2,9.3h-9l0,0h-3.8l1.4-1.4c0.7-0.7,0.7-1.8,0-2.5s-1.8-0.7-2.5,0L4.6,9.6c-0.4,0.5-1.1,1-1.1,2V21  c0,1.4,1.1,2.5,2.5,2.5h10.5c0.9,0,1.6-0.7,1.6-1.6s-0.7-1.6-1.6-1.6c-0.1,0-0.2-0.1-0.2-0.2s0.1-0.2,0.2-0.2h0.6  c0.9,0,1.6-0.7,1.6-1.6s-0.7-1.6-1.6-1.6h-0.6c-0.1,0-0.2-0.1-0.2-0.2s0.1-0.2,0.2-0.2h1.4c0.5,0,1-0.3,1.3-0.7  c0.2-0.2,0.3-0.5,0.2-0.5c0-0.1,0.1-0.3,0.1-0.5c0-0.9-0.7-1.5-1.5-1.6h-1.5c-0.1,0-0.2-0.1-0.2-0.2s0.1-0.2,0.2-0.2h0.4h3H25  c0.8,0,1.5-0.8,1.5-1.6C26.4,10.1,25.9,9.5,25.2,9.3z"
+   class="st1" />
+</svg>

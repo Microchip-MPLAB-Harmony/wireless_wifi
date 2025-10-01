@@ -1,0 +1,1342 @@
+/***********************************************************
+ *                                                         *
+ * Microchip Webhelp skin customizations                   *
+ *                                                         *
+ * 20220105 RWS HL Initial setup                           *
+ *                                                         *
+ ***********************************************************/
+
+/* RWS HL: make room for the Microchip color bar */
+#wh_topic_container, .wh_content_flex_container {
+  margin-top: 15px;
+}
+
+/* To fix ATDS-2694 */
+
+.container-fluid {
+  max-width: none;
+}
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Fonts.
+ *  
+ */
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Fight with bootstrap
+ *  
+ */
+.wh_header {
+  background-color: #fff;
+  padding: unset;
+}
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Publication titles
+ *  
+ */
+.wh_publication_title > a {
+  padding: 0.1em 0;
+  font-weight: bold;
+  line-height: 1em;
+  font-size: 1.8em;
+}
+@media only screen and (min-width: 768px) {
+  .wh_topic_page .wh_header {
+    padding: 0;
+  }
+}
+
+/* 
+ * Edit/Comment button in webhelp
+ */
+
+.editbutton {
+  border: 2px solid green;
+  border-radius: 5px;
+  width: 200px;
+  text-align: center;
+  padding: 7px;
+  background-color: #04aa6d;
+  color: #ffffff;
+  font-weight: bold;
+  }
+
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Tiles
+ *  
+ */
+.wh_tile {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.29);
+}
+.wh_tile_title {
+  font-size: 1.5em;
+  font-weight: 600;
+  border-bottom: 1px solid #b6b7b9;
+  padding-bottom: 5px;
+}
+.wh_tile_title a {
+  color: #1c355e;
+}
+.wh_tile_title a:hover {
+  color: #1c355e;
+  text-decoration: underline;
+}
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Search
+ *  
+ */
+.wh_search_input {
+  background-image: url("../../resources/images/Default-Banner-Background.png");
+}
+.wh_search_button {
+  background-color: #1c355e;
+  color: #fff;
+}
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Breadcrumbs
+ *  
+ */
+.wh_tools {
+  background-color: #fff;
+}
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Nav links
+ *  
+ */
+
+ .navheader {
+   display: flex;
+   gap: 4px;
+ }
+
+ .navheader a.link {
+   display: flex;
+   align-items: center;
+   gap: 4px;
+ }
+
+ .oxy-icon-arrow-right-after::after{
+  content: "t";
+  margin-left: 4px;
+ }
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Microchip Footer
+ *  
+ */
+.footer {
+  height: 135px;
+}
+.wh_footer {
+  margin-top: 2em;
+  font-size: 12px;
+  color: rgba(0,0,0,0.5);
+}
+.mchp-wh-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.mchp-footer {
+  display: flex;
+  flex-direction: column;
+  line-height: 24px;
+}
+.mchp-footer-container {
+  max-width: 1400px;
+  display: flex;
+  flex: 10;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+.mchp-footer .graphic, .mchp-footer .spacer {
+  flex: 1;
+}
+.mchp-footer .graphic img {
+  height: 100px;
+  width: auto !important;
+  float: right;
+}
+.mchp-footer div {
+  align-self: center;
+}
+.mchp-footer .mchp-footer-tier1 {
+  justify-content: center;
+  display: inherit;
+  background-color: #1c355e;
+  width: 100%;
+  height: 100px;
+  margin: 0;
+  margin-top: auto;
+  color: #fff;
+}
+.mchp-footer .mchp-footer-tier2 {
+  display: inherit;
+  justify-content: center;
+  background-color: #fff;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.mchp-footer .mchp-social-media-links * .mchp-component-item {
+  margin-right: 5px;
+  max-width: 25px;
+}
+.mchp-footer .mchp-social-media-links .mchp-component-items {
+  justify-content: space-between;
+}
+.mchp-footer .mchp-footer-links .mchp-component-items {
+  display: flex;
+  line-height: 2;
+}
+.mchp-footer .link {
+  white-space: nowrap;
+}
+.mchp-footer .link a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: normal;
+  font-size: 13px;
+  cursor: pointer;
+}
+.mchp-footer .link a:hover {
+    text-decoration: underline;
+}
+.mchp-footer .mchp-link__separator {
+  padding-left: 6px;
+  padding-right: 8px;
+}
+.mchp-footer .mchp-footer-tier1 .mchp-footer-newsletter p {
+  display: block;
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+.mchp-footer .mchp-footer-tier1 a {
+  font-size: 13px;
+}
+.mchp-footer .mchp-footer-newsletter .mchp-button-wrapper {
+  max-width: 250px;
+  width: 100%;
+}
+.mchp-footer .mchp-footer-newsletter .mchp-button-wrapper a {
+  width: 100%;
+  padding: 0;
+  background: #41b6e6;
+  text-align: center;
+  cursor: pointer;
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  border-radius: 2px;
+}
+.mchp-footer .mchp-footer-newsletter .mchp-button-wrapper a:hover {
+  background-color: #fff;
+}
+.mchp-button-wrapper .solid {
+  background-color: #1c355e;
+  color: #fff !important;
+  border: 1px solid #1c355e;
+}
+.mchp-button-wrapper .solid:hover {
+  background-color: #41b6e6;
+  border: 1px solid #41b6e6;
+}
+.mchp-footer .mchp-footer-newsletter .mchp-button-wrapper a:hover span {
+  color: #41b6e6;
+}
+.mchp-footer .mchp-footer-newsletter .mchp-button-wrapper span {
+  transition: background .2s ease .15s,color .2s ease .15s,border .2s ease .15s;
+}
+.mchp-button-wrapper .mchp-button__span {
+  width: 100%;
+}
+.cmp-image__link {
+  font-weight: 600;
+  line-height: 24px;
+  color: #1c355e;
+  text-decoration: none;
+}
+.cmp-image__image {
+  width: 100%;
+}
+.mchp-button-wrapper .mchp-button {
+  display: flex;
+  width: fit-content;
+  cursor: pointer;
+  padding: 15px;
+  text-decoration: none;
+  transition: background .2s ease .15s,color .2s ease .15s,border .2s ease .15s;
+  justify-content: center;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 2px;
+}
+.mchp-footer .mchp-copyright {
+  margin: 10px;
+  line-height: 24px;
+}
+@media only screen and (max-width: 1199px) {
+  .footer {
+    height: 250px;
+  }
+  .mchp-footer .graphic, .mchp-footer .spacer {
+    flex: 0;
+  }
+  .mchp-footer .mchp-footer-tier1 {
+    height: auto;
+  }
+  .mchp-footer-container {
+    flex-direction:column;
+    z-index: 1;
+  }
+  .mchp-footer .mchp-footer-links {
+    padding-top: 20px;
+    padding-bottom: 7px;
+  }
+  .mchp-footer .mchp-footer-newsletter {
+    padding-top: 35px;
+    padding-bottom: 20px;
+  }
+  .mchp-footer .graphic {
+    position: absolute;
+    right: 0;
+    align-self: flex-end;
+  }
+  .mchp-footer .graphic img {
+    height: 205px;
+    width: 35% !important;
+    object-fit: cover;
+    object-position: 0;
+  }
+}
+
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Microchip html fragments
+ *  
+ */
+.mchp-color-stripe-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: ". . .";
+  grid-template-rows: 1fr;
+  gap: 0 3px;
+  margin-top: 45px;
+  position: absolute;
+  width: 100%;
+} 
+.mchp-main-bar {
+  height: 7px;
+}
+.mchp-orange-bar {
+  background-color: #f68d2e;
+}
+.mchp-blue-bar {
+  background-color: #41b6e6;
+}
+.mchp-green-bar {
+  background-color: #6cc24a;
+}
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Microchip topic contents
+ *  
+ */
+.figcap {
+  font-style: normal;
+  font-weight: bold;
+}
+.fig--title-label-number {
+  display: inline;
+}
+.fig--title-label::after {
+  content: ""
+}
+.tablecap {
+  width: 100%;
+  font-weight: bold;
+}
+p.compact {
+  margin-bottom: auto;
+}
+
+/* From atmel.css table styling */
+
+table.table,
+table.simpletable.dataTable.bitFieldValues {
+  border-color: #a7a9ab;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table.table td > p, table.table th > p,
+table.simpletable.dataTable.bitFieldValues td > p,
+table.simpletable.dataTable.bitFieldValues th > p {
+  margin: 0;
+}
+
+table.table td span.rotate, table.table th span.rotate,
+table.simpletable.dataTable.bitFieldValues td span.rotate,
+table.simpletable.dataTable.bitFieldValues th span.rotate {
+  display: inline-block;
+  -webkit-writing-mode: tb-rl;
+      -ms-writing-mode: tb-rl;
+          writing-mode: tb-rl;
+  -webkit-transform: rotate(-180deg);
+          transform: rotate(-180deg);
+  white-space: nowrap;
+}
+
+table.table th,
+table.simpletable.dataTable.bitFieldValues th {
+  background-color: #585858;
+  color: #fff;
+}
+
+table.table tbody tr:nth-child(odd),
+table.simpletable.dataTable.bitFieldValues tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+table.table tbody tr:nth-child(even),
+table.simpletable.dataTable.bitFieldValues tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.cellrowborder {
+  border-left: none;
+  border-top: none;
+  border-right: solid 1px #a7a9ab;
+  border-bottom: solid 1px #a7a9ab;
+}
+
+.nocellnorowborder {
+  border: none;
+  border-right: hidden;
+  border-bottom: hidden;
+}
+
+.row-nocellborder {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-right: hidden;
+  border-bottom: solid 1px #a7a9ab;
+}
+
+.cell-norowborder {
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-bottom: hidden;
+  border-right: solid 1px #a7a9ab;
+}
+
+table.nozebra tbody tr:nth-child(odd),
+table.nozebra tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+table.widetablenozebra tbody tr:nth-child(odd),
+table.widetablenozebra tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+table.nocolor tbody tr:nth-child(odd),
+table.nocolor tbody tr:nth-child(even) {
+  background-color: white;
+}
+
+table.table.transparent-table.transparent-border-table {
+  width: 60%;
+}
+table.table.transparent-table.transparent-border-table td {
+  vertical-align: middle !important;
+}
+
+table.transparent-table tbody tr {
+  background-color: transparent !important;
+}
+
+table.transparent-border-table tbody tr {
+  border-left: hidden;
+  border-right: hidden;
+  border-top: hidden;
+  border-bottom: hidden;
+}
+
+table.table.registersummary tbody tr:nth-child(even),
+table.table.registersummary tbody tr:nth-child(odd) {
+  background-color: transparent;
+}
+
+.table.register {
+  position: relative;
+}
+
+.table.register tr {
+  height: 20px;
+}
+
+.table.register tbody tr:nth-child(even),
+.table.register tbody tr:nth-child(odd) {
+  background-color: transparent;
+}
+
+.table.register td {
+  min-width: 5em;
+  text-align: center;
+  width: calc(100%/8);
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.table.register .rowname {
+  left: -60px;
+  position: absolute;
+  text-align: right;
+  width: 50px;
+}
+
+.table.register tr:nth-child(2) td {
+  border: 1px solid #000;
+}
+
+.table.register tbody ~ tbody tr:first-child td {
+  padding-top: 2em;
+}
+
+.registersummary p {
+  margin: 0;
+}
+
+table.register td.reserved,
+table.registersummary td.reserved {
+  background-color: #dcdcdc;
+}
+
+table.bitFieldValues {
+  background-color: lightblue;
+}
+
+/* end: atmel.css table styling */
+
+table.bitFieldValues {
+  border: 1px solid #000;
+}
+
+table.table th {
+  text-align: left;
+}
+table.bitFieldValues th {
+  text-align: left;
+  border-bottom: 2px solid;
+  border-top: 1px solid;
+}
+table.table .vertical-left span, table.table .vertical-center span, table.table .vertical-right span, span.rotate {
+  writing-mode: tb;
+  transform: rotate(180deg);
+}
+.entry.rotate {
+  writing-mode: initial;
+}
+table.table .vertical-left {
+  vertical-align: bottom;
+  text-align: left;
+}
+table.table .vertical-center {
+  vertical-align: bottom;
+  text-align: center;
+}
+table.table .vertical-right {
+  vertical-align: bottom;
+  text-align: right;
+}
+table.table .valign-top {
+  vertical-align: top;
+}
+table.table .valign-middle {
+  vertical-align: middle;
+}
+table.table .valign-bottom {
+  vertical-align: bottom;
+}
+/*
+ * ------------------------------------------------------------------
+ *  
+ * Microchip SIDSC elements
+ *  
+ */
+.registerBody {
+  display: none;
+}
+.register .table {
+  width: 100%;
+  text-align: center;
+}
+.register .table td {
+  border: none;
+  padding: 0.25rem;
+}
+.register .reserved {
+  background-color: #e0e0e0;
+}
+.register .table td:first-child {
+  text-align: end;
+}
+.register .table tr:nth-child(2) td {
+  border: 1px solid black;
+}
+.register .table tr:nth-child(2) td:first-child, .register .table tr:nth-child(2) td:last-child {
+  border: none;
+}
+.active-low {
+  text-decoration: overline;
+}
+.mchip-registerproperties td, .mchip-registerproperties th {
+  padding: 0;
+  vertical-align: top;
+}
+.mchip-registerproperties table {
+  margin: 0;
+}
+table.registersummary {
+  width: 100%;
+}
+table.registersummary th {
+  text-align: center;
+  background-color: #585858;
+}
+table.registersummary th, table.registersummary td {
+  border: 1px solid;
+  padding: 0.25rem;
+}
+
+table.register td.reserved,
+table.registersummary td.reserved {
+  background-color: #dcdcdc;
+}
+
+td.rowsep-0 {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+td.header-cell-bg {
+    background: #585858;
+    color: #fff;
+    font-weight: bold;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ffffff;
+}
+
+.no-cell-bg{
+  background: inherit !important;
+  color: inherit !important;
+  font-weight: normal !important;
+}
+
+ol.horizontal {
+  padding-left: 0;
+  margin-left: 0;
+  counter-reset: list-number;
+}
+
+ol.horizontal > li {
+  display: inline;
+  counter-increment: list-number;
+}
+
+ol.horizontal > li:before {
+ content: ' ' counter(list-number)'. ';
+ padding-left: 5pt;
+}
+
+ol.erratalist {
+  margin-left: 5em;
+  counter-reset: list-number;
+}
+
+ol.erratalist > li {
+  font-weight: bold;
+  display: inline;
+  counter-increment: list-number;
+}
+
+ol.erratalist > li:before {
+ content: ' ' counter(list-number)' – ';
+}
+
+ol.erratalist dd {
+  font-weight: normal;
+}
+
+ol.erratalist dd ul {
+  margin-left: 0;
+  padding-left: 1em;
+}
+ol.erratalist dd ul li {
+  list-style: disc;
+}
+
+/* Override default color for codeph */
+code {
+  color: inherit;
+  background-color: inherit;
+}
+
+ol li, ol li ol li ol li ol li {
+  list-style: decimal;
+}
+ol li ol li, ol li ol li ol li ol li ol li {
+  list-style: lower-alpha;
+}
+ol li ol li ol li {
+  list-style: lower-roman;
+}
+
+table ol li {
+  list-style: decimal !important;
+}
+
+table ol li ol li {
+  list-style: lower-alpha !important;
+}
+
+table ol li ol li ol li {
+  list-style: lower-roman !important;
+}
+
+
+ul li,
+ul li ul li ul li {
+  list-style: disc;
+}
+
+ul li ul li {
+  list-style: "– ";
+}
+
+
+table ul li,
+table ul li ul li ul li {
+  list-style: disc !important;
+}
+
+table ul li ul li {
+  list-style: "– " !important;
+}
+
+li.linklist {
+  list-style: none;
+}
+
+#wh_publication_toc ul, #wh_topic_toc ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0
+}
+
+#wh_publication_toc ul, #wh_topic_toc ul {
+  list-style: none;
+}
+
+#wh_publication_toc ul li, #wh_topic_toc ul li {
+  list-style: none !important;
+}
+
+#wh_publication_toc ul ul {
+  padding-left: 1em
+}
+
+ul.custom_list, .custom_list ul {
+  list-style: none !important;
+}
+
+/* Note icons override - using proper casing */
+
+/*notes-colors-colorful*/
+*[class~="topic/note"]:not([class~="hazard-d/hazardstatement"]) {
+}
+*[class~="topic/note"].note_attention {
+  background-image: url('../../resources/notes/Attention.svg') !important;  
+}
+*[class~="topic/note"].note_caution {
+  background-image: url('../../resources/notes/Caution.svg') !important;
+  background-size: 100px;
+  min-height: 62px;
+}
+*[class~="topic/note"].note_danger {
+  background-image: url('../../resources/notes/Danger.svg') !important;
+  background-size: 100px;
+  min-height: 62px;
+}
+*[class~="topic/note"].note_execute {
+  background-image: url('../../resources/notes/Execute.svg') !important;
+}
+*[class~="topic/note"].note_important {
+  background-image: url('../../resources/notes/Important.svg') !important;
+}
+*[class~="topic/note"].note_info {
+  background-image: url('../../resources/notes/Info.svg') !important;
+}
+*[class~="topic/note"].note_notype {
+  background-image: none;  
+  border-top: none;
+  border-bottom: none;
+  background-size: initial;
+  background-repeat: initial;
+  background-position: initial;
+  min-height: unset;
+  padding: initial;
+}
+*[class~="topic/note"].note_note {
+  background-image: url('../../resources/notes/Info.svg') !important;
+}
+*[class~="topic/note"].note_notice {
+  background-image: url('../../resources/notes/Notice.svg') !important;
+  background-size: 100px;
+  min-height: 62px;
+}
+*[class~="topic/note"].note_restriction {
+  background-image: url('../../resources/notes/Restriction.svg') !important;
+}
+*[class~="topic/note"].note_result {
+  background-image: url('../../resources/notes/Result.svg') !important;
+}
+*[class~="topic/note"].note_tip {
+  background-image: url('../../resources/notes/Tip.svg') !important;
+}
+*[class~="topic/note"].note_todo {
+  background-image: url('../../resources/notes/Todo.svg') !important;
+}
+*[class~="topic/note"].note_warning {
+  background-image: url('../../resources/notes/Warning.svg') !important;
+  background-size: 100px;
+  min-height: 62px;
+}
+
+/* Feedback Url styling from webhelp */
+.feedback {
+  display: inline;
+  font-size: 9pt;
+  margin-left: 0.5em;
+  color: #0000EE;
+  cursor: pointer;
+}
+
+/* options style */
+kbd {
+  padding: inherit;
+  font-size: 87.5%;
+  color: inherit;
+  background-color: inherit;
+  border-radius: inherit;
+}
+
+.keyword.option {
+  font-style: italic;
+}
+
+/* Styling for custom list */
+.custom_list li > p:nth-child(2) {
+    margin-left: 2.5em;
+    color: #555 !important;
+}
+
+/* Styling for noboldlist */
+
+dl.noboldlist dt {
+  float: left;
+  clear: left;
+  /* width: 100px; */
+  font-weight: normal;
+}
+dl.noboldlist dd {
+  margin: 0 0 0 100px;
+  padding: 0 0 0.5em 0;
+}
+
+/* Disclaimer */
+.mchp_disclaimer {
+  padding: 0 10px;
+  text-align: center;
+}
+.mchp_disclaimer > .mchp_disclaimer_text {
+  font-size: .8em;
+  margin: 0;
+  color: #000;
+}
+.wh_footer {
+  margin-top: 0 !important;
+}
+
+.table-container{
+  max-height: 600px;
+  overflow: auto !important;
+  /* overflow-x: unset; */
+  scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar{
+  display: none;
+}
+
+.table-container tr:nth-child(1) th{
+  position: sticky;
+  /* top: 111px; */
+  top: 0px;
+  z-index: 1;
+}
+
+.table-container tr:nth-child(2) th{
+  position: sticky;
+  /* top: 29px; */
+  /* top: 140px; */
+  z-index: 1;
+}
+
+/* preserve line breaks */
+.wh_publication_title a, .header_title {
+  white-space: pre-line;
+}
+
+.wh_publication_title a {
+  text-align: left;
+}
+
+.wh_related_links .desc {
+  display: block;
+  padding-left: 5mm; 
+  padding-top: 0mm;
+}
+
+.codeblock code {
+  display: inline;
+}
+
+
+/* Microchip Footer CSS */
+footer * {
+  padding: 0;
+  margin: 0;
+  font-family: Open Sans,sans-serif
+}
+
+footer a:hover {
+  text-decoration: underline currentColor;
+  color: #41b6e6;
+}
+
+footer p {
+  font-weight: 400;
+  line-height: 24px;
+}
+
+footer input {
+  display: none
+}
+
+footer .max {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-right: 100px;
+  padding-left: 116px;
+  padding-bottom: 30px;
+  padding-top: 30px;
+  margin-right: auto;
+  margin-left: auto
+}
+
+footer img[src*="microchip"][src*="logo"] {
+  width: 200px;
+  padding-bottom: 15px;
+}
+
+footer .main {
+  background-color: #1c355e
+}
+
+footer .main * {
+  color: #fff
+}
+
+footer .main .max {
+  padding-bottom: 15px
+}
+
+footer .main .max>div>div {
+  padding-left: 15px;
+  padding-right: 15px
+}
+
+footer .main .max>div span * {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+footer .main .max>div:not(:nth-child(5)) * {
+  white-space: nowrap;
+}
+
+footer .main .max>div:nth-child(1) .link,footer .main .max>div:nth-child(2) .link,footer .main .max>div:nth-child(3) .link {
+  margin-top: 13px;
+}
+
+footer .main .max>div:nth-child(1) .link>div>a,footer .main .max>div:nth-child(2) .link>div>a,footer .main .max>div:nth-child(3) .link>div>a {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left
+}
+
+footer .main .max>div:nth-child(4) p:first-child {
+  font-weight: 700;
+  margin-bottom: 4px
+}
+
+footer .main .max>div:nth-child(4) p:not(:first-child) {
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0
+}
+
+footer .main .max>div:nth-child(4) .mchp-component-items {
+  margin-top: 30px
+}
+
+footer .main .max>div:nth-child(4) .mchp-component-items .mchp-component-item {
+  flex-shrink: 0;
+}
+
+footer .main .max>div:nth-child(4) .mchp-component-items,footer .main .max>div:nth-child(6) .mchp-component-items {
+  display: flex;
+  align-items: center;
+  gap: 15px
+}
+
+footer .main .max>div:nth-child(5),footer .main .max>div:nth-child(6) {
+  margin-top: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 17px;
+  letter-spacing: 0;
+  text-align: left
+}
+
+@media(min-width: 961px) {
+  footer .main .max>div:nth-child(6):has(.legal-privacy-cookie-container) {
+      width:auto
+  }
+}
+
+footer .main .max>div:nth-child(5) {
+  margin-top: 30px;
+  width: 57%;
+  padding-left: 15px
+}
+
+footer .main .max>div:nth-child(5) p {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 17px;
+  letter-spacing: 0
+}
+
+@media(max-width: 1150px) and (min-width:960px) {
+  footer .main .max>div:nth-child(5) {
+      width:100%
+  }
+}
+
+footer .main .max>div:nth-child(6) .mchp-component-items {
+  justify-content: flex-end
+}
+
+@media(max-width: 960px) {
+  footer .main .max>div:nth-child(5),footer .main .max>div:nth-child(6) {
+      padding:0
+  }
+
+  footer .main .max>div:nth-child(5),footer .main .max>div:nth-child(4) {
+      text-align: center
+  }
+
+  footer .main .max>div:nth-child(1),footer .main .max>div:nth-child(2),footer .main .max>div:nth-child(3) {
+      width: 33%
+  }
+
+  footer .main .max>div:nth-child(4),footer .main .max>div:nth-child(5),footer .main .max>div:nth-child(6) {
+      width: 100%
+  }
+
+  footer .main .max>div:nth-child(4) .mchp-component-items,footer .main .max>div:nth-child(5) .mchp-component-items,footer .main .max>div:nth-child(6) .mchp-component-items {
+      justify-content: center
+  }
+
+  footer .main .max .max>div:nth-child(2) {
+      margin-right: inherit
+  }
+
+  footer .main .max .max>div:nth-child(2)>div {
+      max-width: 314px;
+      word-wrap: break-word
+  }
+}
+
+footer .support {
+  background-color: #f8f8f7
+}
+
+footer .support .max>div:first-child {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 65px;
+  padding-right: 20px;
+  padding-left: 15px
+}
+
+footer .support .max>div:first-child img {
+  width: unset
+}
+
+footer .support .max>div:nth-child(2) {
+  margin-right: inherit
+}
+
+footer .support .max>div:nth-child(2)>div {
+  letter-spacing: 0
+}
+
+footer .support .max>div:nth-child(2)>div>p:nth-child(1) {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 33px
+}
+
+footer .support .max>div:nth-child(2)>div>p:nth-child(2) {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px
+}
+
+footer .support .max>div:last-child {
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding-right: 15px
+}
+
+@media(max-width: 1440px) {
+  footer .max {
+      padding-right:70px;
+      padding-left: 70px
+  }
+}
+
+@media(max-width: 960px) {
+  footer .max {
+      padding-right:20px;
+      padding-left: 20px
+  }
+
+  footer .support .max>div:nth-child(2) {
+      width: 300px
+  }
+
+  footer .main .max>div:nth-child(6) {
+      padding: 0;
+      margin-top: 15px
+  }
+}
+
+@media(max-width: 630px) {
+  footer .max {
+      padding-right:0;
+      padding-left: 0;
+      display: inline-block
+  }
+
+  footer .support {
+      padding: 10px;
+      text-align: center;
+      background: #f8f8f7
+  }
+
+  footer .support .max>div:nth-child(2) {
+      width: 290px
+  }
+
+  footer .support .max>div:first-child {
+      padding: auto
+  }
+
+  footer .support .max>div {
+      padding-bottom: 10px
+  }
+
+  footer .main {
+      padding-top: 0
+  }
+
+  footer .main .max {
+      padding-top: 0
+  }
+
+  footer .main .max>div:nth-child(1),footer .main .max>div:nth-child(2),footer .main .max>div:nth-child(3) {
+      width: 100%
+  }
+
+  footer .main .max>div:nth-child(4) {
+      padding-top: 50px
+  }
+
+  footer .main .max>div:nth-child(5) p {
+      width: 400px;
+      display: inline-block
+  }
+
+  footer .main .max>div:nth-child(1),footer .main .max>div:nth-child(2) {
+      border-bottom: 1px solid rgba(240,240,238,0.1)
+  }
+
+  footer .main .max>div:nth-child(6) {
+      margin-top: 0
+  }
+
+  footer .accordion-item {
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 10px;
+      margin-left: 0;
+      display: block
+  }
+
+  footer .accordion-input {
+      display: none
+  }
+
+  footer .accordion-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      padding: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      flex: 1;
+      width: 95%
+  }
+
+  footer .accordion-label::after {
+      content: "";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      transition: transform .2s ease-out;
+      width: .5em;
+      height: .5em;
+      border: solid #fff;
+      border-width: 0 .15em .15em 0
+  }
+
+  footer .accordion-label.active::after {
+      transform: translateY(-50%) rotate(-135deg)
+  }
+
+  footer .accordion-list .link>div {
+      padding: 10px
+  }
+}
+
+@media(max-width: 400px) {
+  footer .main .max>div:nth-child(5) p {
+      width:auto;
+      display: inline-block
+  }
+}
+
+footer .legal-privacy-cookie-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center
+}
+
+@media(max-width: 960px) {
+  footer .legal-privacy-cookie-container {
+      justify-content:center
+  }
+}
+
+@media(max-width: 420px) {
+  footer .legal-privacy-cookie-container {
+      flex-direction:column
+  }
+}
+
+footer .legal-privacy-cookie-container .mchp-component-items {
+  gap: 0 !important
+}
+
+footer .legal-privacy-cookie-container .mchp-component-items .link a {
+  border-right: 2px solid;
+  padding: 0 6px
+}
+
+footer .legal-privacy-cookie-container #ot-sdk-btn.ot-sdk-show-settings {
+  color: #fff;
+  border: 0;
+  font-size: 12px;
+  line-height: 17px;
+  padding: 0 6px;
+  background-color: transparent
+}
+
+footer .legal-privacy-cookie-container #ot-sdk-btn.ot-sdk-show-settings:hover {
+  text-decoration: underline currentColor;
+  color: #41b6e6;
+  background: 0
+}
+
+footer .legal-privacy-cookie-container img {
+  vertical-align: middle
+}
+
+.accordion-list p {
+  color: #aeaeaa !important
+}

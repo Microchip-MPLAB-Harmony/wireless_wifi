@@ -1,5 +1,6 @@
-define(["index", "options", "stemmer", "util"], function(index, options, stemmer, util) {
-    /*
+function nwSearchFnt(index, options, stemmer, util) {
+
+	/*
 
      David Cramer
      <david AT thingbag DOT net>
@@ -44,6 +45,11 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
      7. Accept as valid search words that contains only 2 characters
 
      */
+     
+     this.index = index;
+     this.options = options;
+     this.stemmer = stemmer;
+     this.util = util;
 
     /**
      * Is set to true when the CJK tokenizer is used.
@@ -99,7 +105,13 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
      * The default boolean search operator.
      * @type {string}
      */
-    var defaultOperator = "or";
+    var defaultOperator = options.get('webhelp.search.default.operator');
+    
+    /**
+     * It is true when the label support is enabled.
+     * @type {boolean}
+     */
+    var isLabelSupportEnabled = options.get("webhelp.labels.generation.mode") !== 'disable';
 
 
     /**
@@ -203,44 +215,9 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
         this.breadcrumb = breadcrumb;
     }
 
-    function performSearchDriver(searchQuery, _callback) {
-        var indexerLanguage = options.getIndexerLanguage();
-        var useKuromoji = indexerLanguage.indexOf("ja") != -1 && options.getBoolean('webhelp.enable.search.kuromoji.js')
-                && !util.isLocal();
-
-        if (indexerLanguage.indexOf("ja") != -1 && util.isLocal() && options.getBoolean('webhelp.enable.search.kuromoji.js')) {
-            var note = $('<div/>').addClass('col-xs-12 col-sm-12 col-md-12 col-lg-12')
-                .html(localNote);
-            $('#searchResults').before(note);
-        }
-
-        if (useKuromoji) {
-            require(["kuromoji"], function (kuromoji) {
-                kuromoji.builder({ dicPath: "oxygen-webhelp/lib/kuromoji/dict" }).build(function (err, tokenizer) {
-                    // tokenizer is ready
-                    var tokens = tokenizer.tokenize(searchQuery);
-
-                    var finalWordsList = [];
-                    for (var w in tokens) {
-                        var word = tokens[w].surface_form;
-                        if (word!=" ") {
-                            finalWordsList.push(word);
-                        }
-                    }
-
-                    if (finalWordsList.length) {
-                        var finalWordsString = finalWordsList.join(" ");
-
-                        _callback(performSearchInternal(finalWordsString));
-                    } else {
-                        util.debug("Empty set");
-                    }
-                });
-            })
-
-        } else {
-            _callback(performSearchInternal(searchQuery));
-        }
+    this.performSearch = function(searchQuery, _callback) {
+    	var result = performSearchInternal(searchQuery);
+        _callback(result);
     }
 
     /**
@@ -255,7 +232,6 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
         util.debug("searchQuery", searchQuery);
         init();
 
-        var initialSearchExpression = searchQuery;
         var phraseSearch = false;
         searchQuery = searchQuery.trim();
         if (searchQuery.length > 2 && !useCJKTokenizing) {
@@ -265,13 +241,11 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
                 (firstChar == "'" || firstChar == '"') &&
                 (lastChar == "'" || lastChar == '"');
            	if(phraseSearch) {
-           		initialSearchExpression = initialSearchExpression.substring(1,initialSearchExpression.length-1);
+           		searchQuery = searchQuery.substring(1, searchQuery.length-1);
            	}
         }
-
-        // Remove ' and " characters
-        searchQuery = searchQuery.replace(/"/g, " ").replace(/'/g, " ");
-
+		    var initialSearchExpression = searchQuery;
+		
         var errorMsg;
         try {
             realSearchQuery = preprocessSearchQuery(searchQuery, phraseSearch);
@@ -299,7 +273,7 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
             var rpnExpression = convertToRPNExpression(searchQuery);
 
             // Perform search with RPN expression
-            var res = calculateRPN(rpnExpression);
+            var res = calculateRPN(rpnExpression, phraseSearch);
             var sRes = res.value;
 
             if (searchWordCount == 1) {
@@ -308,7 +282,7 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
                 if (!singleWordExactMatch && !doStem && !useCJKTokenizing) {
                     // Perform exact match first
                     singleWordExactMatch = true;
-                    var exactMatchRes = calculateRPN(rpnExpression);
+                    var exactMatchRes = calculateRPN(rpnExpression, phraseSearch);
                     addSearchResultCategory(exactMatchRes.value);
 
                     // Add other results with lower priority
@@ -642,6 +616,11 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
      */
     function preprocessSearchQuery(query, phraseSearch) {
         var searchTextField = trim(query);
+        
+        // WH-3188 Fallback when the label support is active so that the search will still work.
+        if(isLabelSupportEnabled && query.indexOf("label:") === 0) {
+          searchTextField = query.replace(/^label:/, '');
+        }
 
         /**
          * Validate brackets
@@ -960,9 +939,10 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
     /**
      * @description Compute results from a RPN expression
      * @param {string} rpn Expression in Reverse Polish notation
+     * @param {boolean} 'true' for a phrease search, 'false' if not a phrase search. 
      * @return {Page} An object that contains the search result.
      */
-    function calculateRPN(rpn) {
+    function calculateRPN(rpn, phraseSearch) {
         util.debug("calculate(" + rpn + ")");
         var lastResult1, lastResult2;
         var rpnTokens = trim(rpn);
@@ -976,7 +956,7 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
             var token = rpnTokens[i];
 
             if (isTerm(token)) {
-                result = searchSingleWord(token);
+                result = searchSingleWord(token, phraseSearch);
 
                 util.debug(token, " -- single word search result -- ", result);
                 realSearchWords.push(token);
@@ -1059,9 +1039,10 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
      * Search for a single word/term.
      *
      * @param {String} wordToFind A single search term to search for.
+     * @param {boolean} 'true' for a phrease search, 'false' if not a phrase search. 
      * @return {[ResultPerFile]} Array with the resulted pages and indices.
      */
-    function searchSingleWord(wordToFind) {
+    function searchSingleWord(wordToFind, phraseSearch) {
         util.debug('searchSingleWord("' + wordToFind + '")');
 
         wordToFind = trim(wordToFind);
@@ -1073,7 +1054,20 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
 
         var indexerLanguage = options.getIndexerLanguage();
         // set the tokenizing method
-        useCJKTokenizing = !!(typeof indexerLanguage != "undefined" && (indexerLanguage == "zh" || indexerLanguage == "ko"));
+        useCJKTokenizing = false;
+        if(typeof indexerLanguage != "undefined"){
+            indexerLanguage = indexerLanguage.toLowerCase();
+            //WH-3248 More flexible match for languages
+            const langs = ['zh', 'ko'];
+            for (var langIndex in langs) {
+                if(indexerLanguage === langs[langIndex] 
+                    || (indexerLanguage.lastIndexOf(langs[langIndex] + "-") === 0)
+                    || (indexerLanguage.lastIndexOf(langs[langIndex] + "_") === 0)){
+                    useCJKTokenizing = true;
+                    break;
+                }
+            }
+        }
         //If Lucene CJKTokenizer was used as the indexer, then useCJKTokenizing will be true. Else, do normal tokenizing.
         // 2-gram tokenizing happens in CJKTokenizing,
         // If doStem then make tokenize with Stemmer
@@ -1123,7 +1117,9 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
                             if (searchInsideFilePath) {
                                 listOfWordsStartWith = wordsContains(searchedValue);
                             } else {
-                                listOfWordsStartWith = wordsStartsWith(searchedValue);
+                            	if(!phraseSearch) {
+                                	listOfWordsStartWith = wordsStartsWith(searchedValue);                            	
+                            	}
                             }
 
                         }
@@ -1728,8 +1724,4 @@ define(["index", "options", "stemmer", "util"], function(index, options, stemmer
         return re.test(toTest);
     }
 
-    return {
-        performSearch: performSearchDriver
-    }
-
-});
+}

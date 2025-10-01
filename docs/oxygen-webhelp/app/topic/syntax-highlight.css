@@ -4,7 +4,7 @@
 	color: #7263B9
 }
 
-.hl-keyword {
+.hl-keyword, .codeph.keyword {
 	color: #0000e6
 }
 
