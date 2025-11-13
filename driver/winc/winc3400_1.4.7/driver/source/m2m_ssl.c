@@ -371,8 +371,13 @@ __ERR:
 int8_t m2m_ssl_retrieve_cert(uint16_t *pu16Curve, uint8_t *pu8Value, uint8_t *pu8Sig, tstrECPoint *pstrKey)
 {
     uint16_t  u16ValueSz = 32, u16SigSz = 64;
+    tenuEcNamedCurve    enuCurve  = EC_UNKNOWN;
+    int8_t               s8Ret;
 
-    return m2m_ssl_retrieve_next_for_verifying(pu16Curve, pu8Value, &u16ValueSz, pu8Sig, &u16SigSz, pstrKey);
+    s8Ret = m2m_ssl_retrieve_next_for_verifying(&enuCurve, pu8Value, &u16ValueSz, pu8Sig, &u16SigSz, pstrKey);
+    *pu16Curve = (uint16_t)enuCurve;
+
+    return s8Ret;
 }
 
 /*!
