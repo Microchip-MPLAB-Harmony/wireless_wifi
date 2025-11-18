@@ -327,18 +327,18 @@
                      displayName="serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500"
                      projectFiles="true">
         <logicalFolder name="components" displayName="components" projectFiles="true">
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/core.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/dfp.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/cmsis.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/drv_spi_0.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/HarmonyCore.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/drvWifiWinc.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/dfp.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/drv_spi.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/appWincSerialBridge.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/tc0.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/sys_time.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/flexcom4.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/uart1.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/drv_spi_0.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/core.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/HarmonyCore.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/sys_time.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/tc0.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/flexcom4.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/components/drvWifiWinc.yml</itemPath>
         </logicalFolder>
         <itemPath>serial_bridge_sam_a5d27_som1_winc1500_sam_a5d27_som1_winc1500/mcc-config.mc4</itemPath>
       </logicalFolder>

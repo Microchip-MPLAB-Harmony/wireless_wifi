@@ -258,20 +258,20 @@
                      displayName="serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400"
                      projectFiles="true">
         <logicalFolder name="components" displayName="components" projectFiles="true">
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/core.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/evsys.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/sercom1.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/drvWifiWinc.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/sys_time.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/eic.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/sercom0.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/appWincSerialBridge.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/tc3.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/cmsis.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/sys_time.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/sercom3.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/dfp.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/tc3.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/HarmonyCore.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/sercom0.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/appWincSerialBridge.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/eic.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/nvmctrl.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/drvWifiWinc.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/evsys.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/components/core.yml</itemPath>
         </logicalFolder>
         <itemPath>serial_bridge_sam_d21_xpro_winc3400_sam_d21_xpro_winc3400/mcc-config.mc4</itemPath>
       </logicalFolder>

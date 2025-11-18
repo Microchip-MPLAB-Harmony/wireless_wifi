@@ -4,7 +4,7 @@
 
 
 project: serial_bridge_sam_a5d27_som1_winc3400
-creation_date: 2025-09-30T18:01:12.390+01:00[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2025-11-18T14:03:21.329Z[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 11
 mcc_mode: IDE            # [IDE|Standalone|Headless]
 mcc_version: v5.6.2

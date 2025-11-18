@@ -2,7 +2,7 @@
 
 manifest_file_version: 1.0.0
 project: serial_bridge_sam_d21_xpro_winc3400
-creation_date: 2025-09-30T17:45:10.030+01:00[Europe/London]
+creation_date: 2025-11-18T14:15:07.713Z[Europe/London]
 operating_system: Windows 11
 mcc_mode: IDE
 mcc_mode_version: v6.25
@@ -10,7 +10,7 @@ device_name: ATSAMD21J18A
 compiler: XC32 4.60
 mcc_version: 5.6.2
 mcc_core_version: 5.8.2
-content_manager_version: 6.0.2
+content_manager_version: 6.0.3
 is_mcc_offline: false
 is_using_prerelease_versions: false
 mcc_content_registries: https://registry.npmjs.org/

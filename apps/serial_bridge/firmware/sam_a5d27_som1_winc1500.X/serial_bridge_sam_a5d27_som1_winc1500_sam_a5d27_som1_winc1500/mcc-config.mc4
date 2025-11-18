@@ -62,7 +62,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\driver\m2m_periph.c
   hash: adc1a3abffcea10446449ff65f8b8c4bbc2439a5c0983f73360c3b75bf927f92
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\driver\m2m_ssl.c
-  hash: df6d1ee084a53fc59f602642f6ab92d0f4c0f43966534120101eaee498a22b05
+  hash: 1ccd4bc3ce11752378339f7f0f0c813bfb2b32a353469722aadfd96a3616d10e
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\driver\m2m_wifi.c
   hash: 6fd3cd7a3fe49d78983e8ad05ed33d1b2b452b0ae8abdb9cfc5c4fc58aa51e1b
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\driver\nmasic.c
@@ -72,7 +72,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\driver\nmdrv.c
   hash: e7ca0613dd85b53836c5a67802b7bc1323bd26c6e89ebbb9e2f9461548052355
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\driver\nmspi.c
-  hash: 196fa561babc338b8dd6a21bea6fd143f75f11af5452d794016e2dded0b019ee
+  hash: 533ec1ebad600adcf3fec6d34b6cc55c8dc6ab8f3f5af035a5868bba7c03aacd
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\socket\inet_addr.c
   hash: b8064cc1ebd4bf08bd6831be3848f6d454525ca4bf0c6a0d0c7c7d4dca8528ad
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\drv\socket\inet_ntop.c
@@ -198,7 +198,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\wdrv_winc_softap.c
   hash: fac9d5a65597596a655ad766495e18b13beb678ec32e49ced67bb8d83500e39c
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\wdrv_winc_ssl.c
-  hash: ac45705e8bce505c311445b2e3f587d66273c00a00b056c7fc938640f52908a0
+  hash: 309f8b1a5d6a672ecb42e731d712d5a27d321fd144f10e59e9519daa6ea8ba94
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\wdrv_winc_sta.c
   hash: 6c9db449efd4bb467572bf171a25056ecc753a8d473eaa2a738599b0845d18de
 - file: ..\src\config\sam_a5d27_som1_winc1500\driver\winc\wdrv_winc_systime.c
