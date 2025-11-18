@@ -1996,7 +1996,7 @@ static int sockGetEndPtName(int fd, struct sockaddr *addr, socklen_t *addrlen, b
         *addrlen = endPtAddrLen;
     }
 
-    if (*addrLen > 0)
+    if (*addrlen > 0)
     {
         memcpy(addr, pEndPt, *addrlen);
     }
