@@ -56,11 +56,6 @@ typedef void (*WDRV_WINC_SPI_PLIB_CALLBACK_REGISTER)(FLEXCOM_SPI_CALLBACK, uintp
 
 typedef void (*WDRV_WINC_SPI_PLIB_CALLBACK_REGISTER)(SERCOM_SPI_CALLBACK, uintptr_t);
 </#if>
-<#if DRV_WIFI_WINC_PLIB?starts_with("QSPI")>
-#include "peripheral/qspi/plib_qspi_common.h"
-
-typedef void (*WDRV_WINC_SPI_PLIB_CALLBACK_REGISTER)(QSPI_CALLBACK, uintptr_t);
-</#if>
 typedef bool (*WDRV_WINC_SPI_PLIB_WRITE_READ)(void*, size_t, void *, size_t);
 
 </#if>

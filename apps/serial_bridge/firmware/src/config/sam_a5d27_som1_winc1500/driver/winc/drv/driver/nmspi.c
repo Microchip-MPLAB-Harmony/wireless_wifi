@@ -293,7 +293,7 @@ static int8_t spi_cmd(uint8_t cmd, uint32_t adr, uint32_t u32data, uint32_t sz, 
 
 static int8_t spi_cmd_rsp(uint8_t cmd, uint8_t clockless)
 {
-    uint8_t rsp = 0;
+    uint8_t rsp;
     int8_t s8RetryCnt;
 
     /**
@@ -374,7 +374,7 @@ static int8_t spi_data_read(uint8_t *b, uint16_t sz,uint8_t clockless)
     int16_t retry, ix, nbytes;
     int8_t result = N_OK;
     uint8_t crc[2];
-    uint8_t rsp = 0;
+    uint8_t rsp;
 
     /**
         Data
@@ -584,7 +584,7 @@ static int8_t spi_write_reg(uint32_t u32Addr, uint32_t u32Val)
 static int8_t spi_write_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
 {
     uint8_t len;
-    uint8_t rsp[3] = {0};
+    uint8_t rsp[3];
 
     /**
         Command
@@ -639,7 +639,7 @@ static int8_t spi_write_block(uint32_t u32Addr, uint8_t *puBuf, uint16_t u16Sz)
 static int8_t spi_read_reg(uint32_t u32Addr, uint32_t* pu32RetVal)
 {
     uint8_t cmd = CMD_SINGLE_READ;
-    uint8_t tmp[4] = {0};
+    uint8_t tmp[4];
     uint8_t clockless = 0;
 
     if (u32Addr <= 0xff)

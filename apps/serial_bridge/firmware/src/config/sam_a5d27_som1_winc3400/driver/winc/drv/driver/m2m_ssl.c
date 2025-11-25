@@ -267,7 +267,7 @@ int8_t m2m_ssl_send_certs_to_winc(uint8_t *pu8Buffer, uint32_t u32BufferSz)
 }
 
 /*!
-@fn         int8_t m2m_ssl_retrieve_next_for_verifying(tenuEcNamedCurve *penuCurve, uint8_t *pu8Value, uint16_t *pu16ValueSz, uint8_t *pu8Sig, uint16_t *pu16SigSz, tstrECPoint *pstrKey);
+@fn         int8_t m2m_ssl_retrieve_next_for_verifying(uint16_t *penuCurve, uint8_t *pu8Value, uint16_t *pu16ValueSz, uint8_t *pu8Sig, uint16_t *pu16SigSz, tstrECPoint *pstrKey);
 @brief      Retrieve the next set of information from the WINC for ECDSA verification.
 @param[out] penuCurve
                 The named curve.
@@ -291,7 +291,7 @@ int8_t m2m_ssl_send_certs_to_winc(uint8_t *pu8Buffer, uint32_t u32BufferSz)
 @warning    If this function returns @ref M2M_ERR_FAIL, then any remaining verification info from
             the WINC is lost.
 */
-int8_t m2m_ssl_retrieve_next_for_verifying(tenuEcNamedCurve *penuCurve, uint8_t *pu8Value, uint16_t *pu16ValueSz, uint8_t *pu8Sig, uint16_t *pu16SigSz, tstrECPoint *pstrKey)
+int8_t m2m_ssl_retrieve_next_for_verifying(uint16_t *penuCurve, uint8_t *pu8Value, uint16_t *pu16ValueSz, uint8_t *pu8Sig, uint16_t *pu16SigSz, tstrECPoint *pstrKey)
 {
     int8_t   s8Ret = M2M_ERR_FAIL;
     uint16_t  u16HashSz, u16SigSz, u16KeySz;
@@ -371,13 +371,8 @@ __ERR:
 int8_t m2m_ssl_retrieve_cert(uint16_t *pu16Curve, uint8_t *pu8Value, uint8_t *pu8Sig, tstrECPoint *pstrKey)
 {
     uint16_t  u16ValueSz = 32, u16SigSz = 64;
-    tenuEcNamedCurve    enuCurve  = EC_UNKNOWN;
-    int8_t               s8Ret;
 
-    s8Ret = m2m_ssl_retrieve_next_for_verifying(&enuCurve, pu8Value, &u16ValueSz, pu8Sig, &u16SigSz, pstrKey);
-    *pu16Curve = (uint16_t)enuCurve;
-
-    return s8Ret;
+    return m2m_ssl_retrieve_next_for_verifying(pu16Curve, pu8Value, &u16ValueSz, pu8Sig, &u16SigSz, pstrKey);
 }
 
 /*!

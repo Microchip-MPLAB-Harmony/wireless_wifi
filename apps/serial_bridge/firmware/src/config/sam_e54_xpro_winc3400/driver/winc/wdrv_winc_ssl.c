@@ -581,7 +581,7 @@ WDRV_WINC_STATUS WDRV_WINC_SSLRetrieveCert
 )
 {
     WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
-    tstrECPoint wincKey = {0};
+    tstrECPoint wincKey;
 
     /* Ensure the driver handle and user pointers are valid. */
     if ((NULL == pDcpt) || (NULL == pHash) || (NULL == pSig) || (NULL == pKey))

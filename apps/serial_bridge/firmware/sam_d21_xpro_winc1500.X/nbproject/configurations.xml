@@ -259,20 +259,20 @@
                      displayName="serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500"
                      projectFiles="true">
         <logicalFolder name="components" displayName="components" projectFiles="true">
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/appWincSerialBridge.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sercom0.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/core.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/eic.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/dfp.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/drvWifiWinc.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/evsys.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/HarmonyCore.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sys_time.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/tc3.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/cmsis.yml</itemPath>
-          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sercom1.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/nvmctrl.yml</itemPath>
           <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sercom3.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/cmsis.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/dfp.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/drvWifiWinc.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/eic.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sys_time.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sercom0.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/HarmonyCore.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/appWincSerialBridge.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/evsys.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/tc3.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/core.yml</itemPath>
+          <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/components/sercom1.yml</itemPath>
         </logicalFolder>
         <itemPath>serial_bridge_sam_d21_xpro_winc1500_sam_d21_xpro_winc1500/mcc-config.mc4</itemPath>
       </logicalFolder>

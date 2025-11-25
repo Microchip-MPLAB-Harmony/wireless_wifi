@@ -2,7 +2,7 @@
 
 manifest_file_version: 1.0.0
 project: serial_bridge_sam_a5d27_som1_winc3400
-creation_date: 2025-11-18T14:03:21.754Z[Europe/London]
+creation_date: 2025-09-30T18:01:37.677+01:00[Europe/London]
 operating_system: Windows 11
 mcc_mode: IDE
 mcc_mode_version: v6.25
@@ -10,7 +10,7 @@ device_name: ATSAMA5D27CD1G
 compiler: XC32 4.60
 mcc_version: 5.6.2
 mcc_core_version: 5.8.2
-content_manager_version: 6.0.3
+content_manager_version: 6.0.2
 is_mcc_offline: false
 is_using_prerelease_versions: false
 mcc_content_registries: https://registry.npmjs.org/
