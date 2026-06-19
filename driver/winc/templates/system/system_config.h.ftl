@@ -38,10 +38,13 @@
         </#if>
         <#lt>#define WDRV_WINC_DEVICE_MULTI_GAIN_TABLE
         <#lt>#define WDRV_WINC_DEVICE_URL_TYPE           unsigned char
-        <#if DRV_WIFI_WINC1500_VERSION == "19.7.7" || DRV_WIFI_WINC1500_VERSION == "19.7.10">
+        <#if DRV_WIFI_WINC1500_VERSION == "19.7.7" || DRV_WIFI_WINC1500_VERSION == "19.7.10" || DRV_WIFI_WINC1500_VERSION == "19.7.11">
             <#lt>#define WDRV_WINC_DEVICE_SCAN_STOP_ON_FIRST
             <#lt>#define WDRV_WINC_DEVICE_DEPRECATE_WEP
             <#lt>#define WDRV_WINC_DEVICE_OTA_SSL_OPTIONS
+        </#if>
+        <#if DRV_WIFI_WINC1500_VERSION == "19.7.11">
+            <#lt>#define WDRV_WINC_DEVICE_OTA_STATUS_BUSY
         </#if>
     </#if>
     <#if DRV_WIFI_WINC_DRIVER_MODE == "Socket Mode">
@@ -74,6 +77,9 @@
             <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>
                 <#lt>#define WDRV_WINC_DEVICE_BLE_API_REV_2
             </#if>
+        </#if>
+        <#if DRV_WIFI_WINC3400_VERSION == "1.4.8">
+            <#lt>#define WDRV_WINC_DEVICE_OTA_STATUS_BUSY
         </#if>
     </#if>
     <#if DRV_WIFI_WINC_USE_BLUETOOTH_WINC3400>

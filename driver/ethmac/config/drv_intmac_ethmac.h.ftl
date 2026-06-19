@@ -17,7 +17,7 @@
 -->
 
 <#--
-Copyright (C) 2014-2023, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2014-2025, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -136,6 +136,12 @@ Microchip or any third party.
 <#else>
 #define TCPIP_EMAC_AUTO_FLOW_CONTROL_ENABLE        	false
 </#if>
+</#if>
+
+<#if DRV_ETHMAC_MULTI_CLIENT == true>
+#define DRV_ETHMAC_MULTI_CLIENT        			true
+<#else>
+#define DRV_ETHMAC_MULTI_CLIENT        			false
 </#if>
 
 <#--

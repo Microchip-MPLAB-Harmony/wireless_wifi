@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -42,6 +42,10 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #define WINC_SDIOREG_FN1_SD_HOST_GP             0x10000024U
 #define WINC_SDIOREG_FN1_ARM_GP                 0x10000028U
 #define WINC_SDIOREG_FN1_RDDATRDY               0x1000002cU
+
+/* WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP */
+#define WINC_SDIO_REG_CLK_WAKEUP_AUTO           0x01U
+#define WINC_SDIO_REG_CLK_WAKEUP_MANUAL         0x02U
 
 /* WINC_SDIOREG_FN0_CCCR_IO_EN/WINC_SDIOREG_FN0_CCCR_IO_RDY */
 #define WINC_SDIO_REG_CCCR_FN_IO_1              0x02U

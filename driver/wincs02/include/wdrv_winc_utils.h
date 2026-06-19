@@ -15,7 +15,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -190,6 +190,25 @@ typedef union
 } WDRV_WINC_IPV6_ADDR;
 
 // *****************************************************************************
+/* IPv6 Address (Prefix) Type
+
+  Summary:
+    Definition to represent an IPv6 address with prefix length.
+
+  Description:
+    This type describes the IPv6 address with prefix length type.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    WDRV_WINC_IPV6_ADDR addr;
+    uint8_t prefixLen;
+} WDRV_WINC_IPV6_PREFIX_ADDR;
+
+// *****************************************************************************
 /* IP Address Type
 
   Summary:
@@ -296,7 +315,7 @@ void                        WDRV_WINC_UtilsSingleListHeadAdd(WDRV_WINC_SINGLE_LI
 WDRV_WINC_SGL_LIST_NODE*    WDRV_WINC_UtilsSingleListNodeRemove(WDRV_WINC_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN);
 
 bool                        WDRV_WINC_UtilsProtectedSingleListInitialize(WDRV_WINC_PROTECTED_SINGLE_LIST* pL);
-int                         WDRV_WINC_UtilsProtectedSingleListCount(WDRV_WINC_PROTECTED_SINGLE_LIST* pL);
+int                         WDRV_WINC_UtilsProtectedSingleListCount(const WDRV_WINC_PROTECTED_SINGLE_LIST* pL);
 void                        WDRV_WINC_UtilsProtectedSingleListAppend(WDRV_WINC_PROTECTED_SINGLE_LIST* pDstL, WDRV_WINC_SINGLE_LIST* pAList);
 WDRV_WINC_SGL_LIST_NODE*    WDRV_WINC_UtilsProtectedSingleListHeadRemove(WDRV_WINC_PROTECTED_SINGLE_LIST* pL);
 void                        WDRV_WINC_UtilsProtectedSingleListTailAdd(WDRV_WINC_PROTECTED_SINGLE_LIST* pL, WDRV_WINC_SGL_LIST_NODE* pN);

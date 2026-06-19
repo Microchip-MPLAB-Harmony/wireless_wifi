@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: sys_time
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: core
   type: package
-  version: v3.15.5
+  version: v3.16.3
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -44,12 +44,34 @@ data:
     - children:
       - attributes:
           id: sys_time
-          x: '150'
-          y: '138'
+          x: '344'
+          y: '176'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
   symbols:
+    SYS_TIME_ACHIEVABLE_TICK_RATE_HZ:
+      attributes:
+        id: SYS_TIME_ACHIEVABLE_TICK_RATE_HZ
+      children:
+      - children:
+        - attributes:
+            id: sys_time
+            value: '100002083'
+          type: Dynamic
+        type: Values
+      type: Long
+    SYS_TIME_OPERATING_MODE:
+      attributes:
+        id: SYS_TIME_OPERATING_MODE
+      children:
+      - children:
+        - attributes:
+            id: sys_time
+            value: TICK BASED
+          type: Dynamic
+        type: Values
+      type: Combo
     SYS_TIME_PLIB:
       attributes:
         id: SYS_TIME_PLIB
@@ -72,4 +94,22 @@ data:
           type: Dynamic
         type: Values
       type: String
+    SYS_TIME_USE_SYSTICK:
+      attributes:
+        id: SYS_TIME_USE_SYSTICK
+      children:
+      - children:
+        - attributes:
+            id: visible
+          children:
+          - type: Value
+            value: 'true'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            value: 'false'
+          type: User
+        type: Values
+      type: Boolean
   userData: {}

@@ -1590,24 +1590,23 @@ int8_t m2m_wifi_request_sleep(uint32_t u32SlpReqTime)
 
 /*!
 @fn         int8_t m2m_wifi_set_device_name(uint8_t *pu8DeviceName, uint8_t u8DeviceNameLength);
-@brief      Set the WINC3400 device name which is used as P2P device name.
+@brief      Set the WINC3400 device name which is used in DHCP hostname (option 12).
 @param [in] pu8DeviceName
             Buffer holding the device name.
 @param [in] u8DeviceNameLength
-            Length of the device name.
+            Length of the device name. Should not exceed M2M_DEVICE_NAME_MAX.
 @return     The function SHALL return M2M_SUCCESS for success and a negative value otherwise.
 @warning    The Function called once after initialization.
 */
 int8_t m2m_wifi_set_device_name(uint8_t *pu8DeviceName, uint8_t u8DeviceNameLength)
 {
     tstrM2MDeviceNameConfig strDeviceName;
-    if (u8DeviceNameLength >= M2M_DEVICE_NAME_MAX)
+    if(u8DeviceNameLength > M2M_DEVICE_NAME_MAX)
     {
         u8DeviceNameLength = M2M_DEVICE_NAME_MAX;
     }
-    //pu8DeviceName[u8DeviceNameLength] = '\0';
-    u8DeviceNameLength ++;
     memcpy(strDeviceName.au8DeviceName, pu8DeviceName, u8DeviceNameLength);
+    strDeviceName.au8DeviceName[u8DeviceNameLength] = '\0';
     return hif_send(M2M_REQ_GROUP_WIFI, M2M_WIFI_REQ_SET_DEVICE_NAME,
                     (uint8_t*)&strDeviceName, sizeof(tstrM2MDeviceNameConfig), NULL, 0, 0);
 }

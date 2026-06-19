@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -424,6 +424,12 @@ size_t WINC_CmdReadParamElem(const WINC_DEV_PARAM_ELEM *const pElem, WINC_TYPE t
         uint16_t lenSrcVal;
         uint32_t localUint;
 
+        if (false == cmdIsInt(typeVal))
+        {
+            WINC_ERROR_PRINT("error: integer type mismatch %d vs %d\n", typeVal, pElem->type);
+            return 0;
+        }
+
         /* If type is a signed integer then prepare for sign extension. */
         if (WINC_TYPE_INTEGER == pElem->type)
         {
@@ -480,8 +486,15 @@ size_t WINC_CmdReadParamElem(const WINC_DEV_PARAM_ELEM *const pElem, WINC_TYPE t
     }
     else if ((WINC_TYPE_STRING == pElem->type) || (WINC_TYPE_BYTE_ARRAY == pElem->type))
     {
+        if ((WINC_TYPE_STRING != typeVal) && (WINC_TYPE_BYTE_ARRAY != typeVal))
+        {
+            WINC_ERROR_PRINT("error: string/byte type mismatch %d vs %d\n", typeVal, pElem->type);
+            return 0;
+        }
+
         if (lenVal < pElem->length)
         {
+            WINC_ERROR_PRINT("error: read element size mismatch %d < %d\n", lenVal, pElem->length);
             return 0;
         }
 
@@ -489,14 +502,20 @@ size_t WINC_CmdReadParamElem(const WINC_DEV_PARAM_ELEM *const pElem, WINC_TYPE t
 
         retVal = pElem->length;
     }
-    else
+    else if (typeVal == pElem->type)
     {
         if (lenVal != pElem->length)
         {
+            WINC_ERROR_PRINT("error: read element size mismatch %d != %d\n", lenVal, pElem->length);
             return 0;
         }
 
         (void)memcpy(pDstVal, pElem->pData, lenVal);
+    }
+    else
+    {
+        WINC_ERROR_PRINT("error: type mismatch %d vs %d\n", typeVal, pElem->type);
+        return 0;
     }
 
     return retVal;
@@ -617,18 +636,18 @@ static bool cmd44136fa3(uint16_t msgId, WINC_CMD_REQ_HANDLE handle)
     to its ignore value it and all subsequent parameters are ignored.
     Subsequent parameters should also be set to their ignore values.
 
-    optId will be ignored if its value is 0.
+    optId will be ignored if its value is -1.
 
  *****************************************************************************/
 
-static bool cmd93c2c531(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+static bool cmdda740c3a(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -638,7 +657,7 @@ static bool cmd93c2c531(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, uint32_t opt
         return false;
     }
 
-    if (0U != optId)
+    if (-1 != optId)
     {
         (void)cmdFractValueBuilder(handle, optId);
         (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
@@ -665,18 +684,18 @@ static bool cmd93c2c531(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, uint32_t opt
     to its ignore value it and all subsequent parameters are ignored.
     Subsequent parameters should also be set to their ignore values.
 
-    optId will be ignored if its value is 0.
+    optId will be ignored if its value is -1.
 
  *****************************************************************************/
 
-static bool cmd977efca2(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, uint32_t optId)
+static bool cmde2d4ed6c(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, int32_t optId)
 {
     if (0U == handle)
     {
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -686,7 +705,7 @@ static bool cmd977efca2(uint16_t msgId, WINC_CMD_REQ_HANDLE handle, uint32_t opt
         return false;
     }
 
-    if (0U != optId)
+    if (-1 != optId)
     {
         (void)cmdFractValueBuilder(handle, optId);
     }
@@ -781,9 +800,9 @@ bool WINC_CmdGMR(WINC_CMD_REQ_HANDLE handle)
 
  *****************************************************************************/
 
-bool WINC_CmdCFG(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdCFG(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_CFG, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_CFG, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -853,7 +872,7 @@ bool WINC_CmdCFGCP(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeCfgsrc, uintptr_t c
 
  *****************************************************************************/
 
-bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
@@ -865,7 +884,7 @@ bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, 
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -879,7 +898,7 @@ bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, 
     {
         (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optIdx, 4);
 
-        if (0U != optId)
+        if (-1 != optId)
         {
             (void)cmdFractValueBuilder(handle, optId);
             (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
@@ -913,9 +932,9 @@ bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, 
 
  *****************************************************************************/
 
-bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_DNSC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_DNSC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -923,10 +942,10 @@ bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
     This function is used to resolve domain names via DNS.
 
   Parameters:
-    handle        - Command request session handle
-    type          - Type of record
-    pDomainName   - Domain name to resolve
-    lenDomainName - Length of pDomainName
+    handle       - Command request session handle
+    type         - Type of record
+    pQueryName   - Query name to resolve
+    lenQueryName - Length of pQueryName
 
   Returns:
     true  - Success.
@@ -937,19 +956,19 @@ bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
 
  *****************************************************************************/
 
-bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* pDomainName, size_t lenDomainName)
+bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* pQueryName, size_t lenQueryName)
 {
     if (0U == handle)
     {
         return false;
     }
 
-    if ((1U != type) && (28U != type) && (255U != type))
+    if (type < 1U)
     {
         return false;
     }
 
-    if ((NULL == pDomainName) || (lenDomainName > 128U))
+    if ((NULL == pQueryName) || (lenQueryName > 256U))
     {
         return false;
     }
@@ -960,7 +979,7 @@ bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* 
     }
 
     (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &type, 1);
-    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pDomainName, lenDomainName);
+    (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pQueryName, lenQueryName);
 
     return cmdCompleteCommandReq(handle);
 }
@@ -1304,9 +1323,9 @@ bool WINC_CmdFSRECV(WINC_CMD_REQ_HANDLE handle, uint16_t tsfrHandle, uint8_t blo
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdMQTTC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_MQTTC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_MQTTC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -1662,7 +1681,7 @@ bool WINC_CmdMQTTDISCONN(WINC_CMD_REQ_HANDLE handle, int32_t optReasonCode)
         return false;
     }
 
-    if (((optReasonCode < -1) || (optReasonCode > 0)) && (4 != optReasonCode) && ((optReasonCode < 128) || (optReasonCode > 131)) && (144 != optReasonCode) && ((optReasonCode < 147) || (optReasonCode > 153)))
+    if ((optReasonCode < -1) || (optReasonCode > 255))
     {
         return false;
     }
@@ -1704,14 +1723,14 @@ bool WINC_CmdMQTTDISCONN(WINC_CMD_REQ_HANDLE handle, int32_t optReasonCode)
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -1721,7 +1740,7 @@ bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE ty
         return false;
     }
 
-    if (0U != optId)
+    if (-1 != optId)
     {
         (void)cmdFractValueBuilder(handle, optId);
         (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
@@ -1786,7 +1805,7 @@ bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_
 
 /*****************************************************************************
   Description:
-    This function is used to read the MQTT receive properties.
+    This function is used to read or reset the MQTT receive properties.
 
   Parameters:
     handle - Command request session handle
@@ -1805,9 +1824,48 @@ bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPROPRX(WINC_CMD_REQ_HANDLE handle, uint32_t optId)
+bool WINC_CmdMQTTPROPRX(WINC_CMD_REQ_HANDLE handle, int32_t optId)
 {
-    return cmd977efca2(WINC_CMD_ID_MQTTPROPRX, handle, optId);
+    return cmde2d4ed6c(WINC_CMD_ID_MQTTPROPRX, handle, optId);
+}
+
+/*****************************************************************************
+  Description:
+    This function is used to read or reset the MQTT receive properties.
+
+  Parameters:
+    handle  - Command request session handle
+    typeVal - Type of val
+    val     - Parameter value
+    lenVal  - Length of val
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdMQTTPROPRXPRESET(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, uintptr_t val, size_t lenVal)
+{
+    const uint8_t id = 0;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_MQTTPROPRX))
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &id, 1);
+    (void)cmdMultiValueBuilder(handle, typeVal, val, lenVal);
+
+    return cmdCompleteCommandReq(handle);
 }
 
 /*****************************************************************************
@@ -1896,7 +1954,7 @@ bool WINC_CmdMQTTPROPTXS(WINC_CMD_REQ_HANDLE handle, int32_t optPropId, int32_t 
 
  *****************************************************************************/
 
-bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
@@ -1908,7 +1966,7 @@ bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, uint32_t optId,
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -1922,7 +1980,7 @@ bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, uint32_t optId,
     {
         (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &optIntf, 4);
 
-        if (0U != optId)
+        if (-1 != optId)
         {
             (void)cmdFractValueBuilder(handle, optId);
             (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
@@ -2003,9 +2061,9 @@ bool WINC_CmdNETIFTX(WINC_CMD_REQ_HANDLE handle, uint8_t intf, const uint8_t* pD
 
  *****************************************************************************/
 
-bool WINC_CmdOTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdOTAC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_OTAC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_OTAC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -2207,9 +2265,9 @@ bool WINC_CmdRST(WINC_CMD_REQ_HANDLE handle)
 
  *****************************************************************************/
 
-bool WINC_CmdSNTPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdSNTPC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_SNTPC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_SNTPC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -2457,7 +2515,7 @@ bool WINC_CmdSOCKTLS(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t tlsCon
         return false;
     }
 
-    if (tlsConf > 2U)
+    if (tlsConf > 4U)
     {
         return false;
     }
@@ -2674,7 +2732,7 @@ bool WINC_CmdSOCKRD(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t outputM
 
 /*****************************************************************************
   Description:
-    This function is used to read data from a socket buffer.
+    This function is used to read data from a socket buffer (UDP only).
 
   Parameters:
     handle     - Command request session handle
@@ -2828,14 +2886,14 @@ bool WINC_CmdSOCKLST(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId)
 
  *****************************************************************************/
 
-bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -2849,7 +2907,7 @@ bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, uint32_t optI
     {
         (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optSockId, 2);
 
-        if (0U != optId)
+        if (-1 != optId)
         {
             (void)cmdFractValueBuilder(handle, optId);
             (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
@@ -2930,7 +2988,7 @@ bool WINC_CmdTIMEUTCSEC(WINC_CMD_REQ_HANDLE handle, uint8_t format, uint32_t utc
         return false;
     }
 
-    if ((format < 1U) || (format > 3U))
+    if ((format < 1U) || (format > 2U))
     {
         return false;
     }
@@ -2966,7 +3024,7 @@ bool WINC_CmdTIMEUTCSEC(WINC_CMD_REQ_HANDLE handle, uint8_t format, uint32_t utc
 
 bool WINC_CmdTIMERFC(WINC_CMD_REQ_HANDLE handle, const uint8_t* pDateTime, size_t lenDateTime)
 {
-    const uint8_t format = 2;
+    const uint8_t format = 3;
 
     if (0U == handle)
     {
@@ -3016,19 +3074,19 @@ bool WINC_CmdTIMERFC(WINC_CMD_REQ_HANDLE handle, const uint8_t* pDateTime, size_
 
  *****************************************************************************/
 
-bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
         return false;
     }
 
-    if (optConf > 2U)
+    if (optConf > 4U)
     {
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -3042,11 +3100,76 @@ bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, W
     {
         (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optConf, 1);
 
-        if (0U != optId)
+        if (-1 != optId)
         {
             (void)cmdFractValueBuilder(handle, optId);
             (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
         }
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This function is used to read or set the TLS configuration.
+
+  Parameters:
+    handle    - Command request session handle
+    conf      - Configuration number
+    pDigest   - Hash digest
+    lenDigest - Length of pDigest
+    optAlgo   - Hash algorithm
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optAlgo will be ignored if its value is WINC_CMDTLSCDA_ALGO_IGNORE_VAL.
+
+ *****************************************************************************/
+
+bool WINC_CmdTLSCDA(WINC_CMD_REQ_HANDLE handle, uint8_t conf, const uint8_t* pDigest, size_t lenDigest, uint8_t optAlgo)
+{
+    const uint8_t id = 9;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if ((conf < 1U) || (conf > 4U))
+    {
+        return false;
+    }
+
+    if (NULL == pDigest)
+    {
+        return false;
+    }
+
+    if (optAlgo > 5U)
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_TLSC))
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &conf, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &id, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_BYTE_ARRAY, pDigest, lenDigest);
+
+    if (0U != optAlgo)
+    {
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optAlgo, 1);
     }
 
     return cmdCompleteCommandReq(handle);
@@ -3079,7 +3202,7 @@ bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, W
 
  *****************************************************************************/
 
-bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
     if (0U == handle)
     {
@@ -3091,7 +3214,7 @@ bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optI
         return false;
     }
 
-    if (false == cmdCheckFractType(optId, 255))
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
     {
         return false;
     }
@@ -3105,7 +3228,7 @@ bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optI
     {
         (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optCslIdx, 1);
 
-        if (0U != optId)
+        if (-1 != optId)
         {
             (void)cmdFractValueBuilder(handle, optId);
             (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
@@ -3140,9 +3263,9 @@ bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optI
 
  *****************************************************************************/
 
-bool WINC_CmdWAPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdWAPC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_WAPC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_WAPC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3217,9 +3340,9 @@ bool WINC_CmdWAP(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 
  *****************************************************************************/
 
-bool WINC_CmdWSCNC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdWSCNC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_WSCNC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_WSCNC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3287,9 +3410,9 @@ bool WINC_CmdWSCN(WINC_CMD_REQ_HANDLE handle, uint8_t actPasv)
 
  *****************************************************************************/
 
-bool WINC_CmdWSTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdWSTAC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_WSTAC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_WSTAC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3451,9 +3574,9 @@ bool WINC_CmdSI(WINC_CMD_REQ_HANDLE handle, uint8_t optFilter)
 
  *****************************************************************************/
 
-bool WINC_CmdWPROVC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdWPROVC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_WPROVC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_WPROVC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3523,9 +3646,9 @@ bool WINC_CmdWPROV(WINC_CMD_REQ_HANDLE handle, int32_t optState)
 
  *****************************************************************************/
 
-bool WINC_CmdDI(WINC_CMD_REQ_HANDLE handle, uint32_t optId)
+bool WINC_CmdDI(WINC_CMD_REQ_HANDLE handle, int32_t optId)
 {
-    return cmd977efca2(WINC_CMD_ID_DI, handle, optId);
+    return cmde2d4ed6c(WINC_CMD_ID_DI, handle, optId);
 }
 
 /*****************************************************************************
@@ -3612,9 +3735,9 @@ bool WINC_CmdEXTCRYPTO(WINC_CMD_REQ_HANDLE handle, uint16_t opId, uint8_t status
 
  *****************************************************************************/
 
-bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_WIFIC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_WIFIC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3641,9 +3764,9 @@ bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 
  *****************************************************************************/
 
-bool WINC_CmdNVMC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdNVMC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_NVMC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_NVMC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3945,9 +4068,9 @@ bool WINC_CmdDFUSEQ(WINC_CMD_REQ_HANDLE handle, uint8_t imageState)
 
  *****************************************************************************/
 
-bool WINC_CmdPPSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdPPSC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_PPSC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_PPSC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -3975,7 +4098,7 @@ bool WINC_CmdPPS(WINC_CMD_REQ_HANDLE handle, uint8_t ppsState)
         return false;
     }
 
-    if (ppsState > 2U)
+    if ((ppsState > 1U) && (10U != ppsState))
     {
         return false;
     }
@@ -3986,6 +4109,49 @@ bool WINC_CmdPPS(WINC_CMD_REQ_HANDLE handle, uint8_t ppsState)
     }
 
     (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &ppsState, 1);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This function allows the firmware to change the state of platform power
+      save.
+
+  Parameters:
+    handle    - Command request session handle
+    pauseTime - PPS pause time in sec
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdPPSPAUSE(WINC_CMD_REQ_HANDLE handle, uint16_t pauseTime)
+{
+    const uint8_t ppsState = 2;
+
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if ((pauseTime < 1U) || (pauseTime > 3600U))
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_PPS))
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &ppsState, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &pauseTime, 2);
 
     return cmdCompleteCommandReq(handle);
 }
@@ -4014,9 +4180,9 @@ bool WINC_CmdPPS(WINC_CMD_REQ_HANDLE handle, uint8_t ppsState)
 
  *****************************************************************************/
 
-bool WINC_CmdSYSLOGC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+bool WINC_CmdSYSLOGC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
 {
-    return cmd93c2c531(WINC_CMD_ID_SYSLOGC, handle, optId, typeOptVal, optVal, lenOptVal);
+    return cmdda740c3a(WINC_CMD_ID_SYSLOGC, handle, optId, typeOptVal, optVal, lenOptVal);
 }
 
 /*****************************************************************************
@@ -4062,6 +4228,199 @@ bool WINC_CmdARB(WINC_CMD_REQ_HANDLE handle, uint8_t optValue)
     {
         (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optValue, 1);
     }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This function is used to read or set the HTTP configuration.
+
+  Parameters:
+    handle     - Command request session handle
+    optConf    - Configuration number
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optConf will be ignored if its value is WINC_CMDHTTPC_CONF_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDHTTPC_ID_IGNORE_VAL.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal)
+{
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if (optConf > 1U)
+    {
+        return false;
+    }
+
+    if ((-1 != optId) && (false == cmdCheckFractType(optId, 255)))
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_HTTPC))
+    {
+        return false;
+    }
+
+    if (0U != optConf)
+    {
+        (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &optConf, 1);
+
+        if (-1 != optId)
+        {
+            (void)cmdFractValueBuilder(handle, optId);
+            (void)cmdMultiValueBuilder(handle, typeOptVal, optVal, lenOptVal);
+        }
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This function performs an HTTP GET operation.
+
+  Parameters:
+    handle     - Command request session handle
+    conf       - Configuration number
+    pOptPath   - Resource path
+    lenOptPath - Length of pOptPath
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    pOptPath will be ignored if its value is NULL.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPGET(WINC_CMD_REQ_HANDLE handle, uint8_t conf, const uint8_t* pOptPath, size_t lenOptPath)
+{
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if ((conf < 1U) || (conf > 1U))
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_HTTPGET))
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &conf, 1);
+
+    if (NULL != pOptPath)
+    {
+        (void)cmdParamBuilder(handle, WINC_TYPE_STRING, pOptPath, lenOptPath);
+    }
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This function performs an HTTP data read operation.
+
+  Parameters:
+    handle - Command request session handle
+    conf   - Configuration number
+    length - Number of bytes
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPRD(WINC_CMD_REQ_HANDLE handle, uint8_t conf, int32_t length)
+{
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if ((conf < 1U) || (conf > 1U))
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_HTTPRD))
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &conf, 1);
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER, &length, 4);
+
+    return cmdCompleteCommandReq(handle);
+}
+
+/*****************************************************************************
+  Description:
+    This function performs an HTTP close operation.
+
+  Parameters:
+    handle - Command request session handle
+    conf   - Configuration number
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPCL(WINC_CMD_REQ_HANDLE handle, uint8_t conf)
+{
+    if (0U == handle)
+    {
+        return false;
+    }
+
+    if ((conf < 1U) || (conf > 1U))
+    {
+        return false;
+    }
+
+    if (NULL == cmdBuildCommandReq(handle, WINC_CMD_ID_HTTPCL))
+    {
+        return false;
+    }
+
+    (void)cmdParamBuilder(handle, WINC_TYPE_INTEGER_UNSIGNED, &conf, 1);
 
     return cmdCompleteCommandReq(handle);
 }

@@ -56,6 +56,11 @@ typedef void (*WDRV_WINC_SPI_PLIB_CALLBACK_REGISTER)(FLEXCOM_SPI_CALLBACK, uintp
 
 typedef void (*WDRV_WINC_SPI_PLIB_CALLBACK_REGISTER)(SERCOM_SPI_CALLBACK, uintptr_t);
 </#if>
+<#if DRV_WIFI_WINC_PLIB?starts_with("QSPI")>
+#include "peripheral/qspi/plib_qspi_common.h"
+
+typedef void (*WDRV_WINC_SPI_PLIB_CALLBACK_REGISTER)(QSPI_CALLBACK, uintptr_t);
+</#if>
 typedef bool (*WDRV_WINC_SPI_PLIB_WRITE_READ)(void*, size_t, void *, size_t);
 
 </#if>
@@ -108,6 +113,11 @@ typedef struct
 </#if>
 </#if>
 } WDRV_WINC_SPI_CFG;
+
+#ifdef __cplusplus // Provide C++ Compatibility
+extern "C"
+{
+#endif
 
 //*******************************************************************************
 /*
@@ -217,4 +227,7 @@ void WDRV_WINC_SPIInitialize(const WDRV_WINC_SPI_CFG *const pInitData);
 
 void WDRV_WINC_SPIDeinitialize(void);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* WDRV_WINC_SPI_H */

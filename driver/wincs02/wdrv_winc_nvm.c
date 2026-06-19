@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -35,8 +35,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_nvm.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_NVM
 
@@ -58,7 +56,7 @@ static void nvmCmdRspCallbackHandler
 //*******************************************************************************
 /*
   Function:
-    static WDRV_WINC_STATUS nvmInProgress(WDRV_WINC_DCPT *const pDcpt)
+    static WDRV_WINC_STATUS nvmInProgress(const WDRV_WINC_DCPT *const pDcpt)
 
   Summary:
     Check if NVM operation is in progress.
@@ -83,7 +81,7 @@ static void nvmCmdRspCallbackHandler
 
 */
 
-static WDRV_WINC_STATUS nvmInProgress(WDRV_WINC_DCPT *const pDcpt)
+static WDRV_WINC_STATUS nvmInProgress(const WDRV_WINC_DCPT *const pDcpt)
 {
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == (DRV_HANDLE)pDcpt) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -111,7 +109,7 @@ static WDRV_WINC_STATUS nvmInProgress(WDRV_WINC_DCPT *const pDcpt)
   Function:
     static void nvmReportStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         WDRV_WINC_NVM_STATUS_TYPE status,
         uintptr_t opStatusInfo
     )
@@ -142,7 +140,7 @@ static WDRV_WINC_STATUS nvmInProgress(WDRV_WINC_DCPT *const pDcpt)
 
 static void nvmReportStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     WDRV_WINC_NVM_STATUS_TYPE status,
     uintptr_t opStatusInfo
 )
@@ -172,7 +170,7 @@ static void nvmReportStatus
   Function:
     static WDRV_WINC_STATUS nvmWriteBuffer
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         const void *const pBuffer,
         uint32_t offset,
         uint32_t length
@@ -206,7 +204,7 @@ static void nvmReportStatus
 
 static WDRV_WINC_STATUS nvmWriteBuffer
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     const void *const pBuffer,
     uint32_t offset,
     uint32_t length
@@ -237,7 +235,7 @@ static WDRV_WINC_STATUS nvmWriteBuffer
         length = WINC_CMD_PARAM_MAX_NVM_LENGTH;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, length, nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, length, &nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -259,7 +257,7 @@ static WDRV_WINC_STATUS nvmWriteBuffer
   Function:
     static WDRV_WINC_STATUS nvmReadBuffer
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint32_t offset,
         uint32_t length
     )
@@ -291,7 +289,7 @@ static WDRV_WINC_STATUS nvmWriteBuffer
 
 static WDRV_WINC_STATUS nvmReadBuffer
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint32_t offset,
     uint32_t length
 )
@@ -313,7 +311,7 @@ static WDRV_WINC_STATUS nvmReadBuffer
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -335,7 +333,7 @@ static WDRV_WINC_STATUS nvmReadBuffer
   Function:
     static void nvmProcessStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t cmdID,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -368,7 +366,7 @@ static WDRV_WINC_STATUS nvmReadBuffer
 
 static void nvmProcessStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t cmdID,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -480,7 +478,7 @@ static void nvmProcessStatus
   Function:
     static void nvmProcessCmdRsp
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t rspId,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -515,7 +513,7 @@ static void nvmProcessStatus
 
 static void nvmProcessCmdRsp
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t rspId,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -608,7 +606,7 @@ static void nvmProcessCmdRsp
   Function:
     static void nvmProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -639,7 +637,7 @@ static void nvmProcessCmdRsp
 
 static void nvmProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -785,7 +783,7 @@ static void nvmCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -875,7 +873,7 @@ void WDRV_WINC_NVMProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -904,7 +902,7 @@ void WDRV_WINC_NVMProcessAEC
 
 const WDRV_WINC_NVM_GEOM_INFO* const WDRV_WINC_NVMGeometryGet(DRV_HANDLE handle)
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
@@ -943,7 +941,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
     WDRV_WINC_NVM_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     WDRV_WINC_STATUS status;
 
@@ -960,7 +958,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMEraseSector
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1016,7 +1014,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMWrite
     WDRV_WINC_NVM_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_STATUS status;
 
     /* Ensure the driver is open and no NVM operation is in progress. */
@@ -1085,7 +1083,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMRead
     WDRV_WINC_NVM_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_STATUS status;
 
     /* Ensure the driver is open and no NVM operation is in progress. */
@@ -1144,7 +1142,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMCheck
     WDRV_WINC_NVM_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     WDRV_WINC_STATUS status;
 
@@ -1156,7 +1154,7 @@ WDRV_WINC_STATUS WDRV_WINC_NVMCheck
         return status;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(2, 0, nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, 0, &nvmCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

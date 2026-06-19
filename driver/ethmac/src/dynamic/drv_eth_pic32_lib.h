@@ -19,7 +19,7 @@
 
 // DOM-IGNORE-BEGIN
 /*
-Copyright (C) 2008-2023, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2008-2025, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -42,8 +42,8 @@ Microchip or any third party.
 */
 // DOM-IGNORE-END
 
-#ifndef _DRV_ETH_LIB_H_
-#define _DRV_ETH_LIB_H_
+#ifndef H_DRV_ETH_LIB_H_
+#define H_DRV_ETH_LIB_H_
 
 #include <stdio.h>
 #include <stdint.h>
@@ -246,8 +246,8 @@ volatile uint32_t        ETHCON1INV ;
  volatile uint32_t        EMACxMINDCLR ;
  volatile uint32_t        EMACxMINDSET ;
  volatile uint32_t        EMACxMINDINV ;
-
- volatile uint32_t  addroffset2[8];
+ 
+ volatile uint32_t  addroffset2[8]; 
 
  __EMACxSA0bits_t        EMACxSA0 ;
  volatile uint32_t        EMACxSA0CLR ;
@@ -527,7 +527,7 @@ void DRV_ETH_PauseTimerSet(DRV_ETHERNET_REGISTERS* pEthReg, uint16_t PauseTimerV
 
   Description:
     This function enables the Ethernet module.
-    This function performs atomic register access.
+    This function performs atomic register access. 
 
   Precondition:
     None.
@@ -556,7 +556,7 @@ void DRV_ETH_Enable(DRV_ETHERNET_REGISTERS* pEthReg);
 
   Description:
     This function disables the Ethernet module.
-    This function performs atomic register access.
+    This function performs atomic register access. 
 
   Precondition:
     None.
@@ -779,8 +779,8 @@ void DRV_ETH_RxBufferCountDecrement(DRV_ETHERNET_REGISTERS* pEthReg);
 
   Description:
    This function sets the required buffer size for the receive operation.
-    In this implementation, all receive descriptors use the same buffer
-    size (unlike the transmission flow where each descriptor can have
+    In this implementation, all receive descriptors use the same buffer 
+    size (unlike the transmission flow where each descriptor can have 
     a different buffer size)
 
   Precondition:
@@ -788,9 +788,9 @@ void DRV_ETH_RxBufferCountDecrement(DRV_ETHERNET_REGISTERS* pEthReg);
 
   Parameters:
     pEthReg - pointer to the Ethernet registers
-    ReceiveBufferSize - In units of 16 bytes, must be a value of 0x01 to 0x7F,
+    ReceiveBufferSize - In units of 16 bytes, must be a value of 0x01 to 0x7F, 
                         0x00 is invalid
-
+  
   Returns:
     None.
 
@@ -799,7 +799,7 @@ void DRV_ETH_RxBufferCountDecrement(DRV_ETHERNET_REGISTERS* pEthReg);
   Remarks:
     None
     This function should be part of the initialization process and should
-    NOT be called when the rx process is active! The receive buffer size
+    NOT be called when the rx process is active! The receive buffer size 
     is always TRUNCATED to a multiple of 16 bytes.
 */
 int DRV_ETH_RxSetBufferSize(DRV_ETHERNET_REGISTERS* pEthReg, int rxBuffSize);
@@ -1321,9 +1321,9 @@ uint8_t DRV_ETH_RxPacketCountGet(DRV_ETHERNET_REGISTERS* pEthReg);
 
   Description:
     This function clears the Ethernet module interrupt source status using a mask.
-    Logically 'OR' the masks together. Any masks not ORed with the others will
+    Logically 'OR' the masks together. Any masks not ORed with the others will 
     be disabled.
-    This function performs atomic register access.
+    This function performs atomic register access. 
 
   Precondition:
     None.
@@ -1511,7 +1511,7 @@ void DRV_ETH_NonBackToBackIPG2Set(DRV_ETHERNET_REGISTERS* pEthReg, uint8_t nonBa
 
   Description:
     This function sets the EMAC collision window.
-    This function performs atomic register access.
+    This function performs atomic register access. 
 
   Precondition:
     None.
@@ -2545,7 +2545,7 @@ void DRV_ETH_MIIMResetDisable(DRV_ETHERNET_REGISTERS* pEthReg);
 
 //******************************************************************************
 /* Function:
-    void DRV_ETH_MIIMClockSet(DRV_ETHERNET_REGISTERS* pEthReg, ETH_MIIM_CLK MIIMClock)
+    void DRV_ETH_MIIMClockSet(DRV_ETHERNET_REGISTERS* pEthReg, uint8_t miimClock)
 
   Summary:
     Sets the EMAC MIM clock selection.
@@ -2558,7 +2558,7 @@ void DRV_ETH_MIIMResetDisable(DRV_ETHERNET_REGISTERS* pEthReg);
 
   Parameters:
     pEthReg - pointer to the Ethernet registers
-    MIIMClock - of type ETH_MIIM_CLK - the system clock divisor for MII
+    miimClock - of type ETH_MIIM_CLK - the system clock divisor for MII
 
   Returns:
     None.
@@ -2571,14 +2571,14 @@ void DRV_ETH_MIIMResetDisable(DRV_ETHERNET_REGISTERS* pEthReg);
     2.5 MHz. Some PHYs support clock rates up to 12.5 MHz.
 
 */
-void DRV_ETH_MIIMClockSet(DRV_ETHERNET_REGISTERS* pEthReg , ETH_MIIM_CLK MIIMClock );
+void DRV_ETH_MIIMClockSet(DRV_ETHERNET_REGISTERS* pEthReg , uint8_t miimClock );
 
 #ifdef __cplusplus
 }
 #endif
 
 
-#endif //_DRV_ETH_LIB_H_
+#endif //H_DRV_ETH_LIB_H_
 
 //******************************************************************************
 /* End of File

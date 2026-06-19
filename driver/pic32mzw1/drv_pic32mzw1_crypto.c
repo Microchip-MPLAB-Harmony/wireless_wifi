@@ -540,36 +540,39 @@ DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_Hash_GetDigestSize
 }
 
 /* Encrypt the input text using Des encryption with Electronic Codebook (ECB) mode*/
-DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_DES_Ecb_Blk_Crypt
+DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_DES_Ecb_Crypt
 (
     const uint8_t *pu8PlainText,
     uint16_t plainTextLen,
-    const uint8_t *pu8CipherKey,    
-    uint8_t *pu8CipherText    
+    const uint8_t *pu8CipherKey,
+    uint8_t *pu8CipherText
 )
 {
 #if defined(WDRV_PIC32MZW_WOLFSSL_SUPPORT) && defined(WOLFSSL_DES_ECB)
-    uint8_t iv[DES_BLOCK_SIZE] = {0};
+    uint8_t iv[DES_BLOCK_SIZE];
+    Des desCtx;
+
     if ((NULL == pu8PlainText) || (0 == plainTextLen) || (NULL == pu8CipherKey) || (NULL == pu8CipherText))
     {
         return DRV_PIC32MZW_CRYPTO_INVALID_PARAM;
     }
 
     memset(iv, 0x0, DES_BLOCK_SIZE);
-    Des desCtx;
-    /* set the encryption key */
-    if (wc_Des_SetKey(&desCtx, (const byte*) pu8CipherKey, (const byte*) iv, DES_ENCRYPTION) != 0) 
+
+    /* Set key */
+    if (wc_Des_SetKey(&desCtx, (const byte*) pu8CipherKey, iv, DES_ENCRYPTION) != 0) 
     {
         return DRV_PIC32MZW_CRYPTO_INTERNAL_ERROR;
     }
-	/* encrypt the data */
+
+	/* Encrypt block */
     if (wc_Des_EcbEncrypt(&desCtx, (byte*) pu8CipherText, (const byte*) pu8PlainText, plainTextLen) != 0)
     {
         return DRV_PIC32MZW_CRYPTO_INTERNAL_ERROR;
     }
+
     return DRV_PIC32MZW_CRYPTO_COMPLETE;
 #else
-    
     return DRV_PIC32MZW_CRYPTO_INVALID_PARAM;
 #endif /* WDRV_PIC32MZW_WOLFSSL_SUPPORT */
 }

@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -47,7 +47,29 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "wdrv_winc.h"
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver Network Interface Defines
+// *****************************************************************************
+// *****************************************************************************
+
+/* The number of global IPv6 addresses supported. */
+#define WDRV_WINC_NETIF_INFO_NUM_GLO_IPV6           WINC_CFG_PARAM_NUM_NETIF_IPV6_GLO_ADDR
+
+/* Request bitmask value for network information - MAC address. */
+#define WDRV_WINC_NETIF_REQ_INFO_MAC_ADDR           (1 << WDRV_WINC_NETIF_INFO_MAC_ADDR)
+
+/* Request bitmask value for network information - Interface. */
+#define WDRV_WINC_NETIF_REQ_INFO_INTF               (1 << WDRV_WINC_NETIF_INFO_INTF)
+/* Request bitmask value for network information - DHCP client. */
+#define WDRV_WINC_NETIF_REQ_INFO_DHCP_LEASE         (1 << WDRV_WINC_NETIF_INFO_DHCP_LEASE)
+/* Request bitmask value for network information - IPv4. */
+#define WDRV_WINC_NETIF_REQ_INFO_IPV4               (1 << WDRV_WINC_NETIF_INFO_IPV4)
+/* Request bitmask value for network information - IPv6. */
+#define WDRV_WINC_NETIF_REQ_INFO_IPV6               (1 << WDRV_WINC_NETIF_INFO_IPV6)
+
+/* Request bitmask value for all groups of network information. */
+#define WDRV_WINC_NETIF_REQ_INFO_ALL                (((1<<WDRV_WINC_NUM_NETIF_INFO_TYPE)-1)^WDRV_WINC_NETIF_REQ_INFO_MAC_ADDR)
 
 // *****************************************************************************
 // *****************************************************************************
@@ -70,10 +92,19 @@ TO MICROCHIP FOR THIS SOFTWARE.
 
 typedef enum
 {
+    /* Invalid network index. */
     WDRV_WINC_NETIF_IDX_INVALID = -1,
+
+    /* Network interface index 0. */
     WDRV_WINC_NETIF_IDX_0 = 0,
+
+    /* Default network interface index. */
     WDRV_WINC_NETIF_IDX_DEFAULT = WDRV_WINC_NETIF_IDX_0,
+
+    /* Network interface index 1. */
     WDRV_WINC_NETIF_IDX_1 = 1,
+
+    /* Number of supported network interfaces. */
     WDRV_WINC_NUM_NETIFS
 } WDRV_WINC_NETIF_IDX;
 
@@ -119,12 +150,64 @@ typedef enum
 
 typedef enum
 {
-    /* No valid type. */
+    /* Not valid information type. */
     WDRV_WINC_NETIF_INFO_INVALID,
 
-    /* MAC address type. */
-    WDRV_WINC_NETIF_INFO_MAC_ADDR
+    /* MAC address information type. */
+    WDRV_WINC_NETIF_INFO_MAC_ADDR,
+
+    /* Interface information type. */
+    WDRV_WINC_NETIF_INFO_INTF,
+
+    /* DHCP information type. */
+    WDRV_WINC_NETIF_INFO_DHCP_LEASE,
+
+    /* IPv4 information type. */
+    WDRV_WINC_NETIF_INFO_IPV4,
+
+    /* IPv6 information type. */
+    WDRV_WINC_NETIF_INFO_IPV6,
+
+    /* Number of information types. */
+    WDRV_WINC_NUM_NETIF_INFO_TYPE,
 } WDRV_WINC_NETIF_INFO_TYPE;
+
+// *****************************************************************************
+/* Network Information - Interface
+
+  Summary:
+    Type to describe network interface information.
+
+  Description:
+    Structure to contain network interface information.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Bitmask indicating which fields are valid. */
+    union
+    {
+        struct
+        {
+            uint8_t name : 1;
+            uint8_t macAddr : 1;
+            uint8_t hostname : 1;
+        };
+        uint8_t all;
+    } valid;
+
+    /* Interface name. */
+    char name[WINC_CFG_PARAM_SZ_NETIF_NAME+1];
+
+    /* MAC address. */
+    uint8_t macAddr[WDRV_WINC_MAC_ADDR_LEN];
+
+    /* Hostname. */
+    char hostname[WINC_CFG_PARAM_SZ_NETIF_HOSTNAME+1];
+} WDRV_WINC_NETIF_INFO_STORE_INTF_TYPE;
 
 #ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 // *****************************************************************************
@@ -180,7 +263,152 @@ typedef struct
     WDRV_WINC_IP_MULTI_ADDRESS addr;
 } WDRV_WINC_NETIF_ADDR_UPDATE_TYPE;
 
+// *****************************************************************************
+/* Network Information - DHCP
+
+  Summary:
+    Type to describe DHCP network information.
+
+  Description:
+    Structure to contain DHCP network information.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Bitmask indicating which fields are valid. */
+    union
+    {
+        struct
+        {
+            uint8_t enabled : 1;
+            uint8_t leaseObtainedUTC : 1;
+            uint8_t leaseExpiresUTC : 1;
+            uint8_t serverAddr : 1;
+        };
+        uint8_t all;
+    } valid;
+
+    /* Flag indicating if DHCP client is enabled. */
+    bool enabled;
+
+    /* UTC time DHCP lease was obtained. */
+    uint32_t leaseObtainedUTC;
+
+    /* UTC time DHCP lease expires. */
+    uint32_t leaseExpiresUTC;
+
+    /* IPv4 address of DHCP server issuing lease. */
+    WDRV_WINC_IPV4_ADDR serverAddr;
+} WDRV_WINC_NETIF_INFO_STORE_DHCP_TYPE;
+
+// *****************************************************************************
+/* Network Information - IPv4
+
+  Summary:
+    Type to describe IPv4 network information.
+
+  Description:
+    Structure to contain IPv4 network information.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Bitmask indicating which fields are valid. */
+    union
+    {
+        struct
+        {
+            uint8_t addr : 1;
+            uint8_t mask : 1;
+            uint8_t gateway : 1;
+        };
+        uint8_t all;
+    } valid;
+
+    /* Address. */
+    WDRV_WINC_IPV4_ADDR addr;
+
+    /* Netmask. */
+    WDRV_WINC_IPV4_ADDR mask;
+
+    /* Default gateway. */
+    WDRV_WINC_IPV4_ADDR gateway;
+} WDRV_WINC_NETIF_INFO_STORE_IPV4_TYPE;
+
+// *****************************************************************************
+/* Network Information - IPv6
+
+  Summary:
+    Type to describe IPv6 network information.
+
+  Description:
+    Structure to contain IPv6 network information.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Bitmask indicating which fields are valid. */
+    union
+    {
+        struct
+        {
+            uint8_t linkLocal : 1;
+            uint8_t global : 1;
+            uint8_t gateway : 1;
+        };
+        uint8_t all;
+    } valid;
+
+    /* Link local address. */
+    WDRV_WINC_IPV6_PREFIX_ADDR linkLocal;
+
+    /* Global addresses. */
+    WDRV_WINC_IPV6_PREFIX_ADDR global[WDRV_WINC_NETIF_INFO_NUM_GLO_IPV6];
+
+    /* Primary gateway. */
+    WDRV_WINC_IPV6_ADDR gateway;
+} WDRV_WINC_NETIF_INFO_STORE_IPV6_TYPE;
+
 #endif /* WDRV_WINC_DISABLE_L3_SUPPORT */
+// *****************************************************************************
+/* Network Information
+
+  Summary:
+    Type to describe network information.
+
+  Description:
+    Structure to contain all network information.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Interface information. */
+    WDRV_WINC_NETIF_INFO_STORE_INTF_TYPE intf;
+
+#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
+    /* DHCP client information. */
+    WDRV_WINC_NETIF_INFO_STORE_DHCP_TYPE dhcp;
+
+    /* IPv4 address information. */
+    WDRV_WINC_NETIF_INFO_STORE_IPV4_TYPE ipv4;
+
+    /* IPv6 address information. */
+    WDRV_WINC_NETIF_INFO_STORE_IPV6_TYPE ipv6;
+#endif
+} WDRV_WINC_NETIF_INFO_STORE_TYPE;
+
 // *****************************************************************************
 /*
   Function:
@@ -260,46 +488,6 @@ typedef void (*WDRV_WINC_NETIF_INFO_HANDLER)
     void *pInfo,
     WDRV_WINC_STATUS status
 );
-
-#ifndef WDRV_WINC_DISABLE_L3_SUPPORT
-// *****************************************************************************
-/*
-  Function:
-    void (*WDRV_WINC_DHCP_ADDRESS_EVENT_HANDLER)
-    (
-        DRV_HANDLE handle,
-        uint32_t ipAddress
-    )
-
-  Summary:
-    Pointer to a DHCP address event handler function.
-
-  Description:
-    This data type defines a function event handler to receive notification
-    of allocation of IP address via DHCP.
-
-  Precondition:
-    WDRV_WINC_Initialize must have been called.
-    WDRV_WINC_Open must have been called to obtain a valid handle.
-
-  Parameters:
-    handle      - Client handle obtained by a call to WDRV_WINC_Open.
-    ipAddress   - IPv4 address.
-
-  Returns:
-    None.
-
-  Remarks:
-    None.
-
-*/
-
-typedef void (*WDRV_WINC_DHCP_ADDRESS_EVENT_HANDLER)
-(
-    DRV_HANDLE handle,
-    uint32_t ipAddress
-);
-#endif
 
 // *****************************************************************************
 // *****************************************************************************
@@ -390,6 +578,117 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfRegisterEventCallback
     const WDRV_WINC_NETIF_EVENT_HANDLER pfNetIfEventCallback
 );
 
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_NetIfInfoSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_NETIF_IDX ifIdx,
+        WDRV_WINC_NETIF_INFO_TYPE infoType,
+        void *pInfo
+    )
+
+  Summary:
+    Set the information about a network interface.
+
+  Description:
+    Configures the information about a network interface.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle   - Client handle obtained by a call to WDRV_WINC_Open.
+    ifIdx    - Interface index.
+    infoType - Information type.
+    pInfo    - Pointer to information structure, see WDRV_WINC_NETIF_INFO_STORE_*_TYPE.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - MAC address request accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+    WDRV_WINC_STATUS_RETRY_REQUEST - Another request is pending, retry.
+
+  Remarks:
+   | infoType                           | pInfo                                |
+   -----------------------------------------------------------------------------
+    WDRV_WINC_NETIF_INFO_INTF:          | WDRV_WINC_NETIF_INFO_STORE_INTF_TYPE
+        - hostname
+
+    WDRV_WINC_NETIF_INFO_DHCP_LEASE:    | WDRV_WINC_NETIF_INFO_STORE_DHCP_TYPE
+    WDRV_WINC_NETIF_INFO_IPV4:          | WDRV_WINC_NETIF_INFO_STORE_IPV4_TYPE
+    WDRV_WINC_NETIF_INFO_IPV6:          | WDRV_WINC_NETIF_INFO_STORE_IPV6_TYPE
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_NetIfInfoSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_NETIF_IDX ifIdx,
+    WDRV_WINC_NETIF_INFO_TYPE infoType,
+    void *pInfo
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_NetIfInfoGet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_NETIF_IDX ifIdx,
+        uint32_t reqInfoMask,
+        WDRV_WINC_NETIF_INFO_HANDLER pfNetIfInfoCB
+    )
+
+  Summary:
+    Get information about a network interface.
+
+  Description:
+    Requests the information of a network interface, to be return via a callback.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle        - Client handle obtained by a call to WDRV_WINC_Open.
+    ifIdx         - Interface index.
+    reqInfoMask   - Request bit mask, see WDRV_WINC_NETIF_REQ_INFO_*.
+    pfNetIfInfoCB - Pointer to callback function to receive the information.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - MAC address request accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+    WDRV_WINC_STATUS_RETRY_REQUEST - Another request is pending, retry.
+
+  Remarks:
+   | reqInfoMask                         | Callback pInfo                      |
+   -----------------------------------------------------------------------------
+    WDRV_WINC_NETIF_REQ_INFO_MAC_ADDR:   | char*
+    WDRV_WINC_NETIF_REQ_INFO_INTF:       | WDRV_WINC_NETIF_INFO_STORE_INTF_TYPE
+    WDRV_WINC_NETIF_REQ_INFO_DHCP_LEASE: | WDRV_WINC_NETIF_INFO_STORE_DHCP_TYPE
+    WDRV_WINC_NETIF_REQ_INFO_IPV4:       | WDRV_WINC_NETIF_INFO_STORE_IPV4_TYPE
+    WDRV_WINC_NETIF_REQ_INFO_IPV6:       | WDRV_WINC_NETIF_INFO_STORE_IPV6_TYPE
+
+    WDRV_WINC_NETIF_REQ_INFO_MAC_ADDR can not be used with any other requests.
+
+    Multiple request can be made, this will result in one callback per type.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_NetIfInfoGet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_NETIF_IDX ifIdx,
+    uint32_t reqInfoMask,
+    WDRV_WINC_NETIF_INFO_HANDLER pfNetIfInfoCB
+);
+
 #ifndef WDRV_WINC_DISABLE_L3_SUPPORT
 //*******************************************************************************
 /*
@@ -442,7 +741,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAutoConfModeSet
         DRV_HANDLE handle,
         WDRV_WINC_NETIF_IDX ifIdx,
         WDRV_WINC_IP_ADDRESS_TYPE type,
-        WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
+        const WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
         unsigned int scope
     )
 
@@ -479,7 +778,7 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
     DRV_HANDLE handle,
     WDRV_WINC_NETIF_IDX ifIdx,
     WDRV_WINC_IP_ADDRESS_TYPE type,
-    WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
+    const WDRV_WINC_IP_MULTI_ADDRESS *pAddr,
     unsigned int scope
 );
 
@@ -491,9 +790,9 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPAddrSet
         DRV_HANDLE handle,
         WDRV_WINC_NETIF_IDX ifIdx,
         WDRV_WINC_IP_ADDRESS_TYPE type,
-        WDRV_WINC_IP_MULTI_ADDRESS *pNetwork,
+        const WDRV_WINC_IP_MULTI_ADDRESS *pNetwork,
         int scope,
-        WDRV_WINC_IP_MULTI_ADDRESS *pDest
+        const WDRV_WINC_IP_MULTI_ADDRESS *pDest
     )
 
   Summary:
@@ -530,9 +829,9 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfIPRouteSet
     DRV_HANDLE handle,
     WDRV_WINC_NETIF_IDX ifIdx,
     WDRV_WINC_IP_ADDRESS_TYPE type,
-    WDRV_WINC_IP_MULTI_ADDRESS *pNetwork,
+    const WDRV_WINC_IP_MULTI_ADDRESS *pNetwork,
     int scope,
-    WDRV_WINC_IP_MULTI_ADDRESS *pDest
+    const WDRV_WINC_IP_MULTI_ADDRESS *pDest
 );
 #endif /* WDRV_WINC_DISABLE_L3_SUPPORT */
 
@@ -578,6 +877,50 @@ WDRV_WINC_STATUS WDRV_WINC_NetIfMACAddrGet
     DRV_HANDLE handle,
     WDRV_WINC_NETIF_IDX ifIdx,
     WDRV_WINC_NETIF_INFO_HANDLER pfNetIfInfoCB
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_NetIfHostnameSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_NETIF_IDX ifIdx,
+        const char* pHostname
+    )
+
+  Summary:
+    Set the hostname of a network interface.
+
+  Description:
+    Configures the hostname of a network interface.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    ifIdx     - Interface index.
+    pHostname - Pointer to hostname.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - MAC address request accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+    WDRV_WINC_STATUS_RETRY_REQUEST - Another request is pending, retry.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_NetIfHostnameSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_NETIF_IDX ifIdx,
+    const char* pHostname
 );
 
 #ifdef __cplusplus

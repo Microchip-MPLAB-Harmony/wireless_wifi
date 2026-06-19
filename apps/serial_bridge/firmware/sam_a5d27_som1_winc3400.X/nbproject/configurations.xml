@@ -10,9 +10,9 @@
                        projectFiles="true">
           <logicalFolder name="driver" displayName="driver" projectFiles="true">
             <logicalFolder name="spi" displayName="spi" projectFiles="true">
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/spi/src/drv_spi_local.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/spi/drv_spi.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/spi/drv_spi_definitions.h</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/spi/src/drv_spi_local.h</itemPath>
             </logicalFolder>
             <logicalFolder name="winc" displayName="winc" projectFiles="true">
               <logicalFolder name="include" displayName="include" projectFiles="true">
@@ -25,53 +25,53 @@
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/bsp/nm_bsp.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="common" displayName="common" projectFiles="true">
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/common/nm_debug.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/common/nm_common.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/common/nm_debug.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="driver" displayName="driver" projectFiles="true">
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_ota.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_flash.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_hif.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_periph.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_types.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_wifi.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/nmasic.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/nmbus.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_ssl.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/ecc_types.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_wifi.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_hif.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_flash.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_periph.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/nmdrv.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/nmspi.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_ota.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/m2m_ssl.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/driver/ecc_types.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="socket" displayName="socket" projectFiles="true">
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/socket/m2m_socket_host_if.h</itemPath>
-                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/socket/netinet_in.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/socket/socket.h</itemPath>
+                    <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/socket/netinet_in.h</itemPath>
                   </logicalFolder>
                   <logicalFolder name="spi_flash" displayName="spi_flash" projectFiles="true">
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/spi_flash/spi_flash.h</itemPath>
                     <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/drv/spi_flash/spi_flash_map.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_debug.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_bssctx.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_powersave.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_authctx.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_ssl.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_assoc.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_systime.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_custie.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_softap.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_api.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_common.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_wps.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_bssfind.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_enterprise.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_nvm.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_sta.h</itemPath>
-                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_socket.h</itemPath>
                 <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_api.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_assoc.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_authctx.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_bssctx.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_bssfind.h</itemPath>
                 <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_client_api.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_common.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_custie.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_debug.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_enterprise.h</itemPath>
                 <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_httpprovctx.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_nvm.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_powersave.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_socket.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_softap.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_ssl.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_sta.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_systime.h</itemPath>
+                <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/include/wdrv_winc_wps.h</itemPath>
               </logicalFolder>
             </logicalFolder>
             <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/driver.h</itemPath>
@@ -107,16 +107,16 @@
               <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/pio/plib_pio.h</itemPath>
             </logicalFolder>
             <logicalFolder name="tc" displayName="tc" projectFiles="true">
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/tc/plib_tc_common.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/tc/plib_tc0.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/tc/plib_tc_common.h</itemPath>
             </logicalFolder>
             <logicalFolder name="uart" displayName="uart" projectFiles="true">
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/uart/plib_uart1.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/uart/plib_uart_common.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/uart/plib_uart1.h</itemPath>
             </logicalFolder>
             <logicalFolder name="xdmac" displayName="xdmac" projectFiles="true">
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/xdmac/plib_xdmac0.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/xdmac/plib_xdmac_common.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/peripheral/xdmac/plib_xdmac0.h</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="system" displayName="system" projectFiles="true">
@@ -127,33 +127,33 @@
               <itemPath>../src/config/sam_a5d27_som1_winc3400/system/debug/sys_debug.h</itemPath>
             </logicalFolder>
             <logicalFolder name="dma" displayName="dma" projectFiles="true">
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/dma/sys_dma_mapping.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/system/dma/sys_dma.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/dma/sys_dma_mapping.h</itemPath>
             </logicalFolder>
             <logicalFolder name="int" displayName="int" projectFiles="true">
               <itemPath>../src/config/sam_a5d27_som1_winc3400/system/int/sys_int.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/system/int/sys_int_mapping.h</itemPath>
             </logicalFolder>
             <logicalFolder name="ports" displayName="ports" projectFiles="true">
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/ports/sys_ports_mapping.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/system/ports/sys_ports.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/ports/sys_ports_mapping.h</itemPath>
             </logicalFolder>
             <logicalFolder name="time" displayName="time" projectFiles="true">
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/time/src/sys_time_local.h</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/time/sys_time_definitions.h</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/system/time/sys_time.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/time/sys_time_definitions.h</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/system/time/src/sys_time_local.h</itemPath>
             </logicalFolder>
-            <itemPath>../src/config/sam_a5d27_som1_winc3400/system/system_module.h</itemPath>
-            <itemPath>../src/config/sam_a5d27_som1_winc3400/system/system_common.h</itemPath>
             <itemPath>../src/config/sam_a5d27_som1_winc3400/system/system.h</itemPath>
+            <itemPath>../src/config/sam_a5d27_som1_winc3400/system/system_common.h</itemPath>
+            <itemPath>../src/config/sam_a5d27_som1_winc3400/system/system_module.h</itemPath>
           </logicalFolder>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/definitions.h</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/device.h</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/configuration.h</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/user.h</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/toolchain_specifics.h</itemPath>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/device_cache.h</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/toolchain_specifics.h</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/definitions.h</itemPath>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/interrupts.h</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/device.h</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/user.h</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/configuration.h</itemPath>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/sys_tasks.h</itemPath>
         </logicalFolder>
       </logicalFolder>
@@ -162,127 +162,130 @@
                        displayName="ATSAMA5D27CD1G_DFP"
                        projectFiles="true">
           <logicalFolder name="component" displayName="component" projectFiles="true">
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/uart.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sfc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/icm.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/l2cc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/uhphs.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pmc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sfr.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/isc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/rstc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/flexcom.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/spi.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/lcdc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pwm.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/secumod.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sckc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/trng.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/i2sc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/gmac.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/mcan.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/rtc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/tc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/rxlp.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/tdes.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pio.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/udphs.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/aes.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/twihs.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/aic.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/classd.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sdmmc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/shdwc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/wdt.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/acc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/ssc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/mpddrc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sha.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/adc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pit.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sfrbu.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/chipid.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/aes.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/aesb.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/aic.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/aximx.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/xdmac.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/ptc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pdmic.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/qspi.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/chipid.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/classd.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/flexcom.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/gmac.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/i2sc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/icm.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/isc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/l2cc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/lcdc.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/matrix.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/mcan.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/mpddrc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pdmic.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pio.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pit.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pmc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/ptc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/pwm.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/qspi.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/rstc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/rtc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/rxlp.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sckc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sdmmc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/secumod.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sfc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sfr.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sfrbu.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/sha.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/shdwc.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/smc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/spi.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/ssc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/tc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/tdes.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/trng.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/twihs.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/uart.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/udphs.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/uhphs.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/wdt.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/xdmac.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/component/syscwp.h</itemPath>
           </logicalFolder>
           <logicalFolder name="instance" displayName="instance" projectFiles="true">
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/trng.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/matrix1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/i2sc1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/ssc0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/twihs0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/icm.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/spi0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/qspi1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sfc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pio.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/rxlp.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/lcdc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/ssc1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/mcan1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart2.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pwm.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/isc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tdes.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pmc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/saic.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart3.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/mcan0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/mpddrc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/matrix0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/shdwc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/udphs.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sckc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aes.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/rstc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/rtc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart4.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/spi1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/chipid.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sdmmc1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/secumod.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tc0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/gmac.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/ptc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/classd.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/acc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/wdt.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aximx.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom2.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sdmmc0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pit.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/xdmac0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aic.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aesb.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/l2cc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sha.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom3.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/adc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sfrbu.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/xdmac1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sfr.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pdmic.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aes.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aesb.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aic.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/aximx.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/chipid.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/classd.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom2.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom3.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/flexcom4.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/i2sc0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tc1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/twihs1.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/qspi0.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/gmac.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/hsmc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/piod.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/i2sc0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/i2sc1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/icm.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/isc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/l2cc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/lcdc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/matrix0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/matrix1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/mcan0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/mcan1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/mpddrc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pdmic.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pio.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pioa.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/piob.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pioc.h</itemPath>
-            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pioa.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/piod.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pio_ctrl.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pit.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pmc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/ptc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/pwm.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/qspi0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/qspi1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/rstc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/rtc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/rxlp.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/saic.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sckc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sdmmc0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sdmmc1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/secumod.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sfc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sfr.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sfrbu.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/sha.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/shdwc.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/spi0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/spi1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/ssc0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/ssc1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/s_pio.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/s_pio_ctrl.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tc0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tc1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/tdes.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/trng.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/twihs0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/twihs1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart1.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart2.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart3.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/uart4.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/udphs.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/wdt.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/xdmac0.h</itemPath>
+            <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/xdmac1.h</itemPath>
             <itemPath>../src/packs/ATSAMA5D27CD1G_DFP/instance/syscwp.h</itemPath>
           </logicalFolder>
           <logicalFolder name="pio" displayName="pio" projectFiles="true">
@@ -294,11 +297,11 @@
           <logicalFolder name="CMSIS" displayName="CMSIS" projectFiles="true">
             <logicalFolder name="Core_A" displayName="Core_A" projectFiles="true">
               <logicalFolder name="Include" displayName="Include" projectFiles="true">
-                <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/cmsis_gcc.h</itemPath>
                 <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/cmsis_compiler.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/cmsis_gcc.h</itemPath>
                 <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/cmsis_iccarm.h</itemPath>
-                <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/core_ca.h</itemPath>
                 <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/cmsis_cp15.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core_A/Include/core_ca.h</itemPath>
               </logicalFolder>
             </logicalFolder>
           </logicalFolder>
@@ -317,32 +320,27 @@
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="true">
-      <logicalFolder name="f1"
-                     displayName="sam_a5d27_som1_winc3400.mhc"
-                     projectFiles="true">
-        <itemPath>../src/config/sam_a5d27_som1_winc3400/sam_a5d27_som1_winc3400.mhc/settings.yml</itemPath>
-      </logicalFolder>
       <logicalFolder name="serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400"
                      displayName="serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400"
                      projectFiles="true">
         <logicalFolder name="components" displayName="components" projectFiles="true">
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/uart1.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/sys_time.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/dfp.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/tc0.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/drvWifiWinc.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/drv_spi.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/uart1.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/core.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/drv_spi_0.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/flexcom4.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/appWincSerialBridge.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/cmsis.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/tc0.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/sys_time.yml</itemPath>
           <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/HarmonyCore.yml</itemPath>
-          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/dfp.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/drv_spi.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/cmsis.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/appWincSerialBridge.yml</itemPath>
+          <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/components/flexcom4.yml</itemPath>
         </logicalFolder>
         <itemPath>serial_bridge_sam_a5d27_som1_winc3400_sam_a5d27_som1_winc3400/mcc-config.mc4</itemPath>
       </logicalFolder>
       <itemPath>Makefile</itemPath>
-      <itemPath>../src/config/sam_a5d27_som1_winc3400/harmony-manifest-success.yml</itemPath>
+      <itemPath>../src/config/sam_a5d27_som1_winc3400/pin_configurations.csv</itemPath>
     </logicalFolder>
     <logicalFolder name="LibraryFiles"
                    displayName="LibraryFiles"
@@ -373,8 +371,8 @@
             <logicalFolder name="winc" displayName="winc" projectFiles="true">
               <logicalFolder name="dev" displayName="dev" projectFiles="true">
                 <logicalFolder name="gpio" displayName="gpio" projectFiles="true">
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/dev/gpio/wdrv_winc_gpio.c</itemPath>
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/dev/gpio/wdrv_winc_eint.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/dev/gpio/wdrv_winc_gpio.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="spi" displayName="spi" projectFiles="true">
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/dev/spi/wdrv_winc_spi.c</itemPath>
@@ -385,21 +383,21 @@
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/common/nm_common.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="driver" displayName="driver" projectFiles="true">
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_periph.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_wifi.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_ssl.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmdrv.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmasic.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmspi.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_ota.c</itemPath>
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_flash.c</itemPath>
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_hif.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_periph.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_wifi.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmasic.c</itemPath>
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmbus.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmdrv.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/nmspi.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_ota.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/driver/m2m_ssl.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="socket" displayName="socket" projectFiles="true">
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/socket/inet_addr.c</itemPath>
-                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/socket/inet_ntop.c</itemPath>
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/socket/socket.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/socket/inet_ntop.c</itemPath>
+                  <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/socket/inet_addr.c</itemPath>
                 </logicalFolder>
                 <logicalFolder name="spi_flash" displayName="spi_flash" projectFiles="true">
                   <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/drv/spi_flash/spi_flash.c</itemPath>
@@ -408,22 +406,22 @@
               <logicalFolder name="osal" displayName="osal" projectFiles="true">
                 <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/osal/wdrv_winc_osal.c</itemPath>
               </logicalFolder>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_softap.c</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_assoc.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_httpprovctx.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_wps.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_systime.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_sta.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_authctx.c</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_bssctx.c</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_bssfind.c</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_custie.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_nvm.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_socket.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_powersave.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_ssl.c</itemPath>
               <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_enterprise.c</itemPath>
-              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_authctx.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_httpprovctx.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_nvm.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_powersave.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_socket.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_softap.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_ssl.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_sta.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_systime.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc_wps.c</itemPath>
+              <itemPath>../src/config/sam_a5d27_som1_winc3400/driver/winc/wdrv_winc.c</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="peripheral" displayName="peripheral" projectFiles="true">
@@ -480,10 +478,10 @@
             </logicalFolder>
           </logicalFolder>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/initialization.c</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/fault_handlers.c</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/cstartup.S</itemPath>
-          <itemPath>../src/config/sam_a5d27_som1_winc3400/tasks.c</itemPath>
           <itemPath>../src/config/sam_a5d27_som1_winc3400/interrupts.c</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/cstartup.S</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/fault_handlers.c</itemPath>
+          <itemPath>../src/config/sam_a5d27_som1_winc3400/tasks.c</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="serial_bridge"
@@ -493,7 +491,6 @@
       </logicalFolder>
       <itemPath>../src/app.c</itemPath>
       <itemPath>../src/main.c</itemPath>
-      <itemPath>../src/config/sam_a5d27_som1_winc3400/pin_configurations.csv</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -509,19 +506,19 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.60</languageToolchainVersion>
+        <languageToolchainVersion>5.10</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="SAMA5D2_DFP" vendor="Microchip" version="1.10.213"/>
-        <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
+        <pack name="CMSIS" vendor="ARM" version="6.3.0"/>
+        <pack name="SAMA5D2_DFP" vendor="Microchip" version="1.17.292"/>
       </packs>
       <ScriptingSettings>
         <ScriptingSetting key="boot.load_adr" value=""/>
         <ScriptingSetting key="boot.use" value="true"/>
         <ScriptingSetting key="boot.entry_adr" value=""/>
         <ScriptingSetting key="boot.path"
-                          value="${ProjectDir}\..\..\..\..\deps\at91bootstrap_binaries_a5d27_som1_ek\at91bootstrap.elf"/>
+                          value="${ProjectDir}\..\..\..\..\..\deps\at91bootstrap_binaries_a5d27_som1_ek\at91bootstrap.elf"/>
         <ScriptingSetting key="boot.prj" value=""/>
       </ScriptingSettings>
       <compileType>
@@ -552,7 +549,6 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value="-marm"/>
         <property key="cast-align" value="false"/>
         <property key="code-model" value="default"/>
         <property key="const-model" value="default"/>
@@ -632,7 +628,6 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
-        <property key="appendMe" value="-dinit-compress=0"/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -674,12 +669,10 @@
         <property key="symbol-stripping" value=""/>
         <property key="trace-symbols" value=""/>
         <property key="warn-section-align" value="false"/>
-        <appendMe value="-dinit-compress=0"/>
       </C32-LD>
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>

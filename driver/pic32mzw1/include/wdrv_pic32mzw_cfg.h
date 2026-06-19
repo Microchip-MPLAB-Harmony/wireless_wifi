@@ -598,6 +598,33 @@ Microchip or any third party.
 // *****************************************************************************
 /*
     Summary:
+        WID for 802.1X Authentication tunnel method.
+    Description:
+        DRV_WIFI_WID_SUPP_1X_TUNNEL_METHOD is valid for STA  mode.
+ *      DRV_WIFI_WID_SUPP_1X_TUNNEL_METHOD specify the EAP authentication tunnel method to be used to establish the enterprise connection.
+ *      0 - ANY
+ *      1 - NONE
+ *      2 - TTLSv0
+ *      3 - PEAPv0
+ *      4 - PEAPv1
+*/
+#define DRV_WIFI_WID_SUPP_1X_TUNNEL_METHOD              0x00F0
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for 802.1X Authentication credential type.
+    Description:
+        DRV_WIFI_WID_SUPP_1X_CREDENTIAL_TYPE is valid for STA  mode.
+ *      DRV_WIFI_WID_SUPP_1X_CREDENTIAL_TYPE specify the EAP authentication credential type to be used to establish the enterprise connection.
+ *      0 - TLS
+ *      1 - MSCHAPv2
+*/
+#define DRV_WIFI_WID_SUPP_1X_CREDENTIAL_TYPE            0x00F1
+
+// *****************************************************************************
+/*
+    Summary:
         WID for powersave correlation with PIC.
     Description:
         DRV_WIFI_WID_PS_CORRELATION is used to set the powersave correlation with PIC.
@@ -1172,6 +1199,50 @@ Microchip or any third party.
         The length of the field is 64 bytes. This WID is used to store the Pre-Shared key generated in STA (or AP) mode and restore the same key when the mode is switched to AP (or STA) mode.
 */
 #define DRV_WIFI_WID_11I_PSK_VALUE                          0x302a
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for 802.1X Authentication Identity name.
+    Description:
+        DRV_WIFI_WID_SUPP_IDENTITY is valid for STA  mode.
+        This field gives the username or [username][domain name] or [domain name][username].
+        The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
+*/
+#define DRV_WIFI_WID_SUPP_1X_IDENTITY                   0x302C
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for 802.1X Authentication Identity name inside the tunnel.
+    Description:
+        DRV_WIFI_WID_SUPP_1x_IDENTITY_IN_TUNNEL is valid for STA  mode.
+        This field gives the username or [username][domain name] or [domain name][username].
+        The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
+*/
+#define DRV_WIFI_WID_SUPP_1X_IDENTITY_IN_TUNNEL          0x302D
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for setting the username for 802.1X MSCHAPv2 authentication.
+    Description:
+        DRV_WIFI_WID_SUPP_USERNAME is valid for STA  mode.
+        This field specify the username for MSCHAPv2(phase2) enterprise authentication.
+        The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
+*/
+#define DRV_WIFI_WID_SUPP_1X_USERNAME                    0x302E
+
+// *****************************************************************************
+/*
+    Summary:
+        WID for setting the password for 802.1X MSCHAPv2 authentication.
+    Description:
+        DRV_WIFI_WID_SUPP_PASSWORD is valid for STA  mode.
+        specify the password for MSCHAPv2(phase2) enterprise authentication.
+        The length of this field is max 255 bytes. Note that in all the modes a GET access is allowed for this parameter.
+*/
+#define DRV_WIFI_WID_SUPP_1X_PASSWORD                    0x302F
 
 // *****************************************************************************
 /*

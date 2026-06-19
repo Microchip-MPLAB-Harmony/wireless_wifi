@@ -15,7 +15,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2025-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -41,8 +41,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
-
-#include "wdrv_winc.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -92,9 +90,16 @@ typedef enum
 
 typedef enum
 {
+    /* XDS is idle. */
     WDRV_WINC_XDS_IDLE,
+
+    /* XDS sleep has been requested. */
     WDRV_WINC_XDS_SLEEP_REQ,
+
+    /* XDS is in sleep mode. */
     WDRV_WINC_XDS_SLEEP,
+
+    /* XDS wake has been requested. */
     WDRV_WINC_XDS_WAKE_REQ
 } WDRV_WINC_XDS_STATE;
 
@@ -115,7 +120,13 @@ typedef enum
 
 typedef enum
 {
+    /* PPS timeout event. */
     WDRV_WINC_PPS_TIMEOUT = WINC_STATUS_PPS_TIMEOUT,
+
+    /* PPS pause duration has expired. */
+    WDRV_WINC_PPS_PAUSE_EXPIRED = WINC_STATUS_PPS_PAUSE_EXPIRED,
+
+    /* PPS error occurred. */
     WDRV_WINC_PPS_ERROR
 } WDRV_WINC_PPS_EVENT;
 
@@ -134,10 +145,44 @@ typedef enum
 
 typedef struct
 {
+    /* Flag indicating if the secondary oscillator is enabled. */
     uint32_t secOscEnabled;
+
+    /* Auto sleep timeout value in milliseconds. */
     uint32_t autoSleepTimeout;
+
+    /* PPS duration value in milliseconds. */
     uint32_t duration;
 } WDRV_WINC_PPS_OPTIONS;
+
+// *****************************************************************************
+/*
+
+  Function:
+    typedef void (*WDRV_WINC_PPS_EVENT_HANDLER)
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_PPS_EVENT event
+    )
+
+  Summary:
+    PPS event callback.
+
+  Description:
+    Callback to be used to convey PPS events.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle - Client handle obtained by a call to WDRV_WINC_Open.
+    event  - Event type.
+
+  Remarks:
+    None.
+
+*/
 
 typedef void (*WDRV_WINC_PPS_EVENT_HANDLER)
 (
@@ -241,6 +286,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSOptionsSet
     WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
     (
         DRV_HANDLE handle,
+        WDRV_WINC_POWERSAVE_MODE mode,
         bool enabled,
         WDRV_WINC_PPS_EVENT_HANDLER pfPPSEventCB
     )
@@ -250,6 +296,22 @@ WDRV_WINC_STATUS WDRV_WINC_PPSOptionsSet
 
   Description:
     Enables or disables PPS.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+
+  Parameters:
+    handle       - Client handle obtained by a call to WDRV_WINC_Open.
+    mode         - The PPS mode to engage either PPS or XDS.
+    enabled      - Flag to enable.
+    pfPPSEventCB - Pointer to PPS event callback.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
 
   Remarks:
     None.
@@ -262,6 +324,48 @@ WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
     WDRV_WINC_POWERSAVE_MODE mode,
     bool enabled,
     const WDRV_WINC_PPS_EVENT_HANDLER pfPPSEventCB
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_PPSPause
+    (
+        DRV_HANDLE handle,
+        uint16_t pauseDuration
+    )
+
+  Summary:
+    Pause PPS mode temporarily.
+
+  Description:
+    Pause PPS mode temporarily.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_PPSEnableSet has been called to enable PPS mode, event callback
+    should be set here if required.
+
+  Parameters:
+    handle                 - Client handle obtained by a call to WDRV_WINC_Open.
+    pauseDuration          - Duration of the pause in seconds.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_PPSPause
+(
+    DRV_HANDLE handle,
+    uint16_t pauseDuration
 );
 
 #ifdef __cplusplus

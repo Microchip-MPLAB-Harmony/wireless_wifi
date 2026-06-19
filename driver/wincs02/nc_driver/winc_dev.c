@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -410,14 +410,40 @@ static bool devProcessPendingCmdReqQueue(WINC_DEV_CTRL_CTX *pCtrlCtx, WINC_SEND_
     if (pSendReqState->numCmds > 1U)
     {
         uint32_t csaPtr = 0x00000000;
+        uint16_t cmd52Status;
+        uint8_t clkWakeUp;
 
         /* When sending more than a single command request, send the list of
          command sizes through to the device using the CSA. */
+
+        /* Switch to manual clock wakeup before writing to CSA_PTR */
+        clkWakeUp = WINC_SDIO_REG_CLK_WAKEUP_MANUAL;
+        cmd52Status = WINC_SDIOCmd52(WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP, &clkWakeUp, NULL);
+
+        if (0x00U != cmd52Status)
+        {
+            WINC_ERROR_PRINT("error, CMD52 manual clk wakeup write, status=0x%04x\n", cmd52Status);
+            pCtrlCtx->busState = WINC_DEV_BUS_STATE_ERROR;
+            devFlushPendingCmdReqQueue(pCtrlCtx);
+            return false;
+        }
 
         cmd53Status = WINC_SDIOCmd53Write(WINC_SDIOREG_FN0_FBR_FN1_CSA_PTR, (uint8_t*)&csaPtr, 3, true);
         if (WINC_SDIO_R1RSP_OK != cmd53Status)
         {
             WINC_ERROR_PRINT("error, csa CMD53 write failed, status=0x%04x\n", cmd53Status);
+            pCtrlCtx->busState = WINC_DEV_BUS_STATE_ERROR;
+            devFlushPendingCmdReqQueue(pCtrlCtx);
+            return false;
+        }
+
+        /* Reinstate auto clock wakeup after writing to CSA_PTR */
+        clkWakeUp = WINC_SDIO_REG_CLK_WAKEUP_AUTO;
+        cmd52Status = WINC_SDIOCmd52(WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP, &clkWakeUp, NULL);
+
+        if (0x00U != cmd52Status)
+        {
+            WINC_ERROR_PRINT("error, CMD52 auto clk wakeup write, status=0x%04x\n", cmd52Status);
             pCtrlCtx->busState = WINC_DEV_BUS_STATE_ERROR;
             devFlushPendingCmdReqQueue(pCtrlCtx);
             return false;
@@ -1119,6 +1145,29 @@ void WINC_DevSetDebugPrintf(WINC_DEBUG_PRINTF_FP pfPrintf)
     true or false indicating success or failure
 
   Remarks:
+    Command request memory management:
+
+    On success (returns true), the command request is queued and will be freed
+    automatically via the callback with WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE
+    once the command completes. The caller must NOT free the command request.
+
+    On failure (returns false), there are two scenarios:
+    1. If busState is WINC_DEV_BUS_STATE_ERROR after the call, the command was
+       queued but failed during processing. The flush mechanism already invoked
+       the callback with STATUS_COMPLETE, which freed the buffer. Do NOT free.
+    2. If busState is NOT ERROR, the command failed early validation and was
+       never queued. The callback was never invoked. The caller MUST free.
+
+    Example:
+        if (false == WINC_DevTransmitCmdReq(devHandle, cmdReqHandle))
+        {
+            if (WINC_DEV_BUS_STATE_ERROR != WINC_DevBusStateGet(devHandle))
+            {
+                OSAL_Free((WINC_COMMAND_REQUEST*)cmdReqHandle);  // Early failure, must free
+            }
+            // If ERROR, buffer already freed by callback - do nothing
+            return false;
+        }
 
  *****************************************************************************/
 

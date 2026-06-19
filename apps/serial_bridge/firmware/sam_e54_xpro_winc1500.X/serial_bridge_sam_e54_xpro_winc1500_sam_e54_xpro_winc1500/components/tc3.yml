@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: tc3
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAME54P20A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -44,8 +44,8 @@ data:
     - children:
       - attributes:
           id: tc3
-          x: '546'
-          y: '65'
+          x: '238'
+          y: '106'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
@@ -72,17 +72,6 @@ data:
           type: Dynamic
         type: Values
       type: String
-    TC_FREQUENCY:
-      attributes:
-        id: TC_FREQUENCY
-      children:
-      - children:
-        - attributes:
-            id: tc3
-            value: '60000000'
-          type: Dynamic
-        type: Values
-      type: Integer
     TC_SYS_TIME_CONNECTED:
       attributes:
         id: TC_SYS_TIME_CONNECTED
@@ -98,14 +87,6 @@ data:
       attributes:
         id: TC_TIMER_INTENSET_MC1
       children:
-      - children:
-        - attributes:
-            id: visible
-          children:
-          - type: Value
-            value: 'true'
-          type: Boolean
-        type: Attributes
       - children:
         - attributes:
             id: tc3
@@ -124,23 +105,4 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    TC_TIMER_PERIOD:
-      attributes:
-        id: TC_TIMER_PERIOD
-      children:
-      - children:
-        - attributes:
-            id: max
-          children:
-          - type: Value
-            value: '65535'
-          type: Long
-        type: Attributes
-      - children:
-        - attributes:
-            id: tc3
-            value: '60000'
-          type: Dynamic
-        type: Values
-      type: Long
   userData: {}

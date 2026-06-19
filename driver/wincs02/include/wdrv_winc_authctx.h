@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -57,12 +57,16 @@ TO MICROCHIP FOR THIS SOFTWARE.
  * It is relevant to the following auth types:
  *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
  *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
+ *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
+ *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE
  * This modifier can be set/cleared by WDRV_WINC_AuthCtxConfigureMfp. */
 #define WDRV_WINC_AUTH_MOD_MFP_REQ      0x01U
 /* If set, this modifier causes management frame protection to be disabled.
  * It is relevant to the following auth types:
  *      WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL
  *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
+ *      WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE
+ *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
  * This modifier is ignored if WDRV_WINC_AUTH_MOD_MFP_REQ is set.
  * This modifier can be set/cleared by WDRV_WINC_AuthCtxConfigureMfp. */
 #define WDRV_WINC_AUTH_MOD_MFP_OFF      0x02U
@@ -97,24 +101,88 @@ typedef enum
     /* No encryption. */
     WDRV_WINC_AUTH_TYPE_OPEN = 0,
 
-    /* WPA2 mixed mode (AP) / compatibility mode (STA) with PSK.
+    /* WPA2-Personal mixed mode (AP) / compatibility mode (STA) with PSK.
      * (As an AP GTK is TKIP, as a STA GTK is chosen by AP;
      * PTK can be CCMP or TKIP) */
     WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL = 2,
 
-    /* WPA2-only authentication with PSK. (PTK and GTK are both CCMP).       */
+    /* WPA2-only Personal authentication with PSK. (PTK and GTK are both CCMP).       */
     /* Note that a WPA2-only STA will not connect to a WPA2 mixed mode AP.   */
     WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL = 3,
 
-    /* WPA3 SAE transition mode. (CCMP, IGTK can be BIP or none) */
+    /* WPA3-Personal SAE transition mode. (CCMP, IGTK can be BIP or none) */
     WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL = 4,
 
-    /* WPA3 SAE authentication. (CCMP, IGTK is BIP) */
+    /* WPA3-Personal SAE authentication. (CCMP, IGTK is BIP) */
     WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL = 5,
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+    /* WPA2-Enterprise compatibility mode.
+     * (GTK is chosen by AP, PTK can be CCMP or TKIP) */
+    WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE = 6,
+
+    /* WPA2-only Enterprise. (PTK and GTK are both CCMP).
+     * Note that a WPA2-only STA will not connect to a WPA2 mixed mode AP.   */
+    WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE = 7,
+
+    /* WPA3-Enterprise transition mode (CCMP, IGTK can be BIP or none) */
+    WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE = 8,
+
+    /* WPA3-Enterprise. (CCMP, IGTK is BIP) */
+    WDRV_WINC_AUTH_TYPE_WPA3_ENTERPRISE = 9,
+#endif
 
     /* Authentication types with this value or above are not recognised. */
     WDRV_WINC_AUTH_TYPE_MAX
 } WDRV_WINC_AUTH_TYPE;
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+/*  WPA-Enterprise tunnel methods
+ *
+  Summary:
+    List of possible EAP tunnel methods supported by WPA-Enterprise authentication.
+
+  Description:
+    This type defines the possible EAP tunnel methods supported by WPA-Enterprise
+    authentication in STA mode.
+
+  Remarks:
+    None.
+*/
+typedef enum
+{
+    /* Allow any tunnel method (TTLSv0, PEAPv0, PEAPv1 or none) */
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD_ANY = 0,
+    /* No tunnel */
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD_NONE = 1,
+    /* EAP-TTLSv0 */
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD_TTLSV0 = 2,
+    /* EAP-PEAPv0 */
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD_PEAPV0 = 3,
+    /* EAP-PEAPv1 */
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD_PEAPV1 = 4,
+} WDRV_WINC_AUTH_1X_TUNNEL_METHOD;
+
+/*  WPA-Enterprise credential types
+ *
+  Summary:
+    List of possible credential types supported by WPA-Enterprise authentication.
+
+  Description:
+    This type defines the possible credential types supported by WPA-Enterprise
+    authentication in STA mode.
+
+  Remarks:
+    None.
+*/
+typedef enum
+{
+    /* TLS credentials (certificate and private key) */
+    WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_TLS = 0,
+    /* MSCHAPv2 credentials (username and password) */
+    WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_MSCHAPV2 = 1,
+} WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE;
+#endif
 
 // *****************************************************************************
 /*  MFP Configurations
@@ -139,18 +207,25 @@ typedef enum
      *      WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
+     *      WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE
+     *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
+     *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE
      * This configuration is not compatible with other auth types. */
     WDRV_WINC_AUTH_MFP_ENABLED,
     /* Management Frame Protection required.
      * This is an optional configuration for the following auth types:
      *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL
+     *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
+     *      WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE
      * This configuration is not compatible with other auth types. */
     WDRV_WINC_AUTH_MFP_REQUIRED,
     /* Management Frame Protection disabled.
      * This is an optional configuration for the following auth types:
      *      WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL
      *      WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL
+     *      WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE
+     *      WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE
      * This configuration is not compatible with other auth types. */
     WDRV_WINC_AUTH_MFP_DISABLED,
 } WDRV_WINC_AUTH_MFP_CONFIG;
@@ -190,6 +265,50 @@ typedef struct
             /* The password or PSK. */
             uint8_t password[WDRV_WINC_PSK_LEN];
         } personal;
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+        /* WPA-Enterprise authentication state. */
+        struct
+        {
+            /* EAP identity. An anonymous Username may be permitted.
+             * Typically [Domain]/[Username] or [Username]@[Domain] */
+            char identity[WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX+1];
+            /* Tunnel establishment */
+            struct
+            {
+                /* Tunnel method. If WDRV_PIC32MZW_AUTH_1X_TUNNEL_METHOD_NONE,
+                 * then the subsequent fields in this structure are ignored. */
+                WDRV_WINC_AUTH_1X_TUNNEL_METHOD method;
+                /* TLS configuration index */
+                uint8_t tlsIdx;
+                /* EAP identity inside tunnel (EAP-PEAP tunnels only).
+                 * Typically [Domain]/[Username] or [Username]@[Domain] */
+                char identity[WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX+1];
+            } tunnel;
+            /* User credentials */
+            struct
+            {
+                /* Credential type */
+                WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE type;
+                union
+                {
+                    struct
+                    {
+                        /* Username, for MSCHAPv2 authentication */
+                        char username[WDRV_WINC_ENT_AUTH_MSCHAPV2_USERNAME_LEN_MAX + 1];
+                        /* Password, for MSCHAPv2 authentication */
+                        char password[WDRV_WINC_ENT_AUTH_MSCHAPV2_PASSWORD_LEN_MAX + 1];
+                    } mschapv2;
+                    struct
+                    {
+                        /* TLS configuration index */
+                        uint8_t tlsIdx;
+                    } tls;
+                };
+            } credentials;
+        } enterprise;
+#endif
+
     } authInfo;
 } WDRV_WINC_AUTH_CONTEXT;
 
@@ -306,7 +425,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-        uint8_t *pPassword,
+        const uint8_t *pPassword,
         uint8_t size,
         WDRV_WINC_AUTH_TYPE authType
     )
@@ -340,7 +459,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
 WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
 (
     WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-    uint8_t *const pPassword,
+    const uint8_t *const pPassword,
     uint8_t size,
     WDRV_WINC_AUTH_TYPE authType
 );
@@ -386,6 +505,155 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
     WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
     WDRV_WINC_AUTH_MFP_CONFIG config
 );
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseTLS
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        WDRV_WINC_TLS_HANDLE tlsHandle
+    )
+
+  Summary:
+    Configure TLS credentials for WPA Enterprise authentication.
+
+  Description:
+    The authentication context enterprise.credentials structure is populated
+      with TLS credentials.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pAuthCtx        - Pointer to an authentication context.
+    tlsHandle       - TLS handle.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The context has been configured.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    Use WDRV_WINC_AuthCtxSetEnterprise to complete configuration of the
+      authentication context.
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseTLS
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    WDRV_WINC_TLS_HANDLE tlsHandle
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseMSCHAPV2
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        const char *const pUsername,
+        size_t usernameLen,
+        const char *const pPassword,
+        size_t passwordLen
+    )
+
+  Summary:
+    Configure MSCHAPv2 credentials for WPA Enterprise authentication.
+
+  Description:
+    The authentication context enterprise.credentials structure is populated
+      with MSCHAPv2 credentials.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pAuthCtx    - Pointer to an authentication context.
+    pUsername   - Username for MSCHAPv2 authentication.
+    usernameLen - Username length.
+    pPassword   - Password for MSCHAPv2 authentication.
+    passwordLen - Password length.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The context has been configured.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    Use WDRV_WINC_AuthCtxSetEnterprise to complete configuration of the
+      authentication context.
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseMSCHAPV2
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    const char *const pUsername,
+    size_t usernameLen,
+    const char *const pPassword,
+    size_t passwordLen
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterprise
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        const char *const pIdentity,
+        size_t identityLen,
+        WDRV_WINC_AUTH_1X_TUNNEL_METHOD tunnelMedthod,
+        WDRV_WINC_TLS_HANDLE tunnelTlsHandle,
+        const char *const pIdentityInsideTunnel,
+        size_t identityInsideTunnelLen,
+        WDRV_WINC_AUTH_TYPE authType
+    )
+
+  Summary:
+    Configure an authentication context for WPA Enterprise authentication.
+
+  Description:
+    The auth type and information are configured appropriately for WPA
+      Enterprise authentication with the identity and tunnel parameters
+      provided. The Management Frame Protection configuration is initialised to
+      WDRV_WINC_AUTH_MFP_ENABLED.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pAuthCtx                - Pointer to an authentication context.
+    pIdentity               - Pointer to EAP Identity to be sent to the server
+                              unencrypted.
+    identityLen             - Length of EAP Identity.
+    tunnelMethod            - Specific tunnel method (or
+                              WDRV_WINC_AUTH_1X_TUNNEL_METHOD_ANY).
+    tunnelTlsHandle         - TLS handle for tunnel.
+    pIdentityInsideTunnel   - Pointer to EAP Identity to be sent within the
+                              tunnel.
+    identityInsideTunnelLen - Length of EAP Identity within the tunnel.
+    authType                - Authentication type.
+
+  Returns:
+    WDRV_WINC_STATUS_OK             - The context has been configured.
+    WDRV_WINC_STATUS_INVALID_ARG    - The parameters were incorrect.
+
+  Remarks:
+    Use WDRV_WINC_AuthCtxSetEnterpriseTLS or
+      WDRV_WINC_AuthCtxSetEnterpriseMSCHAPV2 to complete configuration of
+      the authentication context.
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterprise
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    const char *const pIdentity,
+    size_t identityLen,
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD tunnelMethod,
+    WDRV_WINC_TLS_HANDLE tunnelTlsHandle,
+    const char *const pIdentityInsideTunnel,
+    size_t identityInsideTunnelLen,
+    WDRV_WINC_AUTH_TYPE authType
+);
+#endif /* WDRV_WINC_ENTERPRISE_SUPPORT */
 
 #ifdef __cplusplus
 }

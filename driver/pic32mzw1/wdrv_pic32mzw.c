@@ -49,9 +49,11 @@ Microchip or any third party.
 #include "wdrv_pic32mzw_common.h"
 #include "wdrv_pic32mzw_mac.h"
 #include "wdrv_pic32mzw_cfg.h"
+#include "wdrv_pic32mzw_tls.h"
 #include "drv_pic32mzw1_crypto.h"
 #include "tcpip/tcpip_mac_object.h"
 #include "tcpip/src/link_list.h"
+#include "tcpip/src/tcpip_private.h"
 #include "tcpip/src/tcpip_manager_control.h"
 #include <sys/kmem.h>
 
@@ -111,6 +113,12 @@ static WDRV_PIC32MZW_DCPT pic32mzwDescriptor[2] =
     }
 };
 
+#if TCPIP_STACK_VERSION_MAJOR != 8
+#define MAC_FUNC(NAME)      MAC_##NAME
+#else
+#define MAC_FUNC(NAME)      TCPIP_MAC_##NAME
+#endif
+
 /* This is the PIC32MZW1 MAC Object. */
 const TCPIP_MAC_OBJECT WDRV_PIC32MZW1_MACObject =
 {
@@ -119,31 +127,31 @@ const TCPIP_MAC_OBJECT WDRV_PIC32MZW1_MACObject =
     .macType                                = TCPIP_MAC_TYPE_WLAN,
 #endif
     .macName                                = "PIC32MZW1",
-    .TCPIP_MAC_Initialize                   = WDRV_PIC32MZW_Initialize,
+    .MAC_FUNC(Initialize)                   = &WDRV_PIC32MZW_Initialize,
 #if (TCPIP_STACK_MAC_DOWN_OPERATION != false)
-    .TCPIP_MAC_Deinitialize                 = WDRV_PIC32MZW_Deinitialize,
-    .TCPIP_MAC_Reinitialize                 = WDRV_PIC32MZW_Reinitialize,
+    .MAC_FUNC(Deinitialize)                 = &WDRV_PIC32MZW_Deinitialize,
+    .MAC_FUNC(Reinitialize)                 = &WDRV_PIC32MZW_Reinitialize,
 #else
-    .TCPIP_MAC_Deinitialize                 = 0,
-    .TCPIP_MAC_Reinitialize                 = 0,
+    .MAC_FUNC(Deinitialize)                 = NULL,
+    .MAC_FUNC(Reinitialize)                 = NULL,
 #endif  // (TCPIP_STACK_DOWN_OPERATION != 0)
-    .TCPIP_MAC_Status                       = WDRV_PIC32MZW_Status,
-    .TCPIP_MAC_Tasks                        = WDRV_PIC32MZW_MACTasks,
-    .TCPIP_MAC_Open                         = WDRV_PIC32MZW_Open,
-    .TCPIP_MAC_Close                        = WDRV_PIC32MZW_Close,
-    .TCPIP_MAC_LinkCheck                    = WDRV_PIC32MZW_MACLinkCheck,
-    .TCPIP_MAC_RxFilterHashTableEntrySet    = WDRV_PIC32MZW_MACRxFilterHashTableEntrySet,
-    .TCPIP_MAC_PowerMode                    = WDRV_PIC32MZW_MACPowerMode,
-    .TCPIP_MAC_PacketTx                     = WDRV_PIC32MZW_MACPacketTx,
-    .TCPIP_MAC_PacketRx                     = WDRV_PIC32MZW_MACPacketRx,
-    .TCPIP_MAC_Process                      = WDRV_PIC32MZW_MACProcess,
-    .TCPIP_MAC_StatisticsGet                = WDRV_PIC32MZW_MACStatisticsGet,
-    .TCPIP_MAC_ParametersGet                = WDRV_PIC32MZW_MACParametersGet,
-    .TCPIP_MAC_RegisterStatisticsGet        = WDRV_PIC32MZW_MACRegisterStatisticsGet,
-    .TCPIP_MAC_ConfigGet                    = WDRV_PIC32MZW_MACConfigGet,
-    .TCPIP_MAC_EventMaskSet                 = WDRV_PIC32MZW_MACEventMaskSet,
-    .TCPIP_MAC_EventAcknowledge             = WDRV_PIC32MZW_MACEventAcknowledge,
-    .TCPIP_MAC_EventPendingGet              = WDRV_PIC32MZW_MACEventPendingGet,
+    .MAC_FUNC(Status)                       = &WDRV_PIC32MZW_Status,
+    .MAC_FUNC(Tasks)                        = &WDRV_PIC32MZW_MACTasks,
+    .MAC_FUNC(Open)                         = &WDRV_PIC32MZW_Open,
+    .MAC_FUNC(Close)                        = &WDRV_PIC32MZW_Close,
+    .MAC_FUNC(LinkCheck)                    = &WDRV_PIC32MZW_MACLinkCheck,
+    .MAC_FUNC(RxFilterHashTableEntrySet)    = &WDRV_PIC32MZW_MACRxFilterHashTableEntrySet,
+    .MAC_FUNC(PowerMode)                    = &WDRV_PIC32MZW_MACPowerMode,
+    .MAC_FUNC(PacketTx)                     = &WDRV_PIC32MZW_MACPacketTx,
+    .MAC_FUNC(PacketRx)                     = &WDRV_PIC32MZW_MACPacketRx,
+    .MAC_FUNC(Process)                      = &WDRV_PIC32MZW_MACProcess,
+    .MAC_FUNC(StatisticsGet)                = &WDRV_PIC32MZW_MACStatisticsGet,
+    .MAC_FUNC(ParametersGet)                = &WDRV_PIC32MZW_MACParametersGet,
+    .MAC_FUNC(RegisterStatisticsGet)        = &WDRV_PIC32MZW_MACRegisterStatisticsGet,
+    .MAC_FUNC(ConfigGet)                    = &WDRV_PIC32MZW_MACConfigGet,
+    .MAC_FUNC(EventMaskSet)                 = &WDRV_PIC32MZW_MACEventMaskSet,
+    .MAC_FUNC(EventAcknowledge)             = &WDRV_PIC32MZW_MACEventAcknowledge,
+    .MAC_FUNC(EventPendingGet)              = &WDRV_PIC32MZW_MACEventPendingGet,
 };
 
 /* Table to convert auth types to 11i info for DRV_WIFI_WID_11I_INFO. */
@@ -886,7 +894,7 @@ static bool _WDRV_PIC32MZW_ValidateInitData
         pCtrl->regDomNameLength         = 0;
         pCtrl->powerSaveMode            = WDRV_PIC32MZW_POWERSAVE_RUN_MODE;
         pCtrl->powerSavePICCorrelation  = WDRV_PIC32MZW_POWERSAVE_PIC_ASYNC_MODE;
-        pCtrl->coexConfigFlags          = 0;
+        pCtrl->coexConfigFlags          = WDRV_PIC32MZW_COEX_CONFIG_DISABLE;
         return true;
     }
 
@@ -911,7 +919,8 @@ static bool _WDRV_PIC32MZW_ValidateInitData
     if (((~(WDRV_PIC32MZW_COEX_CONFIG_ENABLE |
             WDRV_PIC32MZW_COEX_CONFIG_IF_2WIRE |
             WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_GT_BTLP |
-            WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_GT_BTLP))
+            WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_GT_BTLP |
+            WDRV_PIC32MZW_COEX_CONFIG_SHARED_ANTENNA))
          & pInitData->coexConfigFlags) != 0)
     {
         return false;
@@ -928,6 +937,7 @@ static bool _WDRV_PIC32MZW_ValidateInitData
     pCtrl->powerSaveMode           = pInitData->powerSaveMode;
     pCtrl->powerSavePICCorrelation = pInitData->powerSavePICCorrelation;
     pCtrl->coexConfigFlags         = pInitData->coexConfigFlags;
+    pCtrl->pBTPriorityReadFn       = pInitData->pBTPriorityReadFn;
     pCtrl->scanChannelMask24       = WDRV_PIC32MZW_CM_2_4G_DEFAULT;
     pCtrl->regulatoryChannelMask24 = WDRV_PIC32MZW_CM_2_4G_DEFAULT;
 
@@ -987,6 +997,8 @@ static bool _WDRV_PIC32MZW_SendInitData(WDRV_PIC32MZW_CTRLDCPT* const pCtrl)
             (pCtrl->coexConfigFlags & WDRV_PIC32MZW_COEX_CONFIG_IF_2WIRE) != 0 ? 1 : 0);
         DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_COEX_PRIORITY_FLAGS,
             (pCtrl->coexConfigFlags >> 2) & 0x3);
+        DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_COEX_ANTENNA_MODE,
+            (pCtrl->coexConfigFlags & WDRV_PIC32MZW_COEX_CONFIG_SHARED_ANTENNA) != 0 ? 1 : 0);
     }
     DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_COEX_ENABLE,
         (pCtrl->coexConfigFlags & WDRV_PIC32MZW_COEX_CONFIG_ENABLE) != 0 ? 1 : 0);
@@ -1200,9 +1212,7 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
         pfPIC32MZWDebugPrintCb = NULL;
 #endif
         pic32mzwCtrlDescriptor.handle = DRV_HANDLE_INVALID;
-#ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
-        pic32mzwCtrlDescriptor.tlsHandle = DRV_PIC32MZW1_TLS_HANDLE_INVALID;
-#endif
+
         OSAL_SEM_Create(&pic32mzwCtrlDescriptor.drvAccessSemaphore, OSAL_SEM_TYPE_BINARY, 1, 1);
 
         OSAL_SEM_Create(&pic32mzwCtrlDescriptor.drvEventSemaphore, OSAL_SEM_TYPE_COUNTING, 10, 0);
@@ -1211,7 +1221,7 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
         SYS_INT_SourceEnable(INT_SOURCE_RFTM0);
         SYS_INT_SourceEnable(INT_SOURCE_RFSMC);
 
-        TCPIP_Helper_ProtectedSingleListInitialize(&pic32mzwWIDRxQueue);
+        TCPIP_Helper_ProtSglListInitialize(&pic32mzwWIDRxQueue);
         TCPIP_Helper_SingleListInitialize(&pic32mzwWIDTxQueue);
 
         OSAL_MUTEX_Create(&pic32mzwMemMutex);
@@ -1276,7 +1286,7 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
             return (SYS_MODULE_OBJ)pDcpt;
         }
 
-        TCPIP_Helper_ProtectedSingleListInitialize(&pic32mzwMACDescriptor.ethRxPktList);
+        TCPIP_Helper_ProtSglListInitialize(&pic32mzwMACDescriptor.ethRxPktList);
 
         if (true == _DRV_PIC32MZW_PktListInit(&pic32mzwRsrvPktList))
         {
@@ -1295,6 +1305,14 @@ SYS_MODULE_OBJ WDRV_PIC32MZW_Initialize
         pic32mzwMACDescriptor.eventParam   = pStackInitData->eventParam;
         pic32mzwMACDescriptor.eventMask    = 0;
         pic32mzwMACDescriptor.events       = 0;
+#if defined(TCPIP_STACK_VLAN_INTERFACE_SUPPORT) && (TCPIP_STACK_VLAN_INTERFACE_SUPPORT != 0)
+        TCPIP_NET_IF* pNetIf = TCPIP_Stack_UserHandleToNet(TCPIP_STACK_NetHandleGet("PIC32MZW1"));
+        if (NULL != pNetIf)
+        {
+            pic32mzwMACDescriptor.vlanId  = pNetIf->vlanId;
+            pic32mzwMACDescriptor.vlanPcp = pNetIf->vlanPcp;
+        }
+#endif
         OSAL_SEM_Create(&pic32mzwMACDescriptor.eventSemaphore, OSAL_SEM_TYPE_BINARY, 1, 1);
 
         for (i=0; i<6; i++)
@@ -1498,7 +1516,7 @@ SYS_STATUS WDRV_PIC32MZW_Status(SYS_MODULE_OBJ object)
         if (pDcpt == &pic32mzwDescriptor[0])
         {
             if ((TCPIP_Helper_SingleListCount(&pic32mzwWIDTxQueue) > 0) ||
-                    (TCPIP_Helper_ProtectedSingleListCount(&pic32mzwWIDRxQueue) > 0))
+                    (TCPIP_Helper_ProtSglListCount(&pic32mzwWIDRxQueue) > 0))
             {
                 return SYS_STATUS_BUSY;
             }
@@ -1733,9 +1751,9 @@ void WDRV_PIC32MZW_Tasks(SYS_MODULE_OBJ object)
                     OSAL_SEM_Post(&pic32mzwCtrlDescriptor.drvAccessSemaphore);
                 }
 
-                while (TCPIP_Helper_ProtectedSingleListCount(&pic32mzwWIDRxQueue) > 0)
+                while (TCPIP_Helper_ProtSglListCount(&pic32mzwWIDRxQueue) > 0)
                 {
-                    pAllocHdr = (DRV_PIC32MZW_MEM_ALLOC_HDR*)TCPIP_Helper_ProtectedSingleListHeadRemove(&pic32mzwWIDRxQueue);
+                    pAllocHdr = (DRV_PIC32MZW_MEM_ALLOC_HDR*)TCPIP_Helper_ProtSglListHeadRemove(&pic32mzwWIDRxQueue);
 
                     if (NULL != pAllocHdr)
                     {
@@ -1821,12 +1839,16 @@ void WDRV_PIC32MZW_Tasks(SYS_MODULE_OBJ object)
 
                 wdrv_pic32mzw_mac_controller_task();
 
+#ifdef WDRV_PIC32MZW_TLS_SUPPORT
+                DRV_PIC32MZW_TLS_Update();
+#endif
+
                 OSAL_SEM_Post(&pic32mzwCtrlDescriptor.drvAccessSemaphore);
             }
 
-            if (TCPIP_Helper_ProtectedSingleListCount(&pic32mzwWIDRxQueue) > 0)
+            if (TCPIP_Helper_ProtSglListCount(&pic32mzwWIDRxQueue) > 0)
             {
-                pAllocHdr = (DRV_PIC32MZW_MEM_ALLOC_HDR*)TCPIP_Helper_ProtectedSingleListHeadRemove(&pic32mzwWIDRxQueue);
+                pAllocHdr = (DRV_PIC32MZW_MEM_ALLOC_HDR*)TCPIP_Helper_ProtSglListHeadRemove(&pic32mzwWIDRxQueue);
 
                 if (NULL != pAllocHdr)
                 {
@@ -2300,6 +2322,10 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptr
         pDSeg = pDSeg->next;
     }
 
+#if defined(TCPIP_STACK_VLAN_INTERFACE_SUPPORT) && (TCPIP_STACK_VLAN_INTERFACE_SUPPORT != 0)
+    pktLen -= sizeof(TCPIP_8021Q_TAG);
+#endif
+
     if (pktLen > SHARED_PKT_MEM_BUFFER_SIZE)
     {
         WDRV_DBG_TRACE_PRINT("MAC TX: payload too big (%d)\r\n", pktLen);
@@ -2320,6 +2346,18 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACPacketTx(DRV_HANDLE handle, TCPIP_MAC_PACKET* ptr
     pktbuf += ETH_ETHERNET_HDR_OFFSET;
 
     pDSeg = ptrPacket->pDSeg;
+
+#if defined(TCPIP_STACK_VLAN_INTERFACE_SUPPORT) && (TCPIP_STACK_VLAN_INTERFACE_SUPPORT != 0)
+    if ((NULL != pDSeg) && (pDSeg->segLen >= sizeof(TCPIP_MAC_ETHERNET_VLAN_HEADER)))
+    {
+        memcpy(pktbuf, pDSeg->segLoad, sizeof(TCPIP_MAC_ADDR)*2);
+        pktbuf += sizeof(TCPIP_MAC_ADDR)*2;
+        memcpy(pktbuf, &pDSeg->segLoad[(sizeof(TCPIP_MAC_ADDR)*2) + sizeof(TCPIP_8021Q_TAG)], pDSeg->segLen - ((sizeof(TCPIP_MAC_ADDR)*2) + sizeof(TCPIP_8021Q_TAG)));
+        pktbuf += (pDSeg->segLen - ((sizeof(TCPIP_MAC_ADDR)*2) + sizeof(TCPIP_8021Q_TAG)));
+
+        pDSeg = pDSeg->next;
+    }
+#endif
 
     while (NULL != pDSeg)
     {
@@ -2390,7 +2428,7 @@ TCPIP_MAC_PACKET* WDRV_PIC32MZW_MACPacketRx
         return NULL;
     }
 
-    ptrPacket = (TCPIP_MAC_PACKET*)TCPIP_Helper_ProtectedSingleListHeadRemove(&pDcpt->pMac->ethRxPktList);
+    ptrPacket = (TCPIP_MAC_PACKET*)TCPIP_Helper_ProtSglListHeadRemove(&pDcpt->pMac->ethRxPktList);
 
     if (NULL != ptrPacket)
     {
@@ -2549,8 +2587,8 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACParametersGet
     (
         DRV_HANDLE handle,
         TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
-        int nEntries,
-        int* pHwEntries
+        size_t/int nEntries,
+        size_t/int* pHwEntries
     )
 
   Summary:
@@ -2566,8 +2604,13 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACRegisterStatisticsGet
 (
     DRV_HANDLE handle,
     TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
+#if TCPIP_STACK_VERSION_MAJOR != 8
+    size_t nEntries,
+    size_t* pHwEntries
+#else
     int nEntries,
     int* pHwEntries
+#endif
 )
 {
     return TCPIP_MAC_RES_OP_ERR;
@@ -3089,16 +3132,10 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
 
                 if (false == pCtrl->isAP)
                 {
-#ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
-                    if (DRV_PIC32MZW1_TLS_HANDLE_INVALID != pCtrl->tlsHandle)
-                    {
-                        /* De-init the TLS module as its not required anymore */
-                        if (true == DRV_PIC32MZW1_TLS_DeInit(pCtrl->tlsHandle))
-                        {
-                            pCtrl->tlsHandle = DRV_PIC32MZW1_TLS_HANDLE_INVALID;
-                        }
-                    }
-#endif /* WDRV_PIC32MZW_ENTERPRISE_SUPPORT */
+#ifdef WDRV_PIC32MZW_TLS_SUPPORT
+                    /* De-init the TLS module as its not required anymore */
+                    DRV_PIC32MZW_TLS_DeInit();
+#endif /* WDRV_PIC32MZW_TLS_SUPPORT */
                     if (NULL != pCtrl->pfConnectNotifyCB)
                     {
                         /* Update user application via callback if set. */
@@ -3150,16 +3187,6 @@ void WDRV_PIC32MZW_WIDProcess(uint16_t wid, uint16_t length, const uint8_t *cons
                     {
                         OSAL_CRIT_Leave(OSAL_CRIT_TYPE_LOW, critSect);
                     }
-#ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
-                    if (DRV_PIC32MZW1_TLS_HANDLE_INVALID != pCtrl->tlsHandle)
-                    {
-                        /* De-init the TLS module as its not required anymore */
-                        if (true == DRV_PIC32MZW1_TLS_DeInit(pCtrl->tlsHandle))
-                        {
-                            pCtrl->tlsHandle = DRV_PIC32MZW1_TLS_HANDLE_INVALID;
-                        }
-                    }
-#endif /* WDRV_PIC32MZW_ENTERPRISE_SUPPORT */
                     if (NULL != pCtrl->pfConnectNotifyCB)
                     {
                         /* Update user application via callback if set. */
@@ -3532,7 +3559,7 @@ void WDRV_PIC32MZW_TasksRFMACISR(void)
 {
     OSAL_SEM_PostISR(&pic32mzwCtrlDescriptor.drvEventSemaphore);
     wdrv_pic32mzw_mac_isr(1);
-    IFS2bits.RFMACIF = 0;
+    IFS2CLR = _IFS2_RFMACIF_MASK;
 }
 
 //*******************************************************************************
@@ -3555,7 +3582,7 @@ void WDRV_PIC32MZW_TasksRFTimer0ISR(void)
 {
     OSAL_SEM_PostISR(&pic32mzwCtrlDescriptor.drvEventSemaphore);
     wdrv_pic32mzw_timer_tick_isr(0);
-    IFS2bits.RFTM0IF = 0;
+    IFS2CLR = _IFS2_RFTM0IF_MASK;
 }
 
 //*******************************************************************************
@@ -3578,7 +3605,7 @@ void WDRV_PIC32MZW_TasksRFSMCISR(void)
 {
     OSAL_SEM_PostISR(&pic32mzwCtrlDescriptor.drvEventSemaphore);
     wdrv_pic32mzw_smc_isr(1);
-    IFS2bits.RFSMCIF = 0;
+    IFS2CLR = _IFS2_RFSMCIF_MASK;
 }
 
 // *****************************************************************************
@@ -3703,9 +3730,17 @@ void DRV_PIC32MZW_MACEthernetSendPacket
 
     pBufferAddr = (void*)&pEthMsg[-hdrOffset];
 
+#if defined(TCPIP_STACK_VLAN_INTERFACE_SUPPORT) && (TCPIP_STACK_VLAN_INTERFACE_SUPPORT != 0)
+    lengthEthMsg += sizeof(TCPIP_8021Q_TAG);
+#endif
+
     if (NULL != pic32mzwMACDescriptor.pktAllocF)
     {
-        ptrPacket = pic32mzwMACDescriptor.pktAllocF(sizeof(TCPIP_MAC_PACKET), lengthEthMsg-ETHERNET_HDR_LEN, 0);
+#ifdef TCPIP_STACK_VLAN_INTERFACE_SUPPORT
+        ptrPacket = pic32mzwMACDescriptor.pktAllocF(sizeof(TCPIP_MAC_PACKET), lengthEthMsg, 0);
+#else
+        ptrPacket = pic32mzwMACDescriptor.pktAllocF(sizeof(TCPIP_MAC_PACKET)-ETHERNET_HDR_LEN, lengthEthMsg, 0);
+#endif
     }
 
     if (NULL == ptrPacket)
@@ -3714,11 +3749,35 @@ void DRV_PIC32MZW_MACEthernetSendPacket
         return;
     }
 
+#if defined(TCPIP_STACK_VLAN_INTERFACE_SUPPORT) && (TCPIP_STACK_VLAN_INTERFACE_SUPPORT != 0)
+    TCPIP_8021Q_TAG vlanTag = {.tpid = 0x0081, .tci = 0x0000};
+
+    if (lengthEthMsg > sizeof(TCPIP_MAC_ETHERNET_VLAN_HEADER))
+    {
+        uint8_t* pMacLayer = ptrPacket->pMacLayer;
+
+        vlanTag.vid = pic32mzwMACDescriptor.vlanId;
+        vlanTag.pcp = pic32mzwMACDescriptor.vlanPcp;
+
+        vlanTag.tci = TCPIP_Helper_htons(vlanTag.tci);
+
+        memcpy(pMacLayer, pEthMsg, sizeof(TCPIP_MAC_ADDR)*2);
+        pMacLayer += (sizeof(TCPIP_MAC_ADDR)*2);
+        memcpy(pMacLayer, &vlanTag, sizeof(TCPIP_8021Q_TAG));
+        pMacLayer += sizeof(TCPIP_8021Q_TAG);
+        memcpy(pMacLayer, &pEthMsg[sizeof(TCPIP_MAC_ADDR)*2], lengthEthMsg - (sizeof(TCPIP_MAC_ADDR)*2) - sizeof(TCPIP_8021Q_TAG));
+    }
+#else
     memcpy(ptrPacket->pMacLayer, pEthMsg, lengthEthMsg);
+#endif
 
     DRV_PIC32MZW_MemFree(DRV_PIC32MZW_ALLOC_OPT_PARAMS pBufferAddr);
 
+#ifdef TCPIP_STACK_VLAN_INTERFACE_SUPPORT
+    ptrPacket->pDSeg->segLen = lengthEthMsg;
+#else
     ptrPacket->pDSeg->segLen = lengthEthMsg - ETHERNET_HDR_LEN;
+#endif
     ptrPacket->pktFlags |= TCPIP_MAC_PKT_FLAG_QUEUED;
     ptrPacket->tStamp = SYS_TMR_TickCountGet();
 
@@ -3726,7 +3785,7 @@ void DRV_PIC32MZW_MACEthernetSendPacket
     ptrPacket->ackParam = pAllocHdr;
 
     /* Store packet in FIFO and signal stack that packet ready to process. */
-    TCPIP_Helper_ProtectedSingleListTailAdd(&pic32mzwMACDescriptor.ethRxPktList, (SGL_LIST_NODE*)ptrPacket);
+    TCPIP_Helper_ProtSglListTailAdd(&pic32mzwMACDescriptor.ethRxPktList, (SGL_LIST_NODE*)ptrPacket);
 
     /* Notify stack of received packet. */
     if (OSAL_RESULT_TRUE == OSAL_SEM_Pend(&pic32mzwMACDescriptor.eventSemaphore, OSAL_WAIT_FOREVER))
@@ -4205,7 +4264,7 @@ void DRV_PIC32MZW_WIDRxQueuePush(void *pPktBuff)
         return;
     }
 
-    TCPIP_Helper_ProtectedSingleListTailAdd(&pic32mzwWIDRxQueue, (SGL_LIST_NODE*)pAllocHdr);
+    TCPIP_Helper_ProtSglListTailAdd(&pic32mzwWIDRxQueue, (SGL_LIST_NODE*)pAllocHdr);
 }
 
 //*******************************************************************************
@@ -4422,4 +4481,36 @@ void DRV_PIC32MZW_CryptoCallbackPush
         OSAL_SEM_Post(&pic32mzwCtrlDescriptor.drvAccessSemaphore);
         OSAL_SEM_Post(&pic32mzwCtrlDescriptor.drvEventSemaphore);
     }
+}
+
+//*******************************************************************************
+/*
+  Function:
+    bool DRV_PIC32MZW_BTPriorityRead()
+
+  Summary:
+    Read BT Priority for BT/Wi-Fi Coexistence operation.
+
+  Description:
+    If pBTPRiorityReadFn is provided in the driver initialization structure,
+    it returns the BT Priority value read via pBTPRiorityReadFn.
+    Otherwise, returns true.
+
+  Precondition:
+    None.
+
+  Remarks:
+    None.
+*/
+
+bool DRV_PIC32MZW_BTPriorityRead(void)
+{
+    const WDRV_PIC32MZW_DCPT *const pDcpt = &pic32mzwDescriptor[0];
+
+    if (NULL != pDcpt->pCtrl->pBTPriorityReadFn)
+    {
+        return pDcpt->pCtrl->pBTPriorityReadFn();
+    }
+
+    return true;
 }

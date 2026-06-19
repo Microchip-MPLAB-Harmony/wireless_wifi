@@ -66,6 +66,11 @@ static void _USARTReceiveEventHandler(uintptr_t context)
 
 static void _USARTTransmitEventHandler(uintptr_t context)
 {
+    if (0 == usartTransmitLength)
+    {
+        return;
+    }
+
     usartTransmitOutOffset++;
     usartTransmitLength--;
 
@@ -215,6 +220,11 @@ size_t SerialBridge_PlatformUARTReadGetBuffer(void *pBuf, size_t numBytes)
         memcpy(pBuf, &usartReceiveBuffer[usartReceiveOutOffset], numBytes);
 
         usartReceiveOutOffset += numBytes;
+
+        if (USART_RECEIVE_BUFFER_SIZE == usartReceiveOutOffset)
+        {
+            usartReceiveOutOffset = 0;
+        }
     }
 
     /* Disable USART interrupts */
@@ -305,6 +315,11 @@ bool SerialBridge_PlatformUARTWritePutBuffer(const void *pBuf, size_t numBytes)
             memcpy(&usartTransmitBuffer[usartTransmitInOffset], pBuf, numBytes);
 
             usartTransmitInOffset += numBytes;
+
+            if (USART_TRANSMIT_BUFFER_SIZE == usartTransmitInOffset)
+            {
+                usartTransmitInOffset = 0;
+            }
         }
 
         /* Disable USART interrupts */

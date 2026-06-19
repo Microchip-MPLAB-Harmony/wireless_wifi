@@ -265,7 +265,7 @@ bool WDRV_WINC_SPISendReceive(void* pTransmitData, void* pReceiveData, size_t si
         rxSize = size;
     }
 
-    spiDcpt.cfg.callbackRegister(lDRV_SPI_PlibCallbackHandler, (uintptr_t)&spiDcpt.syncSem);
+    spiDcpt.cfg.callbackRegister(&lDRV_SPI_PlibCallbackHandler, (uintptr_t)&spiDcpt.syncSem);
     spiDcpt.cfg.writeRead(pTransmitData, txSize, pReceiveData, rxSize);
 </#if>
 

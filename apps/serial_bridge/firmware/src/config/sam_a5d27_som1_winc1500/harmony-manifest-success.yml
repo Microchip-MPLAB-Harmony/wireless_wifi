@@ -4,19 +4,19 @@
 
 
 project: serial_bridge_sam_a5d27_som1_winc1500
-creation_date: 2025-09-30T17:53:59.669+01:00[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2026-06-19T14:35:04.780+01:00[Europe/London]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 11
 mcc_mode: IDE            # [IDE|Standalone|Headless]
-mcc_version: v5.6.2
-mcc_core_version: v5.8.2
-mplabx_version: v6.25        # if MPLAB X plugin only
-harmony_version: v5.6.2
-compiler: XC32 4.60
+mcc_version: v5.6.4
+mcc_core_version: v5.8.4
+mplabx_version: v6.30        # if MPLAB X plugin only
+harmony_version: v5.6.4
+compiler: XC32 5.00
 
 modules:
-    - {name: "wireless_wifi", version: "v3.12.2"}
-    - {name: "csp", version: "v3.23.0"}
-    - {name: "core", version: "v3.15.5"}
+    - {name: "wireless_wifi", version: "v3.13.0"}
+    - {name: "csp", version: "v3.25.2"}
+    - {name: "core", version: "v3.16.3"}
     - {name: "CMSIS_5", version: "5.9.0"}
 
 packs:

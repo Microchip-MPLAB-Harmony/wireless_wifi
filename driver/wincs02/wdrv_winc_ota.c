@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -35,8 +35,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_ota.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_OTA
 
@@ -49,7 +47,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 //*******************************************************************************
 /*
   Function:
-    static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
+    static WDRV_WINC_STATUS otaInProgress(const WDRV_WINC_DCPT *const pDcpt)
 
   Summary:
     Check if an OTA operation is in progress.
@@ -68,16 +66,17 @@ TO MICROCHIP FOR THIS SOFTWARE.
     WDRV_WINC_STATUS_OK            - There is no OTA operation in progress.
     WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
     WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The OTA is in progress.
 
   Remarks:
     None.
 
 */
 
-static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
+static WDRV_WINC_STATUS otaInProgress(const WDRV_WINC_DCPT *const pDcpt)
 {
     /* Ensure the driver handle and user pointer is valid. */
-    if ((DRV_HANDLE_INVALID == (DRV_HANDLE)pDcpt) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl))
     {
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
@@ -102,7 +101,7 @@ static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
   Function:
     static void otaProcessStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t cmdID,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -135,7 +134,7 @@ static WDRV_WINC_STATUS otaInProgress(WDRV_WINC_DCPT *const pDcpt)
 
 static void otaProcessStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t cmdID,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -194,7 +193,7 @@ static void otaProcessStatus
   Function:
     static void otaProcessCmdRsp
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t rspId,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -229,7 +228,7 @@ static void otaProcessStatus
 
 static void otaProcessCmdRsp
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t rspId,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -271,7 +270,7 @@ static void otaProcessCmdRsp
   Function:
     static void otaProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -302,7 +301,7 @@ static void otaProcessCmdRsp
 
 static void otaProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -505,7 +504,7 @@ static void otaCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -595,7 +594,7 @@ void WDRV_WINC_OTAProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -636,22 +635,12 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
     const WDRV_WINC_OTA_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     WDRV_WINC_STATUS status;
-    size_t urlLength;
-    uint16_t authorityPort = 0;
-    const char *pScheme;
-    size_t schemeLen;
-    const char *pUserinfo;
-    size_t userinfoLen;
-    const char *pHost;
-    size_t hostLen;
-    const char *pPath;
-    size_t pathLen;
     uint8_t tlsIdx;
-    WDRV_WINC_IP_MULTI_ADDRESS ipAddr;
-    WDRV_WINC_IP_ADDRESS_TYPE ipAddrType = WDRV_WINC_IP_ADDRESS_TYPE_ANY;
+    size_t urlLength;
+    WDRV_WINC_HTTP_URL_ELEMS_TYPE urlElems;
 
     /* Ensure the driver is open and no OTA operation is in progress. */
     status = otaInProgress(pDcpt);
@@ -677,230 +666,46 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
 
     urlLength = strlen(pURL);
 
-    /*
-        URI       = scheme ":" ["/" "/" authority ] path ["?" query] ["#" fragment]
-        authority = [userinfo "@"] host [":" port]
-    */
+    status = WDRV_WINC_HTTPParseURL(pURL, urlLength, &urlElems);
 
-    pScheme   = pURL;
-    schemeLen = 0;
-
-    /* Search URL looking for ':' or the end. */
-
-    while(('\0' != *pURL) && (urlLength > 0U) && (':' != *pURL))
+    if (WDRV_WINC_STATUS_OK != status)
     {
-        schemeLen++;
-        pURL++;
-        urlLength--;
+        return status;
     }
 
-    /* Scheme must be present and terminated with ':'. */
-
-    if ((0U == schemeLen) || (':' != *pURL))
-    {
-        WDRV_DBG_ERROR_PRINT("URL: Invalid scheme\r\n");
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    /* Skip ':'. */
-
-    pURL++;
-    urlLength--;
-
-    pUserinfo   = NULL;
-    userinfoLen = 0;
-    pHost       = NULL;
-    hostLen     = 0;
-
-    /* Optional authority must start with '/' '/'. */
-
-    if ((urlLength >= 2U) && (0 == strncmp(pURL, "//", 2)))
-    {
-        const char *pEndUserInfoPtr;
-        char ipAddrBuf[64];
-
-        pURL      += 2U;
-        urlLength -= 2U;
-
-        /* Extract userinfo component if present. */
-
-        pEndUserInfoPtr = strchr(pURL, (int)'@');
-
-        if ((NULL != pEndUserInfoPtr) && (pEndUserInfoPtr > pURL))
-        {
-            pUserinfo   = pURL;
-            userinfoLen = (pEndUserInfoPtr - pURL);
-
-            pURL = pURL + (userinfoLen + 1U);
-            urlLength -= userinfoLen + 1U;
-        }
-
-        if ('[' == *pURL)
-        {
-            /* IP addresses are enclosed in square brackets. */
-
-            pURL++;
-            urlLength--;
-
-            pHost = pURL;
-
-            /* Search for ending square bracket. */
-
-            while(('\0' != *pURL) && (urlLength > 0U) && (']' != *pURL))
-            {
-                hostLen++;
-                pURL++;
-                urlLength--;
-            }
-
-            /* If no end is found or the IP address is too long, error. */
-
-            if ((']' != *pURL) || (hostLen >= sizeof(ipAddrBuf)))
-            {
-                WDRV_DBG_ERROR_PRINT("URL: IP address not terminated\r\n");
-                return WDRV_WINC_STATUS_INVALID_ARG;
-            }
-
-            pURL++;
-            urlLength--;
-
-            /* Decode the IP address. */
-
-            if (hostLen > 0U)
-            {
-                (void)memcpy(ipAddrBuf, pHost, hostLen);
-                ipAddrBuf[hostLen] = '\0';
-
-                if (true == WDRV_WINC_UtilsStringToIPv6Address(ipAddrBuf, &ipAddr.v6))
-                {
-                    ipAddrType = WDRV_WINC_IP_ADDRESS_TYPE_IPV6;
-                }
-                else
-                {
-                    WDRV_DBG_ERROR_PRINT("URL: Unknown IP address format\r\n");
-                    return WDRV_WINC_STATUS_INVALID_ARG;
-                }
-            }
-        }
-        else
-        {
-            pHost = pURL;
-
-            /* Extract the host component, terminated by the send of the string,
-             or '/' for path start or ':' for port start. */
-
-            while(('\0' != *pURL) && (urlLength > 0U) && ('/' != *pURL) && (':' != *pURL))
-            {
-                hostLen++;
-                pURL++;
-                urlLength--;
-            }
-
-            if ((hostLen > 0U) && (hostLen <= 15U))
-            {
-                (void)memcpy(ipAddrBuf, pHost, hostLen);
-                ipAddrBuf[hostLen] = '\0';
-
-                if (true == WDRV_WINC_UtilsStringToIPAddress(ipAddrBuf, &ipAddr.v4))
-                {
-                    ipAddrType = WDRV_WINC_IP_ADDRESS_TYPE_IPV4;
-                }
-            }
-        }
-
-        if (':' == *pURL)
-        {
-            char *pEndPtr;
-
-            /* If port component is present, extract it. */
-
-            pURL++;
-            urlLength--;
-
-            errno = 0;
-            authorityPort = (uint16_t)strtoul(pURL, &pEndPtr, 10);
-
-            if (0 != errno)
-            {
-                WDRV_DBG_ERROR_PRINT("URL: Invalid port number\r\n");
-                return WDRV_WINC_STATUS_INVALID_ARG;
-            }
-
-            urlLength -= (pEndPtr-pURL);
-            pURL = pEndPtr;
-        }
-    }
-
-    pPath   = pURL;
-    pathLen = 0;
-
-    /* Extract the path component, terminated by end of string or '?' for queries
-     or '#' for fragment. */
-
-    while(('\0' != *pURL) && (urlLength > 0U) && ('?' != *pURL) && ('#' != *pURL))
-    {
-        pURL++;
-        pathLen++;
-        urlLength--;
-    }
-
-    WDRV_DBG_INFORM_PRINT("Scheme: %.*s\r\n", schemeLen, pScheme);
-
-    /* Verify supported schemes, also set port if not already specified. */
-
-    if (0 == strncmp(pScheme, "https", 5))
-    {
-        if (0U == authorityPort)
-        {
-            authorityPort = 443;
-        }
-    }
-    else if (0 == strncmp(pScheme, "http", 4))
-    {
-        if (0U == authorityPort)
-        {
-            authorityPort = 80;
-        }
-    }
-    else
-    {
-        WDRV_DBG_ERROR_PRINT("URL: Scheme not supported\r\n");
-        return WDRV_WINC_STATUS_INVALID_ARG;
-    }
-
-    cmdReqHandle = WDRV_WINC_CmdReqInit(6, urlLength, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(6, urlLength, &otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    if ((userinfoLen > 0U) || (hostLen > 0U))
+    if ((urlElems.userinfoLen > 0U) || (urlElems.hostLen > 0U))
     {
         /* Authority is being updated. */
 
-        if (userinfoLen > 0U)
+        if (urlElems.userinfoLen > 0U)
         {
-            (void)pUserinfo; /* Suppress unused warning if debugging turned off. */
-            WDRV_DBG_INFORM_PRINT("Auth  : %.*s\r\n", userinfoLen, pUserinfo);
+            (void)urlElems.pUserinfo; /* Suppress unused warning if debugging turned off. */
+            WDRV_DBG_INFORM_PRINT("Auth  : %.*s\r\n", urlElems.userinfoLen, urlElems.pUserinfo);
         }
 
-        if (hostLen > 0U)
+        if (urlElems.hostLen > 0U)
         {
-            WDRV_DBG_INFORM_PRINT("Host  : %.*s : %d\r\n", hostLen, pHost, authorityPort);
+            WDRV_DBG_INFORM_PRINT("Host  : %.*s : %d\r\n", urlElems.hostLen, urlElems.pHost, urlElems.authorityPort);
 
-            (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_HOST, WINC_TYPE_STRING, (uintptr_t)pHost, hostLen);
+            (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_HOST, WINC_TYPE_STRING, (uintptr_t)urlElems.pHost, urlElems.hostLen);
 
-            if (WDRV_WINC_IP_ADDRESS_TYPE_ANY != ipAddrType)
+            if (WDRV_WINC_IP_ADDRESS_TYPE_ANY != urlElems.ipAddrType)
             {
-                WDRV_DBG_INFORM_PRINT("IP    : %d\r\n", ipAddrType);
+                WDRV_DBG_INFORM_PRINT("IP    : %d\r\n", urlElems.ipAddrType);
             }
         }
     }
 
-    (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_PORT, WINC_TYPE_INTEGER_UNSIGNED, authorityPort, 0);
+    (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_PORT, WINC_TYPE_INTEGER_UNSIGNED, urlElems.authorityPort, 0);
 
-    if (pathLen > 0U)
+    if (urlElems.pathLen > 0U)
     {
         /* Path and/or file is being updated. */
 
@@ -909,25 +714,25 @@ WDRV_WINC_STATUS WDRV_WINC_OTAUpdateFromURL
 
         /* Extract final element of path so we have path/file. */
 
-        pFinalPath = strrchr(pPath, (int)'/');
+        pFinalPath = strrchr(urlElems.pPath, (int)'/');
 
         if (NULL == pFinalPath)
         {
-            pFinalPath   = pPath;
-            finalPathLen = pathLen;
-            pathLen      = 0;
+            pFinalPath   = urlElems.pPath;
+            finalPathLen = urlElems.pathLen;
+            urlElems.pathLen      = 0;
         }
         else
         {
             pFinalPath++;
-            finalPathLen = pathLen - (pFinalPath - pPath);
-            pathLen     -= finalPathLen;
+            finalPathLen = urlElems.pathLen - (pFinalPath - urlElems.pPath);
+            urlElems.pathLen     -= finalPathLen;
         }
 
-        if (pathLen > 0U)
+        if (urlElems.pathLen > 0U)
         {
-            WDRV_DBG_INFORM_PRINT("Path  : %.*s\r\n", pathLen, pPath);
-            (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_PATH, WINC_TYPE_STRING, (uintptr_t)pPath, pathLen);
+            WDRV_DBG_INFORM_PRINT("Path  : %.*s\r\n", urlElems.pathLen, urlElems.pPath);
+            (void)WINC_CmdOTAC(cmdReqHandle, WINC_CFG_PARAM_ID_OTA_PATH, WINC_TYPE_STRING, (uintptr_t)urlElems.pPath, urlElems.pathLen);
         }
 
         if (finalPathLen > 0U)
@@ -985,7 +790,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageVerify
     const WDRV_WINC_OTA_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     WDRV_WINC_STATUS status;
 
@@ -997,7 +802,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageVerify
         return status;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1046,7 +851,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageActivate
     const WDRV_WINC_OTA_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     WDRV_WINC_STATUS status;
 
@@ -1058,7 +863,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageActivate
         return status;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1111,7 +916,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageInvalidate
     const WDRV_WINC_OTA_STATUS_CALLBACK pfUpdateStatusCB
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     WDRV_WINC_STATUS status;
 
@@ -1123,7 +928,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAImageInvalidate
         return status;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1174,7 +979,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAOptionsSet
     const WDRV_WINC_OTA_OPTIONS *const pOTAOptions
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and options pointer are valid. */
@@ -1189,7 +994,7 @@ WDRV_WINC_STATUS WDRV_WINC_OTAOptionsSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &otaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

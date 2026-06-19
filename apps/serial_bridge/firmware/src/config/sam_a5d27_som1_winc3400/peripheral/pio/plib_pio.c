@@ -65,7 +65,7 @@ static volatile uint8_t portNumCb[7 + 1] = { 0, 1, 2, 2, 2, 2, 2, 2, };
 void PIO_Initialize ( void )
 {
  /* Port A Peripheral function GPIO configuration */
-   PIOA_REGS->PIO_MSKR = 0x86000000LU;
+   PIOA_REGS->PIO_MSKR = 0x6000000LU;
    PIOA_REGS->PIO_CFGR = 0x0U;
 
  /* Port A Pin 25 configuration */
@@ -76,27 +76,19 @@ void PIO_Initialize ( void )
    PIOA_REGS->PIO_MSKR = 0x4000000U;
    PIOA_REGS->PIO_CFGR = (PIOA_REGS->PIO_CFGR & (PIO_CFGR_FUNC_Msk)) | 0x100U;
 
- /* Port A Pin 31 configuration */
-   PIOA_REGS->PIO_MSKR = 0x80000000LU;
-   PIOA_REGS->PIO_CFGR = (PIOA_REGS->PIO_CFGR & (PIO_CFGR_FUNC_Msk)) | 0x100U;
-
  /* Port A Latch configuration */
-   PIOA_REGS->PIO_SODR = 0x4000000U;
-   PIOA_REGS->PIO_CODR = 0x86000000LU & ~0x4000000U;
+   PIOA_REGS->PIO_SODR = 0x4000000LU;
+   PIOA_REGS->PIO_CODR = 0x6000000LU & ~0x4000000LU;
 
     /* Clear the ISR register */
    (uint32_t)PIOA_REGS->PIO_ISR;
  /* Port B Peripheral function GPIO configuration */
-   PIOB_REGS->PIO_MSKR = 0x7U;
+   PIOB_REGS->PIO_MSKR = 0x5U;
    PIOB_REGS->PIO_CFGR = 0x0U;
 
  /* Port B Pin 0 configuration */
    PIOB_REGS->PIO_MSKR = 0x1U;
    PIOB_REGS->PIO_CFGR = (PIOB_REGS->PIO_CFGR & (PIO_CFGR_FUNC_Msk)) | 0x200U;
-
- /* Port B Pin 1 configuration */
-   PIOB_REGS->PIO_MSKR = 0x2U;
-   PIOB_REGS->PIO_CFGR = (PIOB_REGS->PIO_CFGR & (PIO_CFGR_FUNC_Msk)) | 0x100U;
 
  /* Port B Pin 2 configuration */
    PIOB_REGS->PIO_MSKR = 0x4U;
@@ -104,7 +96,7 @@ void PIO_Initialize ( void )
 
  /* Port B Latch configuration */
    PIOB_REGS->PIO_SODR = 0x4U;
-   PIOB_REGS->PIO_CODR = 0x7U & ~0x4U;
+   PIOB_REGS->PIO_CODR = 0x5U & ~0x4U;
 
     /* Clear the ISR register */
    (uint32_t)PIOB_REGS->PIO_ISR;

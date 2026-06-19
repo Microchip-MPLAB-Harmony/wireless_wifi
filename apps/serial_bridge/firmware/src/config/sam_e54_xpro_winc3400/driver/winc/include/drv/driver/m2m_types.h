@@ -196,8 +196,8 @@ MACROS
     It matches the minimum WPA PSK Passphrase length + 1 byte NULL termination.
  */
 
-#define M2M_DEVICE_NAME_MAX                             48
-/*!< Maximum Size for the device name including the NULL termination.
+#define M2M_DEVICE_NAME_MAX                             47
+/*!< Maximum device name length (excluding NULL termination).
  */
 
 #define M2M_NTP_MAX_SERVER_NAME_LENGTH                  32
@@ -2106,8 +2106,8 @@ typedef struct {
     This struct contains the Device Name of the WINC. It is used mainly for Wi-Fi Direct device discovery and WPS device information.
 */
 typedef struct {
-    uint8_t     au8DeviceName[M2M_DEVICE_NAME_MAX];
-    /*!< NULL terminated device name */
+    uint8_t   au8DeviceName[M2M_DEVICE_NAME_MAX + 1];
+    /*!< NULL terminated device name. Array holds up to M2M_DEVICE_NAME_MAX characters plus null terminator. */
 } tstrM2MDeviceNameConfig;
 
 
@@ -2607,6 +2607,8 @@ typedef enum {
     /*!< OTA server Error (file not found or else ...) */
     OTA_STATUS_ABORTED            = 10,
     /*!< OTA download has been aborted by the application. */
+    OTA_STATUS_SOCKET_IN_USE      = 11,
+    /*!< OTA-specific socket is already in use by the host. */
 } tenuOtaUpdateStatus;
 
 /*!

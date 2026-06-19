@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -87,8 +87,11 @@ typedef enum
     /* PPS mode : Platform power-save mode. PIC sleep. */
     WDRV_WINC_POWERSAVE_PPS_MODE = 2,
 
+    /* PPS pause mode : PPS mode will be paused for a duration before resuming. */
+    WDRV_WINC_POWERSAVE_PPS_PAUSE = 3,
+
     /* XDS mode: Extreme power-save mode. System is powered down. */
-    WDRV_WINC_POWERSAVE_XDS_MODE = 3
+    WDRV_WINC_POWERSAVE_XDS_MODE = 11
 } WDRV_WINC_POWERSAVE_MODE;
 
 // *****************************************************************************
@@ -115,25 +118,6 @@ typedef enum
     /* All regulatory domains selected. */
     WDRV_WINC_REGDOMAIN_SELECT_ALL
 } WDRV_WINC_REGDOMAIN_SELECT;
-
-// *****************************************************************************
-/*  Powersave Information
-
-  Summary:
-    Defines a powersave information structure.
-
-  Description:
-    Specified the powersave mode.
-
-  Remarks:
-    None.
-*/
-
-typedef struct
-{
-    /* Powersave mode. */
-    WDRV_WINC_POWERSAVE_MODE psMode;
-} WDRV_WINC_POWERSAVE_INFO;
 
 // *****************************************************************************
 /*  Regulatory Domain Information
@@ -251,24 +235,24 @@ typedef struct
 } WDRV_WINC_CONN_CFG;
 
 // *****************************************************************************
-/* Powersave Information Callback
+/* WiFi Powersave Information Callback
 
   Function:
-    void (*WDRV_WINC_POWERSAVE_CALLBACK)
+    void (*WDRV_WINC_WIFI_POWERSAVE_CALLBACK)
     (
         DRV_HANDLE handle,
-        const WDRV_WINC_POWERSAVE_INFO *const pPowersaveInfo
+        bool isEnabled
     )
 
   Summary:
-    Pointer to a powersave callback.
+    Pointer to a Wifi powersave callback.
 
   Description:
-    This defines a function pointer to a powersave information callback.
+    This defines a function pointer to a Wifi powersave information callback.
 
   Parameters:
-    handle         - Client handle obtained by a call to WDRV_WINC_Open.
-    pPowersaveInfo - Pointer to a powersave information structure.
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    isEnabled - Flag indicating if Wifi power save is enabled.
 
   Returns:
     None.
@@ -278,10 +262,10 @@ typedef struct
 
 */
 
-typedef void (*WDRV_WINC_POWERSAVE_CALLBACK)
+typedef void (*WDRV_WINC_WIFI_POWERSAVE_CALLBACK)
 (
     DRV_HANDLE handle,
-    const WDRV_WINC_POWERSAVE_INFO *const pPowersaveInfo
+    bool isEnabled
 );
 
 // *****************************************************************************
@@ -348,17 +332,17 @@ extern "C"
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
+    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableSet
     (
         DRV_HANDLE handle,
-        WDRV_WINC_POWERSAVE_MODE psMode
+        bool enable
     )
 
   Summary:
-    Set the mode of the powersave.
+    Enable or disable WiFi powersave.
 
   Description:
-    Configures the powersave mode to one of the available powersave modes.
+    Configures the WiFi powersave enable state.
 
   Precondition:
     WDRV_WINC_Initialize must have been called.
@@ -366,7 +350,7 @@ extern "C"
 
   Parameters:
     handle - Client handle obtained by a call to WDRV_WINC_Open.
-    psMode - The mode to change to. See WDRV_WINC_POWERSAVE_MODE.
+    enable - Flag indicating if powersave mode should be enabled.
 
   Returns:
     WDRV_WINC_STATUS_OK            - The request has been accepted.
@@ -379,26 +363,26 @@ extern "C"
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
+WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableSet
 (
     DRV_HANDLE handle,
-    WDRV_WINC_POWERSAVE_MODE psMode
+    bool enable
 );
 
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
+    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableGet
     (
         DRV_HANDLE handle,
-        WDRV_WINC_POWERSAVE_CALLBACK pfPowersaveEventCB
+        WDRV_WINC_WIFI_POWERSAVE_CALLBACK pfPowersaveEventCB
     )
 
   Summary:
-    Get the current powersave mode.
+    Get the current WiFi powersave enabled state.
 
   Description:
-    Retrieves the currently applied powersave mode.
+    Retrieves the currently applied WiFi powersave enabled state.
 
   Precondition:
     WDRV_WINC_Initialize must have been called.
@@ -419,10 +403,10 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
+WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableGet
 (
     DRV_HANDLE handle,
-    WDRV_WINC_POWERSAVE_CALLBACK pfPowersaveEventCB
+    WDRV_WINC_WIFI_POWERSAVE_CALLBACK pfPowersaveEventCB
 );
 
 //*******************************************************************************

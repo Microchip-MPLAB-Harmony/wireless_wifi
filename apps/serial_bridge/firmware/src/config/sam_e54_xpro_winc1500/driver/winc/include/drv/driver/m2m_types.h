@@ -83,6 +83,7 @@ MACROS
     ( ((uint32_t)M2M_MAKE_VERSION((fw_major),  (fw_minor),  (fw_patch)))  << M2M_FW_VERSION_SHIFT) | \
     ( ((uint32_t)M2M_MAKE_VERSION((drv_major), (drv_minor), (drv_patch))) << M2M_DRV_VERSION_SHIFT))
 
+#define REL_19_7_11_VER         M2M_MAKE_VERSION_INFO(19,7,11,19,3,0)
 #define REL_19_7_10_VER         M2M_MAKE_VERSION_INFO(19,7,10,19,3,0)
 #define REL_19_7_7_VER          M2M_MAKE_VERSION_INFO(19,7,7,19,3,0)
 #define REL_19_7_6_VER          M2M_MAKE_VERSION_INFO(19,7,6,19,3,0)
@@ -121,7 +122,7 @@ MACROS
 /*!< Firmware Minor release version number.
 */
 
-#define M2M_RELEASE_VERSION_PATCH_NO                        (10)
+#define M2M_RELEASE_VERSION_PATCH_NO                        (11)
 /*!< Firmware patch release version number.
 */
 
@@ -191,8 +192,8 @@ MACROS
     It matches the minimum WPA PSK Passphrase length + 1 byte NULL termination.
  */
 
-#define M2M_DEVICE_NAME_MAX                             48
-/*!< Maximum Size for the device name including the NULL termination.
+#define M2M_DEVICE_NAME_MAX                             47
+/*!< Maximum device name length (excluding NULL termination).
  */
 
 #define M2M_NTP_MAX_SERVER_NAME_LENGTH                  32
@@ -2187,8 +2188,8 @@ typedef struct {
     discovery and WPS device information.
 */
 typedef struct {
-    uint8_t     au8DeviceName[M2M_DEVICE_NAME_MAX];
-    /*!< NULL terminated device name
+    uint8_t au8DeviceName[M2M_DEVICE_NAME_MAX + 1];
+    /*!< NULL terminated device name. Array holds up to M2M_DEVICE_NAME_MAX characters plus null terminator.
     */
 } tstrM2MDeviceNameConfig;
 
@@ -2832,7 +2833,9 @@ typedef enum {
     OTA_STATUS_SERVER_ERROR       = 9,
     /*!< OTA server Error (file not found or else...) */
     OTA_STATUS_ABORTED            = 10,
-                                /*!< OTA download has been aborted by the application. */
+    /*!< OTA download has been aborted by the application. */
+    OTA_STATUS_SOCKET_IN_USE      = 11
+    /*!< OTA socket (socket 6) is in use by the host. */
 } tenuOtaUpdateStatus;
 
 /*!

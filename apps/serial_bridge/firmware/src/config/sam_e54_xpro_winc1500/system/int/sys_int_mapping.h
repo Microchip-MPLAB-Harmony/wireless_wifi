@@ -50,7 +50,7 @@
 // *****************************************************************************
 // *****************************************************************************
 
-/* MISRA C-2012 Rule 5.8 deviated:6 Deviation record ID -  H3_MISRAC_2012_R_5_8_DR_1 */
+/* MISRA C-2023 Rule 5.8 deviated:6 Deviation record ID -  H3_MISRAC_2023_R_5_8_DR_1 */
 
 #define SYS_INT_IsEnabled()                 ( __get_PRIMASK() == 0 )
 #define SYS_INT_SourceEnable( source )      NVIC_EnableIRQ( source )

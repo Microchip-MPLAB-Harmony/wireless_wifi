@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2025-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -35,8 +35,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_pps.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_PPS
 
@@ -51,7 +49,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
   Function:
     static void ppsProcessStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t cmdID,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -84,7 +82,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 
 static void ppsProcessStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t cmdID,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -124,7 +122,7 @@ static void ppsProcessStatus
   Function:
     static void ppsProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -155,7 +153,7 @@ static void ppsProcessStatus
 
 static void ppsProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -179,7 +177,7 @@ static void ppsProcessAEC
 
             (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER_UNSIGNED, &event, sizeof(event));
 
-            if (WINC_STATUS_PPS_TIMEOUT == event)
+            if ((WINC_STATUS_PPS_TIMEOUT == event) || (WINC_STATUS_PPS_PAUSE_EXPIRED == event))
             {
                 if (NULL != pDcpt->pCtrl->pfPPSEventCB)
                 {
@@ -281,7 +279,7 @@ static void ppsCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -365,7 +363,7 @@ void WDRV_WINC_PPSProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -400,7 +398,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSOptionsSet
     const WDRV_WINC_PPS_OPTIONS *const pPPSOptions
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and options pointer are valid. */
@@ -415,7 +413,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSOptionsSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(3, 0, ppsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(3, 0, &ppsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -440,6 +438,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSOptionsSet
     WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
     (
         DRV_HANDLE handle,
+        WDRV_WINC_POWERSAVE_MODE mode,
         bool enabled,
         WDRV_WINC_PPS_EVENT_HANDLER pfPPSEventCB
     )
@@ -463,7 +462,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
     const WDRV_WINC_PPS_EVENT_HANDLER pfPPSEventCB
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -484,7 +483,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
         return WDRV_WINC_STATUS_OK;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, ppsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &ppsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -492,7 +491,7 @@ WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
     }
 
     /* Set WiFi power save */
-    if (WDRV_WINC_STATUS_OK != WDRV_WINC_WifiPowerSaveModeSet(handle, (true == enabled) ? WDRV_WINC_POWERSAVE_WSM_MODE : WDRV_WINC_POWERSAVE_RUN_MODE))
+    if (WDRV_WINC_STATUS_OK != WDRV_WINC_WifiPowerSaveEnableSet(handle, enabled))
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
@@ -529,8 +528,78 @@ WDRV_WINC_STATUS WDRV_WINC_PPSEnableSet
 
         default:
         {
+            /* Do nothing. */
             break;
         }
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_PPSPause
+    (
+        DRV_HANDLE handle,
+        uint16_t duration
+    )
+
+  Summary:
+    Pause PPS mode temporarily.
+
+  Description:
+    Pause PPS mode temporarily.
+
+  Remarks:
+    See wdrv_winc_pps.h for usage information.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_PPSPause
+(
+    DRV_HANDLE handle,
+    uint16_t pauseDuration
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+    WINC_CMD_REQ_HANDLE cmdReqHandle;
+
+    /* Ensure the driver handle is valid. */
+    if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure the driver instance has been opened for use. */
+    if (false == pDcpt->isOpen)
+    {
+        return WDRV_WINC_STATUS_NOT_OPEN;
+    }
+
+    if ((pauseDuration < WINC_CMD_PARAM_MIN_PPS_PAUSE_TIME) || (pauseDuration > WINC_CMD_PARAM_MAX_PPS_PAUSE_TIME))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure PPS is enabled */
+    if (WDRV_WINC_PPS_ENABLED != pDcpt->pCtrl->ppsState)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &ppsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+
+    if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
+    }
+
+    (void)WINC_CmdPPSPAUSE(cmdReqHandle, pauseDuration);
+
+    if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
+    {
+        return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
     return WDRV_WINC_STATUS_OK;

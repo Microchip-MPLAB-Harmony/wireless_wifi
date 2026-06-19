@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -81,11 +81,11 @@ void WDRV_WINC_INTInitialize(SYS_MODULE_OBJ object, int intSrc)
     EIC_CallbackRegister(intSrc, WDRV_WINC_ISR, object);
     EIC_InterruptEnable(intSrc);
 #elif defined WDRV_WINC_GPIO_SOURCE
-    GPIO_PinInterruptCallbackRegister(intSrc, eintGPIOCallback, object);
+    GPIO_PinInterruptCallbackRegister(intSrc, &eintGPIOCallback, object);
     GPIO_PinInterruptEnable(intSrc);
     GPIO_PinIntEnable(intSrc, GPIO_INTERRUPT_ON_FALLING_EDGE);
 #elif defined WDRV_WINC_PIO_SOURCE
-    (void)PIO_PinInterruptCallbackRegister(intSrc, eintPIOCallback, object);
+    (void)PIO_PinInterruptCallbackRegister(intSrc, &eintPIOCallback, object);
     PIO_PinInterruptEnable(intSrc);
 #else
     /* disable the external interrupt */

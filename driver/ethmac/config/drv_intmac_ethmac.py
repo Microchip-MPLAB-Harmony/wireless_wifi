@@ -1,5 +1,5 @@
 """
-Copyright (C) 2019-2023, Microchip Technology Inc., and its subsidiaries. All rights reserved.
+Copyright (C) 2019-2025, Microchip Technology Inc., and its subsidiaries. All rights reserved.
 
 The software and documentation is provided by microchip and its contributors
 "as is" and any express, implied or statutory warranties, including, but not
@@ -289,6 +289,13 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacEthPhyLoopBack.setVisible(True)
     tcpipEthmacEthPhyLoopBack.setDescription("Loopbacked At The PHY Level")
     tcpipEthmacEthPhyLoopBack.setDefaultValue(False)
+
+    # remote ctrl connection Flag
+    tcpipEthmacRmtCtrlConnFlag = drvPic32mEthmacComponent.createBooleanSymbol("RMT_CTRL_ENABLE_FLAG", tcpipEthConnFlag)
+    tcpipEthmacRmtCtrlConnFlag.setLabel("Remote Control Enable")
+    tcpipEthmacRmtCtrlConnFlag.setVisible(False) 
+    tcpipEthmacRmtCtrlConnFlag.setDefaultValue(False)
+    tcpipEthmacRmtCtrlConnFlag.setReadOnly(True)
     
     # Use Auto MDIX
     tcpipEthmacEthMdixAuto = drvPic32mEthmacComponent.createBooleanSymbol("TCPIP_EMAC_ETH_OF_MDIX_AUTO", tcpipEthConnFlag)
@@ -305,7 +312,7 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacEthMdixSwap.setVisible(False)
     tcpipEthmacEthMdixSwap.setDescription("Use Swapped MDIX")
     tcpipEthmacEthMdixSwap.setDefaultValue(False)
-    tcpipEthmacEthMdixSwap.setDependencies(tcpipEthMacMdixSwapVisible, ["TCPIP_EMAC_ETH_OF_MDIX_AUTO"])
+    tcpipEthmacEthMdixSwap.setDependencies(tcpipEthMacMdixSwapVisible, ["TCPIP_EMAC_ETH_OF_MDIX_AUTO", "RMT_CTRL_ENABLE_FLAG"])
 
     # RMII Connection
     tcpipEthmacEthRmii = drvPic32mEthmacComponent.createBooleanSymbol("TCPIP_EMAC_ETH_OF_RMII", tcpipEthConnFlag)
@@ -315,7 +322,28 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacEthRmii.setDescription("RMII Connection")
     tcpipEthmacEthRmii.setDefaultValue(True)
     tcpipEthmacEthRmii.setDependencies( tcpipEthMacMIIMode, ["TCPIP_EMAC_ETH_OF_RMII"] )
+    
     # todo default y if FMIIEN = "OFF" 
+    # Pin Settings
+    tcpipEthmacPinConfig = drvPic32mEthmacComponent.createMenuSymbol("TCPIP_ETHMAC_PIN_CONFIG", None)
+    tcpipEthmacPinConfig.setLabel("Pin Configurations")
+    tcpipEthmacPinConfig.setDescription("Pin Configurations for Internal Ethernet MAC")
+    tcpipEthmacPinConfig.setVisible(True)
+    
+    # Comment for MII Pin Configuration
+    tcpipEthmacMIIPinConfig = drvPic32mEthmacComponent.createCommentSymbol("TCPIP_ETHMAC_MII_PIN_CONFIG", tcpipEthmacPinConfig)
+    tcpipEthmacMIIPinConfig.setLabel("*** Configure ETHMAC MII/RMII pins from Plugins -> Pin Configuration")
+    tcpipEthmacMIIPinConfig.setVisible(True)
+    
+    # Comment for MDIO Pin Configuration
+    tcpipEthmacMDIOPinConfig = drvPic32mEthmacComponent.createCommentSymbol("TCPIP_ETHMAC_MDIO_PIN_CONFIG", tcpipEthmacPinConfig)
+    tcpipEthmacMDIOPinConfig.setLabel("*** Configure ETHMAC management(MDIO) pins from Plugins -> Pin Configuration")
+    tcpipEthmacMDIOPinConfig.setVisible(True)
+    
+    # Note for PHY RESET, Interrupt Pins
+    tcpipEthmacRSTIntPinNote = drvPic32mEthmacComponent.createCommentSymbol("TCPIP_ETHMAC_RSTINT_PIN_NOTE", tcpipEthmacPinConfig)
+    tcpipEthmacRSTIntPinNote.setLabel("*** Reset and Interrupt pins of Ethernet PHY are not used by ETHMAC driver")
+    tcpipEthmacRSTIntPinNote.setVisible(True)
     
     # Advanced Settings
     tcpipEthmacAdvSettings = drvPic32mEthmacComponent.createMenuSymbol("TCPIP_ETHMAC_ADV_SETTING", None)
@@ -459,13 +487,19 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacAutoFlowCtrlEmptyWtrMark.setDependencies(tcpipEthMacMenuVisibleSingle, ["TCPIP_EMAC_AUTO_FLOW_CONTROL_ENABLE"])
     
     # PHY Connected to Ethernet MAC
-    tcpipEthmacPhyType = drvPic32mEthmacComponent.createStringSymbol("DRV_INTMAC_PHY_TYPE", None)
+    tcpipEthmacPhyType = drvPic32mEthmacComponent.createStringSymbol("DRV_INTMAC_PHY_TYPE", tcpipEthmacAdvSettings)
     tcpipEthmacPhyType.setHelp("mcc_h3_ethmac_configurations")
     tcpipEthmacPhyType.setLabel("External PHY Device")
     tcpipEthmacPhyType.setVisible(True)
     tcpipEthmacPhyType.setDescription("PHY Connected to ETHERNET MAC")
     tcpipEthmacPhyType.setDefaultValue("")
     tcpipEthmacPhyType.setReadOnly(True)
+
+    # Multiple Client Support
+    tcpipEthmacMultiCliEnable = drvPic32mEthmacComponent.createBooleanSymbol("DRV_ETHMAC_MULTI_CLIENT", tcpipEthmacAdvSettings)
+    tcpipEthmacMultiCliEnable.setHelp("mcc_h3_ethmac_configurations")
+    tcpipEthmacMultiCliEnable.setLabel("Enable Multiple ETHMAC Clients")
+    tcpipEthmacMultiCliEnable.setDefaultValue(False) 
     
     # Driver ETHMAC Interrupt Source
     tcpipEthmacIntrSource = drvPic32mEthmacComponent.createStringSymbol("DRV_ETHMAC_INTERRUPT_SOURCE", None)
@@ -539,11 +573,11 @@ def instantiateComponent(drvPic32mEthmacComponent):
     tcpipEthmacLocalHeaderFile.setType("HEADER")
     tcpipEthmacLocalHeaderFile.setOverwrite(True)
     
-    # file TCPIP_MAC_DESC_H "$HARMONY_VERSION_PATH/framework/driver/ethmac/src/dynamic/_eth_dcpt_lists.h" to    "$PROJECT_HEADER_FILES/framework/driver/ethmac/src/dynamic/_eth_dcpt_lists.h"
-    # Add _eth_dcpt_lists.h file to project
+    # file TCPIP_MAC_DESC_H "$HARMONY_VERSION_PATH/framework/driver/ethmac/src/dynamic/drv_ethmac_lists.h" to    "$PROJECT_HEADER_FILES/framework/driver/ethmac/src/dynamic/drv_ethmac_lists.h"
+    # Add drv_ethmac_lists.h file to project
     tcpipEthmacDcptHeaderFile = drvPic32mEthmacComponent.createFileSymbol(None, None)
-    tcpipEthmacDcptHeaderFile.setSourcePath("driver/ethmac/src/dynamic/_eth_dcpt_lists.h")
-    tcpipEthmacDcptHeaderFile.setOutputName("_eth_dcpt_lists.h")
+    tcpipEthmacDcptHeaderFile.setSourcePath("driver/ethmac/src/dynamic/drv_ethmac_lists.h")
+    tcpipEthmacDcptHeaderFile.setOutputName("drv_ethmac_lists.h")
     tcpipEthmacDcptHeaderFile.setDestPath("driver/ethmac/src/dynamic/")
     tcpipEthmacDcptHeaderFile.setProjectPath("config/" + configName + "/driver/ethmac/src/dynamic/")
     tcpipEthmacDcptHeaderFile.setType("HEADER")
@@ -670,10 +704,15 @@ def tcpipEthMacMenuVisibleSingle(symbol, event):
             
 def tcpipEthMacMdixSwapVisible(symbol, event):
     tcpipEthMacAutoMdix = Database.getSymbolValue("drvPic32mEthmac","TCPIP_EMAC_ETH_OF_MDIX_AUTO")
-    if (event["value"] == True):
-        symbol.setVisible(False)
+    remoteCtrl = Database.getSymbolValue(tcpipEmacModuleId,"RMT_CTRL_ENABLE_FLAG")
+
+    if (remoteCtrl == False):
+        if (tcpipEthMacAutoMdix == True):
+            symbol.setVisible(False)
+        else:
+            symbol.setVisible(True)
     else:
-        symbol.setVisible(True)
+        symbol.setVisible(False)
         
 def setEthmacInterruptData(status):
 

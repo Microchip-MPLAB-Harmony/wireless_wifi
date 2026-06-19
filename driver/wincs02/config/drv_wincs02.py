@@ -405,6 +405,11 @@ def instantiateComponent(drvWincComponent):
     wincModulesSYSLOGEn.setVisible(True)
     wincModulesSYSLOGEn.setDefaultValue(False)
 
+    wincModulesHTTPEn = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_MODULE_HTTP_EN', wincModulesMenu)
+    wincModulesHTTPEn.setLabel('Enable HTTP')
+    wincModulesHTTPEn.setVisible(True)
+    wincModulesHTTPEn.setDefaultValue(False)
+
     # Use NC Berkeley Sockets Option
     wincUseNCBerkSock = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS', None)
     wincUseNCBerkSock.setLabel('Use NC Berkeley Sockets API?')
@@ -492,6 +497,11 @@ def instantiateComponent(drvWincComponent):
     wincL3Support.setVisible(True)
     wincL3Support.setDefaultValue(True)
 
+    wincEnterpriseSupport = drvWincComponent.createBooleanSymbol('DRV_WIFI_WINC_ENTERPRISE_SUPPORT', None)
+    wincEnterpriseSupport.setLabel('Enterprise Support')
+    wincEnterpriseSupport.setVisible(True)
+    wincEnterpriseSupport.setDefaultValue(False)
+    
     # Interrupt Source
     wincIntSrcList = []
 
@@ -635,6 +645,7 @@ def instantiateComponent(drvWincComponent):
     flagModulePPSEn    = (wincModulesPPSEn.getValue())
     flagModuleNVMEn    = (wincModulesNVMEn.getValue())
     flagModuleSYSLOGEn = (wincModulesSYSLOGEn.getValue())
+    flagModuleHTTPEn   = (wincModulesHTTPEn.getValue())
 
     condAlways         = [True,               None,              []]
     condUseNCBerkSock  = [flagUseNCBerkSock,  setUseNCBerkSock,  ['DRV_WIFI_WINC_USE_NC_BERKELEY_SOCKETS']]
@@ -644,6 +655,7 @@ def instantiateComponent(drvWincComponent):
     condModulePPSEn    = [flagModulePPSEn,    setModulePPSEn,    ['DRV_WIFI_WINC_MODULE_PPS_EN']]
     condModuleNVMEn    = [flagModuleNVMEn,    setModuleNVMEn,    ['DRV_WIFI_WINC_MODULE_NVM_EN']]
     condModuleSYSLOGEn = [flagModuleSYSLOGEn, setModuleSYSLOGEn, ['DRV_WIFI_WINC_MODULE_SYSLOG_EN']]
+    condModuleHTTPEn   = [flagModuleHTTPEn,   setModuleHTTPEn,   ['DRV_WIFI_WINC_MODULE_HTTP_EN']]
 
     wdrvIncFiles = [
         ['wdrv_winc.h',                                         condAlways],
@@ -659,6 +671,7 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_dhcps.h',                                   condL3Support],
         ['wdrv_winc_extcrypto.h',                               condAlways],
         ['wdrv_winc_file.h',                                    condAlways],
+        ['wdrv_winc_http.h',                                    condModuleHTTPEn],
         ['wdrv_winc_netif.h',                                   condAlways],
         ['wdrv_winc_nvm.h',                                     condModuleNVMEn],
         ['wdrv_winc_ota.h',                                     condModuleOTAEn],
@@ -704,6 +717,7 @@ def instantiateComponent(drvWincComponent):
         ['wdrv_winc_dhcps.c',                                   condL3Support],
         ['wdrv_winc_extcrypto.c',                               condAlways],
         ['wdrv_winc_file.c',                                    condAlways],
+        ['wdrv_winc_http.c',                                    condModuleHTTPEn],
         ['wdrv_winc_mqtt.c',                                    condModuleMQTTEn],
         ['wdrv_winc_netif.c',                                   condAlways],
         ['wdrv_winc_ota.c',                                     condModuleOTAEn],
@@ -1020,6 +1034,13 @@ def setModuleSYSLOGEn(symbol, event):
 
     moduleSYSLOGEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_SYSLOG_EN')
     symbol.setEnabled(moduleSYSLOGEn)
+
+def setModuleHTTPEn(symbol, event):
+    debugSymbolEvent(symbol, event)
+    component = symbol.getComponent()
+
+    moduleHTTPEn = component.getSymbolValue('DRV_WIFI_WINC_MODULE_HTTP_EN')
+    symbol.setEnabled(moduleHTTPEn)
 
 def updateSlabEstMem(symbol, event):
     def calcSlabNum(slabSize, bufSize):

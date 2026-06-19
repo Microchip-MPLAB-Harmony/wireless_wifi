@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms

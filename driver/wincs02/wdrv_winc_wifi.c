@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -85,7 +85,7 @@ static void wifiProcessCoexElem
     const WINC_DEV_PARAM_ELEM *const pElem
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     bool flag;
 
     if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElem))
@@ -142,7 +142,7 @@ static void wifiProcessCoexElem
   Function:
     static void wifiProcessStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t cmdID,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -175,7 +175,7 @@ static void wifiProcessCoexElem
 
 static void wifiProcessStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t cmdID,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -195,7 +195,7 @@ static void wifiProcessStatus
         {
             WINC_DEV_FRACT_INT_TYPE id;
 
-            if (pSrcCmd->numParams < 2U)
+            if (pSrcCmd->numParams < 1U)
             {
                 break;
             }
@@ -209,6 +209,46 @@ static void wifiProcessStatus
 
             switch (id.i)
             {
+                case WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_CHANMASK24:
+                {
+                    if (WINC_STATUS_STORE_ACCESS_FAILED == statusCode)
+                    {
+                        pDcpt->pCtrl->activeRegDomain.channelMask = WDRV_WINC_CM_2_4G_DEFAULT;
+
+                        if (false == pDcpt->pCtrl->regDomainSetInProgress)
+                        {
+                            if (NULL != pDcpt->pCtrl->pfRegDomainEventCB)
+                            {
+                                WDRV_WINC_REGDOMAIN_CALLBACK pfRegDomainEventCB;
+
+                                /* If WDRV_WINC_WifiRegDomainGet was called with WDRV_WINC_REGDOMAIN_SELECT_CURRENT
+                                     callback to the application with the currently selected domain. */
+
+                                pfRegDomainEventCB = pDcpt->pCtrl->pfRegDomainEventCB;
+
+                                pDcpt->pCtrl->pfRegDomainEventCB = NULL;
+
+                                pfRegDomainEventCB((DRV_HANDLE)pDcpt, 1, 1, true, &pDcpt->pCtrl->activeRegDomain);
+                            }
+                        }
+                    }
+
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+
+            if (pSrcCmd->numParams < 2U)
+            {
+                break;
+            }
+
+            switch (id.i)
+            {
                 case WINC_CFG_PARAM_ID_WIFI_REGDOMAIN_SELECTED:
                 {
                     WDRV_WINC_REGDOMAIN_CALLBACK pfRegDomainEventCB = pDcpt->pCtrl->pfRegDomainEventCB;
@@ -218,7 +258,7 @@ static void wifiProcessStatus
                         break;
                     }
 
-                    if (WDRV_WINC_STATUS_OK != (WDRV_WINC_STATUS)statusCode)
+                    if (WINC_STATUS_OK != statusCode)
                     {
                         /* If get/set regulatory domain fails, report through callback. */
 
@@ -253,6 +293,7 @@ static void wifiProcessStatus
 
                 default:
                 {
+                    /* Do nothing. */
                     break;
                 }
             }
@@ -273,7 +314,7 @@ static void wifiProcessStatus
   Function:
     static void wifiProcessCmdRsp
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t rspId,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -308,7 +349,7 @@ static void wifiProcessStatus
 
 static void wifiProcessCmdRsp
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t rspId,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -457,13 +498,13 @@ static void wifiProcessCmdRsp
 
                 case WINC_CFG_PARAM_ID_WIFI_POWERSAVE:
                 {
-                    WDRV_WINC_POWERSAVE_INFO powersaveInfo;
+                    bool psEnabled;
 
                     if (NULL != pDcpt->pCtrl->pfPowersaveEventCB)
                     {
-                        (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &powersaveInfo.psMode, sizeof(powersaveInfo.psMode));
+                        (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_BOOL, &psEnabled, sizeof(psEnabled));
 
-                        pDcpt->pCtrl->pfPowersaveEventCB((DRV_HANDLE)pDcpt, &powersaveInfo);
+                        pDcpt->pCtrl->pfPowersaveEventCB((DRV_HANDLE)pDcpt, psEnabled);
                     }
 
                     break;
@@ -575,7 +616,7 @@ static void wifiCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -640,30 +681,30 @@ static void wifiCmdRspCallbackHandler
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
+    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableSet
     (
         DRV_HANDLE handle,
-        WDRV_WINC_POWERSAVE_MODE psMode
+        bool enable
     )
 
   Summary:
-    Set the mode of the powersave.
+    Enable or disable WiFi powersave.
 
   Description:
-    Configures the powersave mode to one of the available powersave modes.
+    Configures the WiFi powersave enable state.
 
   Remarks:
     See wdrv_winc_wifi.h for usage information.
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
+WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableSet
 (
     DRV_HANDLE handle,
-    WDRV_WINC_POWERSAVE_MODE psMode
+    bool enable
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -678,14 +719,14 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_POWERSAVE, WINC_TYPE_INTEGER, (uintptr_t)psMode, sizeof(psMode));
+    (void)WINC_CmdWIFIC(cmdReqHandle, WINC_CFG_PARAM_ID_WIFI_POWERSAVE, WINC_TYPE_BOOL, (uintptr_t)enable, sizeof(enable));
 
     if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {
@@ -698,30 +739,30 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeSet
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
+    WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableGet
     (
         DRV_HANDLE handle,
-        WDRV_WINC_POWERSAVE_CALLBACK pfPowersaveEventCB
+        WDRV_WINC_WIFI_POWERSAVE_CALLBACK pfPowersaveEventCB
     )
 
   Summary:
-    Get the current powersave mode.
+    Get the current WiFi powersave enabled state.
 
   Description:
-    Retrieves the currently applied powersave mode.
+    Retrieves the currently applied WiFi powersave enabled state.
 
   Remarks:
     See wdrv_winc_wifi.h for usage information.
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
+WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveEnableGet
 (
     DRV_HANDLE handle,
-    WDRV_WINC_POWERSAVE_CALLBACK pfPowersaveEventCB
+    WDRV_WINC_WIFI_POWERSAVE_CALLBACK pfPowersaveEventCB
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -736,7 +777,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiPowerSaveModeGet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -785,7 +826,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainSet
     WDRV_WINC_REGDOMAIN_CALLBACK pfRegDomainEventCB
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -819,7 +860,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainSet
 
     pDcpt->pCtrl->regulatoryChannelMask24 = WDRV_WINC_CM_2_4G_NONE;
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -867,7 +908,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainGet
     WDRV_WINC_REGDOMAIN_CALLBACK pfRegDomainEventCB
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -888,7 +929,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiRegDomainGet
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(2, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(2, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -947,7 +988,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
     bool enableCoexArbiter
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -962,7 +1003,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexEnableSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1005,7 +1046,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
     const WDRV_WINC_COEX_CFG *const pCoexCfg
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -1025,7 +1066,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfSet
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(4, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(4, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1077,7 +1118,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfGet
     bool *pIsEnabled
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -1100,7 +1141,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiCoexConfGet
     {
         WINC_CMD_REQ_HANDLE cmdReqHandle;
 
-        cmdReqHandle = WDRV_WINC_CmdReqInit(5, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(5, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
         if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
         {
@@ -1168,7 +1209,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiMACOptionsSet
     const WDRV_WINC_MAC_OPTIONS *const pMACOptions
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and options pointer are valid. */
@@ -1183,7 +1224,7 @@ WDRV_WINC_STATUS WDRV_WINC_WifiMACOptionsSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wifiCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

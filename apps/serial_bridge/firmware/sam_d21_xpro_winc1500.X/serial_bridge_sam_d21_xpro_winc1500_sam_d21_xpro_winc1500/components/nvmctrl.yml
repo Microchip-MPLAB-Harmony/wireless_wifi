@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: nvmctrl
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments: {}
@@ -22,21 +22,10 @@ data:
     - children:
       - attributes:
           id: nvmctrl
-          x: '170'
-          y: '60'
+          x: '20'
+          y: '20'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
-  symbols:
-    NVM_RWS:
-      attributes:
-        id: NVM_RWS
-      children:
-      - children:
-        - attributes:
-            id: nvmctrl
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: Integer
+  symbols: {}
   userData: {}

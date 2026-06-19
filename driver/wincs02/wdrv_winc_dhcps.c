@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -35,8 +35,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_dhcps.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_DHCPS
 
@@ -124,7 +122,7 @@ static void dhcpsCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -202,7 +200,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSEnableSet
     WDRV_WINC_DHCPS_EVENT_HANDLER pfDHCPSEventCB
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -217,7 +215,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSEnableSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -264,7 +262,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSPoolAddressSet
     WDRV_WINC_IPV4_ADDR *pStartAddr
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -279,7 +277,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSPoolAddressSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -324,7 +322,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSGatewaySet
     WDRV_WINC_IPV4_ADDR *pGWAddr
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -339,7 +337,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSGatewaySet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -384,7 +382,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSNetIfBind
     WDRV_WINC_NETIF_IDX ifIdx
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -399,7 +397,7 @@ WDRV_WINC_STATUS WDRV_WINC_DHCPSNetIfBind
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &dhcpsCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

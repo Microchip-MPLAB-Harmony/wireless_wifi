@@ -27,7 +27,13 @@ Microchip or any third party.
 #include <stdint.h>
 #include <stdbool.h>
 
+#define DRV_PIC32MZW_CRYPTO_MD4_DIGEST_SZ       16
+#define DRV_PIC32MZW_CRYPTO_MD5_DIGEST_SZ       32
+#define DRV_PIC32MZW_CRYPTO_SHA_DIGEST_SZ       20
 #define DRV_PIC32MZW_CRYPTO_SHA256_DIGEST_SZ    32
+#define DRV_PIC32MZW_CRYPTO_SHA224_DIGEST_SZ    28
+#define DRV_PIC32MZW_CRYPTO_SHA512_DIGEST_SZ    64
+#define DRV_PIC32MZW_CRYPTO_SHA384_DIGEST_SZ    48
 
 /* This Enum contains the elliptic curves that are predefined in the HW. */
 typedef enum {
@@ -101,8 +107,12 @@ DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_Hash_GetDigestSize
     DRV_PIC32MZW_CRYPTO_HASH_T  hashType
 );
 
+/*****************************************************************************/
+/* DES functions:      DRV_PIC32MZW_Crypto_DES_Ecb_Crypt                       */
+/*                                                                           */
+/*****************************************************************************/
 /* Encrypt the input text using Des encryption with Electronic Codebook (ECB) mode*/
-DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_DES_Ecb_Blk_Crypt
+DRV_PIC32MZW_CRYPTO_RETURN_T DRV_PIC32MZW_Crypto_DES_Ecb_Crypt
 (
     const uint8_t *pu8PlainText,
     uint16_t plainTextLen,

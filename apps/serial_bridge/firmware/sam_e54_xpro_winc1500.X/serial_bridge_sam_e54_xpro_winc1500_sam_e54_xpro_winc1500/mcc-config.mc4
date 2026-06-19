@@ -1,12 +1,10 @@
 configVersion: 1.0.0
-coreVersion: 5.8.2
-spaHostVersion: 1.0.0
+coreVersion: 5.8.4
+spaHostVersion: 1.3.0
 device: ATSAME54P20A
 deviceLibrary:
   className: com.microchip.mcc.harmony.Harmony3Library
-groupModules:
-- group: TCP/IP STACK
-  modules: []
+groupModules: []
 modules:
 - BSP_SAM_E54_Xplained_Pro
 - HarmonyCore
@@ -25,9 +23,7 @@ modules:
 - tc3
 generatedFileHashHistoryMap:
 - file: ..\src\app.c
-  hash: 632c78c323cb9f8c6359f20337440c08f8461eb4b0304552b6a3cfd5c4052620
 - file: ..\src\app.h
-  hash: 8e35d8509552a4d1d6e6f123ad75694cf784a707f7dac592ed33b55121aa8e28
 - file: ..\src\config\sam_e54_xpro_winc1500\ATSAME54P20A.ld
   hash: ba1b5ba1b9c97c94416b0198dc30e928c5a66c926c3ad7695f9bbe3b798adaba
 - file: ..\src\config\sam_e54_xpro_winc1500\bsp\bsp.c
@@ -35,11 +31,11 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\bsp\bsp.h
   hash: 0f53b638b719dc36a805157b33d769d0232834a4a9a4efd223ffd14d2095469e
 - file: ..\src\config\sam_e54_xpro_winc1500\configuration.h
-  hash: b130ff5a67f2095fdd0d66fb3d1b54048977e8eab111a1b9331ea4b99bfa05b1
+  hash: a739415f2e759f58c822b67bf2e415f1157c8bfba11628ff21342aa586452caf
 - file: ..\src\config\sam_e54_xpro_winc1500\definitions.h
   hash: ca44d84befe114bfa7e3dcfbe14f3fc30a0183511f3520ef5f982395c9b7798f
 - file: ..\src\config\sam_e54_xpro_winc1500\device.h
-  hash: b8fdcc4ed83daa65a6f38614a689c97d414774be19ae106e6da07556c50a2c82
+  hash: 67a6bee1094722da22e7fbc3885c7336ffedf29e6499c111ce29eb928d54bee6
 - file: ..\src\config\sam_e54_xpro_winc1500\device_cache.h
   hash: e2914501b361bbc93a56d6915b1bf4fac00277e61f31fdee87a587bc15dea5b6
 - file: ..\src\config\sam_e54_xpro_winc1500\device_vectors.h
@@ -63,9 +59,9 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\m2m_periph.c
   hash: adc1a3abffcea10446449ff65f8b8c4bbc2439a5c0983f73360c3b75bf927f92
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\m2m_ssl.c
-  hash: df6d1ee084a53fc59f602642f6ab92d0f4c0f43966534120101eaee498a22b05
+  hash: 1ccd4bc3ce11752378339f7f0f0c813bfb2b32a353469722aadfd96a3616d10e
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\m2m_wifi.c
-  hash: 6fd3cd7a3fe49d78983e8ad05ed33d1b2b452b0ae8abdb9cfc5c4fc58aa51e1b
+  hash: 7dbf907a52f9fd43fc9c80cbbc62eba2b08b9750ad6830f90432b9e17e6fd1d0
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\nmasic.c
   hash: 027e3fc567d39a338810397b23bf79c3817b95770272df8991ac2f07c46339ab
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\nmbus.c
@@ -73,7 +69,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\nmdrv.c
   hash: e7ca0613dd85b53836c5a67802b7bc1323bd26c6e89ebbb9e2f9461548052355
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\driver\nmspi.c
-  hash: 196fa561babc338b8dd6a21bea6fd143f75f11af5452d794016e2dded0b019ee
+  hash: 533ec1ebad600adcf3fec6d34b6cc55c8dc6ab8f3f5af035a5868bba7c03aacd
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\socket\inet_addr.c
   hash: b8064cc1ebd4bf08bd6831be3848f6d454525ca4bf0c6a0d0c7c7d4dca8528ad
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\drv\socket\inet_ntop.c
@@ -105,9 +101,9 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\drv\driver\m2m_ssl.h
   hash: d660d6fe949a66d3485a1949df4f90c0df99f9b271cbfd54222c70a65de9d6d6
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\drv\driver\m2m_types.h
-  hash: f424204d33c2eeb79c97c4bd83f6e907bf30cc03b3eafb9a6eb882bf2526a875
+  hash: 1edc27fb5cd19577ddb4acba63d6a8bc25ad8f931818b982e88d180dbae9c574
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\drv\driver\m2m_wifi.h
-  hash: 749709b73eb8a5cb35274ed45b818d28ba9031890d30087c1e5245d96515472c
+  hash: 34601d43b428084ef944930521dc68c5143dd2016e739e5cf95ffe037b8a7fb7
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\drv\driver\nmasic.h
   hash: 47c44cedfd2e3dc6c1c0b46f9eff3cada8b89aaa6bc99ab73145c5e72c3b525c
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\drv\driver\nmbus.h
@@ -159,7 +155,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\wdrv_winc_powersave.h
   hash: d54b2b75b4d0310fb2c1a2104a82d4ab47272a9850fa41f5347dff58e3b4a764
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\wdrv_winc_socket.h
-  hash: 50da65f8b90c3264f73a036c28aab28a82b93fc685491c32e15840b188670a32
+  hash: 9fd333dc4d667342fa6a5bb2efe7435815b2b1ae8241978d54fb4722238a4ab8
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\wdrv_winc_softap.h
   hash: bc4ac89d79b21209f55736304fa1892ce27d1e4018007dbab53c0639e3c54b55
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\include\wdrv_winc_ssl.h
@@ -173,7 +169,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\osal\wdrv_winc_osal.c
   hash: 24bc41d45730a1833ba621750008ba919ec045855e75ebcc1ea254103bbbbcf1
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc.c
-  hash: 8f20e2be5afc88965a39d4adefb9444d1ebd6aab84412eb31c0481f86e1c29d6
+  hash: 252b99953da84d20f724ffd3a71685833b10c82ddcb73617a00313e6fed4cce8
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_assoc.c
   hash: 232c5330828339a5c012ee92c0a6c026d234fe6e2a5cf00d5d71e4659f5892ab
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_authctx.c
@@ -199,7 +195,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_softap.c
   hash: fac9d5a65597596a655ad766495e18b13beb678ec32e49ced67bb8d83500e39c
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_ssl.c
-  hash: ac45705e8bce505c311445b2e3f587d66273c00a00b056c7fc938640f52908a0
+  hash: 309f8b1a5d6a672ecb42e731d712d5a27d321fd144f10e59e9519daa6ea8ba94
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_sta.c
   hash: 6c9db449efd4bb467572bf171a25056ecc753a8d473eaa2a738599b0845d18de
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_systime.c
@@ -207,23 +203,23 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\driver\winc\wdrv_winc_wps.c
   hash: 9f6a406d6fd15f4d89863fbbf052064f67c7447ceac238fa8ff4366e0024c089
 - file: ..\src\config\sam_e54_xpro_winc1500\exceptions.c
-  hash: a565e8d25d218b3e1069267ae9cc317161d062683a27c64e3cb454757bb82fd9
+  hash: 251729130964d6a74b7a9ee99700b57a16c0e1b5d31029678e06ecd3d8dedc9e
 - file: ..\src\config\sam_e54_xpro_winc1500\initialization.c
-  hash: ccef17a21c04bc2c465f0a544882841d0464e58360d91e5780e3548143d819d4
+  hash: 64584475ecd574664d7dd5734e3689e036975c33c432d92f308613819683f5a5
 - file: ..\src\config\sam_e54_xpro_winc1500\interrupts.c
-  hash: 2048ca62d247f2dfce8e97bbebddeb0f31266a38b380a74a15fc904b2da2f89f
+  hash: 91426554e722956d669e8bc90666d7b07a44bd0c952d94a179e815fbc83a559c
 - file: ..\src\config\sam_e54_xpro_winc1500\interrupts.h
   hash: 85f8b2fe163c1b957ae2c084701ba17e50a0d102f4ff6ff19d43e9bf1904717b
 - file: ..\src\config\sam_e54_xpro_winc1500\libc_syscalls.c
-  hash: 88bb2e34c939601b5b7ad076556e3ee0fcedf388436b8cddb6d6fd3e9d07472f
+  hash: c9afc1b1257829415a1a6746ce3744f0a768b339d59fff2ab3ca1fab58b2a916
 - file: ..\src\config\sam_e54_xpro_winc1500\osal\osal.h
   hash: 1cfe3b61d9693b2369922041eef33fe16b3c1ccd9c85d4ded808b805f90a869c
 - file: ..\src\config\sam_e54_xpro_winc1500\osal\osal_definitions.h
   hash: 5f0a2513a093b6d228e2b50646b204923a82047335a47f3d35a2938309ab6f37
 - file: ..\src\config\sam_e54_xpro_winc1500\osal\osal_impl_basic.h
-  hash: 65e68edbc0320d0407399f65e6d06ff7e6d3d7697231cf1fe0a1fdf1d65f0463
+  hash: 158c4107f883f6d8c0244b73273361d1ca2ebd57c0934572b11a25c532fd22c5
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\clock\plib_clock.c
-  hash: eb49a4640bea189d1cae9969964b2112e81cff85ac33b0f8bde5f37f7ccd7060
+  hash: 089e27028c1327788e228e1b8be5ce4b29e61fc51e89fd41526ca36f815eefb8
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\clock\plib_clock.h
   hash: 59322a99314cb17c6b595d51d18769582e61189140188aa053acfdc671487f21
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\cmcc\plib_cmcc.c
@@ -251,7 +247,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\nvmctrl\plib_nvmctrl.h
   hash: fd7749dc74a885efd7c593394454abc74afc7cf184123f0315425a3600c26ac5
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\port\plib_port.c
-  hash: f1ea820fc0046cb17b93bc39f83742672ab123fd664a8db5caca42248f8a2da1
+  hash: fd31e08749133e9e102609449cbad377bf4b93a6545dd4dda92c7f0f4ae4bb17
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\port\plib_port.h
   hash: 0f9aca7590dceb9780575fd756faacbc26539781e5a52849ee1dc9d29caaea49
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom4_spi_master.c
@@ -265,7 +261,7 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\sercom\spi_master\plib_sercom_spi_master_common.h
   hash: 06e3c7813e1608b5008e3c8955569f9cff04bef321a34c35421f7979368a4ada
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\sercom\usart\plib_sercom2_usart.c
-  hash: f5560db67294ccaecf2d4fcd5d746e3add65d1cc9a41bc26d2a17490051c7f07
+  hash: 83027b24aba36d3402e9d3661859fdfecdd1db70efd32eba55fc53f26050d641
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\sercom\usart\plib_sercom2_usart.h
   hash: 09c17c725b402654121033ff2450cf410b4c9745efc6583f9725677fd909607b
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\sercom\usart\plib_sercom_usart_common.h
@@ -277,17 +273,17 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\peripheral\tc\plib_tc_common.h
   hash: 487b4f489229b8e16b24ab48ddc1f414b095585439f0e10d53b2285fc3979f63
 - file: ..\src\config\sam_e54_xpro_winc1500\pin_configurations.csv
-  hash: 52732b2fb34202d38eddf8ab75a46d5f331025654537299ea94d68759dd3a589
+  hash: 33b5cc7053532f22dc56620da69455f02be3951d5c655663eff56f2786014ee0
 - file: ..\src\config\sam_e54_xpro_winc1500\platform\platform_sercom.c
-  hash: 096fbdc80ba19499237c218124679a4c345538e869a4ec944a5cd38428b81216
+  hash: 08e5ac459ad07866ab23ef07e139dd6d334104737d6e9ebd1959eb54f39773fe
 - file: ..\src\config\sam_e54_xpro_winc1500\startup_xc32.c
-  hash: f374b97d65f92553f1b75d8c9239b8b0f8581c710f78ea47b02c7f6fa6f74c74
+  hash: 2916a631dd72c23f29daf3ec7ebc84abec03a29948825df0b1505d670d73fe50
 - file: ..\src\config\sam_e54_xpro_winc1500\stdio\xc32_monitor.c
   hash: 858f8710d4287200a5ee7f3b3ad7c24f505aed9c05c16956ab0ff9f7bb162a6a
 - file: ..\src\config\sam_e54_xpro_winc1500\sys_tasks.h
   hash: 21f254f497a18a024cd00128d06c4776c2643f867a460c1ba9880a7dd41a8d56
 - file: ..\src\config\sam_e54_xpro_winc1500\system\cache\sys_cache.c
-  hash: da28c09b0da0fdd6fb7064631c15c9197c78df33fcd17d742baef909830a320e
+  hash: de8bfadd859b6bd7517c3653e5455c24bb9f95624d9006bed6d7530ad556dcc7
 - file: ..\src\config\sam_e54_xpro_winc1500\system\cache\sys_cache.h
   hash: b4b3a4e7434759c9bbcd3c6a0ab97558eb2a007f083a4eb76dbedcb2e2c3d86b
 - file: ..\src\config\sam_e54_xpro_winc1500\system\debug\sys_debug.h
@@ -295,23 +291,23 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\system\dma\sys_dma.c
   hash: b898eb7b174f17cd7dcaff8afef4fa2b878dcbc3b4db44b23810c78af55ffd6b
 - file: ..\src\config\sam_e54_xpro_winc1500\system\dma\sys_dma.h
-  hash: c15762305460aac605f3839deedf888b0b632c871f2a9a5c6b9b55a85a278a10
+  hash: 47e28cc94d08c7c4e1ab0ef1df3b85cf829274f06ba977d99d301310374b6847
 - file: ..\src\config\sam_e54_xpro_winc1500\system\dma\sys_dma_mapping.h
   hash: ce3b0fb5a381953a0804e467742d198578a5abb4b419c667565553953c4d27c7
 - file: ..\src\config\sam_e54_xpro_winc1500\system\int\src\sys_int.c
   hash: 4281667cc2b84c9e4be1f0dfb3f7d42b77d36c5dcf6513d29ff40262f746cfc6
 - file: ..\src\config\sam_e54_xpro_winc1500\system\int\sys_int.h
-  hash: dc104ae181fd5309e1bb42896246644fae95915a8e639b23ecfccc8840850274
+  hash: d8207e3358a37e8e964cd563150eda15ac17ec512b6e3c221f5603d9fa2da0ca
 - file: ..\src\config\sam_e54_xpro_winc1500\system\int\sys_int_mapping.h
-  hash: 5abf8528dabc1b17378f5d137870597037214fddf33880fa40e9263352da3008
+  hash: 8e6e231f4debf9f25707af7aa1af1f07fbd93596e8045030991b7685290d354c
 - file: ..\src\config\sam_e54_xpro_winc1500\system\system.h
   hash: 2b75f8e370e5cb2c54f70da7351ee149f0d5a7673e700f39b373099716b31b55
 - file: ..\src\config\sam_e54_xpro_winc1500\system\system_common.h
   hash: c9f34bd226f8efab12f5766e77f8355996cd0430b50e0f6ee30258664c494984
 - file: ..\src\config\sam_e54_xpro_winc1500\system\system_module.h
-  hash: 96c74368801b0a7aaa25aec3ec2cb0d483250385f103ffc1ff64089b4ca2c6d9
+  hash: 7bfe351ce506b843c61e5be013b6e3bf2a6253d73f5db189dbaf0c4f494cb75a
 - file: ..\src\config\sam_e54_xpro_winc1500\system\time\src\sys_time.c
-  hash: fa2d85ab967b80157caf8483f6e28a23b12b548844a1d80f2fef760cd9b99271
+  hash: 4e733ffe4705a0b3f880391fe886ccb0e88c772c1f19c55b4a005747fbf6aa93
 - file: ..\src\config\sam_e54_xpro_winc1500\system\time\src\sys_time_local.h
   hash: df56f970664902417d798760e44978cf4b84c108cf0761647a383e91db76980c
 - file: ..\src\config\sam_e54_xpro_winc1500\system\time\sys_time.h
@@ -325,7 +321,6 @@ generatedFileHashHistoryMap:
 - file: ..\src\config\sam_e54_xpro_winc1500\user.h
   hash: 451e0878e9fcf6cf9fab046c1452ea662757988346c7f39e6bc98478ca25f995
 - file: ..\src\main.c
-  hash: d3c233d419e6304bfacbafc18cc68c0f5c26e365f23b20ea40ccfac458f664c5
 - file: ..\src\packs\ATSAME54P20A_DFP\component\ac.h
   hash: f157f4448aa3fa1bcd7e772c8d8ec7320ad5f17a8b9ac40b4eb881b2e207a932
 - file: ..\src\packs\ATSAME54P20A_DFP\component\adc.h

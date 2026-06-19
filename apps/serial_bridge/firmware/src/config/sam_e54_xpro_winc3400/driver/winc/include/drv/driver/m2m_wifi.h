@@ -3278,14 +3278,12 @@ uint8_t m2m_wifi_get_sleep_mode(void);
     int8_t m2m_wifi_set_device_name(uint8_t *pu8DeviceName, uint8_t u8DeviceNameLength);
 
 @brief
-    Asynchronous API to set the Wi-Fi Direct "Device Name" of the WINC.
+    Asynchronous API to set the device name of the WINC.
 
 @details
-    Sets the WINC device name. The name string is used as a device name in DHCP
-    hostname (option 12).
-    If a device is not set through this function a default name is assigned.
-    The default name is WINC-XX-YY, where XX and YY are the last 2 octets of the OTP
-    MAC address. If OTP (eFuse) is programmed, then the default name is WINC-00-00.
+    Sets the WINC device name. The name string is used in DHCP hostname (option 12).
+    If a device name is not set through this function, the default name is empty (length 0),
+    and no hostname option will be included in DHCP messages.
 
 @warning
     The function called once after initialization.\n
@@ -3294,11 +3292,10 @@ uint8_t m2m_wifi_get_sleep_mode(void);
     defined in RFC 952 and 1123.
 
 @param[in]  pu8DeviceName
-    Buffer holding the device name. Device name is a null terminated C string.
+    Buffer holding the device name. The name does not need to be null-terminated.
 
 @param[in]  u8DeviceNameLength
-    Length of the device name. Should not exceed the maximum device name's
-    length @ref M2M_DEVICE_NAME_MAX (including null character).
+    Length of the device name. Should not exceed @ref M2M_DEVICE_NAME_MAX.
 
 @return
     The function returns @ref M2M_SUCCESS if the command has been successfully queued to the WINC and a negative value otherwise.

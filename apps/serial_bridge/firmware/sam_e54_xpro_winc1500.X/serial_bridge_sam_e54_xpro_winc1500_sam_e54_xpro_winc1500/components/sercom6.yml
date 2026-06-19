@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: sercom6
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAME54P20A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -68,8 +68,8 @@ data:
     - children:
       - attributes:
           id: sercom6
-          x: '516'
-          y: '219'
+          x: '23'
+          y: '139'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
@@ -224,47 +224,6 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    USART_DATA_BITS:
-      attributes:
-        id: USART_DATA_BITS
-      children:
-      - children:
-        - attributes:
-            id: sercom6
-            value: DRV_USART_DATA_8_BIT
-          type: Dynamic
-        type: Values
-      type: String
-    USART_FORM:
-      attributes:
-        id: USART_FORM
-      children:
-      - children:
-        - attributes:
-            id: visible
-          children:
-          - type: Value
-            value: 'false'
-          type: Boolean
-        type: Attributes
-      - children:
-        - attributes:
-            id: sercom6
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    USART_INTERRUPT_MODE_ENABLE:
-      attributes:
-        id: USART_INTERRUPT_MODE_ENABLE
-      children:
-      - children:
-        - attributes:
-            id: sercom6
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
     USART_LIN_MASTER_SUPPORTED:
       attributes:
         id: USART_LIN_MASTER_SUPPORTED
@@ -273,17 +232,6 @@ data:
         - attributes:
             id: sercom6
             value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    USART_RING_BUFFER_MODE_ENABLE:
-      attributes:
-        id: USART_RING_BUFFER_MODE_ENABLE
-      children:
-      - children:
-        - attributes:
-            id: sercom6
-            value: 'false'
           type: Dynamic
         type: Values
       type: Boolean
@@ -309,4 +257,15 @@ data:
           type: Dynamic
         type: Values
       type: Integer
+    USART_USE_FRACTIONAL_BAUD:
+      attributes:
+        id: USART_USE_FRACTIONAL_BAUD
+      children:
+      - children:
+        - attributes:
+            id: sercom6
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
   userData: {}

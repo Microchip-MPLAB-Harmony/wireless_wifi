@@ -22,7 +22,7 @@ the following links for release notes, training materials, and interface
 reference information.
 
 - [Release Notes](./release_notes.md)
-- [MPLAB® Harmony License](mplab_harmony_license.md)
+- [MPLAB® Harmony License](Microchip_SLA001.md)
 - [MPLAB® Harmony 3 Wireless_wifi Wiki](https://github.com/Microchip-MPLAB-Harmony/wireless_wifi/wiki)
 - [MPLAB® Harmony 3 Wireless_wifi API Help](https://microchip-mplab-harmony.github.io/wireless_wifi)
 
@@ -39,7 +39,7 @@ reference information.
 | apps       | Redirects to Example applications repositories for Wireless library components      |
 | config     | Wireless module configuration file                                                  |
 | docs       | Wireless library help documentation                                                 |
-| drivers    | Driver/Firmware files for different products                                        |
+| driver     | Driver/Firmware files for different products                                        |
 | utilities  | Contains root certs, firmware programmer/downloader                                 |
 
 <br />

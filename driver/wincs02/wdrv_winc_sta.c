@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -38,8 +38,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <string.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_sta.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -52,7 +50,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
   Function:
     static void wstaProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -83,7 +81,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 
 static void wstaProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -334,7 +332,7 @@ static void wstaCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -410,7 +408,7 @@ void WDRV_WINC_WSTAProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -493,7 +491,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
     const WDRV_WINC_BSSCON_NOTIFY_CALLBACK pfNotifyCallback
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     uint8_t channel;
     WDRV_WINC_CONN_CFG defaultWifiCfg;
@@ -579,7 +577,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         }
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(11, 0, wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(17, 0, &wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -607,11 +605,46 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
         /* Set <SEC_TYPE> */
         (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_SEC_TYPE, WINC_TYPE_INTEGER, (uintptr_t)pAuthCtx->authType, 0);
 
-        /* Set <CREDENTIALS> if applicable */
-        if (pAuthCtx->authInfo.personal.size > 0U)
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+        if (WDRV_WINC_AUTH_TYPE_WPA3_PERSONAL >= pAuthCtx->authType)
+#endif
         {
-            (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_CREDENTIALS, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.personal.password, pAuthCtx->authInfo.personal.size);
+            /* Set <CREDENTIALS> if applicable */
+            if (pAuthCtx->authInfo.personal.size > 0U)
+            {
+                (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_CREDENTIALS, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.personal.password, pAuthCtx->authInfo.personal.size);
+            }
         }
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+        else
+        {
+            (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_IDENT_PLAIN, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.enterprise.identity, strlen(pAuthCtx->authInfo.enterprise.identity));
+
+            (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_TUNN_METHOD, WINC_TYPE_INTEGER, (uintptr_t)pAuthCtx->authInfo.enterprise.tunnel.method, 0);
+
+            if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_NONE != pAuthCtx->authInfo.enterprise.tunnel.method)
+            {
+                (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_TUNN_TLS_CONF, WINC_TYPE_INTEGER, (uintptr_t)pAuthCtx->authInfo.enterprise.tunnel.tlsIdx, 0);
+
+                if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_TTLSV0 != pAuthCtx->authInfo.enterprise.tunnel.method)
+                {
+                    (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_IDENT_PROT, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.enterprise.tunnel.identity, strlen(pAuthCtx->authInfo.enterprise.tunnel.identity));
+                }
+            }
+
+            (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_CRED_TYPE, WINC_TYPE_INTEGER, (uintptr_t)pAuthCtx->authInfo.enterprise.credentials.type, 0);
+
+            if (WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_MSCHAPV2 == pAuthCtx->authInfo.enterprise.credentials.type)
+            {
+                (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_MSCHV2_UN, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.enterprise.credentials.mschapv2.username, strlen(pAuthCtx->authInfo.enterprise.credentials.mschapv2.username));
+                (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_MSCHV2_PW, WINC_TYPE_STRING, (uintptr_t)pAuthCtx->authInfo.enterprise.credentials.mschapv2.password, strlen(pAuthCtx->authInfo.enterprise.credentials.mschapv2.password));
+            }
+            else
+            {
+                (void)WINC_CmdWSTAC(cmdReqHandle, WINC_CFG_PARAM_ID_WSTA_ENT_CRED_TLS_CONF, WINC_TYPE_INTEGER, (uintptr_t)pAuthCtx->authInfo.enterprise.credentials.tls.tlsIdx, 0);
+            }
+        }
+#endif
 
         /* Set <MFP_TYPE> */
         if (WDRV_WINC_AUTH_MOD_NONE != (pAuthCtx->authMod & WDRV_WINC_AUTH_MOD_MFP_REQ))
@@ -681,7 +714,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSConnect
 
 WDRV_WINC_STATUS WDRV_WINC_BSSDisconnect(DRV_HANDLE handle)
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -702,7 +735,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSDisconnect(DRV_HANDLE handle)
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -747,7 +780,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSRoamingConfigure
     WDRV_WINC_BSS_ROAMING_CFG roamingCfg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and roaming parameter are valid. */
@@ -762,7 +795,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSRoamingConfigure
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &wstaCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

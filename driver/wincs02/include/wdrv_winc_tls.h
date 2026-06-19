@@ -15,7 +15,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -53,9 +53,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 // *****************************************************************************
 
-/* Defines an invalid TLS context handle. */
-#define WDRV_WINC_TLS_INVALID_HANDLE                    0U
-
 /* Defines an invalid TLS cipher suite list handle. */
 #define WDRV_WINC_TLS_CS_INVALID_HANDLE                 0U
 
@@ -64,21 +61,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // Section: WINC Driver TLS Context Data Types
 // *****************************************************************************
 // *****************************************************************************
-
-// *****************************************************************************
-/* TLS Context Handle
-
-  Summary:
-    TLS context handle.
-
-  Description:
-    Handle representing TLS contexts.
-
-  Remarks:
-    None.
-*/
-
-typedef uint8_t WDRV_WINC_TLS_HANDLE;
 
 // *****************************************************************************
 /* TLS Cipher Suite Context Handle
@@ -122,6 +104,62 @@ typedef struct
     /* TLS cipher suite handle */
     WDRV_WINC_TLS_CS_HANDLE tlsCsHandle;
 } WDRV_WINC_TLSCTX_INFO;
+
+// *****************************************************************************
+/* Hash Types.
+
+  Summary:
+    Supported hash types.
+
+  Description:
+    Enumeration of possible hash types supported.
+
+  Remarks:
+    None.
+*/
+
+typedef enum
+{
+    /* SHA1. */
+    WDRV_WINC_HASH_TYPE_SHA1 = WINC_CONST_TLS_ALGO_SHA1,
+
+    /* SHA2-256. */
+    WDRV_WINC_HASH_TYPE_SHA2_256 = WINC_CONST_TLS_ALGO_SHA2_256,
+
+    /* SHA2-224. */
+    WDRV_WINC_HASH_TYPE_SHA2_224 = WINC_CONST_TLS_ALGO_SHA2_224,
+
+    /* SHA2-512. */
+    WDRV_WINC_HASH_TYPE_SHA2_512 = WINC_CONST_TLS_ALGO_SHA2_512,
+
+    /* SHA2-384. */
+    WDRV_WINC_HASH_TYPE_SHA2_384 = WINC_CONST_TLS_ALGO_SHA2_384
+} WDRV_WINC_HASH_TYPE;
+
+// *****************************************************************************
+/* Peer certificate digest
+
+  Summary:
+    Peer certificate digest
+
+  Description:
+    Structure containing information about a peer certificate digest.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    /* Hash algorithm type. */
+    WDRV_WINC_HASH_TYPE type;
+
+    /* Digest size. */
+    size_t size;
+
+    /* Digest data buffer. */
+    uint8_t *pData;
+} WDRV_WINC_TLS_CERT_DIGEST;
 
 //*******************************************************************************
 /*
@@ -569,6 +607,53 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxHostnameCheckSet
 //*******************************************************************************
 /*
   Function:
+    WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertDigestsSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_TLS_HANDLE tlsHandle,
+        const WDRV_WINC_TLS_CERT_DIGEST *pDigests,
+        unsigned int numDigests
+    )
+
+  Summary:
+    Sets the peer certificate digests in a TLS context.
+
+  Description:
+    Sets the peer certificate digests in a TLS context.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
+
+  Parameters:
+    handle       - Client handle obtained by a call to WDRV_WINC_Open.
+    tlsHandle    - TLS handle obtained by a call to WDRV_WINC_TLSCtxOpen.
+    pDigests     - Pointer to the certificate digests.
+    numDigests   - Number of certificate digests.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+
+  Remarks:
+    To ensure proper certificate digests checks are performed peer authentication should
+    be enabled with WDRV_WINC_TLSCtxCACertFileSet.
+
+*/
+WDRV_WINC_STATUS WDRV_WINC_TLSCtxCertDigestsSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_TLS_HANDLE tlsHandle,
+    const WDRV_WINC_TLS_CERT_DIGEST *pDigests,
+    unsigned int numDigests
+);
+
+//*******************************************************************************
+/*
+  Function:
     WDRV_WINC_STATUS WDRV_WINC_TLSCtxSetSignCallback
     (
         DRV_HANDLE handle,
@@ -654,6 +739,51 @@ WDRV_WINC_STATUS WDRV_WINC_TLSCtxCipherSuiteSet(
     DRV_HANDLE handle,
     WDRV_WINC_TLS_HANDLE tlsHandle,
     WDRV_WINC_TLS_CS_HANDLE tlsCsHandle
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_TLSCtxSessionCachingSet
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_TLS_HANDLE tlsHandle,
+        bool enabled
+    )
+
+  Summary:
+    Sets the client session caching behaviour.
+
+  Description:
+    Sets the client session caching behaviour.
+
+  Precondition:
+    WDRV_WINC_Initialize must have been called.
+    WDRV_WINC_Open must have been called to obtain a valid handle.
+    WDRV_WINC_TLSCtxOpen must have been called to obtain a valid TLS handle.
+
+  Parameters:
+    handle    - Client handle obtained by a call to WDRV_WINC_Open.
+    tlsHandle - TLS handle obtained by a call to WDRV_WINC_TLSCtxOpen.
+    enabled   - Flag indicating if session caching should be enabled or disabled.
+
+  Returns:
+    WDRV_WINC_STATUS_OK            - The request has been accepted.
+    WDRV_WINC_STATUS_NOT_OPEN      - The driver instance is not open.
+    WDRV_WINC_STATUS_INVALID_ARG   - The parameters were incorrect.
+    WDRV_WINC_STATUS_REQUEST_ERROR - The request to the WINC was rejected.
+    WDRV_WINC_STATUS_RETRY_REQUEST - Another request is being processed, try again.
+
+  Remarks:
+    None.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_TLSCtxSessionCachingSet
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_TLS_HANDLE tlsHandle,
+    bool enabled
 );
 
 //*******************************************************************************

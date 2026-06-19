@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -39,9 +39,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <string.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_extcrypto.h"
-#include "wdrv_winc_tls.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -116,7 +113,7 @@ static WDRV_WINC_EXTCRYPTO_SIG_ALGO extCryptoEcdsaCurveToSigAlgo(uint8_t curveId
   Function:
     static void extcryptoProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -147,7 +144,7 @@ static WDRV_WINC_EXTCRYPTO_SIG_ALGO extCryptoEcdsaCurveToSigAlgo(uint8_t curveId
 
 static void extcryptoProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -327,7 +324,7 @@ static void extcryptoCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -403,7 +400,7 @@ void WDRV_WINC_EXTCRYPTOProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -446,7 +443,7 @@ WDRV_WINC_STATUS WDRV_WINC_EXTCRYPTOSignResult
     size_t lenSignature
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *pDcpt = (const WDRV_WINC_DCPT *)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -471,7 +468,7 @@ WDRV_WINC_STATUS WDRV_WINC_EXTCRYPTOSignResult
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenSignature, extcryptoCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenSignature, &extcryptoCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

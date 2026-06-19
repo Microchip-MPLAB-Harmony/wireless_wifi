@@ -152,7 +152,7 @@ void SYS_CACHE_CleanDCache_by_Addr (void *addr, int32_t size)
     DCACHE_CLEAN_BY_ADDR(addr,size);
 }
 
-/* MISRA C-2012 Rule 5.1 deviated:1 Deviation record ID -  H3_MISRAC_2012_R_5_1_DR_1 */
+/* MISRA C-2023 Rule 5.1 deviated:1 Deviation record ID -  H3_MISRAC_2023_R_5_1_DR_1 */
 
 /*
  * Clean and Invalidate Data Cache by address.

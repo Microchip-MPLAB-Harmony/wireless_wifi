@@ -81,6 +81,18 @@ static bool _ProcessHeader(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, u
     pSBDecoderState->cmdAddr = (((uint32_t)pHeader[7]) << 24) | (((uint32_t)pHeader[6]) << 16) | (((uint32_t)pHeader[5]) << 8) | pHeader[4];
     pSBDecoderState->cmdVal  = (((uint32_t)pHeader[11]) << 24) | (((uint32_t)pHeader[10]) << 16) | (((uint32_t)pHeader[9]) << 8) | pHeader[8];
 
+    switch (pSBDecoderState->cmdType)
+    {
+        case SB_COMMAND_READ_REG_WITH_RET:
+        case SB_COMMAND_WRITE_REG:
+        case SB_COMMAND_READ_BLOCK:
+        case SB_COMMAND_WRITE_BLOCK:
+        case SB_COMMAND_RECONFIGURE:
+            break;
+        default:
+            return false;
+    }
+
     if (pSBDecoderState->cmdType == SB_COMMAND_WRITE_BLOCK)
     {
         pSBDecoderState->payloadLength = pSBDecoderState->cmdSize;
@@ -130,7 +142,10 @@ static bool _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
 
         case SB_COMMAND_WRITE_REG:
         {
-            nm_write_reg(pSBDecoderState->cmdAddr, pSBDecoderState->cmdVal);
+            if (M2M_SUCCESS != nm_write_reg(pSBDecoderState->cmdAddr, pSBDecoderState->cmdVal))
+            {
+                return false;
+            }
 
             return true;
         }
@@ -146,6 +161,9 @@ static bool _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
 
                 if (false == SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, SB_CMD_BUFFER_SIZE))
                     return false;
+
+                pSBDecoderState->cmdAddr += SB_CMD_BUFFER_SIZE;
+                cnt -= SB_CMD_BUFFER_SIZE;
             }
 
             if (cnt)
@@ -153,7 +171,7 @@ static bool _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
                 if (M2M_SUCCESS != nm_read_block(pSBDecoderState->cmdAddr, pSBDecoderState->dataBuf, cnt))
                     return false;
 
-                if (false == SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, pSBDecoderState->cmdSize))
+                if (false == SerialBridge_PlatformUARTWritePutBuffer(pSBDecoderState->dataBuf, cnt))
                     return false;
             }
 
@@ -184,6 +202,7 @@ static bool _ProcessCommand(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)
 
         default:
         {
+            return false;
         }
     }
 
@@ -202,7 +221,10 @@ void SerialBridge_Init(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState, uint3
 
     SerialBridge_PlatformUARTSetBaudRate(baudRate);
 
-    m2m_wifi_download_mode();
+    if (M2M_SUCCESS != m2m_wifi_download_mode())
+    {
+        return;
+    }
 }
 
 void SerialBridge_Process(SERIAL_BRIDGE_DECODER_STATE *const pSBDecoderState)

@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: sercom3
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -68,8 +68,8 @@ data:
     - children:
       - attributes:
           id: sercom3
-          x: '152'
-          y: '404'
+          x: '184'
+          y: '146'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
@@ -148,17 +148,6 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    USART_FORM:
-      attributes:
-        id: USART_FORM
-      children:
-      - children:
-        - attributes:
-            id: sercom3
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
     USART_LIN_MASTER_SUPPORTED:
       attributes:
         id: USART_LIN_MASTER_SUPPORTED
@@ -202,14 +191,15 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    USART_TXPO:
+    USART_USE_FRACTIONAL_BAUD:
       attributes:
-        id: USART_TXPO
+        id: USART_USE_FRACTIONAL_BAUD
       children:
       - children:
         - attributes:
-            value: '0'
-          type: User
+            id: sercom3
+            value: 'false'
+          type: Dynamic
         type: Values
-      type: KeyValueSet
+      type: Boolean
   userData: {}

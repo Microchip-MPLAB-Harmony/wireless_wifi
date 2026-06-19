@@ -24,8 +24,6 @@ Microchip or any third party.
 ################################################################################
 #### Global Variables ####
 ################################################################################
-global pic32mzw1_help_keyword
-pic32mzw1_help_keyword = "wireless_wifi_MPLAB_Harmony_PIC32MZW1_WLAN"
 
 global interruptsChildren
 interruptsChildren = ATDF.getNode('/avr-tools-device-file/devices/device/interrupts').getChildren()
@@ -128,8 +126,6 @@ def instantiateComponent(drvPic32mzw1Component):
     print('PIC32MZW1 Driver Component')
     configName = Variables.get('__CONFIGURATION_NAME')
 
-    global pic32mzw1_help_keyword
-
     Database.activateComponents(['HarmonyCore', 'lib_crypto', 'lib_wolfcrypt', 'tcpipNetConfig', 'tcpipStack', 'lib_wolfssl'])
 
     drvPic32mzw1Component.addDependency('Crypto_PIC32MZW1_Dependency', 'LIB_CRYPTO', True, True)
@@ -179,7 +175,6 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1LogLevel.setVisible(True)
     pic32mzw1LogLevel.setDefaultValue('Trace')
     pic32mzw1LogLevel.setDependencies(setEnableLogLevel, ['DRV_WIFI_PIC32MZW1_USE_SYS_DEBUG', 'sys_debug.SYS_DEBUG_USE_CONSOLE'])
-    pic32mzw1LogLevel.setHelp(pic32mzw1_help_keyword)
 
     # RTOS Configuration
     pic32mzw1RtosMenu = drvPic32mzw1Component.createMenuSymbol('DRV_WIFI_PIC32MZW1_RTOS_MENU', None)
@@ -203,7 +198,6 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1TaskSize.setDescription('WiFi PIC32MZW1 Driver RTOS Task Stack Size')
     pic32mzw1TaskSize.setDefaultValue(1024)
     pic32mzw1TaskSize.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
-    pic32mzw1TaskSize.setHelp(pic32mzw1_help_keyword)
 
     # WiFi Driver Task Priority
     pic32mzw1TaskPriority = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_RTOS_TASK_PRIORITY', pic32mzw1RtosMenu)
@@ -212,7 +206,6 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1TaskPriority.setDescription('WiFi PIC32MZW1 Driver RTOS Task Priority')
     pic32mzw1TaskPriority.setDefaultValue(1)
     pic32mzw1TaskPriority.setDependencies(setVisibilityRTOSTaskConfig, ['DRV_WIFI_PIC32MZW1_RTOS'])
-    pic32mzw1TaskPriority.setHelp(pic32mzw1_help_keyword)
 
     # Support SAE (WPA3 Personal)?
     pic32mzw1SupportSae = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_SUPPORT_SAE', None)
@@ -221,7 +214,6 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1SupportSae.setVisible(True)
     pic32mzw1SupportSae.setDefaultValue(True)
     pic32mzw1SupportSae.setDependencies(setWpa3dependency, ['DRV_WIFI_PIC32MZW1_SUPPORT_SAE'])
-    pic32mzw1SupportSae.setHelp("wireless_wifi_Client_Interface_Authentication_Context")
 
     # Require BA414E hardware driver?
     pic32mzw1RequireBa414e = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_BA414E', None)
@@ -241,7 +233,32 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1SupportEntSec.setDescription('Support for WPA, WPA2 and WPA3 Enterprise security. Requires wolfSSL support.')
     pic32mzw1SupportEntSec.setVisible(True)
     pic32mzw1SupportEntSec.setDefaultValue(False)
-    pic32mzw1SupportEntSec.setHelp("WDRV_PIC32MZW_AuthCtxSetEnterpriseTLS")
+
+    # Encryption Provider selection (under Enterprise)
+    pic32mzw1EncryptionProvider = drvPic32mzw1Component.createKeyValueSetSymbol('DRV_WIFI_PIC32MZW1_ENC_PROVIDER', None)
+    pic32mzw1EncryptionProvider.setLabel('Encryption Provider')
+    pic32mzw1EncryptionProvider.setDescription('Select the TLS/Encryption provider for Enterprise security')
+    pic32mzw1EncryptionProvider.addKey('WolfSSL', '0', 'Use WolfSSL as Encryption Provider')
+    pic32mzw1EncryptionProvider.addKey('Generate Stub', '1', 'Generate Stub Encryption Code')
+    pic32mzw1EncryptionProvider.setDisplayMode('Key')
+    pic32mzw1EncryptionProvider.setOutputMode('Key')
+    pic32mzw1EncryptionProvider.setDefaultValue(0)
+    pic32mzw1EncryptionProvider.setVisible(False)
+    pic32mzw1EncryptionProvider.setDependencies(setEncProviderVisible, ['DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE'])
+
+    # Use WolfSSL as Encryption Provider?
+    pic32mzw1UseWolfSSL = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_USE_WOLFSSL', None)
+    pic32mzw1UseWolfSSL.setLabel('Use WolfSSL as Encryption Provider?')
+    pic32mzw1UseWolfSSL.setVisible(False)
+    pic32mzw1UseWolfSSL.setDefaultValue(True)
+    pic32mzw1UseWolfSSL.setDependencies(setUseWolfSSL, ['DRV_WIFI_PIC32MZW1_ENC_PROVIDER', 'DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE'])
+
+    # Generate Encryption Provider Stub Code?
+    pic32mzw1GenEncryptStub = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_GENERATE_ENC_STUBS', None)
+    pic32mzw1GenEncryptStub.setLabel('Generate Stub Encryption Code?')
+    pic32mzw1GenEncryptStub.setVisible(False)
+    pic32mzw1GenEncryptStub.setDefaultValue(False)
+    pic32mzw1GenEncryptStub.setDependencies(setGenerateEncStubs, ['DRV_WIFI_PIC32MZW1_ENC_PROVIDER', 'DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE'])
 
     # Require Wolfssl
     pic32mzw1RequireWolfssl = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_REQUIRE_WOLFSSL', None)
@@ -254,8 +271,49 @@ def instantiateComponent(drvPic32mzw1Component):
     pic32mzw1RegDomain.setLabel('Regulatory Domain')
     pic32mzw1RegDomain.setVisible(True)
     pic32mzw1RegDomain.setDefaultValue('GEN')
-    pic32mzw1RegDomain.setHelp("wireless_wifi_Client_Interface_Regulatory_Domain")
 
+    # Require BT/Wifi Coexistence
+    pic32mzw1CoexMenu = drvPic32mzw1Component.createMenuSymbol('DRV_WIFI_PIC32MZW1_COEX', None)
+    pic32mzw1CoexMenu.setLabel('BT/Wifi coexistence')
+    pic32mzw1CoexMenu.setDescription('BT/Wifi Coexistence Configuration')
+    pic32mzw1CoexMenu.setVisible(True)
+
+    pic32mzw1CoexEn = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_COEX_ENABLE', pic32mzw1CoexMenu)
+    pic32mzw1CoexEn.setLabel('Enable BT/Wifi Coexistence')
+    pic32mzw1CoexEn.setVisible(True)
+    pic32mzw1CoexEn.setDescription('Enable BT/Wifi Coexistence?')
+    pic32mzw1CoexEn.setDefaultValue(False)
+
+    pic32mzw1CoexAntennaMode = drvPic32mzw1Component.createComboSymbol('DRV_WIFI_PIC32MZW1_COEX_IF_TYPE', pic32mzw1CoexMenu, ['3-Wire', '2-Wire'])
+    pic32mzw1CoexAntennaMode.setLabel('Interface type')
+    pic32mzw1CoexAntennaMode.setVisible(True)
+    pic32mzw1CoexAntennaMode.setDescription('Interface type?')
+    pic32mzw1CoexAntennaMode.setDefaultValue('3-Wire')
+    
+    pic32mzw1CoexPrioWlanTx = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_COEX_PRIO_WLAN_TX_GT_BT_LP', pic32mzw1CoexMenu)
+    pic32mzw1CoexPrioWlanTx.setLabel('Wifi Tx priority higher than BT Low-Priority')
+    pic32mzw1CoexPrioWlanTx.setVisible(True)
+    pic32mzw1CoexPrioWlanTx.setDescription('Wifi Tx priority higher than BT Low-Priority?')
+    pic32mzw1CoexPrioWlanTx.setDefaultValue(False)
+    
+    pic32mzw1CoexPrioWlanRx = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_COEX_PRIO_WLAN_RX_GT_BT_LP', pic32mzw1CoexMenu)
+    pic32mzw1CoexPrioWlanRx.setLabel('Wifi Rx priority higher than BT Low-Priority')
+    pic32mzw1CoexPrioWlanRx.setVisible(True)
+    pic32mzw1CoexPrioWlanRx.setDescription('Wifi Rx priority higher than BT Low-Priority?')
+    pic32mzw1CoexPrioWlanRx.setDefaultValue(False)
+    
+    pic32mzw1CoexAntMode = drvPic32mzw1Component.createBooleanSymbol('DRV_WIFI_PIC32MZW1_COEX_SHARED_ANTENNA', pic32mzw1CoexMenu)
+    pic32mzw1CoexAntMode.setLabel('Shared antenna')
+    pic32mzw1CoexAntMode.setVisible(True)
+    pic32mzw1CoexAntMode.setDescription('Single shared antenna for Wifi and BT?')
+    pic32mzw1CoexAntMode.setDefaultValue(True)
+
+    pic32mzw1CoexBtPrioReadFn = drvPic32mzw1Component.createStringSymbol('DRV_WIFI_PIC32MZW1_COEX_READ_BT_PRIO', pic32mzw1CoexMenu)
+    pic32mzw1CoexBtPrioReadFn.setLabel('BT Priority Read Function')
+    pic32mzw1CoexBtPrioReadFn.setVisible(True)
+    pic32mzw1CoexBtPrioReadFn.setDescription('Function to sample BT Priority on the PTA interface')
+    pic32mzw1CoexBtPrioReadFn.setDefaultValue('')
+    
     pic32mzw1AlarmPeroid1ms = drvPic32mzw1Component.createIntegerSymbol('DRV_WIFI_PIC32MZW1_ALARM_PERIOD_1MS', None)
     pic32mzw1AlarmPeroid1ms.setVisible(False)
     pic32mzw1AlarmPeroid1ms.setDefaultValue(0)
@@ -275,7 +333,7 @@ def instantiateComponent(drvPic32mzw1Component):
     wdrvIncFiles = [
         ['drv_pic32mzw1.h',             condAlways],
         ['drv_pic32mzw1_crypto.h',      condAlways],
-        ['drv_pic32mzw1_tls.h',         condAlways],
+        ['drv_pic32mzw_tls.h',          condAlways],
         ['wdrv_pic32mzw.h',             condAlways],
         ['wdrv_pic32mzw_api.h',         condAlways],
         ['wdrv_pic32mzw_assoc.h',       condAlways],
@@ -292,7 +350,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_sta.h',         condAlways],
         ['wdrv_pic32mzw_ps.h',          condAlways],
         ['wdrv_pic32mzw_custie.h',      condAlways],
-        ['wdrv_pic32mzw_ie.h',          condAlways]
+        ['wdrv_pic32mzw_ie.h',          condAlways],
+        ['wdrv_pic32mzw_tls.h',         condAlways],        
     ]
 
     for incFileEntry in wdrvIncFiles:
@@ -300,7 +359,6 @@ def instantiateComponent(drvPic32mzw1Component):
 
     wdrvSrcFiles = [
         ['drv_pic32mzw1_crypto.c',      condAlways],
-        ['drv_pic32mzw1_tls.c',         condAlways],
         ['wdrv_pic32mzw.c',             condAlways],
         ['wdrv_pic32mzw_assoc.c',       condAlways],
         ['wdrv_pic32mzw_authctx.c',     condAlways],
@@ -313,7 +371,8 @@ def instantiateComponent(drvPic32mzw1Component):
         ['wdrv_pic32mzw_sta.c',         condAlways],
         ['wdrv_pic32mzw_ps.c',          condAlways],
         ['wdrv_pic32mzw_custie.c',      condAlways],
-        ['wdrv_pic32mzw_ie.c',          condAlways]
+        ['wdrv_pic32mzw_ie.c',          condAlways],
+        ['wdrv_pic32mzw_tls.c',         condAlways],        
     ]
 
     for srcFileEntry in wdrvSrcFiles:
@@ -377,6 +436,30 @@ def instantiateComponent(drvPic32mzw1Component):
     drvpic32mzw1SystemRtosTasksFile.setMarkup(True)
     drvpic32mzw1SystemRtosTasksFile.setEnabled((Database.getSymbolValue('HarmonyCore', 'SELECT_RTOS') != 'BareMetal'))
     drvpic32mzw1SystemRtosTasksFile.setDependencies(setEnabledRTOSTask, ['HarmonyCore.SELECT_RTOS'])
+
+    # User TLS Callback Header File (generated from template)
+    wdrvTlsCbHeaderFile = drvPic32mzw1Component.createFileSymbol('DRV_WIFI_PIC32MZW1_TLS_CB_H', None)
+    wdrvTlsCbHeaderFile.setSourcePath('driver/pic32mzw1/templates/wdrv_pic32mzw_tls_callback.h.ftl')
+    wdrvTlsCbHeaderFile.setOutputName('wdrv_pic32mzw_tls_callback.h')
+    wdrvTlsCbHeaderFile.setMarkup(True)
+    wdrvTlsCbHeaderFile.setDestPath('driver/wifi/pic32mzw1/include/')
+    wdrvTlsCbHeaderFile.setProjectPath('config/' + configName + '/driver/wifi/pic32mzw1/include/')
+    wdrvTlsCbHeaderFile.setType('HEADER')
+    wdrvTlsCbHeaderFile.setOverwrite(True)
+    wdrvTlsCbHeaderFile.setEnabled(False)
+    wdrvTlsCbHeaderFile.setDependencies(setEnableTlsEnterpriseCb, ['DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE'])
+
+    # User TLS Callback Source File (generated from template)
+    wdrvTlsCbSourceFile = drvPic32mzw1Component.createFileSymbol('DRV_WIFI_PIC32MZW1_TLS_CB_C', None)
+    wdrvTlsCbSourceFile.setSourcePath('driver/pic32mzw1/templates/wdrv_pic32mzw_tls_callback.c.ftl')
+    wdrvTlsCbSourceFile.setOutputName('wdrv_pic32mzw_tls_callback.c')
+    wdrvTlsCbSourceFile.setMarkup(True)
+    wdrvTlsCbSourceFile.setDestPath('driver/wifi/pic32mzw1/')
+    wdrvTlsCbSourceFile.setProjectPath('config/' + configName + '/driver/wifi/pic32mzw1/')
+    wdrvTlsCbSourceFile.setType('SOURCE')
+    wdrvTlsCbSourceFile.setOverwrite(True)
+    wdrvTlsCbSourceFile.setEnabled(False)
+    wdrvTlsCbSourceFile.setDependencies(setEnableTlsEnterpriseCb, ['DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE'])
 
 def setVisibilityRTOSMenu(symbol, event):
     if (event['value'] == None):
@@ -452,3 +535,33 @@ def updateAlarmPeriod1ms(symbol, event):
 def updateAlarmPeriodMax(symbol, event):
     max = 65536 / ((int(event['value']) / 256) / 1000)
     symbol.setValue(max)
+
+def setEncProviderVisible(symbol, event):
+    if (event['value'] == True):
+        symbol.setVisible(True)
+    else:
+        symbol.setVisible(False)
+
+def setUseWolfSSL(symbol, event):
+    data = symbol.getComponent()
+    enterpriseEnabled = data.getSymbolValue('DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE')
+    encProvider = data.getSymbolValue('DRV_WIFI_PIC32MZW1_ENC_PROVIDER')
+    if enterpriseEnabled and (encProvider == 0):  # 0 = WolfSSL
+        symbol.setValue(True)
+    else:
+        symbol.setValue(False)
+
+def setGenerateEncStubs(symbol, event):
+    data = symbol.getComponent()
+    enterpriseEnabled = data.getSymbolValue('DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE')
+    encProvider = data.getSymbolValue('DRV_WIFI_PIC32MZW1_ENC_PROVIDER')
+    if enterpriseEnabled and (encProvider == 1):  # 1 = Generate Stub
+        symbol.setValue(True)
+    else:
+        symbol.setValue(False)
+
+def setEnableTlsEnterpriseCb(symbol, event):
+    if (event['value'] == True):
+        symbol.setEnabled(True)
+    else:
+        symbol.setEnabled(False)

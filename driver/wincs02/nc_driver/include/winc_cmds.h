@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -63,55 +63,58 @@ typedef uintptr_t WINC_CMD_REQ_HANDLE;
                          WINC Commands Module API
  *****************************************************************************/
 
-#define WINC_CMDCFG_ID_IGNORE_VAL                        (0)
+#define WINC_CMDCFG_ID_IGNORE_VAL                        (-1)
 #define WINC_CMDDHCPSC_IDX_IGNORE_VAL                    (-1)
-#define WINC_CMDDHCPSC_ID_IGNORE_VAL                     (0)
-#define WINC_CMDDNSC_ID_IGNORE_VAL                       (0)
+#define WINC_CMDDHCPSC_ID_IGNORE_VAL                     (-1)
+#define WINC_CMDDNSC_ID_IGNORE_VAL                       (-1)
 #define WINC_CMDFSOP_FILETYPE_IGNORE_VAL                 (-1)
 #define WINC_CMDFSLOAD_FILELENGTH_IGNORE_VAL             (0)
 #define WINC_CMDFSTSFR_TSFR_HANDLE_IGNORE_VAL            (0)
 #define WINC_CMDFSTSFR_BLOCK_NUM_IGNORE_VAL              (-1)
 #define WINC_CMDFSTSFR_CRC_IGNORE_VAL                    (-1)
 #define WINC_CMDFSRECV_DATA_LENGTH_IGNORE_VAL            (0)
-#define WINC_CMDMQTTC_ID_IGNORE_VAL                      (0)
+#define WINC_CMDMQTTC_ID_IGNORE_VAL                      (-1)
 #define WINC_CMDMQTTCONN_CLEAN_IGNORE_VAL                (-1)
 #define WINC_CMDMQTTDISCONN_REASON_CODE_IGNORE_VAL       (-1)
-#define WINC_CMDMQTTPROPTX_ID_IGNORE_VAL                 (0)
-#define WINC_CMDMQTTPROPRX_ID_IGNORE_VAL                 (0)
+#define WINC_CMDMQTTPROPTX_ID_IGNORE_VAL                 (-1)
+#define WINC_CMDMQTTPROPRX_ID_IGNORE_VAL                 (-1)
 #define WINC_CMDMQTTPROPTXS_PROP_ID_IGNORE_VAL           (-1)
 #define WINC_CMDMQTTPROPTXS_PROP_SEL_IGNORE_VAL          (-1)
 #define WINC_CMDNETIFC_INTF_IGNORE_VAL                   (-1)
-#define WINC_CMDNETIFC_ID_IGNORE_VAL                     (0)
-#define WINC_CMDOTAC_ID_IGNORE_VAL                       (0)
+#define WINC_CMDNETIFC_ID_IGNORE_VAL                     (-1)
+#define WINC_CMDOTAC_ID_IGNORE_VAL                       (-1)
 #define WINC_CMDPING_PROTOCOL_VERSION_IGNORE_VAL         (0)
-#define WINC_CMDSNTPC_ID_IGNORE_VAL                      (0)
+#define WINC_CMDSNTPC_ID_IGNORE_VAL                      (-1)
 #define WINC_CMDSOCKO_PROTOCOL_VERSION_IGNORE_VAL        (0)
 #define WINC_CMDSOCKBL_PEND_SKTS_IGNORE_VAL              (0)
 #define WINC_CMDSOCKWR_SEQ_NUM_IGNORE_VAL                (-1)
 #define WINC_CMDSOCKWRTO_SEQ_NUM_IGNORE_VAL              (-1)
 #define WINC_CMDSOCKLST_SOCK_ID_IGNORE_VAL               (0)
 #define WINC_CMDSOCKC_SOCK_ID_IGNORE_VAL                 (0)
-#define WINC_CMDSOCKC_ID_IGNORE_VAL                      (0)
+#define WINC_CMDSOCKC_ID_IGNORE_VAL                      (-1)
 #define WINC_CMDTIME_FORMAT_IGNORE_VAL                   (0)
 #define WINC_CMDTLSC_CONF_IGNORE_VAL                     (0)
-#define WINC_CMDTLSC_ID_IGNORE_VAL                       (0)
+#define WINC_CMDTLSC_ID_IGNORE_VAL                       (-1)
+#define WINC_CMDTLSCDA_ALGO_IGNORE_VAL                   (0)
 #define WINC_CMDTLSCSC_CSL_IDX_IGNORE_VAL                (0)
-#define WINC_CMDTLSCSC_ID_IGNORE_VAL                     (0)
-#define WINC_CMDWAPC_ID_IGNORE_VAL                       (0)
+#define WINC_CMDTLSCSC_ID_IGNORE_VAL                     (-1)
+#define WINC_CMDWAPC_ID_IGNORE_VAL                       (-1)
 #define WINC_CMDWAP_STATE_IGNORE_VAL                     (-1)
-#define WINC_CMDWSCNC_ID_IGNORE_VAL                      (0)
-#define WINC_CMDWSTAC_ID_IGNORE_VAL                      (0)
+#define WINC_CMDWSCNC_ID_IGNORE_VAL                      (-1)
+#define WINC_CMDWSTAC_ID_IGNORE_VAL                      (-1)
 #define WINC_CMDWSTA_STATE_IGNORE_VAL                    (-1)
 #define WINC_CMDASSOC_ASSOC_ID_IGNORE_VAL                (0)
 #define WINC_CMDSI_FILTER_IGNORE_VAL                     (0)
-#define WINC_CMDWPROVC_ID_IGNORE_VAL                     (0)
+#define WINC_CMDWPROVC_ID_IGNORE_VAL                     (-1)
 #define WINC_CMDWPROV_STATE_IGNORE_VAL                   (-1)
-#define WINC_CMDDI_ID_IGNORE_VAL                         (0)
-#define WINC_CMDWIFIC_ID_IGNORE_VAL                      (0)
-#define WINC_CMDNVMC_ID_IGNORE_VAL                       (0)
-#define WINC_CMDPPSC_ID_IGNORE_VAL                       (0)
-#define WINC_CMDSYSLOGC_ID_IGNORE_VAL                    (0)
+#define WINC_CMDDI_ID_IGNORE_VAL                         (-1)
+#define WINC_CMDWIFIC_ID_IGNORE_VAL                      (-1)
+#define WINC_CMDNVMC_ID_IGNORE_VAL                       (-1)
+#define WINC_CMDPPSC_ID_IGNORE_VAL                       (-1)
+#define WINC_CMDSYSLOGC_ID_IGNORE_VAL                    (-1)
 #define WINC_CMDARB_VALUE_IGNORE_VAL                     (0)
+#define WINC_CMDHTTPC_CONF_IGNORE_VAL                    (0)
+#define WINC_CMDHTTPC_ID_IGNORE_VAL                      (-1)
 
 #define WINC_CmdFormFractInt(intVal, fracVal)       ((((uint32_t)(intVal)) << 16) | (fracVal))
 
@@ -196,7 +199,7 @@ bool WINC_CmdGMR(WINC_CMD_REQ_HANDLE handle);
 
  *****************************************************************************/
 
-bool WINC_CmdCFG(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdCFG(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -249,7 +252,7 @@ bool WINC_CmdCFGCP(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeCfgsrc, uintptr_t c
 
  *****************************************************************************/
 
-bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -275,17 +278,17 @@ bool WINC_CmdDHCPSC(WINC_CMD_REQ_HANDLE handle, int32_t optIdx, uint32_t optId, 
 
  *****************************************************************************/
 
-bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
     This function is used to resolve domain names via DNS.
 
   Parameters:
-    handle        - Command request session handle
-    type          - Type of record
-    pDomainName   - Domain name to resolve
-    lenDomainName - Length of pDomainName
+    handle       - Command request session handle
+    type         - Type of record
+    pQueryName   - Query name to resolve
+    lenQueryName - Length of pQueryName
 
   Returns:
     true  - Success.
@@ -296,7 +299,7 @@ bool WINC_CmdDNSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
 
  *****************************************************************************/
 
-bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* pDomainName, size_t lenDomainName);
+bool WINC_CmdDNSRESOLV(WINC_CMD_REQ_HANDLE handle, uint8_t type, const uint8_t* pQueryName, size_t lenQueryName);
 
 /*****************************************************************************
   Description:
@@ -457,7 +460,7 @@ bool WINC_CmdFSRECV(WINC_CMD_REQ_HANDLE handle, uint16_t tsfrHandle, uint8_t blo
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdMQTTC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -660,7 +663,7 @@ bool WINC_CmdMQTTDISCONN(WINC_CMD_REQ_HANDLE handle, int32_t optReasonCode);
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdMQTTPROPTX(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -690,7 +693,7 @@ bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_
 
 /*****************************************************************************
   Description:
-    This function is used to read the MQTT receive properties.
+    This function is used to read or reset the MQTT receive properties.
 
   Parameters:
     handle - Command request session handle
@@ -709,7 +712,28 @@ bool WINC_CmdMQTTPROPTXKV(WINC_CMD_REQ_HANDLE handle, const uint8_t* pKey, size_
 
  *****************************************************************************/
 
-bool WINC_CmdMQTTPROPRX(WINC_CMD_REQ_HANDLE handle, uint32_t optId);
+bool WINC_CmdMQTTPROPRX(WINC_CMD_REQ_HANDLE handle, int32_t optId);
+
+/*****************************************************************************
+  Description:
+    This function is used to read or reset the MQTT receive properties.
+
+  Parameters:
+    handle  - Command request session handle
+    typeVal - Type of val
+    val     - Parameter value
+    lenVal  - Length of val
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdMQTTPROPRXPRESET(WINC_CMD_REQ_HANDLE handle, WINC_TYPE typeVal, uintptr_t val, size_t lenVal);
 
 /*****************************************************************************
   Description:
@@ -764,7 +788,7 @@ bool WINC_CmdMQTTPROPTXS(WINC_CMD_REQ_HANDLE handle, int32_t optPropId, int32_t 
 
  *****************************************************************************/
 
-bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdNETIFC(WINC_CMD_REQ_HANDLE handle, int32_t optIntf, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -811,7 +835,7 @@ bool WINC_CmdNETIFTX(WINC_CMD_REQ_HANDLE handle, uint8_t intf, const uint8_t* pD
 
  *****************************************************************************/
 
-bool WINC_CmdOTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdOTAC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -955,7 +979,7 @@ bool WINC_CmdRST(WINC_CMD_REQ_HANDLE handle);
 
  *****************************************************************************/
 
-bool WINC_CmdSNTPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdSNTPC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1155,7 +1179,7 @@ bool WINC_CmdSOCKRD(WINC_CMD_REQ_HANDLE handle, uint16_t sockId, uint8_t outputM
 
 /*****************************************************************************
   Description:
-    This function is used to read data from a socket buffer.
+    This function is used to read data from a socket buffer (UDP only).
 
   Parameters:
     handle     - Command request session handle
@@ -1244,7 +1268,7 @@ bool WINC_CmdSOCKLST(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId);
 
  *****************************************************************************/
 
-bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdSOCKC(WINC_CMD_REQ_HANDLE handle, uint16_t optSockId, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1336,7 +1360,33 @@ bool WINC_CmdTIMERFC(WINC_CMD_REQ_HANDLE handle, const uint8_t* pDateTime, size_
 
  *****************************************************************************/
 
-bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+
+/*****************************************************************************
+  Description:
+    This function is used to read or set the TLS configuration.
+
+  Parameters:
+    handle    - Command request session handle
+    conf      - Configuration number
+    pDigest   - Hash digest
+    lenDigest - Length of pDigest
+    optAlgo   - Hash algorithm
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optAlgo will be ignored if its value is WINC_CMDTLSCDA_ALGO_IGNORE_VAL.
+
+ *****************************************************************************/
+
+bool WINC_CmdTLSCDA(WINC_CMD_REQ_HANDLE handle, uint8_t conf, const uint8_t* pDigest, size_t lenDigest, uint8_t optAlgo);
 
 /*****************************************************************************
   Description:
@@ -1365,7 +1415,7 @@ bool WINC_CmdTLSC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, uint32_t optId, W
 
  *****************************************************************************/
 
-bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1392,7 +1442,7 @@ bool WINC_CmdTLSCSC(WINC_CMD_REQ_HANDLE handle, uint8_t optCslIdx, uint32_t optI
 
  *****************************************************************************/
 
-bool WINC_CmdWAPC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdWAPC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1443,7 +1493,7 @@ bool WINC_CmdWAP(WINC_CMD_REQ_HANDLE handle, int32_t optState);
 
  *****************************************************************************/
 
-bool WINC_CmdWSCNC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdWSCNC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1490,7 +1540,7 @@ bool WINC_CmdWSCN(WINC_CMD_REQ_HANDLE handle, uint8_t actPasv);
 
  *****************************************************************************/
 
-bool WINC_CmdWSTAC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdWSTAC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1587,7 +1637,7 @@ bool WINC_CmdSI(WINC_CMD_REQ_HANDLE handle, uint8_t optFilter);
 
  *****************************************************************************/
 
-bool WINC_CmdWPROVC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdWPROVC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1633,7 +1683,7 @@ bool WINC_CmdWPROV(WINC_CMD_REQ_HANDLE handle, int32_t optState);
 
  *****************************************************************************/
 
-bool WINC_CmdDI(WINC_CMD_REQ_HANDLE handle, uint32_t optId);
+bool WINC_CmdDI(WINC_CMD_REQ_HANDLE handle, int32_t optId);
 
 /*****************************************************************************
   Description:
@@ -1688,7 +1738,7 @@ bool WINC_CmdEXTCRYPTO(WINC_CMD_REQ_HANDLE handle, uint16_t opId, uint8_t status
 
  *****************************************************************************/
 
-bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1714,7 +1764,7 @@ bool WINC_CmdWIFIC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOpt
 
  *****************************************************************************/
 
-bool WINC_CmdNVMC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdNVMC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1865,7 +1915,7 @@ bool WINC_CmdDFUSEQ(WINC_CMD_REQ_HANDLE handle, uint8_t imageState);
 
  *****************************************************************************/
 
-bool WINC_CmdPPSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdPPSC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1886,6 +1936,26 @@ bool WINC_CmdPPSC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptV
  *****************************************************************************/
 
 bool WINC_CmdPPS(WINC_CMD_REQ_HANDLE handle, uint8_t ppsState);
+
+/*****************************************************************************
+  Description:
+    This function allows the firmware to change the state of platform power
+      save.
+
+  Parameters:
+    handle    - Command request session handle
+    pauseTime - PPS pause time in sec
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdPPSPAUSE(WINC_CMD_REQ_HANDLE handle, uint16_t pauseTime);
 
 /*****************************************************************************
   Description:
@@ -1911,7 +1981,7 @@ bool WINC_CmdPPS(WINC_CMD_REQ_HANDLE handle, uint8_t ppsState);
 
  *****************************************************************************/
 
-bool WINC_CmdSYSLOGC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+bool WINC_CmdSYSLOGC(WINC_CMD_REQ_HANDLE handle, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
 
 /*****************************************************************************
   Description:
@@ -1936,5 +2006,98 @@ bool WINC_CmdSYSLOGC(WINC_CMD_REQ_HANDLE handle, uint32_t optId, WINC_TYPE typeO
  *****************************************************************************/
 
 bool WINC_CmdARB(WINC_CMD_REQ_HANDLE handle, uint8_t optValue);
+
+/*****************************************************************************
+  Description:
+    This function is used to read or set the HTTP configuration.
+
+  Parameters:
+    handle     - Command request session handle
+    optConf    - Configuration number
+    optId      - Parameter ID number
+    typeOptVal - Type of optVal
+    optVal     - Parameter value
+    lenOptVal  - Length of optVal
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    optConf will be ignored if its value is WINC_CMDHTTPC_CONF_IGNORE_VAL.
+
+    optId will be ignored if its value is WINC_CMDHTTPC_ID_IGNORE_VAL.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPC(WINC_CMD_REQ_HANDLE handle, uint8_t optConf, int32_t optId, WINC_TYPE typeOptVal, uintptr_t optVal, size_t lenOptVal);
+
+/*****************************************************************************
+  Description:
+    This function performs an HTTP GET operation.
+
+  Parameters:
+    handle     - Command request session handle
+    conf       - Configuration number
+    pOptPath   - Resource path
+    lenOptPath - Length of pOptPath
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    This function has optional parameters, when an optional parameter is set
+    to its ignore value it and all subsequent parameters are ignored.
+    Subsequent parameters should also be set to their ignore values.
+
+    pOptPath will be ignored if its value is NULL.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPGET(WINC_CMD_REQ_HANDLE handle, uint8_t conf, const uint8_t* pOptPath, size_t lenOptPath);
+
+/*****************************************************************************
+  Description:
+    This function performs an HTTP data read operation.
+
+  Parameters:
+    handle - Command request session handle
+    conf   - Configuration number
+    length - Number of bytes
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPRD(WINC_CMD_REQ_HANDLE handle, uint8_t conf, int32_t length);
+
+/*****************************************************************************
+  Description:
+    This function performs an HTTP close operation.
+
+  Parameters:
+    handle - Command request session handle
+    conf   - Configuration number
+
+  Returns:
+    true  - Success.
+    false - Failure.
+
+  Remarks:
+    None.
+
+ *****************************************************************************/
+
+bool WINC_CmdHTTPCL(WINC_CMD_REQ_HANDLE handle, uint8_t conf);
 
 #endif // WINC_CMDS_H

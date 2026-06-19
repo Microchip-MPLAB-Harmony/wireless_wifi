@@ -535,7 +535,11 @@ static void wincMACEthernetMsgRecvCallback
         ptrPacket->ackFunc  = wincMACEthernetMsgStackCallback;
         ptrPacket->ackParam = pDcpt->pMac;
 
+#ifdef TCPIP_STACK_VLAN_INTERFACE_SUPPORT
+        ptrPacket->pDSeg->segLen  = lengthEthMsg;
+#else
         ptrPacket->pDSeg->segLen  = lengthEthMsg - ETHERNET_HDR_LEN;
+#endif
         ptrPacket->pDSeg->segSize = lengthEthMsg;
         ptrPacket->pktFlags       = TCPIP_MAC_PKT_FLAG_QUEUED;
         ptrPacket->tStamp         = SYS_TMR_TickCountGet();

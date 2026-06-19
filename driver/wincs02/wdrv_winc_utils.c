@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -42,7 +42,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <ctype.h>
 
 #include "wdrv_winc_common.h"
-#include "wdrv_winc_utils.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -209,7 +208,7 @@ bool WDRV_WINC_UtilsProtectedSingleListInitialize(WDRV_WINC_PROTECTED_SINGLE_LIS
 /*****************************************************************************
  *
  *****************************************************************************/
-int WDRV_WINC_UtilsProtectedSingleListCount(WDRV_WINC_PROTECTED_SINGLE_LIST* pL)
+int WDRV_WINC_UtilsProtectedSingleListCount(const WDRV_WINC_PROTECTED_SINGLE_LIST* pL)
 {
     return pL->list.nNodes;
 }
@@ -473,7 +472,7 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
         len--;
     }
 
-    if (len > sizeof(str_buff) - 1U)
+    if (len > (sizeof(str_buff) - 1U))
     {
         // not enough room to store
         return false;
@@ -566,7 +565,7 @@ bool WDRV_WINC_UtilsStringToIPv6Address(const char * addStr, WDRV_WINC_IPV6_ADDR
             return false;
         }
 
-        if ((convertedValue == 0U) && (endPtr != (char*)subString + j))
+        if ((convertedValue == 0U) && (endPtr != ((char*)subString + j)))
         {
             // could not convert all data in there
             return false;

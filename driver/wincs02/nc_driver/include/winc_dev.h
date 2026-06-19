@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -32,7 +32,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 
 /* Driver version number. */
 #define WINC_DEV_DRIVER_VERSION_MAJOR_NO    3
-#define WINC_DEV_DRIVER_VERSION_MINOR_NO    1
+#define WINC_DEV_DRIVER_VERSION_MINOR_NO    2
 #define WINC_DEV_DRIVER_VERSION_PATCH_NO    0
 
 /* Definition of WINC device handle type. */
@@ -162,7 +162,7 @@ typedef struct
     uint16_t                rspId;
     uint8_t                 numElems;
     WINC_DEV_EVENT_SRC_CMD  srcCmd;
-    WINC_DEV_PARAM_ELEM     elems[10];
+    WINC_DEV_PARAM_ELEM     elems[12];
 } WINC_DEV_EVENT_RSP_ELEMS;
 
 /* Command response event callback type definition. */

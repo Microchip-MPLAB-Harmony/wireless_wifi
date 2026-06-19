@@ -41,7 +41,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -75,6 +75,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include "wdrv_winc_api.h"
 #include "wdrv_winc_common.h"
 #include "wdrv_winc_bssfind.h"
+#include "wdrv_winc_bssctx.h"
 #include "wdrv_winc_assoc.h"
 #include "wdrv_winc_file.h"
 #include "wdrv_winc_systime.h"
@@ -113,6 +114,9 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #endif
 #ifndef WDRV_WINC_MOD_DISABLE_SYSLOG
 #include "wdrv_winc_syslog.h"
+#endif
+#ifndef WDRV_WINC_MOD_DISABLE_HTTP
+#include "wdrv_winc_http.h"
 #endif
 
 // *****************************************************************************
@@ -745,27 +749,49 @@ typedef struct
     /* Callback for PPS state */
     WDRV_WINC_PPS_EVENT_HANDLER pfPPSEventCB;
 #endif
+#ifndef WDRV_WINC_MOD_DISABLE_HTTP
+    /* HTTP state. */
+    WDRV_WINC_HTTP_STATE httpState;
+#endif
 #ifndef WDRV_WINC_DISABLE_L3_SUPPORT
     /* Callback to use for ICHO echo responses. */
     WDRV_WINC_ICMP_ECHO_RSP_EVENT_HANDLER pfICMPEchoResponseCB;
 
     /* Callback to use for DNS resolve responses. */
     WDRV_WINC_DNS_RESOLVE_CALLBACK pfDNSResolveResponseCB;
+
+    /* Callback to use for extneded DNS resource queries. */
+    WDRV_WINC_DNS_QUERY_RESOURCE_CALLBACK pfDNSResQueryResponseCB;
 #endif
     /* Callback to use for network interface events. */
     WDRV_WINC_NETIF_EVENT_HANDLER pfNetIfEventCB;
 
-    /* Callback to use for network interface information requests. */
-    WDRV_WINC_NETIF_INFO_HANDLER pfNetIfInfoCB;
+    struct
+    {
+        /* Callback to use for network interface information requests. */
+        WDRV_WINC_NETIF_INFO_HANDLER pfCB;
+
+        /* Network interface information request mask. */
+        uint32_t reqMask;
+
+        /* Network interface information request completion mask. */
+        uint32_t reqCompMask;
+
+        /* Pointer to network information structure to accumulate information in. */
+        WDRV_WINC_NETIF_INFO_STORE_TYPE *pStore;
+    } netIfInfo;
 
     /* Callback to use for regulatory domain information events. */
     WDRV_WINC_REGDOMAIN_CALLBACK pfRegDomainEventCB;
 
     /* Callback to use for receiving powersave information events. */
-    WDRV_WINC_POWERSAVE_CALLBACK pfPowersaveEventCB;
+    WDRV_WINC_WIFI_POWERSAVE_CALLBACK pfPowersaveEventCB;
 #ifndef WDRV_WINC_DISABLE_L3_SUPPORT
     /* Callback to use for receiving DHCP server events. */
     WDRV_WINC_DHCPS_EVENT_HANDLER pfDHCPSEventCB;
+
+    /* Callback to use for SNTP status events. */
+    WDRV_WINC_SNTP_STATUS_CALLBACK pfSNTPStatusCB;
 #endif
     /* Callback to monitor L2 data frames. */
     WDRV_WINC_L2DATA_MONITOR_CALLBACK pfL2DataMonitorCB;
@@ -1539,6 +1565,54 @@ WDRV_WINC_STATUS WDRV_WINC_CfgArchiveRecall
     DRV_HANDLE handle,
     const char *pFilename
 );
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver HTTP Routines
+// *****************************************************************************
+// *****************************************************************************
+
+#if !defined(WDRV_WINC_MOD_DISABLE_HTTP) || !defined(WDRV_WINC_MOD_DISABLE_OTA)
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_HTTPParseURL
+    (
+        const char *pURL,
+        size_t urlLength,
+        WDRV_WINC_HTTP_URL_ELEMS_TYPE *pElems
+    )
+
+  Summary:
+    Parse an HTTP URL.
+
+  Description:
+    Parse an HTTP URL into its component elements.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pURL      - Pointer to URL.
+    urlLength - Length of URL.
+    pElems    - Pointer to elements structure to parse into.
+
+  Returns:
+    WDRV_WINC_STATUS_OK          - The URL has been parsed.
+    WDRV_WINC_STATUS_INVALID_ARG - The parameters were incorrect.
+
+  Remarks:
+    Callback should call WINC_CmdReadParamElem to extract elements.
+
+*/
+
+WDRV_WINC_STATUS WDRV_WINC_HTTPParseURL
+(
+    const char *pURL,
+    size_t urlLength,
+    WDRV_WINC_HTTP_URL_ELEMS_TYPE *pElems
+);
+#endif
 
 // *****************************************************************************
 // *****************************************************************************

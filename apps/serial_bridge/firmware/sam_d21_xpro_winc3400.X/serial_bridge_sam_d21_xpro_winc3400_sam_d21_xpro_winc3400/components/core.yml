@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: core
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments: {}
@@ -22,48 +22,12 @@ data:
     - children:
       - attributes:
           id: core
-          x: '400'
-          y: '20'
+          x: '560'
+          y: '19'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
   symbols:
-    COMPILER_CHOICE:
-      attributes:
-        id: COMPILER_CHOICE
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    CONFIG_CLOCK_DFLL_ENABLE:
-      attributes:
-        id: CONFIG_CLOCK_DFLL_ENABLE
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'true'
-          type: User
-        type: Values
-      type: Boolean
-    CONFIG_CLOCK_OSC8M_ENABLE:
-      attributes:
-        id: CONFIG_CLOCK_OSC8M_ENABLE
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'false'
-          type: Dynamic
-        type: Values
-      type: Boolean
     CONF_CLOCK_OSC32K_ENABLE:
       attributes:
         id: CONF_CLOCK_OSC32K_ENABLE
@@ -77,116 +41,6 @@ data:
     CPU_CLOCK_FREQUENCY:
       attributes:
         id: CPU_CLOCK_FREQUENCY
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '48000000'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DEVICE_BOD33_ACTION:
-      attributes:
-        id: DEVICE_BOD33_ACTION
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_BOD33_EN:
-      attributes:
-        id: DEVICE_BOD33_EN
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_BOD33_HYST:
-      attributes:
-        id: DEVICE_BOD33_HYST
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_SECURITY_CMD:
-      attributes:
-        id: DEVICE_SECURITY_CMD
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_WDT_ALWAYSON:
-      attributes:
-        id: DEVICE_WDT_ALWAYSON
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_WDT_ENABLE:
-      attributes:
-        id: DEVICE_WDT_ENABLE
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_WDT_WEN:
-      attributes:
-        id: DEVICE_WDT_WEN
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_WDT_WINDOW_0:
-      attributes:
-        id: DEVICE_WDT_WINDOW_0
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DEVICE_WDT_WINDOW_1:
-      attributes:
-        id: DEVICE_WDT_WINDOW_1
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '4'
-          type: Dynamic
-        type: Values
-      type: Hex
-    DFLL_CLOCK_FREQ:
-      attributes:
-        id: DFLL_CLOCK_FREQ
       children:
       - children:
         - attributes:
@@ -217,28 +71,6 @@ data:
           type: Dynamic
         type: Values
       type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_10:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_10
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_11:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_11
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
     DMAC_BTCTRL_BEATSIZE_CH_2:
       attributes:
         id: DMAC_BTCTRL_BEATSIZE_CH_2
@@ -253,72 +85,6 @@ data:
     DMAC_BTCTRL_BEATSIZE_CH_3:
       attributes:
         id: DMAC_BTCTRL_BEATSIZE_CH_3
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_4:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_4
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_5:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_5
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_6:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_7:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_8:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_8
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_BEATSIZE_CH_9:
-      attributes:
-        id: DMAC_BTCTRL_BEATSIZE_CH_9
       children:
       - children:
         - attributes:
@@ -349,28 +115,6 @@ data:
           type: Dynamic
         type: Values
       type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_10:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_10
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_11:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_11
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
     DMAC_BTCTRL_DSTINC_CH_2:
       attributes:
         id: DMAC_BTCTRL_DSTINC_CH_2
@@ -385,72 +129,6 @@ data:
     DMAC_BTCTRL_DSTINC_CH_3:
       attributes:
         id: DMAC_BTCTRL_DSTINC_CH_3
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_4:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_4
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_5:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_5
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_6:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_7:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_8:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_8
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_DSTINC_CH_9:
-      attributes:
-        id: DMAC_BTCTRL_DSTINC_CH_9
       children:
       - children:
         - attributes:
@@ -481,28 +159,6 @@ data:
           type: Dynamic
         type: Values
       type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_10:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_10
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_11:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_11
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
     DMAC_BTCTRL_SRCINC_CH_2:
       attributes:
         id: DMAC_BTCTRL_SRCINC_CH_2
@@ -517,72 +173,6 @@ data:
     DMAC_BTCTRL_SRCINC_CH_3:
       attributes:
         id: DMAC_BTCTRL_SRCINC_CH_3
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_4:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_4
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_5:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_5
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_6:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_7:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_8:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_8
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_BTCTRL_SRCINC_CH_9:
-      attributes:
-        id: DMAC_BTCTRL_SRCINC_CH_9
       children:
       - children:
         - attributes:
@@ -613,28 +203,6 @@ data:
           type: Dynamic
         type: Values
       type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_10:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_10
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_11:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_11
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
     DMAC_CHCTRLB_TRIGACT_CH_2:
       attributes:
         id: DMAC_CHCTRLB_TRIGACT_CH_2
@@ -649,72 +217,6 @@ data:
     DMAC_CHCTRLB_TRIGACT_CH_3:
       attributes:
         id: DMAC_CHCTRLB_TRIGACT_CH_3
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_4:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_4
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_5:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_5
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_6:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_7:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_8:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_8
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: KeyValueSet
-    DMAC_CHCTRLB_TRIGACT_CH_9:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGACT_CH_9
       children:
       - children:
         - attributes:
@@ -767,72 +269,6 @@ data:
           type: Dynamic
         type: Values
       type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_10:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_10
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Receive
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_10_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_10_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_10_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_10_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_11:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_11
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Transmit
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_11_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_11_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_11_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_11_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '2'
-          type: Dynamic
-        type: Values
-      type: Integer
     DMAC_CHCTRLB_TRIGSRC_CH_1_PERID_LOCK:
       attributes:
         id: DMAC_CHCTRLB_TRIGSRC_CH_1_PERID_LOCK
@@ -864,9 +300,6 @@ data:
             id: core
             value: SERCOM1_Transmit
           type: Dynamic
-        - attributes:
-            value: SERCOM1_Transmit
-          type: User
         type: Values
       type: Combo
     DMAC_CHCTRLB_TRIGSRC_CH_2_PERID_LOCK:
@@ -900,9 +333,6 @@ data:
             id: core
             value: SERCOM1_Receive
           type: Dynamic
-        - attributes:
-            value: SERCOM1_Receive
-          type: User
         type: Values
       type: Combo
     DMAC_CHCTRLB_TRIGSRC_CH_3_PERID_LOCK:
@@ -924,204 +354,6 @@ data:
         - attributes:
             id: core
             value: '3'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_4:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_4
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Transmit
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_4_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_4_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_4_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_4_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '2'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_5:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_5
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Receive
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_5_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_5_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_5_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_5_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_6:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Receive
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_6_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_6_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_6_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_6_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_7:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Transmit
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_7_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_7_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_7_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_7_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '2'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_8:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_8
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Transmit
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_8_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_8_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_8_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_8_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '2'
-          type: Dynamic
-        type: Values
-      type: Integer
-    DMAC_CHCTRLB_TRIGSRC_CH_9:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_9
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM0_Receive
-          type: Dynamic
-        type: Values
-      type: Combo
-    DMAC_CHCTRLB_TRIGSRC_CH_9_PERID_LOCK:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_9_PERID_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_CHCTRLB_TRIGSRC_CH_9_PERID_VAL:
-      attributes:
-        id: DMAC_CHCTRLB_TRIGSRC_CH_9_PERID_VAL
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '1'
           type: Dynamic
         type: Values
       type: Integer
@@ -1147,34 +379,6 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    DMAC_ENABLE_CH_10:
-      attributes:
-        id: DMAC_ENABLE_CH_10
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_11:
-      attributes:
-        id: DMAC_ENABLE_CH_11
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
     DMAC_ENABLE_CH_2:
       attributes:
         id: DMAC_ENABLE_CH_2
@@ -1184,9 +388,6 @@ data:
             id: core
             value: 'true'
           type: Dynamic
-        - attributes:
-            value: 'true'
-          type: User
         type: Values
       type: Boolean
     DMAC_ENABLE_CH_3:
@@ -1198,93 +399,6 @@ data:
             id: core
             value: 'true'
           type: Dynamic
-        - attributes:
-            value: 'true'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_4:
-      attributes:
-        id: DMAC_ENABLE_CH_4
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_5:
-      attributes:
-        id: DMAC_ENABLE_CH_5
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_6:
-      attributes:
-        id: DMAC_ENABLE_CH_6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_7:
-      attributes:
-        id: DMAC_ENABLE_CH_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_8:
-      attributes:
-        id: DMAC_ENABLE_CH_8
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
-        type: Values
-      type: Boolean
-    DMAC_ENABLE_CH_9:
-      attributes:
-        id: DMAC_ENABLE_CH_9
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        - attributes:
-            value: 'false'
-          type: User
         type: Values
       type: Boolean
     DMAC_HIGHEST_CHANNEL:
@@ -1340,16 +454,6 @@ data:
             id: core
             value: 'true'
           type: Dynamic
-        type: Values
-      type: Boolean
-    DMAC_LL_ENABLE:
-      attributes:
-        id: DMAC_LL_ENABLE
-      children:
-      - children:
-        - attributes:
-            value: 'false'
-          type: User
         type: Values
       type: Boolean
     DMA_CH_FOR_SERCOM0_Receive:
@@ -1451,17 +555,6 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    DPLL_CLOCK_FREQ:
-      attributes:
-        id: DPLL_CLOCK_FREQ
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: Integer
     EIC_CLOCK_ENABLE:
       attributes:
         id: EIC_CLOCK_ENABLE
@@ -1539,20 +632,6 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    GCLK_0_SRC:
-      attributes:
-        id: GCLK_0_SRC
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '7'
-          type: Dynamic
-        - attributes:
-            value: '7'
-          type: User
-        type: Values
-      type: KeyValueSet
     GCLK_1_FREQ:
       attributes:
         id: GCLK_1_FREQ
@@ -1662,37 +741,6 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    GCLK_ID_0_CHEN:
-      attributes:
-        id: GCLK_ID_0_CHEN
-      children:
-      - children:
-        - attributes:
-            value: 'true'
-          type: User
-        type: Values
-      type: Boolean
-    GCLK_ID_0_FREQ:
-      attributes:
-        id: GCLK_ID_0_FREQ
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '32768'
-          type: Dynamic
-        type: Values
-      type: Integer
-    GCLK_ID_0_GENSEL:
-      attributes:
-        id: GCLK_ID_0_GENSEL
-      children:
-      - children:
-        - attributes:
-            value: '1'
-          type: User
-        type: Values
-      type: KeyValueSet
     GCLK_ID_20_CHEN:
       attributes:
         id: GCLK_ID_20_CHEN
@@ -1759,28 +807,6 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    GCLK_ID_24_CHEN:
-      attributes:
-        id: GCLK_ID_24_CHEN
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'false'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    GCLK_ID_24_FREQ:
-      attributes:
-        id: GCLK_ID_24_FREQ
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: Integer
     GCLK_ID_27_CHEN:
       attributes:
         id: GCLK_ID_27_CHEN
@@ -1790,6 +816,9 @@ data:
             id: core
             value: 'true'
           type: Dynamic
+        - attributes:
+            value: 'true'
+          type: User
         type: Values
       type: Boolean
     GCLK_ID_27_FREQ:
@@ -1803,6 +832,16 @@ data:
           type: Dynamic
         type: Values
       type: Integer
+    GCLK_ID_27_GENSEL:
+      attributes:
+        id: GCLK_ID_27_GENSEL
+      children:
+      - children:
+        - attributes:
+            value: '0'
+          type: User
+        type: Values
+      type: KeyValueSet
     GCLK_ID_5_CHEN:
       attributes:
         id: GCLK_ID_5_CHEN
@@ -1923,17 +962,28 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    KEIL_STACK_HEAP_SIZE:
+    NVIC_-1_0_ENABLE:
       attributes:
-        id: KEIL_STACK_HEAP_SIZE
+        id: NVIC_-1_0_ENABLE
       children:
       - children:
         - attributes:
             id: core
-            value: '0x1200'
+            value: 'false'
           type: Dynamic
         type: Values
-      type: String
+      type: Boolean
+    NVIC_-1_0_HANDLER_LOCK:
+      attributes:
+        id: NVIC_-1_0_HANDLER_LOCK
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
     NVIC_10_0_ENABLE:
       attributes:
         id: NVIC_10_0_ENABLE
@@ -2000,39 +1050,6 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    NVIC_13_0_ENABLE:
-      attributes:
-        id: NVIC_13_0_ENABLE
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'false'
-          type: Dynamic
-        type: Values
-      type: Boolean
-    NVIC_13_0_HANDLER:
-      attributes:
-        id: NVIC_13_0_HANDLER
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: SERCOM4_Handler
-          type: Dynamic
-        type: Values
-      type: String
-    NVIC_13_0_HANDLER_LOCK:
-      attributes:
-        id: NVIC_13_0_HANDLER_LOCK
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'false'
-          type: Dynamic
-        type: Values
-      type: Boolean
     NVIC_18_0_ENABLE:
       attributes:
         id: NVIC_18_0_ENABLE
@@ -2075,6 +1092,9 @@ data:
             id: core
             value: 'true'
           type: Dynamic
+        - attributes:
+            value: 'true'
+          type: User
         type: Values
       type: Boolean
     NVIC_4_0_HANDLER:
@@ -2086,6 +1106,9 @@ data:
             id: core
             value: EIC_InterruptHandler
           type: Dynamic
+        - attributes:
+            value: EIC_InterruptHandler
+          type: User
         type: Values
       type: String
     NVIC_4_0_HANDLER_LOCK:
@@ -2186,27 +1209,6 @@ data:
           type: Dynamic
         type: Values
       type: Integer
-    OSC8M_CLOCK_FREQ:
-      attributes:
-        id: OSC8M_CLOCK_FREQ
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: Integer
-    PIN_10_PERIPHERAL_FUNCTION:
-      attributes:
-        id: PIN_10_PERIPHERAL_FUNCTION
-      children:
-      - children:
-        - attributes:
-            value: ''
-          type: User
-        type: Values
-      type: String
     PIN_13_FUNCTION_TYPE:
       attributes:
         id: PIN_13_FUNCTION_TYPE
@@ -2527,6 +1529,16 @@ data:
           type: User
         type: Values
       type: String
+    PIN_28_PULLEN:
+      attributes:
+        id: PIN_28_PULLEN
+      children:
+      - children:
+        - attributes:
+            value: ''
+          type: User
+        type: Values
+      type: String
     PIN_35_FUNCTION_TYPE:
       attributes:
         id: PIN_35_FUNCTION_TYPE
@@ -2674,6 +1686,16 @@ data:
       - children:
         - attributes:
             value: C
+          type: User
+        type: Values
+      type: String
+    PIN_41_PERIPHERAL_FUNCTION:
+      attributes:
+        id: PIN_41_PERIPHERAL_FUNCTION
+      children:
+      - children:
+        - attributes:
+            value: ''
           type: User
         type: Values
       type: String
@@ -2907,39 +1929,9 @@ data:
           type: User
         type: Values
       type: String
-    PIN_9_DIR:
-      attributes:
-        id: PIN_9_DIR
-      children:
-      - children:
-        - attributes:
-            value: ''
-          type: User
-        type: Values
-      type: String
-    PIN_9_INEN:
-      attributes:
-        id: PIN_9_INEN
-      children:
-      - children:
-        - attributes:
-            value: ''
-          type: User
-        type: Values
-      type: String
     PIN_9_PERIPHERAL_FUNCTION:
       attributes:
         id: PIN_9_PERIPHERAL_FUNCTION
-      children:
-      - children:
-        - attributes:
-            value: ''
-          type: User
-        type: Values
-      type: String
-    PIN_9_PULLEN:
-      attributes:
-        id: PIN_9_PULLEN
       children:
       - children:
         - attributes:
@@ -2969,17 +1961,6 @@ data:
           type: Dynamic
         type: Values
       type: String
-    PORT_GROUP_0:
-      attributes:
-        id: PORT_GROUP_0
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
     PORT_GROUP_0_DIR:
       attributes:
         id: PORT_GROUP_0_DIR
@@ -3054,6 +2035,17 @@ data:
         - attributes:
             id: core
             value: PA19
+          type: Dynamic
+        type: Values
+      type: String
+    PORT_GROUP_0_PAD_20:
+      attributes:
+        id: PORT_GROUP_0_PAD_20
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: PA20
           type: Dynamic
         type: Values
       type: String
@@ -3178,6 +2170,17 @@ data:
           type: Dynamic
         type: Values
       type: String
+    PORT_GROUP_0_PINCFG20:
+      attributes:
+        id: PORT_GROUP_0_PINCFG20
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x0'
+          type: Dynamic
+        type: Values
+      type: String
     PORT_GROUP_0_PINCFG22:
       attributes:
         id: PORT_GROUP_0_PINCFG22
@@ -3299,6 +2302,17 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
+    PORT_GROUP_0_PIN_20_USED:
+      attributes:
+        id: PORT_GROUP_0_PIN_20_USED
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
     PORT_GROUP_0_PIN_22_USED:
       attributes:
         id: PORT_GROUP_0_PIN_22_USED
@@ -3365,6 +2379,17 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
+    PORT_GROUP_0_PMUX10:
+      attributes:
+        id: PORT_GROUP_0_PMUX10
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '0x0'
+          type: Dynamic
+        type: Values
+      type: String
     PORT_GROUP_0_PMUX11:
       attributes:
         id: PORT_GROUP_0_PMUX11
@@ -3431,17 +2456,6 @@ data:
           type: Dynamic
         type: Values
       type: String
-    PORT_GROUP_1:
-      attributes:
-        id: PORT_GROUP_1
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
-          type: Dynamic
-        type: Values
-      type: Boolean
     PORT_GROUP_1_DIR:
       attributes:
         id: PORT_GROUP_1_DIR
@@ -3530,17 +2544,6 @@ data:
           type: Dynamic
         type: Values
       type: String
-    PORT_GROUP_1_PAD_7:
-      attributes:
-        id: PORT_GROUP_1_PAD_7
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: PB07
-          type: Dynamic
-        type: Values
-      type: String
     PORT_GROUP_1_PINCFG1:
       attributes:
         id: PORT_GROUP_1_PINCFG1
@@ -3599,17 +2602,6 @@ data:
     PORT_GROUP_1_PINCFG6:
       attributes:
         id: PORT_GROUP_1_PINCFG6
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: '0x0'
-          type: Dynamic
-        type: Values
-      type: String
-    PORT_GROUP_1_PINCFG7:
-      attributes:
-        id: PORT_GROUP_1_PINCFG7
       children:
       - children:
         - attributes:
@@ -3684,17 +2676,6 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    PORT_GROUP_1_PIN_7_USED:
-      attributes:
-        id: PORT_GROUP_1_PIN_7_USED
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'false'
-          type: Dynamic
-        type: Values
-      type: Boolean
     PORT_GROUP_1_PMUX0:
       attributes:
         id: PORT_GROUP_1_PMUX0
@@ -3736,17 +2717,6 @@ data:
         - attributes:
             id: core
             value: '0x0'
-          type: Dynamic
-        type: Values
-      type: String
-    PORT_REG_NAME:
-      attributes:
-        id: PORT_REG_NAME
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: PORT
           type: Dynamic
         type: Values
       type: String
@@ -3948,25 +2918,14 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    SERCOM4_CORE_CLOCK_FREQUENCY:
+    SYSTICK_BUSY:
       attributes:
-        id: SERCOM4_CORE_CLOCK_FREQUENCY
+        id: SYSTICK_BUSY
       children:
       - children:
         - attributes:
             id: core
-            value: '0'
-          type: Dynamic
-        type: Values
-      type: Integer
-    SERCOM4_INTERRUPT_ENABLE_UPDATE:
-      attributes:
-        id: SERCOM4_INTERRUPT_ENABLE_UPDATE
-      children:
-      - children:
-        - attributes:
-            id: core
-            value: 'true'
+            value: 'false'
           type: Dynamic
         type: Values
       type: Boolean
@@ -3981,6 +2940,28 @@ data:
           type: Dynamic
         type: Values
       type: String
+    SYSTICK_PERIOD_MS:
+      attributes:
+        id: SYSTICK_PERIOD_MS
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '1.0'
+          type: Dynamic
+        type: Values
+      type: Float
+    SYSTICK_PERIOD_MS_LONG_INT:
+      attributes:
+        id: SYSTICK_PERIOD_MS_LONG_INT
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: '1000'
+          type: Dynamic
+        type: Values
+      type: Long
     SYSTICK_PERIOD_US:
       attributes:
         id: SYSTICK_PERIOD_US
@@ -3992,13 +2973,79 @@ data:
           type: Dynamic
         type: Values
       type: Integer
+    SYSTICK_PUBLISH_CAPABILITIES:
+      attributes:
+        id: SYSTICK_PUBLISH_CAPABILITIES
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    SYSTICK_SYS_TIME_COMPONENT_ID:
+      attributes:
+        id: SYSTICK_SYS_TIME_COMPONENT_ID
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: None
+          type: Dynamic
+        type: Values
+      type: String
+    SYSTICK_USED_BY_SYS_TIME:
+      attributes:
+        id: SYSTICK_USED_BY_SYS_TIME
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    SysTick_INTERRUPT_ENABLE:
+      attributes:
+        id: SysTick_INTERRUPT_ENABLE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    SysTick_INTERRUPT_ENABLE_UPDATE:
+      attributes:
+        id: SysTick_INTERRUPT_ENABLE_UPDATE
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'true'
+          type: Dynamic
+        type: Values
+      type: Boolean
+    SysTick_INTERRUPT_HANDLER_LOCK:
+      attributes:
+        id: SysTick_INTERRUPT_HANDLER_LOCK
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
     TC3_CLOCK_ENABLE:
       attributes:
         id: TC3_CLOCK_ENABLE
       children:
       - children:
         - attributes:
-            id: tc3
+            id: core
             value: 'true'
           type: Dynamic
         type: Values
@@ -4058,21 +3105,41 @@ data:
           type: Dynamic
         type: Values
       type: Boolean
-    XC32_HEAP_SIZE:
+    USE_SYSTICK_INTERRUPT:
       attributes:
-        id: XC32_HEAP_SIZE
+        id: USE_SYSTICK_INTERRUPT
       children:
       - children:
         - attributes:
-            value: '10000'
-          type: User
+            id: readOnly
+          children:
+          - type: Value
+            value: 'false'
+          type: Boolean
+        type: Attributes
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
         type: Values
-      type: Integer
+      type: Boolean
+    systickEnable:
+      attributes:
+        id: systickEnable
+      children:
+      - children:
+        - attributes:
+            id: core
+            value: 'false'
+          type: Dynamic
+        type: Values
+      type: Boolean
   userData:
     children:
     - attributes:
-        canvasHeight: '516'
-        canvasWidth: '795'
+        canvasHeight: '414'
+        canvasWidth: '773'
       type: GraphSettings
     - children:
       - attributes:

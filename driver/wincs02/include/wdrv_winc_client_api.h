@@ -14,20 +14,29 @@
     This file pulls together the elements which make up the client API:
       assoc       - Current association.
       bssfind     - BSS scan functionality.
-      bssfind     - BSS scan functionality.
       dhcps       - DHCP server functionality.
       dns         - DNS client functionality.
+      extcrypto   - Crypto operations external to the WINC device.
       file        - File operation functionality.
       mqtt        - MQTT client functionality.
       netif       - Network interface functionality.
+      nvm         - NVM access functionality.
+      ota         - OTA functionality.
+      prov        - Provisioning functionality.
+      sntp        - SNTP client functionality.
+      socket      - TCP/IP sockets.
       softap      - Soft-AP mode.
       sta         - Infrastructure stations mode.
+      systime     - System time.
       tls         - TLS functionality.
       wifi        - WiFi configuration functionality.
+
+      authctx     - Authentication context management.
+      bssctx      - BSS context management.
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -53,28 +62,5 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_bssfind.h"
-#include "wdrv_winc_assoc.h"
-#ifndef WDRV_WINC_MOD_DISABLE_DHCPS
-#include "wdrv_winc_dhcps.h"
-#endif
-#include "wdrv_winc_file.h"
-#include "wdrv_winc_softap.h"
-#include "wdrv_winc_sta.h"
-#include "wdrv_winc_netif.h"
-#ifndef WDRV_WINC_MOD_DISABLE_TLS
-#include "wdrv_winc_tls.h"
-#endif
-#ifndef WDRV_WINC_MOD_DISABLE_MQTT
-#include "wdrv_winc_mqtt.h"
-#endif
-#include "wdrv_winc_common.h"
-#ifndef WDRV_WINC_MOD_DISABLE_SNTP
-#include "wdrv_winc_sntp.h"
-#endif
-#include "wdrv_winc_wifi.h"
-#ifndef WDRV_WINC_MOD_DISABLE_DNS
-#include "wdrv_winc_dns.h"
-#endif
 
 #endif /* WDRV_WINC_CLIENT_API_H */

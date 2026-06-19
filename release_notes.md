@@ -3,6 +3,47 @@
 
 # Microchip MPLAB® Harmony 3 Release Notes
 
+## Wireless_wifi Release v3.13.0
+
+This release includes improvements to the **WINCS02, PIC32MZW1 (WFI32), WINC1500 and WINC3400** devices.
+
+### New Features
+
+- WINC: Support for WINC1500 FW v19.7.11.
+- WINC: Support for WINC3400 FW v1.4.8.
+- WINCS02: Support for WINCS02 device firmware v3.2.
+    - WPA Enterprise support (EAP-TLS, EAP-TTLS, EAP-PEAP).
+    - HTTP Client API.
+    - Platform Power Save (PPS) with Extreme Deep Sleep (XDS) mode.
+    - TLS session caching and certificate pinning.
+    - Boot-time configuration of system variables.
+- PIC32MZW1: Extended Enterprise security support to include PEAPv0/v1 with MSCHAPv2 and EAP-TTLS with MSCHAPv2 in addition to EAP-TLS.
+
+### Bug fixes/Improvements
+
+For WINC1500 device firmware information see the release note in utilities/wifi/winc/files/winc1500/19.7.11/
+For WINC3400 device firmware information see the release note in utilities/wifi/winc/files/winc3400/1.4.8/
+For WINCS02 device release packages, visit https://github.com/MicrochipTech/WINCS02-RNWF02-Releases
+
+- WINCS02: Fixed network interface info query using incorrect option identifier.
+- WINCS02: Fixed disconnection callback receiving stale association information.
+- WINCS02: Fixed power save mode API sending incorrect command parameter to device.
+- WINCS02: Fixed potential double free in transmit command request handling.
+- WINCS02: Fixed potential NULL pointer dereference in freeaddrinfo.
+- WINCS02: Fixed resource leak if driver initialisation fails.
+- WINCS02: Fixed driver task not yielding on RTOS when in ready state.
+- PIC32MZW1: Fix DMA interrupt loss in the WLAN driver.
+- PIC32MZW1: Fix SoftAP stopping operation after a number of connect and reset cycles.
+- PIC32MZW1: Fix probe requests being sent on illegal channels.
+- PIC32MZW1: Fix occasional Enterprise connection failures.
+- PIC32MZW1: Fix handling of protected management frames on TX complete.
+
+### Known Issues/Limitations
+
+### Development Tools
+- [MPLAB® X IDE v6.30](https://www.microchip.com/mplab/mplab-x-ide)
+- [MPLAB® XC32 C/C++ Compiler v5.00](https://www.microchip.com/mplab/compilers)
+
 ## Wireless_wifi Release v3.12.2
 
 This release includes improvements to the **WINCS02 and WINC1500** devices.

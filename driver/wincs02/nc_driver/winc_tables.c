@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -102,6 +102,10 @@ static const WINC_STRING_ID_TABLE_TYPE wincCmdIdTable[WINC_CMD_ID_TABLE_SZ+1U] =
     {.id = WINC_CMD_ID_PPS, .length = 4, .pName = "+PPS"},
     {.id = WINC_CMD_ID_SYSLOGC, .length = 8, .pName = "+SYSLOGC"},
     {.id = WINC_CMD_ID_ARB, .length = 4, .pName = "+ARB"},
+    {.id = WINC_CMD_ID_HTTPC, .length = 6, .pName = "+HTTPC"},
+    {.id = WINC_CMD_ID_HTTPGET, .length = 8, .pName = "+HTTPGET"},
+    {.id = WINC_CMD_ID_HTTPRD, .length = 7, .pName = "+HTTPRD"},
+    {.id = WINC_CMD_ID_HTTPCL, .length = 7, .pName = "+HTTPCL"},
     {.id = 0, .length = 0, .pName = NULL}
 };
 
@@ -110,6 +114,7 @@ static const WINC_STRING_ID_TABLE_TYPE wincAecIdTable[WINC_AEC_ID_TABLE_SZ+1U] =
     {.id = WINC_AEC_ID_BOOT, .length = 5, .pName = "+BOOT"},
     {.id = WINC_AEC_ID_DNSRESOLV, .length = 10, .pName = "+DNSRESOLV"},
     {.id = WINC_AEC_ID_DNSERR, .length = 7, .pName = "+DNSERR"},
+    {.id = WINC_AEC_ID_FSUP, .length = 5, .pName = "+FSUP"},
     {.id = WINC_AEC_ID_MQTTCONN, .length = 9, .pName = "+MQTTCONN"},
     {.id = WINC_AEC_ID_MQTTCONNACK, .length = 12, .pName = "+MQTTCONNACK"},
     {.id = WINC_AEC_ID_MQTTPUBACK, .length = 11, .pName = "+MQTTPUBACK"},
@@ -159,6 +164,12 @@ static const WINC_STRING_ID_TABLE_TYPE wincAecIdTable[WINC_AEC_ID_TABLE_SZ+1U] =
     {.id = WINC_AEC_ID_NVMERR, .length = 7, .pName = "+NVMERR"},
     {.id = WINC_AEC_ID_PPS, .length = 4, .pName = "+PPS"},
     {.id = WINC_AEC_ID_SYSLOG, .length = 7, .pName = "+SYSLOG"},
+    {.id = WINC_AEC_ID_HTTPRSPCODE, .length = 12, .pName = "+HTTPRSPCODE"},
+    {.id = WINC_AEC_ID_HTTPRSPFIELD, .length = 13, .pName = "+HTTPRSPFIELD"},
+    {.id = WINC_AEC_ID_HTTPBODYRX, .length = 11, .pName = "+HTTPBODYRX"},
+    {.id = WINC_AEC_ID_HTTPBODYEND, .length = 12, .pName = "+HTTPBODYEND"},
+    {.id = WINC_AEC_ID_HTTPCL, .length = 7, .pName = "+HTTPCL"},
+    {.id = WINC_AEC_ID_HTTPERR, .length = 8, .pName = "+HTTPERR"},
     {.id = 0, .length = 0, .pName = NULL}
 };
 
@@ -175,6 +186,7 @@ static const WINC_STRING_ID_TABLE_TYPE wincStatusIdTable[WINC_STATUS_ID_TABLE_SZ
     {.id = WINC_STATUS_TIMEOUT, .length = 17, .pName = "Command Timed Out"},
     {.id = WINC_STATUS_HOST_INTERFACE_FAILED, .length = 21, .pName = "Host Interface Failed"},
     {.id = WINC_STATUS_ACCESS_DENIED, .length = 13, .pName = "Access Denied"},
+    {.id = WINC_STATUS_CONFIG_CONFLICT, .length = 22, .pName = "Configuration Conflict"},
     {.id = WINC_STATUS_WIFI_API_REQUEST_FAILED, .length = 20, .pName = "Wi-Fi Request Failed"},
     {.id = WINC_STATUS_STA_NOT_CONNECTED, .length = 17, .pName = "STA Not Connected"},
     {.id = WINC_STATUS_NETWORK_ERROR, .length = 13, .pName = "Network Error"},
@@ -183,10 +195,16 @@ static const WINC_STRING_ID_TABLE_TYPE wincStatusIdTable[WINC_STATUS_ID_TABLE_SZ
     {.id = WINC_STATUS_DNS_TYPE_NOT_SUPPORTED, .length = 22, .pName = "DNS Type Not Supported"},
     {.id = WINC_STATUS_DNS_TIMEOUT, .length = 17, .pName = "DNS Query Timeout"},
     {.id = WINC_STATUS_DNS_ERROR, .length = 9, .pName = "DNS Error"},
+    {.id = WINC_STATUS_DNS_RECORD_NOT_FOUND, .length = 20, .pName = "DNS Record Not Found"},
+    {.id = WINC_STATUS_DNS_NON_EXISTENT_DOMAIN, .length = 23, .pName = "DNS Non-Existent Domain"},
+    {.id = WINC_STATUS_DNS_AUTH_DATA_ERROR, .length = 29, .pName = "DNS Data Authentication Error"},
+    {.id = WINC_STATUS_DNS_TRUNCATED_RESPONSE, .length = 22, .pName = "DNS Response Truncated"},
     {.id = WINC_STATUS_TSFR_PROTOCOL_NOT_SUPPORTED, .length = 34, .pName = "Unsupported File Transfer Protocol"},
     {.id = WINC_STATUS_FILE_EXISTS, .length = 11, .pName = "File Exists"},
     {.id = WINC_STATUS_FILE_NOT_FOUND, .length = 14, .pName = "File Not Found"},
     {.id = WINC_STATUS_INVALID_FILE_TYPE, .length = 17, .pName = "Invalid File Type"},
+    {.id = WINC_STATUS_FILE_CREATE_FAILED, .length = 18, .pName = "File create failed"},
+    {.id = WINC_STATUS_FILE_WRITE_FAILED, .length = 17, .pName = "File write failed"},
     {.id = WINC_STATUS_MQTT_ERROR, .length = 10, .pName = "MQTT Error"},
     {.id = WINC_STATUS_NETWORK_INTF_DOWN, .length = 22, .pName = "Network interface down"},
     {.id = WINC_STATUS_ERASE_DONE, .length = 10, .pName = "Erase Done"},
@@ -238,14 +256,23 @@ static const WINC_STRING_ID_TABLE_TYPE wincStatusIdTable[WINC_STATUS_ID_TABLE_SZ
     {.id = WINC_STATUS_DFU_ADDRESS_WARNING, .length = 36, .pName = "No Bootable Image In Other Partition"},
     {.id = WINC_STATUS_PPS_WIFI_PS_NOT_ENABLED, .length = 20, .pName = "Wi-Fi PS Not Enabled"},
     {.id = WINC_STATUS_PPS_TIMEOUT, .length = 11, .pName = "PPS Timeout"},
+    {.id = WINC_STATUS_PPS_PAUSE_EXPIRED, .length = 17, .pName = "PPS Pause Expired"},
     {.id = WINC_STATUS_ARB_NO_INCREASE, .length = 45, .pName = "The Value Provided Would Not Increase The ARB"},
     {.id = WINC_STATUS_ARB_REJECTED, .length = 53, .pName = "The Value Provided Would Invalidate The Current Image"},
+    {.id = WINC_STATUS_HTTP_DNS_FAILED, .length = 15, .pName = "HTTP DNS failed"},
+    {.id = WINC_STATUS_HTTP_TLS_FAILED, .length = 15, .pName = "HTTP TLS failed"},
+    {.id = WINC_STATUS_HTTP_CONNECT_FAILED, .length = 19, .pName = "HTTP connect failed"},
+    {.id = WINC_STATUS_HTTP_MEMORY, .length = 22, .pName = "HTTP buffer allocation"},
+    {.id = WINC_STATUS_HTTP_RESPONSE_HEADERS, .length = 20, .pName = "HTTP response format"},
+    {.id = WINC_STATUS_HTTP_RECV_FAILED, .length = 19, .pName = "HTTP receive failed"},
+    {.id = WINC_STATUS_HTTP_SEND_FAILED, .length = 16, .pName = "HTTP send failed"},
+    {.id = WINC_STATUS_HTTP_TIMEOUT, .length = 12, .pName = "HTTP timeout"},
     {.id = 0, .length = 0, .pName = NULL}
 };
 
 static const uint8_t wincModuleIdList[WINC_NUM_MODULES] =
 {
-    0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33
+    0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
 };
 
 /*****************************************************************************

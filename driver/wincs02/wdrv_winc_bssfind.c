@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -39,8 +39,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <limits.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_bssfind.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -119,7 +117,7 @@ typedef struct
 /* WiFi scan result cache. */
 static WDRV_WINC_SCAN_RESULT_CACHE scanResultCache;
 
-static WDRV_WINC_AUTH_TYPE secTypeAuthTypeMap[] =
+static const WDRV_WINC_AUTH_TYPE secTypeAuthTypeMap[] =
 {
     /* SEC_TYPE_OPEN */             WDRV_WINC_AUTH_TYPE_OPEN,
     /* Default auth type */         WDRV_WINC_AUTH_TYPE_DEFAULT,
@@ -144,7 +142,7 @@ static WDRV_WINC_AUTH_TYPE secTypeAuthTypeMap[] =
   Function:
     static void wscnProcessCmdRsp
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t rspId,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -179,7 +177,7 @@ static WDRV_WINC_AUTH_TYPE secTypeAuthTypeMap[] =
 
 static void wscnProcessCmdRsp
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t rspId,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -259,7 +257,7 @@ static void wscnProcessCmdRsp
   Function:
     static void wscnProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -290,7 +288,7 @@ static void wscnProcessCmdRsp
 
 static void wscnProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -472,7 +470,7 @@ static void wscnCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -554,7 +552,7 @@ void WDRV_WINC_WSCNProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -597,7 +595,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindFirst
     const WDRV_WINC_BSSFIND_NOTIFY_CALLBACK pfNotifyCallback
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     int numSSIDInList = 0;
     size_t ssidListSize = 0;
@@ -652,7 +650,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindFirst
 
     scanResultCache.numDescrs = 0;
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit((unsigned int)5+numSSIDInList, ssidListSize, wscnCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit((unsigned int)5+numSSIDInList, ssidListSize, &wscnCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -715,7 +713,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindNext
     WDRV_WINC_BSSFIND_NOTIFY_CALLBACK pfNotifyCallback
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -808,7 +806,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindReset
     WDRV_WINC_BSSFIND_NOTIFY_CALLBACK pfNotifyCallback
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -862,8 +860,8 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetInfo
     WDRV_WINC_BSS_INFO *const pBSSInfo
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
-    DRV_WINC_SCAN_RESULTS *pLastBSSScanInfo;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
+    const DRV_WINC_SCAN_RESULTS *pLastBSSScanInfo;
 
     /* Ensure the driver handle and user pointer is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pBSSInfo))
@@ -933,7 +931,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
     uint8_t numProbes
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_CTRLDCPT *pCtrl;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
@@ -990,7 +988,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanParameters
         pCtrl->scanNumProbes = numProbes;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(4, 0, wscnCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(4, 0, &wscnCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1099,7 +1097,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindSetScanChannels24
     WDRV_WINC_CHANNEL24_MASK channelMask24
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))
@@ -1190,7 +1188,7 @@ WDRV_WINC_STATUS WDRV_WINC_BSSFindGetScanChannels24
 
 uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle)
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid and the instance is open.
        Ensure a scan is not already in progress. */
@@ -1226,7 +1224,7 @@ uint8_t WDRV_WINC_BSSFindGetNumBSSResults(DRV_HANDLE handle)
 
 bool WDRV_WINC_BSSFindInProgress(DRV_HANDLE handle)
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid and the instance is open. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))

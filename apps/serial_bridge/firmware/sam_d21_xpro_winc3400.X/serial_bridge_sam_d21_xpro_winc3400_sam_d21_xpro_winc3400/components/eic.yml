@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: eic
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments: {}
@@ -22,8 +22,8 @@ data:
     - children:
       - attributes:
           id: eic
-          x: '19'
-          y: '72'
+          x: '586'
+          y: '178'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph

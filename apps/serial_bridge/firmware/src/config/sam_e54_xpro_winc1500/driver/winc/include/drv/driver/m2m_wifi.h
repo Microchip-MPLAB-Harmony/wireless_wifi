@@ -3201,9 +3201,11 @@ int8_t m2m_wifi_req_server_init(uint8_t ch);
 @details
     Sets the WINC device name. The name string is used as a device name in DHCP
     hostname (option 12).
-    If a device is not set through this function a default name is assigned.
+    If a device name is not set through this function a default name is assigned.
     The default name is WINC-XX-YY, where XX and YY are the last 2 octets of the OTP
-    MAC address. If OTP (eFuse) is programmed, then the default name is WINC-00-00.
+    MAC address. If OTP (eFuse) is not programmed, then the default name is WINC-00-00.
+    If the device name is set to an empty string (length 0), the DHCP client will not 
+    include hostname option 12 in DHCP messages.
 
 @warning
     The function called once after initialization.\n
@@ -3212,11 +3214,10 @@ int8_t m2m_wifi_req_server_init(uint8_t ch);
     defined in RFC 952 and 1123.
 
 @param[in]  pu8DeviceName
-    Buffer holding the device name. Device name is a null terminated C string.
+    Buffer holding the device name. The name does not need to be null-terminated.
 
 @param[in]  u8DeviceNameLength
-    Length of the device name. Should not exceed the maximum device name's
-    length @ref M2M_DEVICE_NAME_MAX (including null character).
+    Length of the device name. Should not exceed @ref M2M_DEVICE_NAME_MAX.
 
 @return
     The function returns @ref M2M_SUCCESS if the command has been successfully queued to the WINC and a negative value otherwise.

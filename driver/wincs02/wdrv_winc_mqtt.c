@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -38,9 +38,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <string.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_tls.h"
-#include "wdrv_winc_mqtt.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_MQTT
 
@@ -68,7 +65,7 @@ static const WDRV_WINC_MQTT_MSG_INFO defaultQoS0MsgInfo =
   Function:
     static void mqttProcessStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t cmdID,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -101,7 +98,7 @@ static const WDRV_WINC_MQTT_MSG_INFO defaultQoS0MsgInfo =
 
 static void mqttProcessStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t cmdID,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -141,7 +138,7 @@ static void mqttProcessStatus
   Function:
     static void mqttProcessCmdRsp
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t rspId,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -176,7 +173,7 @@ static void mqttProcessStatus
 
 static void mqttProcessCmdRsp
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t rspId,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -224,7 +221,7 @@ static void mqttProcessCmdRsp
   Function:
     static void mqttProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -255,7 +252,7 @@ static void mqttProcessCmdRsp
 
 static void mqttProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -692,7 +689,7 @@ static void mqttCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -782,7 +779,7 @@ void WDRV_WINC_MQTTProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -822,7 +819,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTBrokerSet
     WDRV_WINC_TLS_HANDLE tlsHandle
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t addressLen;
     uint8_t tlsIdx;
@@ -871,7 +868,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTBrokerSet
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(3, addressLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(3, addressLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -921,7 +918,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTClientCfgSet
     const char *pPassword
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t clientIdLen;
     size_t usernameLen;
@@ -965,7 +962,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTClientCfgSet
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(3, clientIdLen+usernameLen+passwordLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(3, clientIdLen+usernameLen+passwordLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1019,7 +1016,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTLWTSet
     size_t topicDataLen
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t topicLen;
 
@@ -1044,11 +1041,11 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTLWTSet
 
     if ((NULL != pMsgInfo) && (NULL != pMsgInfo->pProperties))
     {
-        cmdReqHandle = WDRV_WINC_CmdReqInit(4, topicLen+topicDataLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(4, topicLen+topicDataLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
     else
     {
-        cmdReqHandle = WDRV_WINC_CmdReqInit(2, topicLen+topicDataLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(2, topicLen+topicDataLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
@@ -1122,7 +1119,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTConnect
     uintptr_t connCbCtx
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1167,11 +1164,11 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTConnect
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
 
-        cmdReqHandle = WDRV_WINC_CmdReqInit(13, 0, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(13, 0, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
     else
     {
-        cmdReqHandle = WDRV_WINC_CmdReqInit(5, 0, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(5, 0, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
@@ -1262,7 +1259,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTDisconnect
     WDRV_WINC_MQTT_DISCONN_REASON_CODE_TYPE reasonCode
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1294,7 +1291,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTDisconnect
         /* Do Nothing. */
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1351,7 +1348,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPublish
     WDRV_WINC_MQTT_PUB_HANDLE *pPubHandle
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t topicLen = 0;
 
@@ -1386,7 +1383,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPublish
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
 
-        cmdReqHandle = WDRV_WINC_CmdReqInit(11, topicLen+topicDataLen+(size_t)WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(11, topicLen+topicDataLen+(size_t)WDRV_WINC_MQTT_PUB_MAX_CONTENT_TYPE_LEN, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
     else
     {
@@ -1396,7 +1393,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTPublish
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
 
-        cmdReqHandle = WDRV_WINC_CmdReqInit(3, topicLen+topicDataLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(3, topicLen+topicDataLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
@@ -1512,7 +1509,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTSubscribe
     uintptr_t subscribeCbCtx
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t topicLen;
 
@@ -1537,11 +1534,11 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTSubscribe
             return WDRV_WINC_STATUS_INVALID_ARG;
         }
 
-        cmdReqHandle = WDRV_WINC_CmdReqInit(5, topicLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(5, topicLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
     else
     {
-        cmdReqHandle = WDRV_WINC_CmdReqInit(3, topicLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(3, topicLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
     }
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
@@ -1607,7 +1604,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUnsubscribe
     const char *pTopicName
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t topicLen;
 
@@ -1625,7 +1622,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUnsubscribe
 
     topicLen = strlen(pTopicName);
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, topicLen, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, topicLen, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1675,7 +1672,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUserPropSet
     size_t lenValue
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1696,7 +1693,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUserPropSet
         lenValue = 0;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenKey+lenValue, mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenKey+lenValue, &mqttCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1742,7 +1739,7 @@ WDRV_WINC_STATUS WDRV_WINC_MQTTUserPropCallbackSet
     WDRV_WINC_MQTT_USER_PROP_CALLBACK pfUserPropCb
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
 
     /* Ensure the driver handle is valid. */
     if ((DRV_HANDLE_INVALID == handle) || (NULL == pDcpt) || (NULL == pDcpt->pCtrl))

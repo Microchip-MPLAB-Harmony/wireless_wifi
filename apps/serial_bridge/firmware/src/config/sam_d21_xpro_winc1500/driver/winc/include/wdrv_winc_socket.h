@@ -122,7 +122,13 @@ typedef enum
     WDRV_WINC_OTA_STATUS_SERVER_ERROR = /*DOM-IGNORE-BEGIN*/ OTA_STATUS_SERVER_ERROR /*DOM-IGNORE-END*/,
 
     /* The OTA operation was aborted. */
-    WDRV_WINC_OTA_STATUS_ABORTED = /*DOM-IGNORE-BEGIN*/ OTA_STATUS_ABORTED /*DOM-IGNORE-END*/
+    WDRV_WINC_OTA_STATUS_ABORTED = /*DOM-IGNORE-BEGIN*/ OTA_STATUS_ABORTED /*DOM-IGNORE-END*/,
+
+#ifdef WDRV_WINC_DEVICE_OTA_STATUS_BUSY
+    /* The OTA specific socket is already being used*/
+    WDRV_WINC_OTA_STATUS_SOCKET_IN_USE = /*DOM-IGNORE-BEGIN*/ OTA_STATUS_SOCKET_IN_USE /*DOM-IGNORE-END*/
+#endif
+
 } WDRV_WINC_OTA_UPDATE_STATUS;
 
 // *****************************************************************************

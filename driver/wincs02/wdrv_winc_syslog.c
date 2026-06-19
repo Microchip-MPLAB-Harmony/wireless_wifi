@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2025-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -38,8 +38,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <string.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_syslog.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_SYSLOG
 
@@ -127,7 +125,7 @@ static void syslogCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -174,7 +172,7 @@ static void syslogCmdRspCallbackHandler
   Function:
     static void syslogProcessAEC
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t aecId,
         int numElems,
         const WINC_DEV_PARAM_ELEM *const pElems
@@ -205,7 +203,7 @@ static void syslogCmdRspCallbackHandler
 
 static void syslogProcessAEC
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t aecId,
     int numElems,
     const WINC_DEV_PARAM_ELEM *const pElems
@@ -285,7 +283,7 @@ void WDRV_WINC_SYSLOGProcessAEC
     const WINC_DEV_EVENT_RSP_ELEMS *const pElems
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT *)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if ((NULL == pDcpt) || (NULL == pElems))
     {
@@ -318,7 +316,7 @@ void WDRV_WINC_SYSLOGProcessAEC
 
 WDRV_WINC_STATUS WDRV_WINC_SystemLogEnableSet(DRV_HANDLE handle, const WDRV_WINC_SYSLOG_CALLBACK pfSyslogEventCB)
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -333,14 +331,14 @@ WDRV_WINC_STATUS WDRV_WINC_SystemLogEnableSet(DRV_HANDLE handle, const WDRV_WINC
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, syslogCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &syslogCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
 
-    (void)WINC_CmdSYSLOGC(cmdReqHandle, WINC_CFG_PARAM_ID_SYSLOG_ENABLED, WINC_TYPE_INTEGER, (NULL == pfSyslogEventCB ? 0 : 1), 0);
+    (void)WINC_CmdSYSLOGC(cmdReqHandle, WINC_CFG_PARAM_ID_SYSLOG_ENABLED, WINC_TYPE_INTEGER, (NULL == pfSyslogEventCB) ? 0 : 1, 0);
 
     if (false == WDRV_WINC_DevTransmitCmdReq(pDcpt->pCtrl, cmdReqHandle))
     {

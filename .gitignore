@@ -17,3 +17,6 @@
 **/firmware/src/config/*
 **/firmware/src/packs/*
 **/firmware/src/third_party/*
+**/*.X/mcc-manifest-*.yml
+**/*.X/generation_report.yml
+/mcc-index.json

@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -38,8 +38,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <string.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_sntp.h"
 
 #ifndef WDRV_WINC_MOD_DISABLE_SNTP
 
@@ -48,6 +46,99 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // Section: WINC Driver SNTP Internal Implementation
 // *****************************************************************************
 // *****************************************************************************
+
+//*******************************************************************************
+/*
+  Function:
+    static void sntpProcessAEC
+    (
+        const WDRV_WINC_DCPT *const pDcpt,
+        uint16_t aecId,
+        int numElems,
+        const WINC_DEV_PARAM_ELEM *const pElems
+    )
+
+  Summary:
+    Process AECs.
+
+  Description:
+    Processes AECs for this module.
+
+  Precondition:
+    None.
+
+  Parameters:
+    pDcpt    - Pointer to device descriptor.
+    aecId    - AEC ID.
+    numElems - Number of elements.
+    pElems   - Pointer to elements.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+static void sntpProcessAEC
+(
+    const WDRV_WINC_DCPT *const pDcpt,
+    uint16_t aecId,
+    int numElems,
+    const WINC_DEV_PARAM_ELEM *const pElems
+)
+{
+    if ((NULL == pDcpt) || (NULL == pDcpt->pCtrl) || (NULL == pElems))
+    {
+        return;
+    }
+
+    switch (aecId)
+    {
+        case WINC_AEC_ID_SNTPERR:
+        {
+            uint16_t status;
+            WDRV_WINC_SNTP_STATUS sntpStatus = WDRV_WINC_SNTP_STATUS_ERROR;
+
+            if (1U != numElems)
+            {
+                break;
+            }
+
+            if (NULL == pDcpt->pCtrl->pfSNTPStatusCB)
+            {
+                break;
+            }
+
+            (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_STATUS, &status, sizeof(status));
+
+            switch (status)
+            {
+                case WINC_STATUS_SNTP_SERVER_TMO:
+                {
+                    sntpStatus = WDRV_WINC_SNTP_STATUS_SERVER_TIMEOUT;
+                    break;
+                }
+
+                default:
+                {
+                    WDRV_DBG_VERBOSE_PRINT("SNTP AECCB status %d not handled\r\n", status);
+                    break;
+                }
+            }
+
+            pDcpt->pCtrl->pfSNTPStatusCB((DRV_HANDLE)pDcpt, sntpStatus, NULL);
+            break;
+        }
+
+        default:
+        {
+            /* Do nothing. */
+            break;
+        }
+    }
+}
 
 //*******************************************************************************
 /*
@@ -127,7 +218,7 @@ static void sntpCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -178,10 +269,49 @@ static void sntpCmdRspCallbackHandler
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
+    void WDRV_WINC_SNTPProcessAEC
+    (
+        uintptr_t context,
+        WINC_DEVICE_HANDLE devHandle,
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+    )
+
+  Summary:
+    AEC process callback.
+
+  Description:
+    Callback will be called to process any AEC messages received.
+
+  Remarks:
+    See wdrv_winc_sntp.h for usage information.
+
+*/
+
+void WDRV_WINC_SNTPProcessAEC
+(
+    uintptr_t context,
+    WINC_DEVICE_HANDLE devHandle,
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+)
+{
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
+
+    if ((NULL == pDcpt) || (NULL == pElems))
+    {
+        return;
+    }
+
+    sntpProcessAEC(pDcpt, pElems->rspId, pElems->numElems, pElems->elems);
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSetCallback
     (
         DRV_HANDLE handle,
-        bool enabled
+        bool enabled,
+        WDRV_WINC_SNTP_STATUS_CALLBACK pfSNTPStatusCB
     )
 
   Summary:
@@ -195,13 +325,14 @@ static void sntpCmdRspCallbackHandler
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
+WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSetCallback
 (
     DRV_HANDLE handle,
-    bool enabled
+    bool enabled,
+    WDRV_WINC_SNTP_STATUS_CALLBACK pfSNTPStatusCB
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -216,7 +347,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -229,6 +360,8 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
     {
         return WDRV_WINC_STATUS_REQUEST_ERROR;
     }
+
+    pDcpt->pCtrl->pfSNTPStatusCB = pfSNTPStatusCB;
 
     return WDRV_WINC_STATUS_OK;
 }
@@ -259,7 +392,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPStaticSet
     bool enabled
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle is valid. */
@@ -274,7 +407,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPStaticSet
         return WDRV_WINC_STATUS_NOT_OPEN;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 128, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 128, &sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -317,7 +450,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
     const char* pAddr
 )
 {
-    WDRV_WINC_DCPT *const pDcpt = (WDRV_WINC_DCPT *const )handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
     size_t addressLen;
 
@@ -340,7 +473,7 @@ WDRV_WINC_STATUS WDRV_WINC_SNTPServerAddressSet
         return WDRV_WINC_STATUS_INVALID_ARG;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, addressLen, sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, addressLen, &sntpCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

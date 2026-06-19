@@ -56,10 +56,13 @@ Microchip or any third party.
 </#if>
 <#if DRV_WIFI_PIC32MZW1_SUPPORT_ENTERPRISE == true>
 #define WDRV_PIC32MZW_ENTERPRISE_SUPPORT
+#define WDRV_PIC32MZW_TLS_SUPPORT
+<#if DRV_WIFI_PIC32MZW1_REQUIRE_WOLFSSL == true>
 /* Wolfssl : Support openssl based server certs having 'basic constraint' extension value as non-boolean. */
 #define WOLFSSL_X509_BASICCONS_INT
-/* Wolfssl : Don't validate key-usage extension of the certificate */
-#define IGNORE_KEY_EXTENSIONS
+/* Wolfssl : Uncomment to ignore server certificate key-usage extension violations (KEYUSE_SIGNATURE_E) */
+//#define IGNORE_KEY_EXTENSIONS
+</#if>
 </#if>
 <#if DRV_WIFI_PIC32MZW1_REQUIRE_WOLFSSL == true>
 #define WDRV_PIC32MZW_WOLFSSL_SUPPORT

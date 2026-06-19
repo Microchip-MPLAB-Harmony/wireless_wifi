@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: appWincSerialBridge
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: wireless_wifi
   type: package
-  version: v3.12.2
+  version: v3.13.0
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -68,8 +68,8 @@ data:
     - children:
       - attributes:
           id: appWincSerialBridge
-          x: '306'
-          y: '340'
+          x: '344'
+          y: '64'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph

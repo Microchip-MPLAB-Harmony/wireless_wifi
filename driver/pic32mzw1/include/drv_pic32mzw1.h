@@ -42,9 +42,13 @@ extern const uint8_t pic32mzw_rsr_pkt_num;
 #define DRV_PIC32MZW_REGDOMAIN_MAX_NAME_LEN         6
 #define DRV_PIC32MZW_REGDOMAIN_RES_LEN              16
 #define DRV_PIC32MZW_PS_INFO_LEN                    6
-#define DRV_PIC32MZW_DEFAULT_PS_LISTEN_INTERVAL     1
+#define DRV_PIC32MZW_DEFAULT_PS_LISTEN_INTERVAL     30
 #define DRV_PIC32MZW_MAX_HIDDEN_SITES               4
 #define DRV_PIC32MZW_AP_REKEY_MIN_PERIOD            60
+#define DRV_PIC32MZW_DEFAULT_KEEPALIVE              60
+#define DRV_PIC32MZW_DEFAULT_AGING                  120
+#define DRV_PIC32MZW_ACTIVITY_MIN_TIMEOUT           30
+#define DRV_PIC32MZW_ACTIVITY_MAX_TIMEOUT           1800
 #define DRV_PIC32MZW_PKT_BUFF_NUM                   pic32mzw_rsr_pkt_num
 //#define DRV_PIC32MZW_TRACK_MEMORY_ALLOC
 
@@ -79,12 +83,12 @@ typedef enum
 /* indicates higher priority.                                                */
 
 typedef enum {
-    MEM_PRI_CONFIG = 0,
-    MEM_PRI_HPTX   = 1,
-    MEM_PRI_HPRX   = 2,
-    MEM_PRI_RX     = 3,
-    MEM_PRI_TX     = 4,
-    NUM_MEM_PRI_LEVELS = 5
+    MEM_PRI_CONFIG      = 0,
+    MEM_PRI_HPTX        = 1,
+    MEM_PRI_HPRX        = 2,
+    MEM_PRI_RX          = 3,
+    MEM_PRI_TX          = 4,
+    NUM_MEM_PRI_LEVELS  = 5        
 } MEM_PRIORITY_LEVEL_T;
 
 /* Structure used to maintain packet reservation related information for */
@@ -192,5 +196,22 @@ void DRV_PIC32MZW_MACTimer0Disable();
 void DRV_PIC32MZW_MACTimer0Enable();
 void DRV_PIC32MZW_MACTimer1Disable();
 void DRV_PIC32MZW_MACTimer1Enable();
+
+bool DRV_PIC32MZW_BTPriorityRead();
+
+/* PPS APIs - Harmony to lib calls */
+typedef enum
+{
+    DRV_WIFI_PPS_SLEEP              = 0x0001,
+    DRV_WIFI_PPS_WAKEUP_HW          = 0x0002,
+    DRV_WIFI_PPS_WAKEUP_SW          = 0x0003,
+    DRV_WIFI_PPS_WAKEUP_IS_COMPLETE = 0x0004,  
+    DRV_WIFI_PPS_GET_EVENT_TIME     = 0x0005,
+    DRV_WIFI_PPS_GET_DTIM_TIME      = 0x0006,
+    DRV_WIFI_PPS_ENABLE_TEMP_READ   = 0x0007,
+    DRV_WIFI_PPS_DISABLE_TEMP_READ  = 0x0008,
+} DRV_WIFI_PPS_REQ;
+
+bool wdrv_pic32mz_pps_request(DRV_WIFI_PPS_REQ req, void *param_in, void *param_out);
 
 #endif /* _DRV_PIC32MZW1_H */

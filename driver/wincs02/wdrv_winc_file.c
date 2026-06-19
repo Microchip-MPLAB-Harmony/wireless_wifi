@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -38,8 +38,6 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <string.h>
 
 #include "wdrv_winc.h"
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_file.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -47,7 +45,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 // *****************************************************************************
 // *****************************************************************************
 
-static bool fileLoadBuffer(WDRV_WINC_DCPT *pDcpt, WDRV_WINC_FILE_CTX *pFileCtx, bool forceFlushClose);
+static bool fileLoadBuffer(const WDRV_WINC_DCPT *const pDcpt, WDRV_WINC_FILE_CTX *pFileCtx, bool forceFlushClose);
 static void fileCmdRspCallbackHandler
 (
     uintptr_t context,
@@ -186,7 +184,7 @@ static WDRV_WINC_FILE_CTX *fileFindTsfrTempLoadID
   Function:
     static void fileProcessStatus
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t cmdID,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -219,7 +217,7 @@ static WDRV_WINC_FILE_CTX *fileFindTsfrTempLoadID
 
 static void fileProcessStatus
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t cmdID,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -384,7 +382,7 @@ static void fileProcessStatus
   Function:
     static void fileProcessCmdRsp
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         uint16_t rspId,
         WINC_CMD_REQ_HANDLE cmdReqHandle,
         const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -419,7 +417,7 @@ static void fileProcessStatus
 
 static void fileProcessCmdRsp
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     uint16_t rspId,
     WINC_CMD_REQ_HANDLE cmdReqHandle,
     const WINC_DEV_EVENT_SRC_CMD *const pSrcCmd,
@@ -559,7 +557,7 @@ static void fileProcessCmdRsp
 
                     if ((NULL == pFileCtx->op.load.pData) && (blockNum == pFileCtx->op.load.blockNum))
                     {
-                        /* The supplied user buffer has been consumed.
+                        /* The supplied user buffer has been consumed
                            and no more blocks have been sent.
                          Call the user callback to indicate the supplied
                          buffer is complete and new data can be written if
@@ -663,7 +661,7 @@ static void fileProcessCmdRsp
                     /* There is more data to receive, send another TSTSFR (FSRECV)
                      to fetch the next block of data. */
 
-                    lCmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+                    lCmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
                     if (WINC_CMD_REQ_INVALID_HANDLE == lCmdReqHandle)
                     {
@@ -772,7 +770,7 @@ static void fileCmdRspCallbackHandler
     uintptr_t eventArg
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)context;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)context;
 
     if (NULL == pDcpt)
     {
@@ -833,7 +831,7 @@ static void fileCmdRspCallbackHandler
   Function:
     static bool fileLoadBuffer
     (
-        WDRV_WINC_DCPT *pDcpt,
+        const WDRV_WINC_DCPT *const pDcpt,
         WDRV_WINC_FILE_CTX *pFileCtx,
         bool forceFlushClose
     )
@@ -862,7 +860,7 @@ static void fileCmdRspCallbackHandler
 
 static bool fileLoadBuffer
 (
-    WDRV_WINC_DCPT *pDcpt,
+    const WDRV_WINC_DCPT *const pDcpt,
     WDRV_WINC_FILE_CTX *pFileCtx,
     bool forceFlushClose
 )
@@ -912,7 +910,7 @@ static bool fileLoadBuffer
     {
         WINC_CMD_REQ_HANDLE cmdReqHandle;
 
-        cmdReqHandle = WDRV_WINC_CmdReqInit(1, pFileCtx->op.load.bufLen, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+        cmdReqHandle = WDRV_WINC_CmdReqInit(1, pFileCtx->op.load.bufLen, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
         if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
         {
@@ -972,7 +970,7 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
     uintptr_t statusCbCtx
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     unsigned int i;
     size_t lenFilename;
 
@@ -1006,7 +1004,7 @@ WDRV_WINC_FILE_HANDLE WDRV_WINC_FileOpen
         {
             WINC_CMD_REQ_HANDLE cmdReqHandle;
 
-            cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenFilename, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+            cmdReqHandle = WDRV_WINC_CmdReqInit(1, lenFilename, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
             if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
             {
@@ -1072,7 +1070,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileClose
     WDRV_WINC_FILE_HANDLE fHandle
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_FILE_CTX *pFileCtx = (WDRV_WINC_FILE_CTX*)fHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1127,7 +1125,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileClose
 
             WINC_CMD_REQ_HANDLE cmdReqHandle;
 
-            cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+            cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
             if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
             {
@@ -1191,7 +1189,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileWrite
     size_t lenData
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_FILE_CTX *pFileCtx = (WDRV_WINC_FILE_CTX*)fHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1266,7 +1264,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileRead
     size_t *pLenData
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WDRV_WINC_FILE_CTX *pFileCtx = (WDRV_WINC_FILE_CTX*)fHandle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
@@ -1313,7 +1311,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileRead
         *pLenData = 0;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1368,7 +1366,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
     uintptr_t findCbCtx
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const )handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1388,7 +1386,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileFind
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
@@ -1440,7 +1438,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileDelete
     uintptr_t deleteCbCtx
 )
 {
-    WDRV_WINC_DCPT *pDcpt = (WDRV_WINC_DCPT*)handle;
+    const WDRV_WINC_DCPT *const pDcpt = (const WDRV_WINC_DCPT *const)handle;
     WINC_CMD_REQ_HANDLE cmdReqHandle;
 
     /* Ensure the driver handle and user pointer is valid. */
@@ -1460,7 +1458,7 @@ WDRV_WINC_STATUS WDRV_WINC_FileDelete
         return WDRV_WINC_STATUS_RETRY_REQUEST;
     }
 
-    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
+    cmdReqHandle = WDRV_WINC_CmdReqInit(1, 0, &fileCmdRspCallbackHandler, (uintptr_t)pDcpt);
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {

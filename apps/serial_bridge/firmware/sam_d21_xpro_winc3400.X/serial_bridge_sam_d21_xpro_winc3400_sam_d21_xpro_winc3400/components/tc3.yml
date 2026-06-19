@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: tc3
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -44,8 +44,8 @@ data:
     - children:
       - attributes:
           id: tc3
-          x: '0'
-          y: '184'
+          x: '182'
+          y: '222'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
@@ -68,21 +68,20 @@ data:
       - children:
         - attributes:
             id: tc3
-            value: SYS_TIME_PLIB_MODE_COMPARE
+            value: SYS_TIME_PLIB_MODE_PERIOD
           type: Dynamic
         type: Values
       type: String
-    TC_FREQUENCY:
+    TC_OPERATION_MODE:
       attributes:
-        id: TC_FREQUENCY
+        id: TC_OPERATION_MODE
       children:
       - children:
         - attributes:
-            id: tc3
-            value: '48000000'
-          type: Dynamic
+            value: Timer
+          type: User
         type: Values
-      type: Integer
+      type: Combo
     TC_SYS_TIME_CONNECTED:
       attributes:
         id: TC_SYS_TIME_CONNECTED
@@ -109,7 +108,7 @@ data:
       - children:
         - attributes:
             id: tc3
-            value: 'true'
+            value: 'false'
           type: Dynamic
         type: Values
       type: Boolean
@@ -120,7 +119,7 @@ data:
       - children:
         - attributes:
             id: tc3
-            value: 'false'
+            value: 'true'
           type: Dynamic
         type: Values
       type: Boolean
@@ -139,8 +138,19 @@ data:
       - children:
         - attributes:
             id: tc3
-            value: '48000'
+            value: '47999'
           type: Dynamic
         type: Values
       type: Long
+    TC_TIMER_TIME_MS:
+      attributes:
+        id: TC_TIMER_TIME_MS
+      children:
+      - children:
+        - attributes:
+            id: tc3
+            value: '1.0'
+          type: Dynamic
+        type: Values
+      type: Float
   userData: {}

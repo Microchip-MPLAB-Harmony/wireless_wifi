@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: HarmonyCore
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: core
   type: package
-  version: v3.15.5
+  version: v3.16.3
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments: {}
@@ -22,8 +22,8 @@ data:
     - children:
       - attributes:
           id: HarmonyCore
-          x: '640'
-          y: '20'
+          x: '580'
+          y: '61'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph

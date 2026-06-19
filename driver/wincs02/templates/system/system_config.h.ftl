@@ -31,6 +31,9 @@
         <#lt>#define WDRV_WINC_RTOS_STACK_SIZE           ${DRV_WIFI_WINC_RTOS_STACK_SIZE}
     </#if>
     <#lt>#define WDRV_WINC_RTOS_TASK_PRIORITY        ${DRV_WIFI_WINC_RTOS_TASK_PRIORITY}
+    <#lt>#define WDRV_WINC_TASK_YIELD_TIME           1
+<#else>
+    <#lt>#define WDRV_WINC_TASK_YIELD_TIME           0
 </#if>
 #define WDRV_WINC_DEV_RX_BUFF_SZ            ${DRV_WIFI_WINC_RX_BUFF_SZ}
 #define WINC_SOCK_SLAB_ALLOC_MODE           ${DRV_WIFI_WINC_SOCKET_SLAB_ALLOC_MODE}
@@ -53,6 +56,12 @@
 <#if DRV_WIFI_WINC_L3_SUPPORT == false>
 #define WDRV_WINC_DISABLE_L3_SUPPORT
 </#if>
+<#if DRV_WIFI_WINC_ENTERPRISE_SUPPORT == true>
+#define WDRV_WINC_ENTERPRISE_SUPPORT
+</#if>
 <#if DRV_WIFI_WINC_MODULE_SYSLOG_EN == false>
 #define WDRV_WINC_MOD_DISABLE_SYSLOG
+</#if>
+<#if DRV_WIFI_WINC_MODULE_HTTP_EN == false>
+#define WDRV_WINC_MOD_DISABLE_HTTP
 </#if>

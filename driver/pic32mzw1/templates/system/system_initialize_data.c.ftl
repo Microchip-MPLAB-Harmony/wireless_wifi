@@ -20,12 +20,43 @@ source software license terms, no license or other rights, whether express or
 implied, are granted under any patent or other intellectual property rights of
 Microchip or any third party.
 -->
-
+<#if DRV_WIFI_PIC32MZW1_COEX_READ_BT_PRIO != "">
+extern bool ${DRV_WIFI_PIC32MZW1_COEX_READ_BT_PRIO}(void);
+</#if>
 static CRYPT_RNG_CTX wdrvRngCtx;
 static const WDRV_PIC32MZW_SYS_INIT wdrvPIC32MZW1InitData = {
     .pCryptRngCtx  = &wdrvRngCtx,
     .pRegDomName   = "${DRV_WIFI_PIC32MZW1_REG_DOMAIN}",
     .powerSaveMode = WDRV_PIC32MZW_POWERSAVE_RUN_MODE,
     .powerSavePICCorrelation = WDRV_PIC32MZW_POWERSAVE_PIC_ASYNC_MODE,
-    .coexConfigFlags = WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_LT_BTLP | WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_LT_BTLP | WDRV_PIC32MZW_COEX_CONFIG_IF_3WIRE | WDRV_PIC32MZW_COEX_CONFIG_DISABLE
+<#if DRV_WIFI_PIC32MZW1_COEX_ENABLE == true>
+    .coexConfigFlags = WDRV_PIC32MZW_COEX_CONFIG_ENABLE
+<#if DRV_WIFI_PIC32MZW1_COEX_IF_TYPE == '3-Wire'>
+        | WDRV_PIC32MZW_COEX_CONFIG_IF_3WIRE
+<#else>
+        | WDRV_PIC32MZW_COEX_CONFIG_IF_2WIRE
+</#if>
+<#if DRV_WIFI_PIC32MZW1_COEX_PRIO_WLAN_TX_GT_BT_LP == true>
+        | WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_GT_BTLP
+<#else>
+        | WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_TX_LT_BTLP
+</#if>
+<#if DRV_WIFI_PIC32MZW1_COEX_PRIO_WLAN_RX_GT_BT_LP == true>
+        | WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_GT_BTLP
+<#else>
+        | WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_LT_BTLP
+</#if>
+<#if DRV_WIFI_PIC32MZW1_COEX_SHARED_ANTENNA == true>
+        | WDRV_PIC32MZW_COEX_CONFIG_SHARED_ANTENNA,
+<#else>
+        | WDRV_PIC32MZW_COEX_CONFIG_DEDICATED_ANTENNA,
+</#if>
+<#else>
+    .coexConfigFlags = WDRV_PIC32MZW_COEX_CONFIG_DISABLE,
+</#if>
+<#if DRV_WIFI_PIC32MZW1_COEX_READ_BT_PRIO != "">
+    .pBTPriorityReadFn = ${DRV_WIFI_PIC32MZW1_COEX_READ_BT_PRIO}
+<#else>
+    .pBTPriorityReadFn = NULL
+</#if>
 };

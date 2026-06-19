@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -38,8 +38,7 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #include <stdint.h>
 #include <string.h>
 
-#include "wdrv_winc_common.h"
-#include "wdrv_winc_authctx.h"
+#include "wdrv_winc.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -100,6 +99,29 @@ static const uint16_t mapAuthTypeTo11i[] =
     | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
     | DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED
     | DRV_WINC_11I_SAE,
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+    /* WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE */
+    DRV_WINC_PRIVACY
+    | DRV_WINC_11I_WPAIE | DRV_WINC_11I_TKIP
+    | DRV_WINC_11I_RSNE  | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128
+    | DRV_WINC_11I_1X,
+    /* WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE */
+    DRV_WINC_PRIVACY
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128
+    | DRV_WINC_11I_1X,
+    /* WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE */
+    DRV_WINC_PRIVACY
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128
+    | DRV_WINC_11I_1X,
+    /* WDRV_WINC_AUTH_TYPE_WPA3_ENTERPRISE */
+    DRV_WINC_PRIVACY
+    | DRV_WINC_11I_RSNE | DRV_WINC_11I_CCMP128
+    | DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED
+    | DRV_WINC_11I_1X,
+#endif
 };
 
 // *****************************************************************************
@@ -254,6 +276,10 @@ static uint16_t authctxGet11iMask
         if (
             (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
             ||  (WDRV_WINC_AUTH_TYPE_WPA2WPA3_PERSONAL == authType)
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+            ||  (WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE == authType)
+            ||  (WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE == authType)
+#endif
         )
         {
             dot11iInfo |= DRV_WINC_11I_BIPCMAC128 | DRV_WINC_11I_MFP_REQUIRED;
@@ -264,6 +290,10 @@ static uint16_t authctxGet11iMask
         if (
             (WDRV_WINC_AUTH_TYPE_WPAWPA2_PERSONAL == authType)
             ||  (WDRV_WINC_AUTH_TYPE_WPA2_PERSONAL == authType)
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+            ||  (WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE == authType)
+            ||  (WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE == authType)
+#endif
         )
         {
             dot11iInfo &= (0xffffU ^ DRV_WINC_11I_BIPCMAC128);
@@ -333,6 +363,99 @@ bool WDRV_WINC_AuthCtxIsValid(const WDRV_WINC_AUTH_CONTEXT *const pAuthCtx)
             }
             break;
         }
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+        /* Check Enterprise authentication. */
+        case WDRV_WINC_AUTH_TYPE_WPAWPA2_ENTERPRISE:
+        case WDRV_WINC_AUTH_TYPE_WPA2_ENTERPRISE:
+        case WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE:
+        case WDRV_WINC_AUTH_TYPE_WPA3_ENTERPRISE:
+        {
+            int size;
+
+            /* Validate identity. */
+            size = strlen(pAuthCtx->authInfo.enterprise.identity);
+            if ((0 == size) || (size > WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX))
+            {
+                return false;
+            }
+
+            /* Validate tunnel. */
+            switch (pAuthCtx->authInfo.enterprise.tunnel.method)
+            {
+                case WDRV_WINC_AUTH_1X_TUNNEL_METHOD_ANY:
+                case WDRV_WINC_AUTH_1X_TUNNEL_METHOD_PEAPV0:
+                case WDRV_WINC_AUTH_1X_TUNNEL_METHOD_PEAPV1:
+                {
+                    /* Validate identity inside tunnel. */
+                    size = strlen(pAuthCtx->authInfo.enterprise.tunnel.identity);
+                    if ((0 == size) || (size > WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX))
+                    {
+                        return false;
+                    }
+                    break;
+                }
+
+                case WDRV_WINC_AUTH_1X_TUNNEL_METHOD_NONE:
+                case WDRV_WINC_AUTH_1X_TUNNEL_METHOD_TTLSV0:
+                {
+                    break;
+                }
+
+                default:
+                {
+                    /* No other tunnel types supported. */
+                    return false;
+                }
+            }
+
+            /* Validate credentials. */
+            switch (pAuthCtx->authInfo.enterprise.credentials.type)
+            {
+                case WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_TLS:
+                {
+                    /* TTLSv0/TLS is not supported. */
+                    if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_TTLSV0 == pAuthCtx->authInfo.enterprise.tunnel.method)
+                    {
+                        return false;
+                    }
+
+                    break;
+                }
+
+                case WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_MSCHAPV2:
+                {
+                    /* MSCHAPv2 credentials must be tunnelled. */
+                    if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_NONE == pAuthCtx->authInfo.enterprise.tunnel.method)
+                    {
+                        return false;
+                    }
+
+                    /* Validate username. */
+                    size = strlen(pAuthCtx->authInfo.enterprise.credentials.mschapv2.username);
+                    if ((0 == size) || (size > WDRV_WINC_ENT_AUTH_MSCHAPV2_USERNAME_LEN_MAX))
+                    {
+                        return false;
+                    }
+
+                    /* Validate password. */
+                    size = strlen(pAuthCtx->authInfo.enterprise.credentials.mschapv2.password);
+                    if ((0 == size) || (size > WDRV_WINC_ENT_AUTH_MSCHAPV2_PASSWORD_LEN_MAX))
+                    {
+                        return false;
+                    }
+                    break;
+                }
+
+                default:
+                {
+                    /* No other credential types supported. */
+                    return false;
+                }
+            }
+            break;
+        }
+#endif
 
         default:
         {
@@ -429,7 +552,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
     WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
     (
         WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-        uint8_t *pPassword,
+        const uint8_t *pPassword,
         uint8_t size,
         WDRV_WINC_AUTH_TYPE authType
     )
@@ -450,7 +573,7 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetOpen
 WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetPersonal
 (
     WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
-    uint8_t *const pPassword,
+    const uint8_t *const pPassword,
     uint8_t size,
     WDRV_WINC_AUTH_TYPE authType
 )
@@ -569,3 +692,247 @@ WDRV_WINC_STATUS WDRV_WINC_AuthCtxConfigureMfp
 
     return status;
 }
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseTLS
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        WDRV_WINC_TLS_HANDLE tlsHandle
+    )
+
+  Summary:
+    Configure TLS credentials for a WPA-Enterprise authentication.
+
+  Description:
+    The authentication context enterprise.credentials structure is populated
+      with TLS credentials.
+
+  Remarks:
+    See wdrv_pic32mzw_authctx.h for usage information.
+*/
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseTLS
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    WDRV_WINC_TLS_HANDLE tlsHandle
+)
+{
+    uint8_t tlsIdx;
+
+    /* Ensure authentication context is valid. */
+    if (NULL == pAuthCtx)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    tlsIdx = WDRV_WINC_TLSCtxHandleToCfgIdx(tlsHandle);
+
+    /* Ensure the TLS handle is valid and the context is in use. */
+    if ((WDRV_WINC_TLS_INVALID_HANDLE == tlsHandle) || (tlsIdx > WDRV_WINC_TLS_CTX_NUM) || (0 == tlsIdx))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Set credential type */
+    pAuthCtx->authInfo.enterprise.credentials.type = WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_TLS;
+
+    /* Copy the context handle */
+    pAuthCtx->authInfo.enterprise.credentials.tls.tlsIdx = tlsIdx;
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseMSCHAPV2
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        const char *const pUsername,
+        size_t usernameLen,
+        const char *const pPassword,
+        size_t passwordLen
+    )
+
+  Summary:
+    Configure MSCHAPv2 credentials for a WPA-Enterprise authentication.
+
+  Description:
+    The authentication context enterprise.credentials structure is populated
+      with MSCHAPv2 credentials.
+
+  Remarks:
+    See wdrv_pic32mzw_authctx.h for usage information.
+*/
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterpriseMSCHAPV2
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    const char *const pUsername,
+    size_t usernameLen,
+    const char *const pPassword,
+    size_t passwordLen
+)
+{
+    /* Ensure authentication context is valid. */
+    if (NULL == pAuthCtx)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure username and password are provided. */
+    if ((NULL == pUsername) || (NULL == pPassword))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+    if ((0 == usernameLen) || (usernameLen > WDRV_WINC_ENT_AUTH_MSCHAPV2_USERNAME_LEN_MAX))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+    if ((0 == passwordLen) || (passwordLen > WDRV_WINC_ENT_AUTH_MSCHAPV2_PASSWORD_LEN_MAX))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Set credential type */
+    pAuthCtx->authInfo.enterprise.credentials.type = WDRV_WINC_AUTH_1X_CREDENTIAL_TYPE_MSCHAPV2;
+
+    /* Set MSCHAPv2 username */
+    memset(&pAuthCtx->authInfo.enterprise.credentials.mschapv2.username, 0, WDRV_WINC_ENT_AUTH_MSCHAPV2_USERNAME_LEN_MAX+1);
+    memcpy(&pAuthCtx->authInfo.enterprise.credentials.mschapv2.username, pUsername, usernameLen);
+
+    /* Set MSCHAPv2 password */
+    memset(&pAuthCtx->authInfo.enterprise.credentials.mschapv2.password, 0, WDRV_WINC_ENT_AUTH_MSCHAPV2_PASSWORD_LEN_MAX+1);
+    memcpy(&pAuthCtx->authInfo.enterprise.credentials.mschapv2.password, pPassword, passwordLen);
+
+    return WDRV_WINC_STATUS_OK;
+}
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterprise
+    (
+        WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+        const char *const pIdentity,
+        size_t identityLen,
+        WDRV_WINC_AUTH_1X_TUNNEL_METHOD tunnelMethod,
+        WDRV_WINC_TLS_HANDLE tunnelTlsHandle,
+        const char *const pIdentityInsideTunnel,
+        size_t identityInsideTunnelLen,
+        WDRV_WINC_AUTH_TYPE authType
+    )
+
+  Summary:
+    Configure an authentication context for WPA Enterprise authentication.
+
+  Description:
+    The auth type and information are configured appropriately for WPA
+      Enterprise authentication with the identity and tunnel parameters
+      provided. The Management Frame Protection configuration is initialised to
+      WDRV_WINC_AUTH_MFP_ENABLED.
+
+  Remarks:
+    See wdrv_pic32mzw_authctx.h for usage information.
+
+*/
+WDRV_WINC_STATUS WDRV_WINC_AuthCtxSetEnterprise
+(
+    WDRV_WINC_AUTH_CONTEXT *const pAuthCtx,
+    const char *const pIdentity,
+    size_t identityLen,
+    WDRV_WINC_AUTH_1X_TUNNEL_METHOD tunnelMethod,
+    WDRV_WINC_TLS_HANDLE tunnelTlsHandle,
+    const char *const pIdentityInsideTunnel,
+    size_t identityInsideTunnelLen,
+    WDRV_WINC_AUTH_TYPE authType
+)
+{
+    uint16_t dot11iInfo;
+    uint8_t tunnelTlsIdx;
+
+    /* Ensure authentication context is valid. */
+    if (NULL == pAuthCtx)
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure identity is valid. */
+    if ((NULL == pIdentity) || (0 == identityLen) || (identityLen > WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    if (WDRV_WINC_AUTH_TYPE_DEFAULT == authType)
+    {
+        /* Set authentication type to WPA2/WPA3 transition mode. */
+        authType = WDRV_WINC_AUTH_TYPE_WPA2WPA3_ENTERPRISE;
+    }
+
+    dot11iInfo = authctxGet11iMask(authType, WDRV_WINC_AUTH_MOD_NONE);
+
+    /* Ensure the requested auth type is valid */
+    if (!(dot11iInfo & DRV_WINC_11I_1X))
+    {
+        return WDRV_WINC_STATUS_INVALID_ARG;
+    }
+
+    /* Ensure tunnel parameters are valid. */
+    if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_NONE != tunnelMethod)
+    {
+        /* Ensure identity inside tunnel is valid. */
+        if (
+            (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_TTLSV0 != tunnelMethod)
+            &&  (
+                (NULL == pIdentityInsideTunnel)
+                ||  (0 == identityInsideTunnelLen)
+                ||  (identityInsideTunnelLen > WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX)
+            )
+        )
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
+
+        tunnelTlsIdx = WDRV_WINC_TLSCtxHandleToCfgIdx(tunnelTlsHandle);
+
+        /* Ensure the TLS handle is valid. */
+        if ((WDRV_WINC_TLS_INVALID_HANDLE == tunnelTlsHandle) || (tunnelTlsIdx > WDRV_WINC_TLS_CTX_NUM) || (0 == tunnelTlsIdx))
+        {
+            return WDRV_WINC_STATUS_INVALID_ARG;
+        }
+    }
+
+    /* Set authentication type */
+    pAuthCtx->authType = authType;
+
+    /* Initialize the MFP configuration to WDRV_WINC_AUTH_MFP_ENABLED.   */
+    /* The Application may change the configuration later if desired via     */
+    /* WDRV_WINC_AuthCtxConfigureMfp.                                    */
+    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_MFP_REQ;
+    pAuthCtx->authMod &= ~WDRV_WINC_AUTH_MOD_MFP_OFF;
+
+    /* Set identity. */
+    memset(pAuthCtx->authInfo.enterprise.identity, 0, WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX+1);
+    memcpy(pAuthCtx->authInfo.enterprise.identity, pIdentity, identityLen);
+
+    /* Set tunnel parameters. */
+    pAuthCtx->authInfo.enterprise.tunnel.method = tunnelMethod;
+
+    if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_NONE != tunnelMethod)
+    {
+        /* Set TLS index. */
+        pAuthCtx->authInfo.enterprise.tunnel.tlsIdx = tunnelTlsIdx;
+
+        /* Set identity inside tunnel. */
+        if (WDRV_WINC_AUTH_1X_TUNNEL_METHOD_TTLSV0 != tunnelMethod)
+        {
+            memset(pAuthCtx->authInfo.enterprise.tunnel.identity, 0, WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX+1);
+            memcpy(pAuthCtx->authInfo.enterprise.tunnel.identity, pIdentityInsideTunnel, identityInsideTunnelLen);
+        }
+    }
+
+    return WDRV_WINC_STATUS_OK;
+}
+#endif /* WDRV_WINC_ENTERPRISE_SUPPORT */

@@ -68,8 +68,8 @@ Microchip or any third party.
 #include "wdrv_pic32mzw_ps.h"
 #include "wdrv_pic32mzw_ie.h"
 #include "tcpip/src/link_list.h"
-#ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
-#include "drv_pic32mzw1_tls.h"
+#ifdef WDRV_PIC32MZW_TLS_SUPPORT
+#include "wdrv_pic32mzw_tls.h"
 #endif
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus // Provide C++ Compatibility
@@ -158,6 +158,9 @@ typedef struct _WDRV_PIC32MZW_CTRLDCPT
     /* Coexistence arbiter configuration flags */
     uint8_t coexConfigFlags;
 
+    /* Coexistence arbiter BT Priority function pointer */
+    WDRV_PIC32MZW_COEX_BT_PRIORITY_READ_FN pBTPriorityReadFn;
+
     /* Access semaphore for MAC firmware library. */
     OSAL_SEM_HANDLE_TYPE drvAccessSemaphore;
 
@@ -212,11 +215,6 @@ typedef struct _WDRV_PIC32MZW_CTRLDCPT
     /* Vendor specific IE frame filter mask */
     uint8_t vendorIEMask;
 
-#ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
-    /* Handle to driver TLS module */
-    DRV_PIC32MZW1_TLS_HANDLE    tlsHandle;
-#endif
-
     /* Callback to use for notifying WiFi power-save sleep entry and exit.*/
     WDRV_PIC32MZW_PS_NOTIFY_CALLBACK pfPSNotifyCB;
 
@@ -262,6 +260,13 @@ typedef struct _WDRV_PIC32MZW_MACDCPT
     /* Current events to be signalled to stack. */
     TCPIP_MAC_EVENT events;
 
+#if defined(TCPIP_STACK_VLAN_INTERFACE_SUPPORT) && (TCPIP_STACK_VLAN_INTERFACE_SUPPORT != 0)
+    /* VID for this interface. */
+    uint16_t        vlanId;
+
+    /* VLAN PCP for this interface. */
+    uint8_t         vlanPcp;
+#endif
     /* Access semaphore to protect updates to event state. */
     OSAL_SEM_HANDLE_TYPE eventSemaphore;
 
@@ -851,6 +856,34 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_GetStatistics
 #ifdef DRV_PIC32MZW_TRACK_MEMORY_ALLOC
 void WDRV_PIC32MZW_MemTrackerDump(void);
 #endif
+
+//*******************************************************************************
+/*
+  Function:
+    bool DRV_PIC32MZW_BTPriorityRead()
+
+  Summary:
+    Read BT Priority for BT/Wi-Fi Coexistence operation.
+
+  Description:
+    If pBTPRiorityReadFn is provided in the driver initialization structure,
+    it returns the BT Priority value read via pBTPRiorityReadFn.
+    Otherwise, returns true.
+
+  Precondition:
+    None.
+
+  Parameters:
+    None.
+
+  Returns:
+    true for BT Priority asserted, false otherwise.
+
+  Remarks:
+    It improves BT/Wi-Fi Coexistence operation.
+*/
+
+bool DRV_PIC32MZW_BTPriorityRead(void);
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus

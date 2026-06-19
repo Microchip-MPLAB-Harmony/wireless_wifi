@@ -331,8 +331,8 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACParametersGet
     (
         DRV_HANDLE handle,
         TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
-        int nEntries,
-        int* pHwEntries
+        size_t/int nEntries,
+        size_t/int* pHwEntries
     )
 
   Summary:
@@ -344,7 +344,7 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACParametersGet
     WDRV_PIC32MZW_Open should have been called to obtain a valid handle.
 
   Parameters:
-    handle        - Client handle obtained by a call to WDRV_PIC32MZW_Open.
+    handle      - Client handle obtained by a call to WDRV_PIC32MZW_Open.
     pRegEntries -
     nEntries    -
     pHwEntries  -
@@ -361,8 +361,13 @@ TCPIP_MAC_RES WDRV_PIC32MZW_MACRegisterStatisticsGet
 (
     DRV_HANDLE handle,
     TCPIP_MAC_STATISTICS_REG_ENTRY* pRegEntries,
+#if TCPIP_STACK_VERSION_MAJOR != 8
+    size_t nEntries,
+    size_t* pHwEntries
+#else
     int nEntries,
     int* pHwEntries
+#endif
 );
 
 //*******************************************************************************

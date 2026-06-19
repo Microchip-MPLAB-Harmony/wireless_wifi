@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -174,10 +174,10 @@ void WDRV_WINC_AssocProcessAEC
 //*******************************************************************************
 /*
   Function:
-    static WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
+    WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
     (
         DRV_HANDLE handle,
-        WDRV_WINC_MAC_ADDR *pMacAddr
+        const WDRV_WINC_MAC_ADDR *const pMacAddr
     )
 
   Summary:
@@ -205,7 +205,7 @@ void WDRV_WINC_AssocProcessAEC
 WDRV_WINC_ASSOC_INFO* WDRV_WINC_AssocFindSTAInfo
 (
     DRV_HANDLE handle,
-    WDRV_WINC_MAC_ADDR *pMacAddr
+    const WDRV_WINC_MAC_ADDR *const pMacAddr
 );
 
 //*******************************************************************************

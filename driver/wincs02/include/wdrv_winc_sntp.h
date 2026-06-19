@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -49,6 +49,85 @@ TO MICROCHIP FOR THIS SOFTWARE.
 
 // *****************************************************************************
 // *****************************************************************************
+// Section: WINC Driver SNTP Defines
+// *****************************************************************************
+// *****************************************************************************
+
+/* Map original SNTP enable function to updated version. */
+#define WDRV_WINC_SNTPEnableSet(HANDLE, ENABLED)        WDRV_WINC_SNTPEnableSetCallback(HANDLE, ENABLED, NULL)
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC Driver SNTP Data Types
+// *****************************************************************************
+// *****************************************************************************
+
+// *****************************************************************************
+/*  SNTP Status
+
+  Summary:
+    SNTP statuses.
+
+  Description:
+    List of possible SNTP statuses.
+
+  Remarks:
+    None.
+
+*/
+
+typedef enum
+{
+    /* SNTP status is OK, no error. */
+    WDRV_WINC_SNTP_STATUS_OK,
+
+    /* General SNTP error. */
+    WDRV_WINC_SNTP_STATUS_ERROR,
+
+    /* The SNTP server request has timed out. */
+    WDRV_WINC_SNTP_STATUS_SERVER_TIMEOUT,
+} WDRV_WINC_SNTP_STATUS;
+
+// *****************************************************************************
+/* SNTP Status Callback Function Pointer
+
+  Function:
+    void (*WDRV_WINC_SNTP_STATUS_CALLBACK)
+    (
+        DRV_HANDLE handle,
+        WDRV_WINC_SNTP_STATUS status,
+        void *pStatusInfo
+    )
+
+  Summary:
+    Pointer to an SNTP status callback function.
+
+  Description:
+    This defines an SNTP status function callback type which can be passed
+    into certain SNTP functions to receive feedback.
+
+  Parameters:
+    handle      - Client handle obtained by a call to WDRV_WINC_Open.
+    status      - Status of SNTP operation.
+    pStatusInfo - Pointer to optional status information.
+
+  Returns:
+    None.
+
+  Remarks:
+    None.
+
+*/
+
+typedef void (*WDRV_WINC_SNTP_STATUS_CALLBACK)
+(
+    DRV_HANDLE handle,
+    WDRV_WINC_SNTP_STATUS status,
+    void *pStatusInfo
+);
+
+// *****************************************************************************
+// *****************************************************************************
 // Section: WINC Driver SNTP Routines
 // *****************************************************************************
 // *****************************************************************************
@@ -61,10 +140,50 @@ extern "C"
 //*******************************************************************************
 /*
   Function:
-    WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
+    void WDRV_WINC_SNTPProcessAEC
+    (
+        uintptr_t context,
+        WINC_DEVICE_HANDLE devHandle,
+        const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+    )
+
+  Summary:
+    AEC process callback.
+
+  Description:
+    Callback will be called to process any AEC messages received.
+
+  Precondition:
+    WINC_DevAECCallbackRegister must be called to register the callback.
+
+  Parameters:
+    context   - Pointer to user context supplied when callback was registered.
+    devHandle - WINC device handle.
+    pElems    - Pointer to element structure.
+
+  Returns:
+    None.
+
+  Remarks:
+    Callback should call WINC_CmdReadParamElem to extract elements.
+
+*/
+
+void WDRV_WINC_SNTPProcessAEC
+(
+    uintptr_t context,
+    WINC_DEVICE_HANDLE devHandle,
+    const WINC_DEV_EVENT_RSP_ELEMS *const pElems
+);
+
+//*******************************************************************************
+/*
+  Function:
+    WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSetCallback
     (
         DRV_HANDLE handle,
-        bool enabled
+        bool enabled,
+        WDRV_WINC_SNTP_STATUS_CALLBACK pfSNTPStatusCB
     )
 
   Summary:
@@ -78,8 +197,9 @@ extern "C"
     WDRV_WINC_Open must have been called to obtain a valid handle.
 
   Parameters:
-    handle  - Client handle obtained by a call to WDRV_WINC_Open.
-    enabled - Flag indicating if the NTP client should be enabled or disabled.
+    handle         - Client handle obtained by a call to WDRV_WINC_Open.
+    enabled        - Flag indicating if the NTP client should be enabled or disabled.
+    pfSNTPStatusCB - Callback to indicate status.
 
   Returns:
     WDRV_WINC_STATUS_OK            - The request has been accepted.
@@ -92,10 +212,11 @@ extern "C"
 
 */
 
-WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSet
+WDRV_WINC_STATUS WDRV_WINC_SNTPEnableSetCallback
 (
     DRV_HANDLE handle,
-    bool enabled
+    bool enabled,
+    WDRV_WINC_SNTP_STATUS_CALLBACK pfSNTPStatusCB
 );
 
 //*******************************************************************************

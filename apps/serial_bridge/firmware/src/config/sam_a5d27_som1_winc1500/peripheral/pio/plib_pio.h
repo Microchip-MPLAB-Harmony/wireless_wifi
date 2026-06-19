@@ -146,24 +146,6 @@
 #define WDRV_WINC_INT_EXT1_InterruptEnable()   (PIOB_REGS->PIO_IER = (1<<0))
 #define WDRV_WINC_INT_EXT1_InterruptDisable()  (PIOB_REGS->PIO_IDR = (1<<0))
 
-/*** Macros for MIKROBUS1_AN pin ***/
-#define MIKROBUS1_AN_Set()               (PIOD_REGS->PIO_SODR = ((uint32_t)1U<<25U))
-#define MIKROBUS1_AN_Clear()             (PIOD_REGS->PIO_CODR = ((uint32_t)1U<<25U))
-#define MIKROBUS1_AN_Toggle()            do {\
-                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
-                                            PIOD_REGS->PIO_ODSR ^= ((uint32_t)1U<<25U);\
-                                        } while (0)
-#define MIKROBUS1_AN_OutputEnable()      do {\
-                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
-                                            PIOD_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
-                                        }while(0)
-#define MIKROBUS1_AN_InputEnable()       do { \
-                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<25U); \
-                                            PIOD_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
-                                        } while (0)
-#define MIKROBUS1_AN_Get()               ((PIOD_REGS->PIO_PDSR >> 25U) & 0x1U)
-#define MIKROBUS1_AN_PIN                  PIO_PIN_PD25
-
 /*** Macros for WDRV_WINC_CHIP_EN_EXT2 pin ***/
 #define WDRV_WINC_CHIP_EN_EXT2_Set()               (PIOA_REGS->PIO_SODR = ((uint32_t)1U<<31U))
 #define WDRV_WINC_CHIP_EN_EXT2_Clear()             (PIOA_REGS->PIO_CODR = ((uint32_t)1U<<31U))
@@ -199,24 +181,6 @@
                                         } while (0)
 #define WDRV_WINC_RESETN_EXT2_Get()               ((PIOA_REGS->PIO_PDSR >> 26U) & 0x1U)
 #define WDRV_WINC_RESETN_EXT2_PIN                  PIO_PIN_PA26
-
-/*** Macros for MIKROBUS2_AN pin ***/
-#define MIKROBUS2_AN_Set()               (PIOD_REGS->PIO_SODR = ((uint32_t)1U<<26U))
-#define MIKROBUS2_AN_Clear()             (PIOD_REGS->PIO_CODR = ((uint32_t)1U<<26U))
-#define MIKROBUS2_AN_Toggle()            do {\
-                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
-                                            PIOD_REGS->PIO_ODSR ^= ((uint32_t)1U<<26U);\
-                                        } while (0)
-#define MIKROBUS2_AN_OutputEnable()      do {\
-                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
-                                            PIOD_REGS->PIO_CFGR |=((uint32_t)1U << PIO_CFGR_DIR_Pos);\
-                                        }while(0)
-#define MIKROBUS2_AN_InputEnable()       do { \
-                                            PIOD_REGS->PIO_MSKR = ((uint32_t)1U<<26U); \
-                                            PIOD_REGS->PIO_CFGR &= ~((uint32_t)1U << PIO_CFGR_DIR_Pos);\
-                                        } while (0)
-#define MIKROBUS2_AN_Get()               ((PIOD_REGS->PIO_PDSR >> 26U) & 0x1U)
-#define MIKROBUS2_AN_PIN                  PIO_PIN_PD26
 
 /*** Macros for WDRV_WINC_INT_EXT2 pin ***/
 #define WDRV_WINC_INT_EXT2_Set()               (PIOA_REGS->PIO_SODR = ((uint32_t)1U<<25U))
@@ -714,10 +678,8 @@ void PIO_PortClear(PIO_PORT port, uint32_t mask);
   Example:
     <code>
 
-<<<<<<< HEAD
-=======
-     Toggles PC5 and PC7 pins
->>>>>>> d3342b368 ([PIO] pio_11264 MISRAC 2012 required rule violation fix)
+    Toggles PC5 and PC7 pins
+
     PIO_PortToggle(PIO_PORT_C, 0x00A0);
 
     </code>

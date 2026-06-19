@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: uart1
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMA5D27CD1G
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -44,8 +44,8 @@ data:
     - children:
       - attributes:
           id: uart1
-          x: '33'
-          y: '303'
+          x: '12'
+          y: '283'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -62,10 +62,10 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #endif
 
 /* Convert a socket handle into pointer into the socket array. */
-#define WINC_SOCK_HANDLE_TO_PTR(HANDLE)     (void*)(((uintptr_t)wincSockets & ~INT_MAX) | (HANDLE))
+#define WINC_SOCK_HANDLE_TO_PTR(HANDLE)     (((HANDLE) < WINC_SOCK_NUM_SOCKETS) ? (&wincSockets[(HANDLE)]) : NULL)
 
 /* Convert a socket array pointer to a handle. */
-#define WINC_SOCK_PTR_TO_HANDLE(PTR)        (((int)(PTR)) & INT_MAX)
+#define WINC_SOCK_PTR_TO_HANDLE(PTR)        (PTR->fd)
 
 static size_t sizeof_sockaddr(const struct sockaddr *addr);
 
@@ -170,6 +170,7 @@ typedef struct
     uint16_t                    protocol;
     uint8_t                     type;
     uint8_t                     domain;
+    uint8_t                     fd;
     SOCKADDR_UNION              localEndPt;
     SOCKADDR_UNION              remoteEndPt;
     uint16_t                    unAckedSeqNum;
@@ -181,6 +182,7 @@ typedef struct
     };
 
     uint8_t                     udpUnackedPktBufs;
+    uint8_t                     tlsConfIdx;
     WINC_SOCK_BUFFER            recvBuffer;
     WINC_SOCK_BUFFER            sendBuffer;
     size_t                      recvBufSz;
@@ -208,6 +210,8 @@ typedef struct
 {
     size_t                      hostNameLen;
     struct addrinfo             *pRes;
+    int                         ai_socktype;
+    uint16_t                    port;
     uint16_t                    reqStatus;
     uint8_t                     recordType;
     uint8_t                     hostName[];
@@ -232,7 +236,7 @@ static WINC_SOCKET_EVENT_CALLBACK   pfSocketEventCallback;
 /* Socket event callback function context to be passed back. */
 static uintptr_t                    socketEventCallbackContext;
 
-/* Current outstanding DNS request pointer. */
+/* Current outstanding DNS request pointer (for getaddrinfo). */
 static WINC_DNS_REQ                 *pCurrentDnsRequest;
 
 /* Pointer to memory slab allocator context. */
@@ -291,7 +295,7 @@ static WINC_SOCK_SLAB_CTX* slabInit(size_t slabSize, int8_t numSlabs)
     pSlabAllocCtx->numSlabs  = numSlabs;
 
 #ifdef WINC_SOCK_SLAB_STATS_ENABLE
-    memset(&pSlabAllocCtx->stats, 0, sizeof(WINC_SOCK_SLAB_STATS));
+    (void)memset(&pSlabAllocCtx->stats, 0, sizeof(WINC_SOCK_SLAB_STATS));
 #endif
 
     return pSlabAllocCtx;
@@ -385,7 +389,7 @@ static void* slabAlloc(WINC_SOCK_SLAB_CTX *pSlabAllocCtx, size_t size)
                         /* Calculate pointer to memory within the slabs. */
                         p = &pSlabAllocCtx->pRootAddr[(size_t)slabIdx * pSlabAllocCtx->slabSize];
 
-                        WINC_TRACE_PRINT("SLAB[+%08x %d (%d %d)]\n", p, slabIdx, size, reqSlabs);
+                        WINC_TRACE_PRINT("SLAB[+%08x %d (%d %d)]\r\n", p, slabIdx, size, reqSlabs);
 
 #ifdef WINC_SOCK_SLAB_STATS_ENABLE
                         pSlabAllocCtx->stats.numAllocs += consecFree;
@@ -412,7 +416,7 @@ static void* slabAlloc(WINC_SOCK_SLAB_CTX *pSlabAllocCtx, size_t size)
     pSlabAllocCtx->stats.numFailed++;
 #endif
 
-    WINC_ERROR_PRINT("error, failed to allocate slab of %d bytes\n", size);
+    WINC_ERROR_PRINT("error, failed to allocate slab of %d bytes\r\n", size);
 
     return NULL;
 }
@@ -461,7 +465,7 @@ static void slabFree(WINC_SOCK_SLAB_CTX *pSlabAllocCtx, void *p)
     /* Calculate the slab index. */
     slabIdx = (((uint8_t*)p - pSlabAllocCtx->pRootAddr) / pSlabAllocCtx->slabSize);
 
-    WINC_TRACE_PRINT("SLAB[-%08x %d + %d]\n", p, slabIdx, pSlabAllocCtx->slabIdxs[slabIdx]);
+    WINC_TRACE_PRINT("SLAB[-%08x %d + %d]\r\n", p, slabIdx, pSlabAllocCtx->slabIdxs[slabIdx]);
 
 #ifdef WINC_SOCK_SLAB_STATS_ENABLE
     pSlabAllocCtx->stats.numFrees += pSlabAllocCtx->slabIdxs[slabIdx];
@@ -596,7 +600,7 @@ static bool sockBufferWrite(WINC_SOCK_BUFFER *pBuffer, const uint8_t *pData, siz
     {
         /* Dealing with UDP datagrams, need to store the destination address with the data. */
 
-        WINC_TRACE_PRINT("PB+ %d %d %d\n", pBuffer->pUdpPktBuffers->pktDepth, pBuffer->pUdpPktBuffers->inIdx, dataLen);
+        WINC_TRACE_PRINT("PB+ %d %d %d\r\n", pBuffer->pUdpPktBuffers->pktDepth, pBuffer->pUdpPktBuffers->inIdx, dataLen);
 
         if (false == fragment)
         {
@@ -619,7 +623,7 @@ static bool sockBufferWrite(WINC_SOCK_BUFFER *pBuffer, const uint8_t *pData, siz
                         return false;
                     }
 
-                    WINC_TRACE_PRINT("PB@ %d\n", fragmentLen);
+                    WINC_TRACE_PRINT("PB@ %d\r\n", fragmentLen);
 
                     /* Create a dummy entry for the fragment to bring the write point back to the buffer start. */
                     (void)memset(&pBuffer->pUdpPktBuffers->pkts[pBuffer->pUdpPktBuffers->inIdx].endPt, 0, sizeof(SOCKADDR_UNION));
@@ -752,7 +756,7 @@ static ssize_t sockBufferRead(WINC_SOCK_BUFFER *pBuffer, uint8_t *pData, size_t 
                 specified by it need to be removed first. */
             fragmentLen = pBuffer->pUdpPktBuffers->pkts[pBuffer->pUdpPktBuffers->outIdx].pktLength;
 
-            WINC_TRACE_PRINT("PB# %d %d\n", fragmentLen, pBuffer->pUdpPktBuffers->outIdx);
+            WINC_TRACE_PRINT("PB# %d %d\r\n", fragmentLen, pBuffer->pUdpPktBuffers->outIdx);
 
             pBuffer->length    -= (uint16_t)fragmentLen;
             pBuffer->outOffset  = 0;
@@ -788,7 +792,7 @@ static ssize_t sockBufferRead(WINC_SOCK_BUFFER *pBuffer, uint8_t *pData, size_t 
             discardLen = pBuffer->pUdpPktBuffers->pkts[pBuffer->pUdpPktBuffers->outIdx].pktLength - dataLen;
         }
 
-        WINC_TRACE_PRINT("PB- %d %d %d\n", pBuffer->pUdpPktBuffers->pktDepth, pBuffer->pUdpPktBuffers->outIdx, pBuffer->pUdpPktBuffers->pkts[pBuffer->pUdpPktBuffers->outIdx].pktLength);
+        WINC_TRACE_PRINT("PB- %d %d %d\r\n", pBuffer->pUdpPktBuffers->pktDepth, pBuffer->pUdpPktBuffers->outIdx, pBuffer->pUdpPktBuffers->pkts[pBuffer->pUdpPktBuffers->outIdx].pktLength);
 
         if (false == peek)
         {
@@ -837,7 +841,7 @@ static ssize_t sockBufferRead(WINC_SOCK_BUFFER *pBuffer, uint8_t *pData, size_t 
     /* Discard any data from the datagram that wasn't read. */
     if (discardLen > 0U)
     {
-        WINC_TRACE_PRINT("DL %d\n", discardLen);
+        WINC_TRACE_PRINT("DL %d\r\n", discardLen);
 
         outOffset += (uint16_t)discardLen;
         length    -= (uint16_t)discardLen;
@@ -892,6 +896,7 @@ static WINC_SOCK_CTX* sockFindFreeSocket(void)
         if (false == wincSockets[i].inUse)
         {
             (void)memset(&wincSockets[i], 0, sizeof(WINC_SOCK_CTX));
+            wincSockets[i].fd = i;
             return &wincSockets[i];
         }
     }
@@ -954,6 +959,7 @@ static bool sockCreateSocket(WINC_SOCK_CTX *pSockCtx, uint8_t type, uint16_t soc
 #endif
     if (NULL == pSockCtx->pSlabAllocCtx)
     {
+        (void)memset(pSockCtx, 0, sizeof(WINC_SOCK_CTX));
         return false;
     }
 
@@ -1094,46 +1100,10 @@ static bool sockAllocSocketBuffers(WINC_SOCK_CTX *pSockCtx)
         slabFree(pSockCtx->pSlabAllocCtx, pSockCtx->recvBuffer.pData);
     }
 
-    (void)memset(&pSockCtx->recvBuffer, 0, sizeof(WINC_SOCK_BUFFER));
-
     /* Free send data buffer if already allocated. */
     if (NULL != pSockCtx->sendBuffer.pData)
     {
         slabFree(pSockCtx->pSlabAllocCtx, pSockCtx->sendBuffer.pData);
-    }
-
-    (void)memset(&pSockCtx->sendBuffer, 0, sizeof(WINC_SOCK_BUFFER));
-
-    /* Allocate new receive buffer. */
-    if (pSockCtx->recvBufSz > 0U)
-    {
-        pSockCtx->recvBuffer.pData = slabAlloc(pSockCtx->pSlabAllocCtx, pSockCtx->recvBufSz);
-
-        if (NULL != pSockCtx->recvBuffer.pData)
-        {
-            pSockCtx->recvBuffer.totalSize = (uint16_t)pSockCtx->recvBufSz;
-        }
-        else
-        {
-            WINC_ERROR_PRINT("error: failed to allocate recv buffer\n");
-            return false;
-        }
-    }
-
-    /* Allocate new send buffer. */
-    if (pSockCtx->sendBufSz > 0U)
-    {
-        pSockCtx->sendBuffer.pData = slabAlloc(pSockCtx->pSlabAllocCtx, pSockCtx->sendBufSz);
-
-        if (NULL != pSockCtx->sendBuffer.pData)
-        {
-            pSockCtx->sendBuffer.totalSize = (uint16_t)pSockCtx->sendBufSz;
-        }
-        else
-        {
-            WINC_ERROR_PRINT("error: failed to allocate send buffer\n");
-            return false;
-        }
     }
 
     if (SOCK_DGRAM == pSockCtx->type)
@@ -1151,7 +1121,45 @@ static bool sockAllocSocketBuffers(WINC_SOCK_CTX *pSockCtx)
             slabFree(pSockCtx->pSlabAllocCtx, pSockCtx->sendBuffer.pUdpPktBuffers);
             pSockCtx->sendBuffer.pUdpPktBuffers = NULL;
         }
+    }
 
+    (void)memset(&pSockCtx->recvBuffer, 0, sizeof(WINC_SOCK_BUFFER));
+    (void)memset(&pSockCtx->sendBuffer, 0, sizeof(WINC_SOCK_BUFFER));
+
+    /* Allocate new receive buffer. */
+    if (pSockCtx->recvBufSz > 0U)
+    {
+        pSockCtx->recvBuffer.pData = slabAlloc(pSockCtx->pSlabAllocCtx, pSockCtx->recvBufSz);
+
+        if (NULL != pSockCtx->recvBuffer.pData)
+        {
+            pSockCtx->recvBuffer.totalSize = (uint16_t)pSockCtx->recvBufSz;
+        }
+        else
+        {
+            WINC_ERROR_PRINT("error: failed to allocate recv buffer\r\n");
+            return false;
+        }
+    }
+
+    /* Allocate new send buffer. */
+    if (pSockCtx->sendBufSz > 0U)
+    {
+        pSockCtx->sendBuffer.pData = slabAlloc(pSockCtx->pSlabAllocCtx, pSockCtx->sendBufSz);
+
+        if (NULL != pSockCtx->sendBuffer.pData)
+        {
+            pSockCtx->sendBuffer.totalSize = (uint16_t)pSockCtx->sendBufSz;
+        }
+        else
+        {
+            WINC_ERROR_PRINT("error: failed to allocate send buffer\r\n");
+            return false;
+        }
+    }
+
+    if (SOCK_DGRAM == pSockCtx->type)
+    {
         if (pSockCtx->numRxPkts > 0U)
         {
             /* Allocate new receive packet buffers. */
@@ -1159,7 +1167,7 @@ static bool sockAllocSocketBuffers(WINC_SOCK_CTX *pSockCtx)
 
             if (NULL == pSockCtx->recvBuffer.pUdpPktBuffers)
             {
-                WINC_ERROR_PRINT("error: failed to allocate recv packet buffer\n");
+                WINC_ERROR_PRINT("error: failed to allocate recv packet buffer\r\n");
                 return false;
             }
 
@@ -1175,7 +1183,7 @@ static bool sockAllocSocketBuffers(WINC_SOCK_CTX *pSockCtx)
 
             if (NULL == pSockCtx->sendBuffer.pUdpPktBuffers)
             {
-                WINC_ERROR_PRINT("error: failed to allocate send buffer\n");
+                WINC_ERROR_PRINT("error: failed to allocate send buffer\r\n");
                 return false;
             }
 
@@ -1296,13 +1304,32 @@ static WINC_SOCK_CTX* sockFindPendingSocket(WINC_SOCK_CTX *pSockCtx)
 
     for (i=0; i<WINC_SOCK_NUM_SOCKETS; i++)
     {
+        /* Ignore matching socket on itself. */
         if (&wincSockets[i] == pSockCtx)
         {
             continue;
         }
 
-        /* Match on stream/TLS socket, in use sharing the same source port but hasn't yet accepted the connection. */
-        if ((true == wincSockets[i].inUse) && (false == wincSockets[i].accepted) && (pSockCtx->type == wincSockets[i].type) && (pSockCtx->localEndPt.sin_port == wincSockets[i].localEndPt.sin_port))
+        /* Socket must be in-use to match. */
+        if (false == wincSockets[i].inUse)
+        {
+            continue;
+        }
+
+        /* Sockets must share the same source port. */
+        if (pSockCtx->localEndPt.sin_port != wincSockets[i].localEndPt.sin_port)
+        {
+            continue;
+        }
+
+        /* Sockets must be the same type and protocol. */
+        if ((pSockCtx->type != wincSockets[i].type) || (pSockCtx->domain != wincSockets[i].domain))
+        {
+            continue;
+        }
+
+        /* Match on socket which hasn't yet accepted the connection. */
+        if (false == wincSockets[i].accepted)
         {
             return &wincSockets[i];
         }
@@ -1499,8 +1526,7 @@ static int sockListen(int fd, int type, int backlog)
     len  - Length of address structure.
 
   Returns:
-    0  - Success.
-    -1 - Error, errno set.
+    Socket file descriptor or -1 for error (errno set).
 
   Remarks:
     errno:
@@ -1609,7 +1635,7 @@ static bool sockRead(WINC_SOCK_CTX *pSockCtx)
         return true;
     }
 
-    WINC_TRACE_PRINT("SR %d %d %d\n", pSockCtx->pendingRecvDataLen, pSockCtx->recvBuffer.outstandingDataLen, pSockCtx->recvBuffer.length);
+    WINC_TRACE_PRINT("SR %d %d %d\r\n", pSockCtx->pendingRecvDataLen, pSockCtx->recvBuffer.outstandingDataLen, pSockCtx->recvBuffer.length);
 
     /* Length of data to read, start based on pending minus outstanding, i.e. what we know is left. */
     dataLenToRead = (pSockCtx->pendingRecvDataLen - pSockCtx->recvBuffer.outstandingDataLen);
@@ -1640,7 +1666,7 @@ static bool sockRead(WINC_SOCK_CTX *pSockCtx)
             dataLenToRead = maxDataLenToRead;
         }
 
-        WINC_TRACE_PRINT("SRreq %d\n", dataLenToRead);
+        WINC_TRACE_PRINT("SRreq %d\r\n", dataLenToRead);
 
         /* Allocate command request. */
         pCmdReqBuffer = slabAlloc(pGlobalSlabAllocCtx, 128);
@@ -1668,7 +1694,7 @@ static bool sockRead(WINC_SOCK_CTX *pSockCtx)
             return false;
         }
 
-        WINC_TRACE_PRINT("SR+ %d + %d\n", pSockCtx->recvBuffer.outstandingDataLen, dataLenToRead);
+        WINC_TRACE_PRINT("SR+ %d + %d\r\n", pSockCtx->recvBuffer.outstandingDataLen, dataLenToRead);
 
         /* Update the outstanding length to reflect this request. */
         pSockCtx->recvBuffer.outstandingDataLen += (uint16_t)dataLenToRead;
@@ -1702,7 +1728,7 @@ static bool sockRead(WINC_SOCK_CTX *pSockCtx)
 
 static void sockProcessStatusWR(WINC_SOCK_CTX *pSockCtx, uint16_t seqNum, uint16_t dataLength, uint16_t statusCode)
 {
-    WINC_TRACE_PRINT("SW- [%d] %04x %d %d\n", seqNum, statusCode, dataLength, pSockCtx->sendBuffer.outstandingDataLen);
+    WINC_TRACE_PRINT("SW- [%d] %04x %d %d\r\n", seqNum, statusCode, dataLength, pSockCtx->sendBuffer.outstandingDataLen);
 
     if (WINC_STATUS_OK == statusCode)
     {
@@ -1801,7 +1827,7 @@ static bool sockWrite(WINC_SOCK_CTX *pSockCtx)
                 break;
             }
 
-            WINC_TRACE_PRINT("SW#\n");
+            WINC_TRACE_PRINT("SW#\r\n");
 
             pSockCtx->udpUnackedPktBufs++;
         }
@@ -1850,14 +1876,14 @@ static bool sockWrite(WINC_SOCK_CTX *pSockCtx)
         return true;
     }
 
-    WINC_TRACE_PRINT("SW+ [%d] +%d %d\n", pSockCtx->unAckedSeqNum, pSockCtx->sendBuffer.outstandingDataLen, dataLenToWrite);
+    WINC_TRACE_PRINT("SW+ [%d] +%d %d\r\n", pSockCtx->unAckedSeqNum, pSockCtx->sendBuffer.outstandingDataLen, dataLenToWrite);
 
     /* Allocate a command request structure. */
     pCmdReqBuffer = slabAlloc(pGlobalSlabAllocCtx, (160U+dataLenToWrite));
 
     if (NULL == pCmdReqBuffer)
     {
-        //WINC_ERROR_PRINT("error: unable to allocate socket write command request\n");
+        //WINC_ERROR_PRINT("error: unable to allocate socket write command request\r\n");
         return false;
     }
 
@@ -1866,7 +1892,7 @@ static bool sockWrite(WINC_SOCK_CTX *pSockCtx)
 
     if (WINC_CMD_REQ_INVALID_HANDLE == cmdReqHandle)
     {
-        WINC_ERROR_PRINT("error: socket write command request initialisation failed\n");
+        WINC_ERROR_PRINT("error: socket write command request initialisation failed\r\n");
         slabFree(pGlobalSlabAllocCtx, pCmdReqBuffer);
         return false;
     }
@@ -1905,7 +1931,7 @@ static bool sockWrite(WINC_SOCK_CTX *pSockCtx)
 
     if (false == WINC_DevTransmitCmdReq(wincDevHandle, cmdReqHandle))
     {
-        WINC_ERROR_PRINT("error: socket write command request tranmission failed\n");
+        WINC_ERROR_PRINT("error: socket write command request tranmission failed\r\n");
         slabFree(pGlobalSlabAllocCtx, pCmdReqBuffer);
         return false;
     }
@@ -1996,7 +2022,10 @@ static int sockGetEndPtName(int fd, struct sockaddr *addr, socklen_t *addrlen, b
         *addrlen = endPtAddrLen;
     }
 
-    memcpy(addr, pEndPt, *addrlen);
+    if (*addrlen > 0)
+    {
+        (void)memcpy(addr, pEndPt, *addrlen);
+    }
 
     *addrlen = endPtAddrLen;
 
@@ -2014,7 +2043,7 @@ static int sockGetEndPtName(int fd, struct sockaddr *addr, socklen_t *addrlen, b
     status   - Socket status.
 
   Returns:
-    true or false indicating success or failure.
+    None.
 
   Remarks:
 
@@ -2036,6 +2065,29 @@ static void sockEventCallback(WINC_SOCK_CTX *pSockCtx, WINC_SOCKET_EVENT event, 
         if (false == sockLockSocket(pSockCtx))
         {
         }
+    }
+}
+
+/*****************************************************************************
+  Description:
+    Send a DNS event via the callback.
+
+  Parameters:
+    event    - DNS event.
+    status   - DNS status.
+
+  Returns:
+    true or false indicating success or failure.
+
+  Remarks:
+
+ *****************************************************************************/
+
+static void dnsEventCallback(WINC_SOCKET_EVENT event, WINC_SOCKET_STATUS status)
+{
+    if (NULL != pfSocketEventCallback)
+    {
+        pfSocketEventCallback(socketEventCallbackContext, -1, event, status);
     }
 }
 
@@ -2078,7 +2130,7 @@ static void sockProcessStatus
     /* Set status based on success/failure of command. */
     if (WINC_STATUS_OK != statusCode)
     {
-//        WINC_ERROR_PRINT("error: command %04x error %04x\n", cmdID, statusCode);
+//        WINC_ERROR_PRINT("error: command %04x error %04x\r\n", cmdID, statusCode);
         status = WINC_SOCKET_STATUS_ERROR;
     }
 
@@ -2277,7 +2329,7 @@ static void sockProcessCmdRsp
             {
                 (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &pSockCtx->sockId, sizeof(pSockCtx->sockId));
 
-                WINC_TRACE_PRINT("Socket ID is %d (%04x)\n", pSockCtx->sockId, pSockCtx->sockId);
+                WINC_TRACE_PRINT("Socket ID is %d (%04x)\r\n", pSockCtx->sockId, pSockCtx->sockId);
             }
 
             break;
@@ -2311,7 +2363,7 @@ static void sockProcessCmdRsp
 
                 if (length != reqLength)
                 {
-                    WINC_ERROR_PRINT("Error, length mismatch %d vs %d\n", length, reqLength);
+                    WINC_ERROR_PRINT("Error, length mismatch %d vs %d\r\n", length, reqLength);
                 }
 
                 if (numElems >= 4U)
@@ -2319,21 +2371,21 @@ static void sockProcessCmdRsp
                     /* For extended SOCKRD response, read the pending data count and update the socket context. */
                     (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_INTEGER, &pSockCtx->pendingRecvDataLen, sizeof(pSockCtx->pendingRecvDataLen));
 
-                    WINC_TRACE_PRINT("SP %d\n", pSockCtx->pendingRecvDataLen);
+                    WINC_TRACE_PRINT("SP %d\r\n", pSockCtx->pendingRecvDataLen);
 
                     if (7U == numElems)
                     {
                         /* For UDP datagram reads read out the address information received. */
                         if (NULL == pSockCtx->recvBuffer.pUdpPktBuffers)
                         {
-                            WINC_ERROR_PRINT("error: no allocated packet buffers\n");
+                            WINC_ERROR_PRINT("error: no allocated packet buffers\r\n");
                             break;
                         }
 
                         /* Check we have packet buffers to store the datagram into. */
                         if (pSockCtx->recvBuffer.pUdpPktBuffers->pktDepth == pSockCtx->recvBuffer.pUdpPktBuffers->numPkts)
                         {
-                            WINC_ERROR_PRINT("error: packet buffers full\n");
+                            WINC_ERROR_PRINT("error: packet buffers full\r\n");
                             break;
                         }
 
@@ -2360,7 +2412,7 @@ static void sockProcessCmdRsp
                         }
                         else
                         {
-                            WINC_ERROR_PRINT("error: unknown address type (%d)\n", pElems[4].type);
+                            WINC_ERROR_PRINT("error: unknown address type (%d)\r\n", pElems[4].type);
                             break;
                         }
                     }
@@ -2368,19 +2420,19 @@ static void sockProcessCmdRsp
                 else
                 {
                     pSockCtx->pendingRecvDataLen -= length;
-                    WINC_TRACE_PRINT("SP %d (-%d)\n", pSockCtx->pendingRecvDataLen, length);
+                    WINC_TRACE_PRINT("SP %d (-%d)\r\n", pSockCtx->pendingRecvDataLen, length);
                 }
 
                 /* Write the received data into the socket buffer for the application to pull. */
                 if (true == sockBufferWrite(&pSockCtx->recvBuffer, pElems[numElems-1U].pData, length, pSourceAddr, true))
                 {
-                    WINC_TRACE_PRINT("SR-: %d - %d\n", pSockCtx->recvBuffer.outstandingDataLen, length);
+                    WINC_TRACE_PRINT("SR-: %d - %d\r\n", pSockCtx->recvBuffer.outstandingDataLen, length);
                     pSockCtx->recvBuffer.outstandingDataLen -= length;
                     pSockCtx->newRecvData = true;
                 }
                 else
                 {
-                    WINC_ERROR_PRINT("error: failed to write to receive buffer\n");
+                    WINC_ERROR_PRINT("error: failed to write to receive buffer\r\n");
                 }
             }
 
@@ -2400,7 +2452,7 @@ static void sockProcessCmdRsp
             (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &id, sizeof(id));
             (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &value, sizeof(value));
 
-            WINC_TRACE_PRINT("Sock ID %04x CFG: %2d = %d\n", pSockCtx->sockId, id, value);
+            WINC_TRACE_PRINT("Sock ID %04x CFG: %2d = %d\r\n", pSockCtx->sockId, id, value);
             break;
         }
 
@@ -2465,13 +2517,13 @@ static void sockProcessAEC
 
                 if (NULL == pSockCtx)
                 {
-                    WINC_ERROR_PRINT("error: no free sockets\n");
+                    WINC_ERROR_PRINT("error: no free sockets\r\n");
                     break;
                 }
 
                 if (false == sockCreateSocket(pSockCtx, SOCK_STREAM, sockId))
                 {
-                    WINC_ERROR_PRINT("error: failed to create new receive socket\n");
+                    WINC_ERROR_PRINT("error: failed to create new receive socket\r\n");
                     return;
                 }
 
@@ -2486,7 +2538,7 @@ static void sockProcessAEC
             /* Check socket address types match. */
             if (pElems[1].type != pElems[3].type)
             {
-                WINC_ERROR_PRINT("error: address type mismatch (%d != %d)\n", pElems[1].type, pElems[3].type);
+                WINC_ERROR_PRINT("error: address type mismatch (%d != %d)\r\n", pElems[1].type, pElems[3].type);
             }
 
             if (WINC_TYPE_IPV4ADDR == pElems[1].type)
@@ -2525,7 +2577,7 @@ static void sockProcessAEC
             }
             else
             {
-                WINC_ERROR_PRINT("error: unknown address type (%d)\n", pElems[1].type);
+                WINC_ERROR_PRINT("error: unknown address type (%d)\r\n", pElems[1].type);
                 break;
             }
 
@@ -2541,7 +2593,7 @@ static void sockProcessAEC
 
                 if (NULL == pListeningSockCtx)
                 {
-                    WINC_ERROR_PRINT("error: unable to find listening socket\n");
+                    WINC_ERROR_PRINT("error: unable to find listening socket\r\n");
                     sockDestroySocket(pSockCtx);
                     pSockCtx = NULL;
                     break;
@@ -2554,9 +2606,6 @@ static void sockProcessAEC
                     break;
                 }
 
-                /* Send connect request event. */
-                sockEventCallback(pListeningSockCtx, WINC_SOCKET_EVENT_CONNECT_REQ, WINC_SOCKET_STATUS_OK);
-
                 /* Copy configuration from listening socket. */
                 pSockCtx->readMode  = pListeningSockCtx->readMode;
                 pSockCtx->domain    = pListeningSockCtx->domain;
@@ -2566,8 +2615,12 @@ static void sockProcessAEC
                 pSockCtx->numRxPkts = pListeningSockCtx->numRxPkts;
                 pSockCtx->numTxPkts = pListeningSockCtx->numTxPkts;
 
-                sockUnlockSocket(pListeningSockCtx);
                 sockUnlockSocket(pSockCtx);
+
+                /* Send connect request event. */
+                sockEventCallback(pListeningSockCtx, WINC_SOCKET_EVENT_CONNECT_REQ, WINC_SOCKET_STATUS_OK);
+
+                sockUnlockSocket(pListeningSockCtx);
             }
             else if (true == pSockCtx->connected)
             {
@@ -2579,7 +2632,7 @@ static void sockProcessAEC
                 /* Do nothing. */
             }
 
-            WINC_TRACE_PRINT("Socket ID is %d (%04x)\n", pSockCtx->sockId, pSockCtx->sockId);
+            WINC_TRACE_PRINT("Socket ID is %d (%04x)\r\n", pSockCtx->sockId, pSockCtx->sockId);
 
             break;
         }
@@ -2601,7 +2654,7 @@ static void sockProcessAEC
                 /* Read the new pending data length values. */
                 (void)WINC_CmdReadParamElem(&pElems[1], WINC_TYPE_INTEGER, &pSockCtx->pendingRecvDataLen, sizeof(uint16_t));
 
-                WINC_TRACE_PRINT("RXT %d\n", pSockCtx->pendingRecvDataLen);
+                WINC_TRACE_PRINT("RXT %d\r\n", pSockCtx->pendingRecvDataLen);
 
                 /* Trigger a socket read from device. */
                 (void)sockRead(pSockCtx);
@@ -2619,11 +2672,11 @@ static void sockProcessAEC
                     {
                         (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_INTEGER_UNSIGNED, &seqNum, sizeof(seqNum));
 
-                        WINC_TRACE_PRINT("RXT %d %d\n", seqNum, length);
+                        WINC_TRACE_PRINT("RXT %d %d\r\n", seqNum, length);
                     }
                     else
                     {
-                        WINC_TRACE_PRINT("RXT %d\n", length);
+                        WINC_TRACE_PRINT("RXT %d\r\n", length);
                     }
 
                     /* Write the received data into the socket buffer for the application to pull. */
@@ -2635,7 +2688,7 @@ static void sockProcessAEC
                     }
                     else
                     {
-                        WINC_ERROR_PRINT("error: failed to write to receive buffer\n");
+                        WINC_ERROR_PRINT("error: failed to write to receive buffer\r\n");
                     }
                 }
             }
@@ -2655,7 +2708,7 @@ static void sockProcessAEC
                 /* Read the new pending data length values. */
                 (void)WINC_CmdReadParamElem(&pElems[3], WINC_TYPE_INTEGER, &pSockCtx->pendingRecvDataLen, sizeof(uint16_t));
 
-                WINC_TRACE_PRINT("RXU %d\n", pSockCtx->pendingRecvDataLen);
+                WINC_TRACE_PRINT("RXU %d\r\n", pSockCtx->pendingRecvDataLen);
 
                 /* Trigger a socket read from device. */
                 (void)sockRead(pSockCtx);
@@ -2671,14 +2724,14 @@ static void sockProcessAEC
 
                     if (NULL == pSockCtx->recvBuffer.pUdpPktBuffers)
                     {
-                        WINC_ERROR_PRINT("error: no allocated packet buffers\n");
+                        WINC_ERROR_PRINT("error: no allocated packet buffers\r\n");
                         break;
                     }
 
                     /* Check we have packet buffers to store the datagram into. */
                     if (pSockCtx->recvBuffer.pUdpPktBuffers->pktDepth == pSockCtx->recvBuffer.pUdpPktBuffers->numPkts)
                     {
-                        WINC_ERROR_PRINT("error: packet buffers full\n");
+                        WINC_ERROR_PRINT("error: packet buffers full\r\n");
                         break;
                     }
 
@@ -2705,7 +2758,7 @@ static void sockProcessAEC
                     }
                     else
                     {
-                        WINC_ERROR_PRINT("error: unknown address type (%d)\n", pElems[1].type);
+                        WINC_ERROR_PRINT("error: unknown address type (%d)\r\n", pElems[1].type);
                         break;
                     }
 
@@ -2715,11 +2768,11 @@ static void sockProcessAEC
                     {
                         (void)WINC_CmdReadParamElem(&pElems[4], WINC_TYPE_INTEGER_UNSIGNED, &seqNum, sizeof(seqNum));
 
-                        WINC_TRACE_PRINT("RXU %d %d\n", seqNum, length);
+                        WINC_TRACE_PRINT("RXU %d %d\r\n", seqNum, length);
                     }
                     else
                     {
-                        WINC_TRACE_PRINT("RXU %d\n", length);
+                        WINC_TRACE_PRINT("RXU %d\r\n", length);
                     }
 
                     /* Write the received data into the socket buffer for the application to pull. */
@@ -2731,7 +2784,7 @@ static void sockProcessAEC
                     }
                     else
                     {
-                        WINC_ERROR_PRINT("error: failed to write to receive buffer\n");
+                        WINC_ERROR_PRINT("error: failed to write to receive buffer\r\n");
                     }
                 }
             }
@@ -2751,6 +2804,8 @@ static void sockProcessAEC
                 /* Disconnect the socket. */
                 pSockCtx->connected = false;
                 pSockCtx->events   |= POLLHUP;
+
+                sockEventCallback(pSockCtx, WINC_SOCKET_EVENT_DISCONNECT, WINC_SOCKET_STATUS_OK);
             }
             break;
         }
@@ -2832,71 +2887,84 @@ static void dnsProcessAEC
         {
             int recordType;
 
-            if ((3U != numElems) || (NULL == pCurrentDnsRequest))
+            if (numElems < 3U)
             {
                 break;
             }
 
-            if (NULL == initData.pfMemAlloc)
-            {
-                break;
-            }
-
-            /* Read the record type from the AEC. */
+            /* Read the record type and query name from the AEC. */
             (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_INTEGER, &recordType, sizeof(recordType));
 
-            WINC_TRACE_PRINT("DNS '%.*s':%d\n", pCurrentDnsRequest->hostNameLen, pElems[1].pData, pCurrentDnsRequest->hostNameLen);
-
-            /* Verify the response matches the request. */
-            if ((pElems[1].length == pCurrentDnsRequest->hostNameLen) && (0 == memcmp(pElems[1].pData, pCurrentDnsRequest->hostName, pCurrentDnsRequest->hostNameLen)))
+            /* Check if this is a getaddrinfo request (original behavior). */
+            if (NULL != pCurrentDnsRequest)
             {
-                struct addrinfo **pRes;
-
-                /* Load the current requests result pointer. */
-                pRes = &pCurrentDnsRequest->pRes;
-
-                /* Iterate to the end of the list. */
-                while (NULL != *pRes)
+                if (NULL == initData.pfMemAlloc)
                 {
-                    pRes = &(*pRes)->ai_next;
+                    break;
                 }
 
-                /* Allocate space for the new results. */
-                *pRes = initData.pfMemAlloc(sizeof(struct addrinfo) + sizeof(struct sockaddr));
+                WINC_TRACE_PRINT("DNS '%.*s':%d\r\n", pCurrentDnsRequest->hostNameLen, pElems[1].pData, pCurrentDnsRequest->hostNameLen);
 
-                if (NULL != *pRes)
+                /* Verify the response matches the request. */
+                if ((pElems[1].length == pCurrentDnsRequest->hostNameLen) && (0 == memcmp(pElems[1].pData, pCurrentDnsRequest->hostName, pCurrentDnsRequest->hostNameLen)))
                 {
-                    /* Copy the response into the results structure. */
-                    (void)memset(*pRes, 0, sizeof(struct addrinfo) + sizeof(struct sockaddr));
+                    struct addrinfo **pRes;
+                    WINC_SOCKET_STATUS dnsStatus = WINC_SOCKET_STATUS_OK;
 
-                    (*pRes)->ai_addr = (struct sockaddr*)&(*pRes)[1];
-                    (*pRes)->ai_next = NULL;
+                    /* Load the current requests result pointer. */
+                    pRes = &pCurrentDnsRequest->pRes;
 
-                    if (WINC_TYPE_IPV4ADDR == pElems[2].type)
+                    /* Iterate to the end of the list. */
+                    while (NULL != *pRes)
                     {
-                        /* Read an IPv4 address. */
-                        (*pRes)->ai_family  = (int)AF_INET;
-                        (*pRes)->ai_addrlen = sizeof(struct sockaddr_in);
+                        pRes = &(*pRes)->ai_next;
+                    }
 
-                        ((struct sockaddr_in*)(*pRes)->ai_addr)->sin_family = AF_INET;
-                        (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_IPV4ADDR, &((struct sockaddr_in*)(*pRes)->ai_addr)->sin_addr, sizeof(struct in_addr));
-                    }
-                    else if (WINC_TYPE_IPV6ADDR == pElems[2].type)
-                    {
-                        /* Read an IPv6 address. */
-                        (*pRes)->ai_family  = (int)AF_INET6;
-                        (*pRes)->ai_addrlen = sizeof(struct sockaddr_in6);
+                    /* Allocate space for the new results. */
+                    *pRes = initData.pfMemAlloc(sizeof(struct addrinfo) + sizeof(struct sockaddr));
 
-                        ((struct sockaddr_in6*)(*pRes)->ai_addr)->sin6_family = AF_INET6;
-                        (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_IPV6ADDR, &((struct sockaddr_in6*)(*pRes)->ai_addr)->sin6_addr, sizeof(struct in6_addr));
-                    }
-                    else
+                    if (NULL != *pRes)
                     {
-                        WINC_ERROR_PRINT("error: unknown address type (%d)\n", pElems[2].type);
+                        /* Copy the response into the results structure. */
+                        (void)memset(*pRes, 0, sizeof(struct addrinfo) + sizeof(struct sockaddr));
+
+                        (*pRes)->ai_addr     = (struct sockaddr*)&(*pRes)[1];
+                        (*pRes)->ai_next     = NULL;
+                        (*pRes)->ai_socktype = pCurrentDnsRequest->ai_socktype;
+                        (*pRes)->ai_protocol = (pCurrentDnsRequest->ai_socktype == SOCK_DGRAM) ? IPPROTO_UDP : IPPROTO_TCP;
+
+                        if (WINC_TYPE_IPV4ADDR == pElems[2].type)
+                        {
+                            /* Read an IPv4 address. */
+                            (*pRes)->ai_family  = (int)AF_INET;
+                            (*pRes)->ai_addrlen = sizeof(struct sockaddr_in);
+
+                            ((struct sockaddr_in*)(*pRes)->ai_addr)->sin_family = AF_INET;
+                            ((struct sockaddr_in*)(*pRes)->ai_addr)->sin_port   = pCurrentDnsRequest->port;
+                            (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_IPV4ADDR, &((struct sockaddr_in*)(*pRes)->ai_addr)->sin_addr, sizeof(struct in_addr));
+                        }
+                        else if (WINC_TYPE_IPV6ADDR == pElems[2].type)
+                        {
+                            /* Read an IPv6 address. */
+                            (*pRes)->ai_family  = (int)AF_INET6;
+                            (*pRes)->ai_addrlen = sizeof(struct sockaddr_in6);
+
+                            ((struct sockaddr_in6*)(*pRes)->ai_addr)->sin6_family = AF_INET6;
+                            ((struct sockaddr_in6*)(*pRes)->ai_addr)->sin6_port   = pCurrentDnsRequest->port;
+                            (void)WINC_CmdReadParamElem(&pElems[2], WINC_TYPE_IPV6ADDR, &((struct sockaddr_in6*)(*pRes)->ai_addr)->sin6_addr, sizeof(struct in6_addr));
+                        }
+                        else
+                        {
+                            WINC_ERROR_PRINT("error: unknown address type (%d)\r\n", pElems[2].type);
+
+                            dnsStatus = WINC_SOCKET_STATUS_ERROR;
+                        }
                     }
+
+                    pCurrentDnsRequest->reqStatus = WINC_STATUS_OK;
+
+                    dnsEventCallback(WINC_SOCKET_EVENT_DNS_RESOLV, dnsStatus);
                 }
-
-                pCurrentDnsRequest->reqStatus = WINC_STATUS_OK;
             }
 
             break;
@@ -2904,16 +2972,23 @@ static void dnsProcessAEC
 
         case WINC_AEC_ID_DNSERR:
         {
-            if ((3U != numElems) || (NULL == pCurrentDnsRequest))
+
+            if (numElems < 3U)
             {
                 break;
             }
 
-            /* Verify the response matches the request. */
-            if ((pElems[2].length == pCurrentDnsRequest->hostNameLen) && (0 == memcmp(pElems[2].pData, pCurrentDnsRequest->hostName, pCurrentDnsRequest->hostNameLen)))
+            /* Check if this is a getaddrinfo request error (original behavior). */
+            if (NULL != pCurrentDnsRequest)
             {
-                /* Read the status from the AEC. */
-                (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_STATUS, &pCurrentDnsRequest->reqStatus, sizeof(pCurrentDnsRequest->reqStatus));
+                /* Verify the response matches the request. */
+                if ((pElems[2].length == pCurrentDnsRequest->hostNameLen) && (0 == memcmp(pElems[2].pData, pCurrentDnsRequest->hostName, pCurrentDnsRequest->hostNameLen)))
+                {
+                    /* Read the status from the AEC. */
+                    (void)WINC_CmdReadParamElem(&pElems[0], WINC_TYPE_STATUS, &pCurrentDnsRequest->reqStatus, sizeof(pCurrentDnsRequest->reqStatus));
+
+                    dnsEventCallback(WINC_SOCKET_EVENT_DNS_RESOLV, WINC_SOCKET_STATUS_ERROR);
+                }
             }
 
             break;
@@ -2950,7 +3025,7 @@ static void sockCmdRspCallbackHandlerSeqUpdate(uintptr_t context, WINC_DEVICE_HA
     /* context provided was the socket address. */
     WINC_SOCK_CTX *pSockCtx = (WINC_SOCK_CTX*)context;
 
-    WINC_TRACE_PRINT("SOCK CmdRspCBSeqUp %08x Event (Sock %08x) %d\n", cmdReqHandle, context, event);
+    WINC_TRACE_PRINT("SOCK CmdRspCBSeqUp %08x Event (Sock %08x) %d\r\n", cmdReqHandle, context, event);
 
     /* Command request is complete, no further need for it. */
     if (WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE == event)
@@ -3000,7 +3075,7 @@ static void sockCmdRspCallbackHandler(uintptr_t context, WINC_DEVICE_HANDLE devH
     /* context provided was the socket address. */
     WINC_SOCK_CTX *pSockCtx = (WINC_SOCK_CTX*)context;
 
-    WINC_TRACE_PRINT("SOCK CmdRspCB %08x Event (Sock %08x) %d\n", cmdReqHandle, context, event);
+    WINC_TRACE_PRINT("SOCK CmdRspCB %08x Event (Sock %08x) %d\r\n", cmdReqHandle, context, event);
 
     /* Command request is complete, no further need for it. */
     if (WINC_DEV_CMDREQ_EVENT_STATUS_COMPLETE == event)
@@ -3091,7 +3166,7 @@ static void sockDevProcessAEC(uintptr_t context, WINC_DEVICE_HANDLE devHandle, c
         return;
     }
 
-    if (pElems->numElems < 1U)
+    if ((pElems->numElems < 1U) || (WINC_MOD_ID_SOCKET != (pElems->rspId >> 8)))
     {
         return;
     }
@@ -3233,6 +3308,11 @@ bool WINC_SockInit(WINC_DEVICE_HANDLE devHandle, WINC_SOCKET_INIT_TYPE *pInitDat
         /* Initialise the slab allocator. */
         pGlobalSlabAllocCtx = slabInit(initData.slabSize, initData.numSlabs);
 
+        if (NULL == pGlobalSlabAllocCtx)
+        {
+            return false;
+        }
+
         (void)memset(wincSockets, 0, sizeof(wincSockets));
 
         /* Register AEC callbacks for sockets and DNS commands. */
@@ -3356,7 +3436,7 @@ int WINC_SockSlabStatsGet(WINC_SOCK_SLAB_STATS *pStats, int numStats)
         return -1;
     }
 
-    memcpy(pStats, &pGlobalSlabAllocCtx->stats, sizeof(WINC_SOCK_SLAB_STATS));
+    (void)memcpy(pStats, &pGlobalSlabAllocCtx->stats, sizeof(WINC_SOCK_SLAB_STATS));
 
     pStats++;
     numStats--;
@@ -3366,7 +3446,7 @@ int WINC_SockSlabStatsGet(WINC_SOCK_SLAB_STATS *pStats, int numStats)
     {
         if ((NULL != wincSockets[i].pSlabAllocCtx) && (wincSockets[i].pSlabAllocCtx != pGlobalSlabAllocCtx))
         {
-            memcpy(pStats, &wincSockets[i].pSlabAllocCtx->stats, sizeof(WINC_SOCK_SLAB_STATS));
+            (void)memcpy(pStats, &wincSockets[i].pSlabAllocCtx->stats, sizeof(WINC_SOCK_SLAB_STATS));
             pStats++;
             numStats--;
             numStatsRet++;
@@ -3952,7 +4032,7 @@ int WINC_SOCK_NS(socket)(int domain, int type, int protocol)
     pSockCtx->domain   = (uint8_t)domain;
     pSockCtx->readMode = (uint8_t)WINC_SOCKET_ASYNC_MODE_ACKED;
 
-    WINC_TRACE_PRINT("Socket %08x -> %d\n", pSockCtx, WINC_SOCK_PTR_TO_HANDLE(pSockCtx));
+    WINC_TRACE_PRINT("Socket %08x -> %d\r\n", pSockCtx, WINC_SOCK_PTR_TO_HANDLE(pSockCtx));
 
     sockUnlockSocket(pSockCtx);
     return WINC_SOCK_PTR_TO_HANDLE(pSockCtx);
@@ -4197,8 +4277,7 @@ int WINC_SOCK_NS(listen)(int fd, int backlog)
     len  - Length of address structure.
 
   Returns:
-    0  - Success.
-    -1 - Error, errno set.
+    Socket file descriptor or -1 for error (errno set).
 
   Remarks:
     errno:
@@ -4246,9 +4325,11 @@ int WINC_SOCK_NS(accept)(int fd, struct sockaddr *addr, socklen_t *len)
             Insufficient memory is available.
         EBADMSG
             Bad message.
+        ECONNREFUSED
+            The target address was not listening for connections or refused the connection request.
         EINPROGRESS
             The socket is nonblocking and the connection cannot be
-            completed immediately.  It is possible to poll for completion by
+            completed immediately. It is possible to poll for completion by
             selecting the socket for writing. After poll indicates writability.
         EISCONN
             The socket is already connected.
@@ -4294,8 +4375,14 @@ int WINC_SOCK_NS(connect)(int fd, const struct sockaddr *addr, socklen_t len)
 
     if (true == pSockCtx->connected)
     {
-        errno = EISCONN;
         sockUnlockSocket(pSockCtx);
+        errno = EISCONN;
+        return -1;
+    }
+    else if (0 != (pSockCtx->events & POLLERR))
+    {
+        sockUnlockSocket(pSockCtx);
+        errno = ECONNREFUSED;
         return -1;
     }
 
@@ -4498,7 +4585,7 @@ ssize_t WINC_SOCK_NS(recvfrom)(int fd, void *buf, size_t len, int flags, struct 
         }
     }
 
-    WINC_TRACE_PRINT("RV %d\n", recvLen);
+    WINC_TRACE_PRINT("RV %d\r\n", recvLen);
 
     if ((0U == ((unsigned)flags & MSG_PEEK)) && (recvLen > 0))
     {
@@ -4736,7 +4823,7 @@ ssize_t WINC_SOCK_NS(sendto)(int fd, const void *buf, size_t len, int flags, con
         return -1;
     }
 
-    WINC_TRACE_PRINT("SND %d\n", len);
+    WINC_TRACE_PRINT("SND %d\r\n", len);
 
     (void)sockWrite(pSockCtx);
 
@@ -4788,11 +4875,12 @@ ssize_t WINC_SOCK_NS(send)(int fd, const void *buf, size_t len, int flags)
 
   Parameters:
     host - Pointer to host to translate.
-    serv - Pointer to service to translate, currently ignored.
+    serv - Pointer to service to translate.
     hint - Hint to affect the translation.
     res  - Pointer to results pointer.
 
   Returns:
+    0   Success
     EAI_NONAME
         The node or service is not known.
     EAI_AGAIN
@@ -4827,6 +4915,17 @@ ssize_t WINC_SOCK_NS(send)(int fd, const void *buf, size_t len, int flags)
 int WINC_SOCK_NS(getaddrinfo)(const char *host, const char *serv, const struct addrinfo *hint, struct addrinfo **res)
 {
     WINC_DNS_REQ *pDnsRequest;
+    long int port = 0;
+
+    if (NULL != serv)
+    {
+        port = strtol(serv, NULL, 10);
+
+        if ((port < 1) || (port > 65535))
+        {
+            return EAI_NONAME;
+        }
+    }
 
     if (NULL != host)
     {
@@ -4898,6 +4997,8 @@ int WINC_SOCK_NS(getaddrinfo)(const char *host, const char *serv, const struct a
         (void)memcpy(pDnsRequest->hostName, host, hostNameLen);
         pDnsRequest->hostNameLen = hostNameLen;
         pDnsRequest->recordType  = WINC_CONST_DNS_TYPE_ANY;
+        pDnsRequest->ai_socktype = SOCK_STREAM;
+        pDnsRequest->port        = htons((uint16_t)port);
 
         if (NULL != hint)
         {
@@ -4914,6 +5015,8 @@ int WINC_SOCK_NS(getaddrinfo)(const char *host, const char *serv, const struct a
                 dnsFreeRequest(pDnsRequest);
                 return EAI_FAMILY;
             }
+
+            pDnsRequest->ai_socktype = hint->ai_socktype;
         }
 
         pCmdReqBuffer = slabAlloc(pGlobalSlabAllocCtx, 128U+hostNameLen);
@@ -4972,7 +5075,7 @@ int WINC_SOCK_NS(getaddrinfo)(const char *host, const char *serv, const struct a
 
 void WINC_SOCK_NS(freeaddrinfo)(struct addrinfo *p)
 {
-    if (NULL == p)
+    if ((NULL == p) || (NULL == pCurrentDnsRequest))
     {
         return;
     }
@@ -5012,6 +5115,11 @@ void WINC_SOCK_NS(freeaddrinfo)(struct addrinfo *p)
             Insufficient memory is available.
         EBADMSG
             Bad message.
+        ENOTSOCK
+            The file descriptor fd does not refer to a socket.
+        EAGAIN
+            The socket is nonblocking, and the options cannot be
+            set immediately.
 
     Socket options:
         IP supports some protocol-specific socket options that can be set
@@ -5090,7 +5198,7 @@ void WINC_SOCK_NS(freeaddrinfo)(struct addrinfo *p)
         To set a TCP(TLS) socket option, call setsockopt to write the option with
         the option level argument set to IPPROTO_TLS.
 
-        TLS_CONF_IDX
+        WINC_SO_TLS_CONF_IDX
             Sets the TLS configuration index.
 
  *****************************************************************************/
@@ -5108,9 +5216,30 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
         return -1;
     }
 
+    if ((NULL == optval) || (0 == optlen))
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
     if (false == sockLockSocket(pSockCtx))
     {
         errno = EFAULT;
+        return -1;
+    }
+
+    if (0U == pSockCtx->sockId)
+    {
+        if (true == pSockCtx->inUse)
+        {
+            errno = EAGAIN;
+        }
+        else
+        {
+            errno = ENOTSOCK;
+        }
+
+        sockUnlockSocket(pSockCtx);
         return -1;
     }
 
@@ -5220,7 +5349,7 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
 
             default:
             {
-                WINC_TRACE_PRINT("Set socket, unknown IP protocol option %d\n", optname);
+                WINC_TRACE_PRINT("Set socket, unknown IP protocol option %d\r\n", optname);
                 break;
             }
         }
@@ -5310,7 +5439,7 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
 #endif
             default:
             {
-                WINC_TRACE_PRINT("Set socket, unknown socket option %d\n", optname);
+                WINC_TRACE_PRINT("Set socket, unknown socket option %d\r\n", optname);
                 break;
             }
         }
@@ -5337,7 +5466,7 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
 
                 default:
                 {
-                    WINC_TRACE_PRINT("Set socket, unknown TCP protocol option %d\n", optname);
+                    WINC_TRACE_PRINT("Set socket, unknown TCP protocol option %d\r\n", optname);
                     break;
                 }
             }
@@ -5349,12 +5478,13 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
         {
             switch (optname)
             {
-                case TLS_CONF_IDX:
+                case WINC_SO_TLS_CONF_IDX:
                 {
                     if (sizeof(int) == optlen)
                     {
                         pSockCtx->tlsPending = true;
-                        (void)WINC_CmdSOCKTLS(cmdReqHandle, pSockCtx->sockId, (uint8_t)*((const int*)optval));
+                        pSockCtx->tlsConfIdx = (uint8_t)*((const int*)optval);
+                        (void)WINC_CmdSOCKTLS(cmdReqHandle, pSockCtx->sockId, pSockCtx->tlsConfIdx);
                         locErrno = 0;
                     }
                     else
@@ -5366,7 +5496,7 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
 
                 default:
                 {
-                    WINC_TRACE_PRINT("Set socket, unknown TLS protocol option %d\n", optname);
+                    WINC_TRACE_PRINT("Set socket, unknown TLS protocol option %d\r\n", optname);
                     break;
                 }
             }
@@ -5401,9 +5531,9 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
     Wait for some event on a file descriptor.
 
   Parameters:
-    fds     - Set of file descriptors to be monitored
-    nfds    - Number of items in the fds array
-    timeout - specifies the number of milliseconds to block block waiting for
+    fds     - Set of file descriptors to be monitored.
+    nfds    - Number of items in the fds array.
+    timeout - Specifies the number of milliseconds to block block waiting for
                 a file descriptor to become ready. Must be 0.
 
   Returns:
@@ -5427,7 +5557,7 @@ int WINC_SOCK_NS(setsockopt)(int fd, int level, int optname, const void *optval,
             There is data to read.
 
         POLLOUT
-            Writing is now possible
+            Writing is now possible.
 
         POLLHUP
             Hang up (only returned in revents; ignored in events).
@@ -5464,6 +5594,7 @@ int WINC_SOCK_NS(poll)(struct pollfd *fds, nfds_t nfds, int timeout)
 
         if (fds->fd < 0)
         {
+            fds++;
             continue;
         }
 

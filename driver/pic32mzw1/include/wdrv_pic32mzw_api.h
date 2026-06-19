@@ -151,6 +151,10 @@ typedef enum
     WDRV_PIC32MZW_COEX_PRIO_WLAN_RX_GT_BTLP:
     WLAN RX priority lower and greater than low priority BT.
 
+    WDRV_PIC32MZW_COEX_DEDICATED_ANTENNA:
+    WDRV_PIC32MZW_COEX_SHARED_ANTENNA:
+    Dedicated or shared antenna for WLAN and BT.
+
   Remarks:
     None.
 
@@ -166,6 +170,31 @@ typedef enum
 
 #define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_LT_BTLP      0x0
 #define WDRV_PIC32MZW_COEX_CONFIG_PRIO_WLAN_RX_GT_BTLP      0x8
+
+#define WDRV_PIC32MZW_COEX_CONFIG_DEDICATED_ANTENNA         0x0
+#define WDRV_PIC32MZW_COEX_CONFIG_SHARED_ANTENNA            0x10
+
+//*******************************************************************************
+/*  Coexistence arbiter BT Priority Read function
+
+  Summary:
+    Pointer to a BT Priority read function
+
+  Description:
+    This defines a function pointer for a user-provided function
+    to read BT Priority for BT/Wifi Coexistence operation.
+
+  Parameteres:
+    None.
+
+  Returns:
+    true or false indicating BT Priority asserted or not.
+
+  Remarks:
+    None.
+
+*/
+typedef bool (*WDRV_PIC32MZW_COEX_BT_PRIORITY_READ_FN)(void);
 
 //*******************************************************************************
 /*  WiFi Control Initialization Data
@@ -194,6 +223,10 @@ typedef struct
 
     /* Coexistence arbiter configuration flags */
     uint8_t coexConfigFlags;
+
+    /* Coexistence arbiter BT Priority function pointer */
+    WDRV_PIC32MZW_COEX_BT_PRIORITY_READ_FN pBTPriorityReadFn;
+
 } WDRV_PIC32MZW_SYS_INIT;
 
 /*  WiFi MAC Initialization Data
@@ -211,6 +244,14 @@ typedef struct
 typedef struct
 {
 } TCPIP_MODULE_MAC_PIC32MZW1_CONFIG;
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: WINC MACObject
+// *****************************************************************************
+// *****************************************************************************
+
+extern const TCPIP_MAC_OBJECT WDRV_PIC32MZW1_MACObject;
 
 // *****************************************************************************
 // *****************************************************************************

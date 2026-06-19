@@ -232,35 +232,78 @@ WDRV_PIC32MZW_STATUS WDRV_PIC32MZW_BSSConnect
 #ifdef WDRV_PIC32MZW_ENTERPRISE_SUPPORT
     if (dot11iInfo & DRV_PIC32MZW_11I_1X)
     {
-        /* Initialize TLS stack with the WOLFSSL_CTX handle passed */
-        pDcpt->pCtrl->tlsHandle = DRV_PIC32MZW1_TLS_Init(pAuthCtx->authInfo.enterprise.phase1.tlsCtxHandle,
-                pAuthCtx->authInfo.enterprise.phase1.serverDomainName);
-        if (DRV_PIC32MZW1_TLS_HANDLE_INVALID == pDcpt->pCtrl->tlsHandle)
-        {
-            /* Failed to initialize TLS module */
-            DRV_PIC32MZW_MultiWIDDestroy(&wids);
+#ifdef WDRV_PIC32MZW_TLS_SUPPORT
+        uintptr_t tlsCtxHandles[WDRV_PIC32MZW_TLS_MAX_NUM_SESSIONS];
+        uint8_t numTlsSessions;
+        bool srvDomainRequired;
 
-            return WDRV_PIC32MZW_STATUS_CONNECT_FAIL;
+        if (WDRV_PIC32MZW_AUTH_1X_TUNNEL_METHOD_NONE == pAuthCtx->authInfo.enterprise.tunnel.method)
+        {
+            tlsCtxHandles[0] = pAuthCtx->authInfo.enterprise.credentials.tls.tlsCtxHandle;
+            numTlsSessions = 1;
+        }
+        else if (WDRV_PIC32MZW_AUTH_1X_CREDENTIAL_TYPE_TLS == pAuthCtx->authInfo.enterprise.credentials.type)
+        {
+            tlsCtxHandles[0] = pAuthCtx->authInfo.enterprise.tunnel.tlsCtxHandle;
+            tlsCtxHandles[1] = pAuthCtx->authInfo.enterprise.credentials.tls.tlsCtxHandle;
+            numTlsSessions = 2;
+        }
+        else
+        {
+            tlsCtxHandles[0] = pAuthCtx->authInfo.enterprise.tunnel.tlsCtxHandle;
+            numTlsSessions = 1;
         }
 
-        /* set the EAP domainUsername */
-        DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_DOMAIN_USERNAME,
-            (uint8_t *) pAuthCtx->authInfo.enterprise.phase1.identity,
-            (uint16_t) strlen(pAuthCtx->authInfo.enterprise.phase1.identity));
+        srvDomainRequired = false;
+#ifndef WDRV_PIC32MZW_AUTH_WPA3_ENTERPRISE_FQDN_OPTIONAL
+        if (
+            (WDRV_PIC32MZW_AUTH_TYPE_WPA2WPA3_ENTERPRISE == pAuthCtx->authType)
+            ||  (WDRV_PIC32MZW_AUTH_TYPE_WPA3_ENTERPRISE == pAuthCtx->authType)
+            )
+        {
+            /* Server domain is mandatory for WPA2WPA3 and WPA3 enterprise */
+            srvDomainRequired = true;
+        }
+#endif
 
-        /* Set the 802.1x EAP method */
-        DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SUPP_1X_AUTH_METHOD, (uint16_t) pAuthCtx->authInfo.enterprise.auth1xMethod);
+        /* Initialize TLS module */
+        DRV_PIC32MZW_TLS_Init(
+            pAuthCtx->authInfo.enterprise.tlsUserCallback,
+            tlsCtxHandles,
+            numTlsSessions,
+            srvDomainRequired);
+#endif
 
-        if (WDRV_PIC32MZW_AUTH_1X_METHOD_EAPTTLSv0_MSCHAPv2 == pAuthCtx->authInfo.enterprise.auth1xMethod)
+        /* Set the EAP identity */
+        DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_1X_IDENTITY,
+            (uint8_t *) pAuthCtx->authInfo.enterprise.identity,
+            (uint16_t) strlen(pAuthCtx->authInfo.enterprise.identity));
+
+        /* Set the tunnel method */
+        DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SUPP_1X_TUNNEL_METHOD, (uint32_t)pAuthCtx->authInfo.enterprise.tunnel.method);
+
+        /* Set the EAP identity inside the tunnel */
+        if ((WDRV_PIC32MZW_AUTH_1X_TUNNEL_METHOD_NONE   != pAuthCtx->authInfo.enterprise.tunnel.method) &&
+            (WDRV_PIC32MZW_AUTH_1X_TUNNEL_METHOD_TTLSV0 != pAuthCtx->authInfo.enterprise.tunnel.method))
+        {
+            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_1X_IDENTITY_IN_TUNNEL,
+                (uint8_t *) pAuthCtx->authInfo.enterprise.tunnel.identity,
+                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.tunnel.identity));
+        }
+
+        /* Set the credential type */
+        DRV_PIC32MZW_MultiWIDAddValue(&wids, DRV_WIFI_WID_SUPP_1X_CREDENTIAL_TYPE, (uint32_t)pAuthCtx->authInfo.enterprise.credentials.type);
+
+        if (WDRV_PIC32MZW_AUTH_1X_CREDENTIAL_TYPE_MSCHAPV2 == pAuthCtx->authInfo.enterprise.credentials.type)
         {
             /* Set the MSCHAPv2 username and password */
-            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_USERNAME,
-                (uint8_t *) pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.username,
-                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.username));
+            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_1X_USERNAME,
+                (uint8_t *) pAuthCtx->authInfo.enterprise.credentials.mschapv2.username,
+                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.credentials.mschapv2.username));
 
-            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_PASSWORD,
-                (uint8_t *) pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.password,
-                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.phase2.credentials.mschapv2.password));
+            DRV_PIC32MZW_MultiWIDAddData(&wids, DRV_WIFI_WID_SUPP_1X_PASSWORD,
+                (uint8_t *) pAuthCtx->authInfo.enterprise.credentials.mschapv2.password,
+                (uint16_t) strlen(pAuthCtx->authInfo.enterprise.credentials.mschapv2.password));
         }
     }
 #endif

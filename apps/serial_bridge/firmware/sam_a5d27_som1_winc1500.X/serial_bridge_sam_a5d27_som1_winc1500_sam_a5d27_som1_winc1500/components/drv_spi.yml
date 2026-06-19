@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: drv_spi
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMA5D27CD1G
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: core
   type: package
-  version: v3.15.5
+  version: v3.16.3
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments: {}
@@ -22,23 +22,12 @@ data:
     - children:
       - attributes:
           id: drv_spi
-          x: '206'
-          y: '115'
+          x: '166'
+          y: '129'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
   symbols:
-    DRV_SPI_COMMON_MODE:
-      attributes:
-        id: DRV_SPI_COMMON_MODE
-      children:
-      - children:
-        - attributes:
-            id: drv_spi
-            value: Asynchronous
-          type: Dynamic
-        type: Values
-      type: Combo
     DRV_SPI_SYS_DMA_CODE_ENABLE:
       attributes:
         id: DRV_SPI_SYS_DMA_CODE_ENABLE

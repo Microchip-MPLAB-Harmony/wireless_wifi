@@ -75,7 +75,7 @@ L1,PD16,,Available,In,,,,,,,
 L2,PD20,,Available,In,,,,,,,
 L3,PD28,,Available,In,,,,,,,
 L4,PD24,,Available,In,,,,,,,
-L5,PD25,MIKROBUS1_AN,GPIO,Out,Low,No,Disabled,No,No,Glitch Filter,0x0
+L5,PD25,,Available,In,,,,,,,
 L6,PD22,,Available,In,,,,,,,
 L7,PD27,,Available,In,,,,,,,
 L8,PD19,,Available,In,,,,,,,
@@ -115,7 +115,7 @@ P14,PA29,,Available,In,,,,,,,
 P15,PA11,,Available,In,,,,,,,
 P16,PA13,,Available,In,,,,,,,
 P17,PA26,WDRV_WINC_RESETN_EXT2,GPIO,Out,High,No,Disabled,No,No,Glitch Filter,0x0
-R1,PD26,MIKROBUS2_AN,GPIO,Out,Low,No,Disabled,No,No,Glitch Filter,0x0
+R1,PD26,,Available,In,,,,,,,
 R9,PA8,,Available,In,,,,,,,
 R10,PA10,,Available,In,,,,,,,
 R11,PA7,,Available,In,,,,,,,

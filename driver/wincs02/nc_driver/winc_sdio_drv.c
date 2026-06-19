@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -88,7 +88,7 @@ static const WINC_SDIO_CMD52_REG_ENTRY cmd52InitSeq1[] =
     {(uint32_t)WINC_SDIOREG_FN0_CCCR_IO_EN,           (uint8_t)WINC_SDIO_REG_CCCR_FN_IO_1},
     {(uint32_t)WINC_SDIOREG_FN0_CCCR_BUS_IF_CTRL,     (uint8_t)WINC_SDIO_REG_CCCR_BUS_IF_CTRL_ECSI | WINC_SDIO_REG_CCCR_BUS_IF_CTRL_BUS_1},
     {(uint32_t)WINC_SDIOREG_FN0_CCCR_INT_EN,          (uint8_t)WINC_SDIO_REG_CCCR_INT_EN_MASTER | WINC_SDIO_REG_CCCR_FN_INT_1},
-    {(uint32_t)WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP,    (uint8_t)0x01},
+    {(uint32_t)WINC_SDIOREG_FN0_CIS_CLOCK_WAKE_UP,    (uint8_t)WINC_SDIO_REG_CLK_WAKEUP_AUTO},
     {(uint32_t)WINC_SDIOREG_FN1_INT_EN,               (uint8_t)WINC_SDIO_REG_FN1_INT_MSG_FROM_ARM},
 };
 
@@ -889,7 +889,7 @@ WINC_SDIO_STATUS_TYPE WINC_SDIODeviceInit(WINC_SDIO_STATE_TYPE *pState, WINC_SDI
                 }
 
 #if WINC_CONF_SPI_MOSI_IDLE_LEVEL == 0
-                memset(forceTxBuffer, 0xFFU, sizeof(forceTxBuffer));
+                (void)memset(forceTxBuffer, 0xFFU, sizeof(forceTxBuffer));
 #endif
                 *pState = WINC_SDIO_STATE_RESETTING;
 

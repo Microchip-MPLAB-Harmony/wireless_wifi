@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2023-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -112,6 +112,8 @@ typedef enum
     WINC_SOCKET_EVENT_RECV,
     WINC_SOCKET_EVENT_CLOSE,
     WINC_SOCKET_EVENT_TLS_CONNECT,
+    WINC_SOCKET_EVENT_DISCONNECT,
+    WINC_SOCKET_EVENT_DNS_RESOLV,
     WINC_SOCKET_EVENT_ERROR
 } WINC_SOCKET_EVENT;
 
@@ -263,7 +265,6 @@ const char *inet_ntop(int af, const void *a0, char *s, socklen_t l);
 #define SO_RCVBUF       8
 #define SO_KEEPALIVE    9
 #define SO_LINGER       13
-#define SO_ASYNC_MODE   100
 
 #define SOMAXCONN       WINC_CMD_PARAM_MAX_SOCKET_PEND_SKTS
 
@@ -327,6 +328,12 @@ struct pollfd
     short revents;    /* returned events */
 };
 
+/***************************** netinet/tls.h *********************************/
+
+#define TLS_CONF_IDX    WINC_SO_TLS_CONF_IDX
+
+#endif /* WINC_CONF_USE_EXT_SOCK_HDRS */
+
 /*****************************************************************************/
 /* sockets API */
 int     WINC_SOCK_NS(socket)        (int domain, int type, int protocol);
@@ -346,11 +353,9 @@ int     WINC_SOCK_NS(poll)          (struct pollfd *fds, nfds_t nfds, int timeou
 int     WINC_SOCK_NS(getsockname)   (int fd, struct sockaddr *addr, socklen_t *addrlen);
 int     WINC_SOCK_NS(getpeername)   (int fd, struct sockaddr *addr, socklen_t *addrlen);
 
-#endif /* WINC_CONF_USE_EXT_SOCK_HDRS */
-
 /***************************** netinet/tls.h *********************************/
 
-#define TLS_CONF_IDX    1
+#define WINC_SO_TLS_CONF_IDX                1024
 
 /*****************************************************************************/
 
@@ -365,5 +370,7 @@ typedef union sockaddr_union
     struct sockaddr_in   in4;
     struct sockaddr_in6  in6;
 } SOCKADDR_UNION;
+
+#define SO_ASYNC_MODE   100
 
 #endif /* WINC_SOCKET_H */

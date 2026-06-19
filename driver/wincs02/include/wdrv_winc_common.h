@@ -15,7 +15,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -94,30 +94,55 @@ TO MICROCHIP FOR THIS SOFTWARE.
 #if !defined(WINC_MOD_ID_TLS)
 #define WDRV_WINC_MOD_DISABLE_TLS
 #endif
-#if !defined(WINC_MOD_ID_WPROV) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
-#define WDRV_WINC_MOD_DISABLE_WPROV
-#endif
 #if !defined(WINC_MOD_ID_PPS)
 #define WDRV_WINC_MOD_DISABLE_PPS
 #endif
 #if !defined(WINC_MOD_ID_SYSLOG)
 #define WDRV_WINC_MOD_DISABLE_SYSLOG
 #endif
+#if !defined(WINC_MOD_ID_HTTP) || defined(WDRV_WINC_DISABLE_L3_SUPPORT)
+#define WDRV_WINC_MOD_DISABLE_HTTP
+#endif
 
 /* Maximum length of an SSID. */
-#define WDRV_WINC_MAX_SSID_LEN              32U
+#define WDRV_WINC_MAX_SSID_LEN                        32U
 
 /* Length of a MAC address. */
-#define WDRV_WINC_MAC_ADDR_LEN              6U
+#define WDRV_WINC_MAC_ADDR_LEN                        6U
 
 /* Length of PSK (ASCII encoded binary). */
-#define WDRV_WINC_PSK_LEN                   64U
+#define WDRV_WINC_PSK_LEN                             64U
 
 /* Maximum length of a WPA Personal Password. */
-#define WDRV_WINC_MAX_PSK_PASSWORD_LEN      63U
+#define WDRV_WINC_MAX_PSK_PASSWORD_LEN                63U
 
 /* Minimum length of a WPA Personal Password. */
-#define WDRV_WINC_MIN_PSK_PASSWORD_LEN      8U
+#define WDRV_WINC_MIN_PSK_PASSWORD_LEN                8U
+
+#ifdef WDRV_WINC_ENTERPRISE_SUPPORT
+/* The maximum length (in ASCII characters) of EAP identity for WPA Enterprise authentication. */
+#define WDRV_WINC_ENT_AUTH_IDENTITY_LEN_MAX           255U
+
+/* The maximum length (in ASCII characters) of MSCHAPv2 username for WPA Enterprise authentication. */
+#define WDRV_WINC_ENT_AUTH_MSCHAPV2_USERNAME_LEN_MAX  255U
+
+/* The maximum length (in ASCII characters) of MSCHAPv2 password for WPA Enterprise authentication. */
+#define WDRV_WINC_ENT_AUTH_MSCHAPV2_PASSWORD_LEN_MAX  255U
+#endif
+
+// *****************************************************************************
+/* Invalid TLS Handle
+
+ Summary:
+    Invalid TLS handle.
+
+ Description:
+    Defines a value for a TLS handle which is not yet valid.
+
+ Remarks:
+    None.
+*/
+#define WDRV_WINC_TLS_INVALID_HANDLE    0U
 
 // *****************************************************************************
 /* Invalid Association Handle
@@ -414,6 +439,72 @@ typedef struct
     /* Is the address valid? */
     bool valid;
 } WDRV_WINC_MAC_ADDR;
+
+// *****************************************************************************
+/* TLS Context Handle
+
+  Summary:
+    TLS context handle.
+
+  Description:
+    Handle representing TLS contexts.
+
+  Remarks:
+    None.
+*/
+
+typedef uint8_t WDRV_WINC_TLS_HANDLE;
+
+// *****************************************************************************
+/*  HTTP URL Elements.
+
+  Summary:
+    Elements of a HTTP URL.
+
+  Description:
+    Elements of a HTTP URL broken out.
+
+  Remarks:
+    URI       = scheme ":" ["/" "/" authority ] path ["?" query] ["#" fragment]
+    authority = [userinfo "@"] host [":" port]
+
+*/
+
+typedef struct
+{
+    /* Pointer to scheme element. */
+    const char *pScheme;
+
+    /* Length of scheme string. */
+    size_t schemeLen;
+
+    /* Pointer to user info element. */
+    const char *pUserinfo;
+
+    /* Length of user info string. */
+    size_t userinfoLen;
+
+    /* Pointer to host element. */
+    const char *pHost;
+
+    /* Length of host string. */
+    size_t hostLen;
+
+    /* Pointer to path element. */
+    const char *pPath;
+
+    /* Length of path string. */
+    size_t pathLen;
+
+    /* Port element. */
+    uint16_t authorityPort;
+
+    /* Decoded IP address if host is IP address. */
+    WDRV_WINC_IP_MULTI_ADDRESS ipAddr;
+
+    /* Decoded IP address type. */
+    WDRV_WINC_IP_ADDRESS_TYPE ipAddrType;
+} WDRV_WINC_HTTP_URL_ELEMS_TYPE;
 
 // *****************************************************************************
 /*  Association Handle

@@ -183,7 +183,7 @@ static void OSAL_CRIT_Leave(OSAL_CRIT_TYPE severity, OSAL_CRITSECT_DATA_TYPE sta
 }
 
 // *****************************************************************************
-/* MISRA C-2012 Rule 10.3 False positive:11 Deviation record ID -  H3_MISRAC_2012_R_10_3_DR_1 */
+/* MISRA C-2023 Rule 10.3 False positive:11 Deviation record ID -  H3_MISRAC_2023_R_10_3_DR_1 */
 /* Function: OSAL_RESULT OSAL_SEM_Create(OSAL_SEM_HANDLE_TYPE semID, OSAL_SEM_TYPE type,
                                 OSAL_SEM_COUNT_TYPE maxCount, OSAL_SEM_COUNT_TYPE initialCount)
  */
@@ -344,8 +344,8 @@ static OSAL_RESULT __attribute__((always_inline)) OSAL_MUTEX_Unlock(OSAL_MUTEX_H
 
 /* MISRAC 2012 deviation block end */
 // *****************************************************************************
-/* MISRA C-2012 Rule 4.12 devaited:1, 21.3 deviated:2 Deviation record ID -
-   H3_MISRAC_2012_R_4_12_DR_1 & H3_MISRAC_2012_R_21_3_DR_1*/
+/* MISRA C-2023 Rule 4.12 devaited:1, 21.3 deviated:2 Deviation record ID -
+   H3_MISRAC_2023_R_4_12_DR_1 & H3_MISRAC_2023_R_21_3_DR_1*/
 
 /* Function: void* OSAL_Malloc(size_t size)
  */

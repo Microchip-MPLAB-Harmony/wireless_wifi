@@ -15,7 +15,7 @@
  *******************************************************************************/
 
 /*
-Copyright (C) 2024-25 Microchip Technology Inc. and its subsidiaries. All rights reserved.
+Copyright (C) 2024-26 Microchip Technology Inc. and its subsidiaries. All rights reserved.
 
 Subject to your compliance with these terms, you may use this Microchip software and any derivatives
 exclusively with Microchip products. You are responsible for complying with third party license terms
@@ -91,7 +91,7 @@ typedef uintptr_t WDRV_WINC_FILE_HANDLE;
 typedef enum
 {
     /* Invalid file type. */
-    WDRV_WINC_FILE_TYPE_INVALID = 0,
+    WDRV_WINC_FILE_TYPE_INVALID = -1,
 
     /* User files. */
     WDRV_WINC_FILE_TYPE_USER    = WINC_CONST_FS_FILETYPE_USER,
@@ -308,6 +308,25 @@ typedef void (*WDRV_WINC_FILE_DELETE_CALLBACK)
     WDRV_WINC_FILE_TYPE type,
     WDRV_WINC_FILE_STATUS_TYPE status
 );
+
+// *****************************************************************************
+/* File Descriptor.
+
+  Summary:
+    File descriptor structure.
+
+  Description:
+    Structure containing file name and type.
+
+  Remarks:
+    None.
+*/
+
+typedef struct
+{
+    const char *pFilename;
+    WDRV_WINC_FILE_TYPE type;
+} WDRV_WINC_FILE_DCPT_TYPE;
 
 // *****************************************************************************
 /* File Transfer Context.

@@ -61,7 +61,7 @@
 // *****************************************************************************
 // *****************************************************************************
 
-/* MISRA C-2012 Rule 8.6 deviated below. Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
+/* MISRA C-2023 Rule 8.6 deviated below. Deviation record ID -  H3_MISRAC_2023_R_8_6_DR_1 */
 extern uint32_t _stack;
 extern const H3DeviceVectors exception_table;
 
@@ -75,8 +75,8 @@ void __attribute__((optimize("-O1"), long_call, noreturn, used))Dummy_Handler(vo
     }
 }
 
-/* MISRAC 2012 deviation block start */
-/* MISRA C-2012 Rule 8.6 deviated 25 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
+/* MISRAC 2023 deviation block start */
+/* MISRA C-2023 Rule 8.6 deviated 25 times.  Deviation record ID -  H3_MISRAC_2023_R_8_6_DR_1 */
 /* Device vectors list dummy definition*/
 extern void SVCall_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler"),noreturn));
 extern void PendSV_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler"),noreturn));
@@ -105,11 +105,14 @@ extern void PTC_Handler                ( void ) __attribute__((weak, alias("Dumm
 extern void I2S_Handler                ( void ) __attribute__((weak, alias("Dummy_Handler"),noreturn));
 
 
-/* MISRAC 2012 deviation block end */
+/* MISRAC 2023 deviation block end */
 
 /* Multiple handlers for vector */
 
 
+
+/* MISRAC 2023 deviation block start */
+/* MISRA C-2023 Rule 2.8 deviated 25 times.  Deviation record ID -  H3_MISRAC_2023_R_2_8_DR_1 */
 
 __attribute__ ((section(".vectors"), used))
 const H3DeviceVectors exception_table=
@@ -154,6 +157,10 @@ const H3DeviceVectors exception_table=
 
 
 };
+
+/* MISRAC 2023 deviation block end */
+
+
 
 /*******************************************************************************
  End of File

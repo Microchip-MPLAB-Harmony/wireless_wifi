@@ -594,7 +594,7 @@ static SYS_TIME_HANDLE SYS_TIME_TimerObjectCreate(
     return tmrHandle;
 }
 
-/* MISRA C-2012 Rule 11.3 deviated:1 Deviation record ID -  H3_MISRAC_2012_R_11_3_DR_1 */
+/* MISRA C-2023 Rule 11.3 deviated:1 Deviation record ID -  H3_MISRAC_2023_R_11_3_DR_1 */
 static void SYS_TIME_CounterInit(SYS_MODULE_INIT* init)
 {
     uint64_t numerator, numeratorRead;
@@ -634,7 +634,7 @@ static void SYS_TIME_CounterInit(SYS_MODULE_INIT* init)
 // *****************************************************************************
 // *****************************************************************************
 
-/* MISRA C-2012 Rule 11.8 deviated:1 Deviation record ID -  H3_MISRAC_2012_R_11_8_DR_1 */
+/* MISRA C-2023 Rule 11.8 deviated:1 Deviation record ID -  H3_MISRAC_2023_R_11_8_DR_1 */
 
 SYS_MODULE_OBJ SYS_TIME_Initialize( const SYS_MODULE_INDEX index, const SYS_MODULE_INIT * const init )
 {

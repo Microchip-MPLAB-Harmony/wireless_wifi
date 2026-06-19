@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: cmsis
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAME54P20A
 library: []
 dependency:
@@ -15,7 +15,7 @@ dependency:
 - dependencyPackage: ''
   name: csp
   type: package
-  version: v3.23.0
+  version: v3.25.2
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments: {}
@@ -26,8 +26,8 @@ data:
     - children:
       - attributes:
           id: cmsis
-          x: '170'
-          y: '60'
+          x: '660'
+          y: '20'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph

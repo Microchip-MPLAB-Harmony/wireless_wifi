@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 componentName: drvWifiWinc
-coreVersion: 5.8.2
+coreVersion: 5.8.4
 device: ATSAMD21J18A
 library: []
 dependency:
@@ -11,7 +11,7 @@ dependency:
 - dependencyPackage: ''
   name: wireless_wifi
   type: package
-  version: v3.12.2
+  version: v3.13.0
 customDataClassName: com.microchip.utils_mh3.utils.persistence.CustomModuleData
 data:
   attachments:
@@ -56,30 +56,12 @@ data:
     - children:
       - attributes:
           id: drvWifiWinc
-          x: '310'
-          y: '207'
+          x: '482'
+          y: '248'
         type: ElementPosition
       type: ElementPositions
     type: ComponentGraph
   symbols:
-    DRV_WIFI_WINC3400_VERSION:
-      attributes:
-        id: DRV_WIFI_WINC3400_VERSION
-      children:
-      - children:
-        - attributes:
-            id: visible
-          children:
-          - type: Value
-            value: 'true'
-          type: Boolean
-        type: Attributes
-      - children:
-        - attributes:
-            value: 1.4.7
-          type: User
-        type: Values
-      type: Combo
     DRV_WIFI_WINC_DEVICE:
       attributes:
         id: DRV_WIFI_WINC_DEVICE
@@ -160,14 +142,6 @@ data:
       attributes:
         id: DRV_WIFI_WINC_EIC_SRC_14
       children:
-      - children:
-        - attributes:
-            id: visible
-          children:
-          - type: Value
-            value: 'true'
-          type: Boolean
-        type: Attributes
       - children:
         - attributes:
             id: drvWifiWinc
